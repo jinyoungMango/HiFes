@@ -1,12 +1,14 @@
 package hiFes.hiFes.repository;
 
 import hiFes.hiFes.entity.Board;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import hiFes.hiFes.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
-@Repository
-public interface BoardRepository extends JpaRepository<Board, Integer> {
-    Page<Board> findByTitleContaining(String searchKeyword, Pageable pageable);
+import java.util.List;
+
+// JpaRepository<Entity 클래스, PK 타입>
+public interface BoardRepository extends JpaRepository<Board, Long> {
+    List<Board> findByTitleContaining(String keyword);
+
+    Board findByUser(User user);
 }
