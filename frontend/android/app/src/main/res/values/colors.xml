@@ -12,4 +12,6 @@
     <color name="second_apricot">#FFFFE5AD</color>
     <color name="kakao_yellow">#FFF7E43E</color>
     <color name="naver_green">#FF2DB400</color>
+    <color name="grey">#909090</color>
+
 </resources>
