@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">Hifes</string>
+
+
+    <!-- login-->
+    <string name="login_title">HIFES</string>
+    <string name="login_sub_title">축제를 즐겨요</string>
+    <string name="kakao_login">카카오 로그인</string>
+    <string name="naver_login">네이버 로그인</string>
+    <string name="login_maintain">로그인 유지</string>
+    <!-- more info-->
+    <string name="more_info_appbar_title">추가정보 입력</string>
+    <string name="more_info_edittext_hint">닉네임</string>
+    <string name="more_info_finish_button">완료</string>
 </resources>
