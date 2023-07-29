@@ -37,7 +37,7 @@ fun LoginButton(color: Color, title: String, onClick: (context: Context) -> Unit
             text = title,
             color = colorResource(textColor),
             fontWeight = FontWeight.Bold,
-            fontSize = 12.sp
+            fontSize = 14.sp
         )
     }
 }

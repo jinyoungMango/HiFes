@@ -29,7 +29,7 @@ fun HifesNavGraph(
         composable(
             route = HifesDestinations.LOGIN_DETAIL_ROUTE
         ){ navBackStackEntry ->
-            LoginDetailScreen()
+            LoginDetailScreen(navController = navController)
         }
     }
 }
