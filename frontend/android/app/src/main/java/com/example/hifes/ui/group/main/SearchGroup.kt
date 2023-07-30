@@ -40,6 +40,8 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.hifes.ui.iconpack.MyIconPack
+import com.example.hifes.ui.iconpack.myiconpack.Search
 import com.example.hifes.ui.theme.Purple40
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -63,7 +65,7 @@ fun SearchGroup() {
         )
         IconButton(onClick = { /*TODO*/ }) {
             Icon(
-                Icons.Filled.Search,
+                imageVector = MyIconPack.Search,
                 contentDescription = "Serach",
                 tint = Color.Red,
                 modifier = Modifier.size(36.dp)
