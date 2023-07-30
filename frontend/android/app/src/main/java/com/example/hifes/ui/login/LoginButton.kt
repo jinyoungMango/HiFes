@@ -20,6 +20,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hifes.R
+import com.example.hifes.ui.theme.KakaoYellow
+import com.example.hifes.ui.theme.NaverGreen
 
 @Composable
 fun LoginButton(color: Color, title: String, onClick: (context: Context) -> Unit, textColor: Int) {
@@ -47,7 +49,7 @@ fun LoginButton(color: Color, title: String, onClick: (context: Context) -> Unit
 fun LoginButtonsPrev() {
     Column() {
         LoginButton(
-            color = colorResource(R.color.kakao_yellow),
+            color = KakaoYellow,
             title = stringResource(R.string.kakao_login),
             onClick = { context ->
                 Toast.makeText(context, context.getText(R.string.kakao_login), Toast.LENGTH_LONG)
@@ -56,7 +58,7 @@ fun LoginButtonsPrev() {
             textColor = R.color.black
         )
         LoginButton(
-            color = colorResource(R.color.naver_green),
+            color = NaverGreen,
             title = stringResource(R.string.naver_login),
             onClick = { context ->
                 Toast.makeText(context, context.getText(R.string.naver_login), Toast.LENGTH_LONG)

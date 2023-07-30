@@ -25,6 +25,10 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.hifes.R
 import com.example.hifes.ui.HifesDestinations
+import com.example.hifes.ui.theme.Grey
+import com.example.hifes.ui.theme.KakaoYellow
+import com.example.hifes.ui.theme.NaverGreen
+import com.example.hifes.ui.theme.PrimaryPink
 
 @Composable
 fun LoginScreen(
@@ -56,17 +60,13 @@ fun LogoAndTitle() {
         Text(
             text = stringResource(id = R.string.login_sub_title),
             fontWeight = FontWeight.Black,
-            color = colorResource(
-                id = R.color.grey
-            ),
+            color = Grey,
             fontSize = 14.sp
         )
         Text(
             text = stringResource(id = R.string.login_title),
             fontWeight = FontWeight.Black,
-            color = colorResource(
-                id = R.color.main_pink
-            ),
+            color = PrimaryPink,
             fontSize = 32.sp
         )
 
@@ -79,7 +79,7 @@ fun Buttons(navController: NavController, modifier: Modifier) {
         modifier = modifier
     ) {
         LoginButton(
-            color = colorResource(R.color.kakao_yellow),
+            color = KakaoYellow,
             title = stringResource(R.string.kakao_login),
             onClick = { context ->
                 navController.navigate(HifesDestinations.LOGIN_DETAIL_ROUTE)
@@ -88,7 +88,7 @@ fun Buttons(navController: NavController, modifier: Modifier) {
         )
         Spacer(modifier = Modifier.size(10.dp))
         LoginButton(
-            color = colorResource(R.color.naver_green),
+            color = NaverGreen,
             title = stringResource(R.string.naver_login),
             onClick = { context ->
                 navController.navigate(HifesDestinations.LOGIN_DETAIL_ROUTE)

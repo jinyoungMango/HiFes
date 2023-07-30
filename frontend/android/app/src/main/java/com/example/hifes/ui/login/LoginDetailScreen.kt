@@ -40,6 +40,9 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.hifes.R
 import com.example.hifes.ui.common.top.TopWithBack
+import com.example.hifes.ui.theme.Grey
+import com.example.hifes.ui.theme.PrimaryPink
+import com.example.hifes.ui.theme.SecondApricot
 
 @Composable
 fun LoginDetailScreen(
@@ -71,13 +74,13 @@ fun ImageAdd() {
             contentDescription = "profile image",
             modifier = Modifier
                 .size(150.dp)
-                .background(color = colorResource(id = R.color.grey), shape = CircleShape),
+                .background(color = Grey, shape = CircleShape),
         )
         IconButton(
             onClick = { },
             modifier = Modifier
                 .background(
-                    color = colorResource(id = R.color.main_pink),
+                    color = PrimaryPink,
                     shape = CircleShape
                 )
                 .align(Alignment.BottomEnd)
@@ -100,7 +103,7 @@ fun TextFieldNickName() {
         value = text, onValueChange = {
             text = it
         },
-        colors = TextFieldDefaults.outlinedTextFieldColors(focusedBorderColor = colorResource(R.color.main_pink)),
+        colors = TextFieldDefaults.outlinedTextFieldColors(focusedBorderColor = PrimaryPink),
         label = { Text(text = stringResource(id = R.string.more_info_edittext_hint)) }
     )
 }
@@ -113,11 +116,11 @@ fun FinishButton(onClick: (context: Context) -> Unit) {
             onClick = {
                 onClick(context)
             },
-            colors = ButtonDefaults.buttonColors(colorResource(R.color.second_apricot)),
+            colors = ButtonDefaults.buttonColors(SecondApricot),
             modifier = Modifier
                 .fillMaxWidth()
                 .background(
-                    color = colorResource(R.color.second_apricot),
+                    color = SecondApricot,
                     shape = RoundedCornerShape(12.dp)
                 )
                 .padding(40.dp, 0.dp),
