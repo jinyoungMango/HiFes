@@ -1,7 +1,5 @@
 package com.example.hifes.ui.group.main
 
-import android.widget.Space
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,16 +10,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CardElevation
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Bottom
-import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -35,7 +29,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 
 @Composable
-fun Group(
+fun GroupItem(
     url: String,
     title: String,
     content: String,
@@ -84,15 +78,13 @@ fun Group(
     }
 
 
-
-
 @Preview
 @Composable
 fun GroupPrev() {
     val hashtag = listOf("1", "2", "3", "4")
 
     Column(Modifier.padding(horizontal = 8.dp)) {
-        Group(
+        GroupItem(
             "https://fastly.picsum.photos/id/10/2500/1667.jpg?hmac=J04WWC_ebchx3WwzbM-Z4_KC_LeLBWr5LZMaAkWkF68",
             "제목",
             "내용",
@@ -102,7 +94,7 @@ fun GroupPrev() {
         )
         Spacer(modifier = Modifier.height(24.dp))
 
-        Group(
+        GroupItem(
             "https://fastly.picsum.photos/id/10/2500/1667.jpg?hmac=J04WWC_ebchx3WwzbM-Z4_KC_LeLBWr5LZMaAkWkF68",
             "제목",
             "내용",
@@ -112,7 +104,7 @@ fun GroupPrev() {
         )
         Spacer(modifier = Modifier.height(24.dp))
 
-        Group(
+        GroupItem(
             "https://fastly.picsum.photos/id/10/2500/1667.jpg?hmac=J04WWC_ebchx3WwzbM-Z4_KC_LeLBWr5LZMaAkWkF68",
             "제목",
             "내용",
@@ -122,7 +114,7 @@ fun GroupPrev() {
         )
         Spacer(modifier = Modifier.height(24.dp))
 
-        Group(
+        GroupItem(
             "https://fastly.picsum.photos/id/10/2500/1667.jpg?hmac=J04WWC_ebchx3WwzbM-Z4_KC_LeLBWr5LZMaAkWkF68",
             "제목",
             "내용",
