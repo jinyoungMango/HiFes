@@ -1,4 +1,4 @@
-package com.ssafy.hifes.ui.group
+package com.ssafy.hifes.ui.group.info
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateDpAsState
@@ -41,7 +41,7 @@ import com.ssafy.hifes.ui.theme.PrimaryPink
 @Composable
 fun GroupTab(modifier: Modifier, selected: Int, setSelected: (Int) -> Unit) {
 
-    com.ssafy.hifes.ui.group.info.CustomTab(
+    CustomTab(
         items = listOf("정보", "사진", "채팅"),
         selectedItemIndex = selected,
         onClick = setSelected,
@@ -58,10 +58,7 @@ fun GroupPrev() {
     // 화면의 가로 길이를 반환합니다.
     val tabWidth = (rememberUpdatedState(configuration.screenWidthDp).value / 3).dp
 
-    com.ssafy.hifes.ui.group.info.GroupTab(
-        modifier = Modifier,
-        selected = selectedTab,
-        setSelected = { selectedTab = it })
+    GroupTab(modifier = Modifier, selected = selectedTab, setSelected = {selectedTab = it})
 
 }
 
