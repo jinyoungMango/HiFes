@@ -163,7 +163,7 @@ class LoginInfo extends StatelessWidget {
                       minimumSize:
                           MaterialStateProperty.all<Size>(Size(400, 48)),
                     ),
-                    onPressed: () {},
+                    onPressed: () {Get.rootDelegate.toNamed(Routes.MYPAGE);},
                     child: Text(
                       "등록하기",
                       style: TextStyle(color: Colors.white),
