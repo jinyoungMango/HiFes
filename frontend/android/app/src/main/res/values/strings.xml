@@ -12,4 +12,7 @@
     <string name="more_info_appbar_title">추가정보 입력</string>
     <string name="more_info_edittext_hint">닉네임</string>
     <string name="more_info_finish_button">완료</string>
+
+    <!-- participated fest-->
+    <string name="participated_fest_appbar_title">참여 행사 목록</string>
 </resources>
