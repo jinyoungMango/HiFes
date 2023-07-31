@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:web/constants.dart';
 
 class LoginPage extends StatelessWidget {
@@ -21,15 +23,7 @@ class LoginPage extends StatelessWidget {
               children: [
                 LoginTitle(),
                 LoginText(),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => LoginInfo()),
-                    );
-                  },
-                  child: LoginButton(),
-                ),
+                LoginButton(),
               ],
             ),
             SizedBox(
@@ -55,46 +49,52 @@ class LoginPage extends StatelessWidget {
       children: [
         Column(
           children: [
-            Container(
-              child: Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: SvgPicture.asset(
-                  '/kakao.svg',
-                  width: 200,
-                  height: 200,
+            InkWell(
+              onTap: () => Get.rootDelegate.toNamed(Routes.LOGININFO),
+              child: Container(
+                child: Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: SvgPicture.asset(
+                    '/kakao.svg',
+                    width: 200,
+                    height: 200,
+                  ),
                 ),
-              ),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(4), // 테두리를 둥글게 만드는 반지름 값
-                border: Border.all(
-                  color: Colors.amber, // 테두리 색깔
-                  width: 2, // 테두리 두께
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(4), // 테두리를 둥글게 만드는 반지름 값
+                  border: Border.all(
+                    color: Colors.amber, // 테두리 색깔
+                    width: 2, // 테두리 두께
+                  ),
                 ),
+                width: 400,
+                height: 40,
               ),
-              width: 400,
-              height: 40,
             ),
             const SizedBox(
               height: 20,
             ),
-            Container(
-              child: Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: SvgPicture.asset(
-                  '/naver.svg',
-                  width: 200,
-                  height: 200,
+            InkWell(
+              onTap: () => Get.rootDelegate.toNamed(Routes.LOGININFO),
+              child: Container(
+                child: Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: SvgPicture.asset(
+                    '/naver.svg',
+                    width: 200,
+                    height: 200,
+                  ),
                 ),
-              ),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(4), // 테두리를 둥글게 만드는 반지름 값
-                border: Border.all(
-                  color: Colors.green, // 테두리 색깔
-                  width: 2, // 테두리 두께
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(4), // 테두리를 둥글게 만드는 반지름 값
+                  border: Border.all(
+                    color: Colors.green, // 테두리 색깔
+                    width: 2, // 테두리 두께
+                  ),
                 ),
+                width: 400,
+                height: 40,
               ),
-              width: 400,
-              height: 40,
             ),
             SizedBox(
               height: 100,
@@ -258,7 +258,7 @@ Row LoginTitle() {
       SvgPicture.asset(
         '/logo.svg',
         width: 200,
-        height: 200,
+        height: 160,
       ),
       SizedBox(
         width: 80,
