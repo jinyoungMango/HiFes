@@ -1,5 +1,6 @@
 package hiFes.hiFes.config.oauth;
 
+import hiFes.hiFes.config.TokenAuthenticationFilter;
 import hiFes.hiFes.config.jwt.TokenProvider;
 import hiFes.hiFes.repository.RefreshTokenRepository;
 import hiFes.hiFes.service.UserService;
@@ -8,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -25,32 +27,38 @@ public class WebOAuthSecurityConfig {
     private final UserService userService;
 
     @Bean
-    public webSecurityCustomizer configure(){
+    public WebSecurityCustomizer configure(){
         return (web) -> web.ignoring()
-                .requestMatchers("/img/**", "/css/**", "/js/**");
-
+                .requestMatchers(
+                        new AntPathRequestMatcher("/img/**"),
+                        new AntPathRequestMatcher("/css/**"),
+                        new AntPathRequestMatcher("/js/**")
+                );
     }
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-        http.csrf(AbstractHttpConfigurer::disable)
-                .httpBasic(AbstractHttpConfigurer::disable)
-                .formLogin(AbstractHttpConfigurer::disable)
-                .logout(AbstractHttpConfigurer::disable);
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESSre);
-        // 윗부분 람다식으로 바꿔야함
+        http.csrf().disable()
+                .httpBasic().disable()
+                .formLogin().disable()
+                .logout().disable();
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
 
         http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 
-        http.authorizeRequest()
-                .requestMatchers("/api/token").permitAll()
-                .requestMatchers("/api/**").authenticated()
+        // 토큰 재발급 URL은 인증 없이 접근 가능. 나머지 API는 인증 필요
+        http.authorizeRequests()
+                .antMatchers("/api/token").permitAll()
+                .antMatchers("/api/**").authenticated()
                 .anyRequest().permitAll();
+
 
         http.oauth2Login()
                 .loginPage("/login")
                 .authorizationEndpoint()
-                .authorizationRequestRepository(aAuth2AuthorizationRequestBasedOnCookisRepository())
+                .authorizationRequestRepository(oAuth2AuthorizationRequestBasedOnCookieRepository())
                 .and()
                 .successHandler(oAuth2SuccessHandler())
                 .userInfoEndpoint()
@@ -70,7 +78,7 @@ public class WebOAuthSecurityConfig {
     @Bean
     public OAuth2SuccessHandler oAuth2SuccessHandler(){
         return new OAuth2SuccessHandler(tokenProvider, refreshTokenRepository,
-                oAuth2AuthorizationRequestBasedOnCookieRepository, userService);
+                oAuth2AuthorizationRequestBasedOnCookieRepository(), userService);
     }
 
     @Bean
