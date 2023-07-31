@@ -29,9 +29,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ssafy.hifes.R
 
-@Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
+
 @Composable
-fun HomeCardPrev() {
+fun HomeScreen() {
     Column {
         HomeGreeting("혹시 이 행사에 참여 중이신가요?")
         HomeFestivalImage(R.drawable.ic_launcher_background)
@@ -43,6 +43,13 @@ fun HomeCardPrev() {
         HomeCardList()
     }
 
+}
+
+
+@Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
+@Composable
+fun HomeCardPrev() {
+    HomeScreen()
 }
 
 @Composable
