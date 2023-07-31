@@ -1,15 +1,15 @@
-package hiFes.hiFes;
+package com.example.downgrade;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
-@EnableJpaAuditing  // Base_Entity 에 있는 날짜 자동 입력 활성화
+@EnableJpaAuditing
 @SpringBootApplication
-public class HiFesApplication {
+public class DowngradeApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(HiFesApplication.class, args);
+		SpringApplication.run(DowngradeApplication.class, args);
 	}
 
 }
