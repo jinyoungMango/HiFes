@@ -6,6 +6,10 @@ plugins {
     id 'com.google.dagger.hilt.android'
 }
 
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+def map_api_key = properties.getProperty('map_api_key')
+
 android {
     namespace 'com.ssafy.hifes'
     compileSdk 33
@@ -21,6 +25,10 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders = [MAP_API_KEY: map_api_key]
+
     }
 
     buildTypes {
@@ -123,4 +131,7 @@ dependencies {
 
     //compose nav controller
     implementation("androidx.navigation:navigation-compose:2.5.3")
+
+    //kakao map
+    implementation files('libs/libDaumMapAndroid.jar')
 }
