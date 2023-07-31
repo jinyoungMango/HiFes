@@ -39,6 +39,9 @@ dependencies:
   # svg 이미지 사용
   flutter_svg: ^2.0.7
 
+  # getX 사용
+  get: ^4.6.5
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
