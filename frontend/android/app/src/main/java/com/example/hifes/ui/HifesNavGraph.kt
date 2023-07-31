@@ -9,6 +9,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.hifes.data.AppContainer
 import com.example.hifes.ui.login.LoginDetailScreen
 import com.example.hifes.ui.login.LoginScreen
+import com.example.hifes.ui.mypage.MyPageScreen
+
 @Composable
 fun HifesNavGraph(
     appContainer: AppContainer,
@@ -30,6 +32,11 @@ fun HifesNavGraph(
             route = HifesDestinations.LOGIN_DETAIL_ROUTE
         ){ navBackStackEntry ->
             LoginDetailScreen(navController = navController)
+        }
+        composable(
+            route = HifesDestinations.MY_PAGE_ROUTE
+        ){ navBackStackEntry ->
+            MyPageScreen(navController = navController)
         }
     }
 }
