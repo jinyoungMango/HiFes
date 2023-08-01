@@ -21,6 +21,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,6 +38,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -117,7 +120,7 @@ fun FestivalDetail(navController: NavHostController) {
                 Spacer(modifier = Modifier.size(12.dp))
                 DetailCommonContent(title = "장소", address = "주소")
                 Spacer(modifier = Modifier.size(12.dp))
-                ComposeMapView(36.105994, 128.425637)
+                ComposeMapViewWithMarker(36.105994, 128.425637)
                 Spacer(modifier = Modifier.size(12.dp))
                 DetailCommonContent(title = "주최", content1 = "대구광역시", content2 = "053 - 248 - 9998")
                 Spacer(modifier = Modifier.size(24.dp))
@@ -133,17 +136,30 @@ fun FestivalDetailPrev() {
     FestivalDetail(navController = rememberNavController())
 }
 
-@Composable
-fun ComposeMapView(latitude: Double, longitude: Double) {
-    val context = LocalContext.current
-    val mapView = remember {
-        MapView(context).apply {
-            setMapCenterPoint(
-                MapPoint.mapPointWithGeoCoord(latitude, longitude),
-                true
-            )
-            setZoomLevel(1, true)
 
+@Composable
+fun ComposeMapView(latitude: Double, longitude: Double): State<MapView?> {
+    val context = LocalContext.current
+    val mapViewState = remember { mutableStateOf<MapView?>(null) }
+
+    mapViewState.value = MapView(context).apply {
+        setMapCenterPoint(
+            MapPoint.mapPointWithGeoCoord(latitude, longitude),
+            true
+        )
+        setZoomLevel(1, true)
+    }
+
+    return mapViewState
+}
+
+@Composable
+fun ComposeMapViewWithMarker(latitude: Double, longitude: Double) {
+    val mapViewState = ComposeMapView(latitude, longitude)
+    val mapView = mapViewState.value
+
+    mapView?.let { map ->
+        LaunchedEffect(key1 = map) {
             val marker = MapPOIItem().apply {
                 itemName = "MARKER_NAME"
                 tag = 0
@@ -153,16 +169,17 @@ fun ComposeMapView(latitude: Double, longitude: Double) {
                 mapPoint = MapPoint.mapPointWithGeoCoord(latitude, longitude)
             }
 
-            addPOIItem(marker)
+            map.addPOIItem(marker)
+            // 필요한 이벤트를 여기에 추가하세요.
         }
-    }
 
-    AndroidView(
-        factory = { mapView },
-        modifier = Modifier
-            .size(300.dp)
-            .clip(RoundedCornerShape(16.dp))
-    )
+        AndroidView(
+            factory = { map },
+            modifier = Modifier
+                .size(200.dp)
+                .clip(RoundedCornerShape(16.dp))
+        )
+    }
 }
 
 @Composable
