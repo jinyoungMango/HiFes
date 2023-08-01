@@ -10,6 +10,7 @@ import com.ssafy.hifes.ui.login.LoginDetailScreen
 import com.ssafy.hifes.ui.login.LoginScreen
 import com.ssafy.hifes.ui.mypage.MyPageScreen
 import com.ssafy.hifes.data.AppContainer
+import com.ssafy.hifes.ui.participatedfest.ParticipatedFestScreen
 
 @Composable
 fun HifesNavGraph(
@@ -32,6 +33,11 @@ fun HifesNavGraph(
             route = HifesDestinations.LOGIN_DETAIL_ROUTE
         ){ navBackStackEntry ->
             LoginDetailScreen(navController = navController)
+        }
+        composable(
+            route = HifesDestinations.PARTICIPATED_FEST_ROUTE
+        ) { navBackStackEntry ->
+            ParticipatedFestScreen(navController = navController)
         }
         composable(
             route = HifesDestinations.MY_PAGE_ROUTE
