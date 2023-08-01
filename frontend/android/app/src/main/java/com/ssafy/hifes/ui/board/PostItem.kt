@@ -8,6 +8,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
@@ -16,6 +17,11 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.ssafy.hifes.data.model.FestivalTableDto
 import com.ssafy.hifes.data.model.PostDto
+import com.ssafy.hifes.ui.board.boardcommon.PostType
+import com.ssafy.hifes.ui.board.boardcommon.RatingBar
+import com.ssafy.hifes.ui.board.postitemelement.PostContent
+import com.ssafy.hifes.ui.board.postitemelement.PostImage
+import com.ssafy.hifes.ui.board.postitemelement.PostTitle
 import com.ssafy.hifes.ui.iconpack.MyIconPack
 import com.ssafy.hifes.ui.theme.LightGrey
 import com.ssafy.hifes.util.CommonUtils
@@ -25,30 +31,27 @@ import java.text.SimpleDateFormat
 @Composable
 fun PostItem(
     postData: PostDto,
+    userDataId : Int,
     onClick: () -> Unit
 ) {
     Column {
         Divider(color = LightGrey, thickness = 2.dp)
         Spacer(modifier = Modifier.size(10.dp))
 
-        Row() {
+        Row(verticalAlignment = Alignment.CenterVertically) {
             Spacer(modifier = Modifier.size(10.dp))
             Column(modifier = Modifier.weight(1f)) {
-                if(postData.postType==PostType.REVIEW.label){
+                if(postData.postType== PostType.REVIEW.label){
                     RatingBar(rating = postData.rating!!)
+                    Spacer(modifier = Modifier.size(4.dp))
                 }
-                PostTitle(postData = postData)
-                Text(text = postData.content)
+                PostTitle(postData = postData, userDataId)
+                Spacer(modifier = Modifier.size(4.dp))
+                PostContent(postData = postData, userDataId)
+                Spacer(modifier = Modifier.size(4.dp))
                 Text(text = CommonUtils.formatSqlDateToString(postData.createdAt))
             }
-            AsyncImage(
-                model = postData?.picture,
-                contentDescription = "게시글 이미지",
-                placeholder = rememberVectorPainter(image = MyIconPack.User),
-                modifier = Modifier
-                    .size(60.dp)
-                    .clip(RoundedCornerShape(16.dp))
-            )
+            PostImage(postData = postData, userDataId = userDataId)
             Spacer(modifier = Modifier.size(10.dp))
         }
         Spacer(modifier = Modifier.size(10.dp))
@@ -82,6 +85,7 @@ fun PrevewPostItem() {
                 null,
                 5f
             ),
+            1,
             onClick = {})
         PostItem(
             postData = PostDto(
@@ -101,6 +105,7 @@ fun PrevewPostItem() {
                 null,
                 3.5f
             ),
+            1,
             onClick = {})
         PostItem(
             postData = PostDto(
@@ -120,6 +125,7 @@ fun PrevewPostItem() {
                 null,
                 5f
             ),
+            1,
             onClick = {}
         )
         PostItem( //내가 쓴 질문, 공개
@@ -140,6 +146,7 @@ fun PrevewPostItem() {
                 null,
                 5f
             ),
+            1,
             onClick = {}
         )
         PostItem(//내가 쓴 질문, 비공개
@@ -160,6 +167,7 @@ fun PrevewPostItem() {
                 null,
                 5f
             ),
+            1,
             onClick = {}
         )
         PostItem(//다른사람의 질문, 비공개
@@ -180,6 +188,7 @@ fun PrevewPostItem() {
                 null,
                 5f
             ),
+            1,
             onClick = {}
         )
         PostItem(//다른사람의 질문, 공개
@@ -200,6 +209,7 @@ fun PrevewPostItem() {
                 null,
                 5f
             ),
+            1,
             onClick = {}
         )
 
