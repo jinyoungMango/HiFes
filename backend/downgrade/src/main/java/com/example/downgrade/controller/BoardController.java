@@ -2,11 +2,16 @@ package com.example.downgrade.controller;
 
 import com.example.downgrade.dto.BoardDto;
 import com.example.downgrade.service.BoardService;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Controller
+@AllArgsConstructor
+@RequestMapping("board")  // /board 경로로 들어오는 경우 아래의 메서드 중 하나로 분기되도록 설정
 public class BoardController {
     private BoardService boardService;
 
@@ -21,11 +26,12 @@ public class BoardController {
         List<BoardDto> boardList = boardService.getBoardList(pageNum);
         Integer[] pageList = boardService.getPageList(pageNum);
 
-        model.getAttribute("boardList", boardList);
-        model.getAttribute("pageList", pageList);
+        model.addAttribute("boardList", boardList);
+        model.addAttribute("pageList", pageList);
 
         return "board/list";
     }
+
 
     // 글 쓰는 페이지
     @GetMapping("/post")
@@ -80,15 +86,27 @@ public class BoardController {
     // keyword 를 view 에서 전달받고
     // Service 에게 받은 boardDtoList 를 model 의 attribute 로 전달
     // 1. `@GetMapping("/board/search")`: 해당 메서드를 HTTP GET 요청과 매핑하며, `/board/search`라는 URL 경로로 접근할 때 이 메서드가 실행됩니다.
-    @GetMapping("/board/search")
+    @GetMapping("/search")
     // 2. `public String search(@RequestParam(value = "keyword") String keyword, Model model)`
     // : `search`라는 메서드를 정의하며, 두 개의 파라미터를 입력받습니다.
 
     // - `@RequestParam(value = "keyword") String keyword`
     // : 클라이언트(브라우저)에서 전달한 `keyword`라는 이름의 쿼리 파라미터 값을 가져오고, 이 값을 `keyword` 변수에 저장합니다.
     // - `Model model`: 뷰(view)에게 전달할 데이터를 저장하는 객체입니다.
-    public String search(@RequestParam(value = "keyword") String keyword, Model model) {
+    public String search(@RequestParam(value = "keyword") String keyword,
+                         @RequestParam(value = "page", defaultValue = "1") Integer pageNum,
+                         @RequestParam(value = "size", defaultValue = "10") int size,
+                         Model model) {
+
         List<BoardDto> boardDtoList = boardService.searchPosts(keyword);
+
+        Integer[] pageList = boardService.getSearchPageList(keyword, pageNum);
+        // 이 부분 수정 마저해야됨
+
+        model.addAttribute("boardList", boardDtoList);
+        model.addAttribute("pageList", pageList);
+
+
     // `List<BoardDto> boardDtoList = boardService.searchPosts(keyword);`
     // : 검색 키워드를 사용하여 게시물을 검색하는 `searchPosts` 메서드를 호출하고, 그 결과를 `boardDtoList`라는 변수에 저장합니다.
     // `searchPosts` 메서드는 `BoardService` 클래스의 인스턴스에 정의되어 있어야 합니다.

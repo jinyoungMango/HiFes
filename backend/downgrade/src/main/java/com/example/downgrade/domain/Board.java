@@ -33,13 +33,12 @@ public class Board extends Time {
     @Builder
     public Board(Long id, String writer, String title, String content, User user) {
         // Assert 구문으로 안전한 객체 생성 패턴을 구현
-        Assert.hasText(writer,"writer must not be empty");
         Assert.hasText(title,"title must not be empty");
         Assert.hasText(content,"content must not be empty");
 
         this.id = id;
-        this.writer = writer;
         this.title = title;
+        this.writer = writer;
         this.content = content;
         this.user = user;
     }
