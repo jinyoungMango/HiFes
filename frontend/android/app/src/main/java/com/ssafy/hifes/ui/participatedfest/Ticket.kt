@@ -1,6 +1,7 @@
 package com.ssafy.hifes.ui.participatedfest
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
@@ -23,12 +24,16 @@ import myiconpack.Ticketbody
 import myiconpack.Tickethead
 
 @Composable
-fun Ticket(title: String, date: String) {
+fun Ticket(title: String, date: String, onClick: () -> Unit) {
     var showTitle = titleStringFormatting(title)
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(6.dp, 0.dp, 0.dp, 16.dp)
+        modifier = Modifier
+            .padding(6.dp, 0.dp, 0.dp, 16.dp)
+            .clickable {
+                onClick()
+            }
     ) {
         Box(Modifier.height(100.dp)) {
             Image(
@@ -46,7 +51,9 @@ fun Ticket(title: String, date: String) {
             )
         }
         Box(
-            modifier = Modifier.width(100.dp).rotate(270f)
+            modifier = Modifier
+                .width(100.dp)
+                .rotate(270f)
         ) {
             Image(
                 imageVector = MyIconPack.Tickethead,
@@ -83,5 +90,5 @@ fun titleStringFormatting(title: String): String {
 @Preview
 fun TicketPrev() {
     var testString = "1234567891234567891"
-    Ticket(testString, "2024.08.01")
+    Ticket(testString, "2024.08.01", {})
 }
