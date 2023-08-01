@@ -15,4 +15,5 @@
 
     <!-- participated fest-->
     <string name="participated_fest_appbar_title">참여 행사 목록</string>
+    <string name="participated_fest_stamp_list_title">스탬프 목록</string>
 </resources>
