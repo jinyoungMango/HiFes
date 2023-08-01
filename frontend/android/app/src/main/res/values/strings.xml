@@ -33,5 +33,9 @@
 
     <!-- board -->
     <string name="board_appbar_title">게시판</string>
+    <string name="board_chip_notification">공지</string>
+    <string name="board_chip_ask">문의</string>
+    <string name="board_chip_free">자유</string>
+    <string name="board_chip_review">후기</string>
     <string name="board_hidden_post_title">비밀 문의 글 입니다.</string>
 </resources>
