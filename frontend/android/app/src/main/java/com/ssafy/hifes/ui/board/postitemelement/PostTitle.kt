@@ -16,6 +16,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.ssafy.hifes.R
 import com.ssafy.hifes.data.model.FestivalTableDto
 import com.ssafy.hifes.data.model.PostDto
@@ -33,7 +34,7 @@ fun PostTitle(
     var userDataId = 1 //추후 viewModel에서 지금 사용자를 구분하는 값을 저장했다가 가져와 사용
     val resultTitle = getTitle(postData, LocalContext.current, userDataId)
     Row(verticalAlignment = Alignment.CenterVertically) {
-        Text(text = resultTitle, fontWeight = FontWeight.Bold)
+        Text(text = resultTitle, fontWeight = FontWeight.Bold, fontSize = 16.sp)
         if (postData.normalUserId == userDataId && postData.postType == PostType.ASK.label) {
             Spacer(modifier = Modifier.size(8.dp))
             if (postData.hidden != null && postData.hidden!!) {
