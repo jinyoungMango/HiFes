@@ -1,4 +1,4 @@
-package com.example.hifes.ui.login
+package com.ssafy.hifes.ui.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -81,7 +81,7 @@ fun Buttons(navController: NavController, modifier: Modifier) {
             color = KakaoYellow,
             title = stringResource(R.string.kakao_login),
             onClick = { context ->
-                navController.navigate(HifesDestinations.LOGIN_DETAIL_ROUTE)
+                navController.navigate(HifesDestinations.MY_PAGE_ROUTE)
             },
             textColor = R.color.black
         )

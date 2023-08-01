@@ -1,4 +1,4 @@
-package com.example.hifes.ui.login
+package com.ssafy.hifes.ui.login
 
 import android.content.Context
 import android.widget.Toast
