@@ -32,5 +32,6 @@
     <string name="mypage_participated_event">참여한 행사</string>
 
     <!-- board -->
+    <string name="board_appbar_title">게시판</string>
     <string name="board_hidden_post_title">비밀 문의 글 입니다.</string>
 </resources>
