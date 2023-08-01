@@ -10,12 +10,12 @@ data class PostDto(
     var title: String,
     var content: String,
     var postType: String,
-    var hidden: Boolean,
-    var hideReason: String,
+    var hidden: Boolean?,
+    var hideReason: String?,
     var createdBy: String,
     var createdAt: Date,
     var updatedAt: Date,
     var seenTimes: Int,
-    var picture: String,
-    var rating: Float
+    var picture: String?,
+    var rating: Float?
 )
