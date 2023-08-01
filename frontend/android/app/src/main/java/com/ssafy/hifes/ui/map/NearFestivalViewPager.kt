@@ -4,13 +4,16 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.Card
+import androidx.compose.material3.ShapeDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -26,18 +29,18 @@ fun MapPrev() {
 @SuppressLint("RestrictedApi")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ViewPager() {
+fun ViewPager(modifier: Modifier = Modifier) {
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = modifier,
         verticalArrangement = Arrangement.Center
     ) {
         val pagerState = rememberPagerState(pageCount = {
-            4
+            10
         })
-        HorizontalPager(state = pagerState) { page ->
+        HorizontalPager(state = pagerState,
+            contentPadding = PaddingValues(end = 30.dp),) { page ->
             Card(
                 Modifier
-                    .size(200.dp)
                     .graphicsLayer {
                         // Calculate the absolute offset for the current page from the
                         // scroll position. We use the absolute value which allows us to mirror
@@ -48,14 +51,16 @@ fun ViewPager() {
                                 ).absoluteValue
 
                         // We animate the alpha, between 50% and 100%
-                        alpha = lerp(
-                            0.5f,
-                            1f,
-                            1f - pageOffset.coerceIn(0f, 1f)
-                        )
-                    }
+//                        alpha = lerp(
+//                            0.5f,
+//                            1f,
+//                            1f - pageOffset.coerceIn(0f, 1f)
+//                        )
+                    },
+                backgroundColor = Color.White.copy(alpha = 0.0f),
+                elevation = 0.dp
             ) {
-                // Card content
+                MapScreen()
             }
         }
     }
