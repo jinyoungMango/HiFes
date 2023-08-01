@@ -16,14 +16,14 @@ import kotlinx.coroutines.launch
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
 fun MapBottomPrev() {
-    MapBottomSheet(navController = rememberNavController())
+    MapBottomSheet()
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MapBottomSheet(navController: NavController) {
+fun MapBottomSheet() {
     val coroutineScope = rememberCoroutineScope()
-    val modalBottomSheetState = rememberModalBottomSheetState(true)
+    val modalBottomSheetState = rememberModalBottomSheetState(false)
 
     LaunchedEffect(Unit) {
         coroutineScope.launch {

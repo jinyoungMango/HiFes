@@ -10,6 +10,7 @@ import com.ssafy.hifes.data.AppContainer
 import com.ssafy.hifes.ui.detail.FestivalDetail
 import com.ssafy.hifes.ui.login.LoginDetailScreen
 import com.ssafy.hifes.ui.login.LoginScreen
+import com.ssafy.hifes.ui.map.MapScreen
 import com.ssafy.hifes.ui.mypage.MyPageScreen
 import com.ssafy.hifes.ui.participatedfest.ParticipatedFestScreen
 
@@ -19,7 +20,7 @@ fun HifesNavGraph(
     appContainer: AppContainer,
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    startDestination: String = HifesDestinations.LOGIN_ROUTE
+    startDestination: String = HifesDestinations.MAP
     ) {
     NavHost(
         navController = navController,
@@ -50,6 +51,11 @@ fun HifesNavGraph(
             route = HifesDestinations.MY_PAGE_ROUTE
         ){ navBackStackEntry ->
             MyPageScreen(navController = navController)
+        }
+        composable(
+            route = HifesDestinations.MAP
+        ){ navBackStackEntry ->
+            MapScreen(navController = navController)
         }
     }
 }
