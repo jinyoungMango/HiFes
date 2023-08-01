@@ -1,4 +1,4 @@
-package com.ssafy.hifes.ui.board
+package com.ssafy.hifes.ui.board.boardcommon
 
 enum class PostType(val label: String) {
     NOTIFICATION("notification"),

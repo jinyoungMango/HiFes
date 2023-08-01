@@ -1,4 +1,4 @@
-package com.ssafy.hifes.ui.board
+package com.ssafy.hifes.ui.board.postitemelement
 
 import android.content.Context
 import androidx.compose.foundation.layout.Column
@@ -11,8 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -20,18 +18,18 @@ import androidx.compose.ui.unit.sp
 import com.ssafy.hifes.R
 import com.ssafy.hifes.data.model.FestivalTableDto
 import com.ssafy.hifes.data.model.PostDto
+import com.ssafy.hifes.ui.board.boardcommon.PostType
 import com.ssafy.hifes.ui.iconpack.MyIconPack
 import com.ssafy.hifes.ui.iconpack.myiconpack.Postlocked
 import com.ssafy.hifes.ui.iconpack.myiconpack.Postunlocked
 import com.ssafy.hifes.ui.theme.Grey
-import com.ssafy.hifes.ui.theme.LightGrey
 import java.text.SimpleDateFormat
 
 @Composable
 fun PostTitle(
-    postData: PostDto
+    postData: PostDto,
+    userDataId: Int
 ) {
-    var userDataId = 1 //추후 viewModel에서 지금 사용자를 구분하는 값을 저장했다가 가져와 사용
     val resultTitle = getTitle(postData, LocalContext.current, userDataId)
     Row(verticalAlignment = Alignment.CenterVertically) {
         Text(text = resultTitle, fontWeight = FontWeight.Bold, fontSize = 16.sp)
@@ -92,7 +90,8 @@ fun PreviewPostTitle() {
                 1,
                 null,
                 5f
-            )
+            ),
+            1
         )
         PostTitle( //내가 쓴 질문, 공개
             postData = PostDto(
@@ -111,7 +110,8 @@ fun PreviewPostTitle() {
                 1,
                 null,
                 5f
-            )
+            ),
+            1
         )
         PostTitle(//내가 쓴 질문, 비공개
             postData = PostDto(
@@ -130,7 +130,8 @@ fun PreviewPostTitle() {
                 1,
                 null,
                 5f
-            )
+            ),
+            1
         )
         PostTitle(//다른사람의 질문, 비공개
             postData = PostDto(
@@ -149,7 +150,8 @@ fun PreviewPostTitle() {
                 1,
                 null,
                 5f
-            )
+            ),
+            1
         )
         PostTitle(//다른사람의 질문, 공개
             postData = PostDto(
@@ -168,7 +170,8 @@ fun PreviewPostTitle() {
                 1,
                 null,
                 5f
-            )
+            ),
+            1
         )
     }
 
