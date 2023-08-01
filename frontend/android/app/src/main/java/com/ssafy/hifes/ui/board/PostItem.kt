@@ -1,5 +1,6 @@
 package com.ssafy.hifes.ui.board
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -32,9 +33,9 @@ import java.text.SimpleDateFormat
 fun PostItem(
     postData: PostDto,
     userDataId : Int,
-    onClick: () -> Unit
+    onClick: (PostDto) -> Unit
 ) {
-    Column {
+    Column (modifier = Modifier.clickable { onClick(postData) }){
         Spacer(modifier = Modifier.size(10.dp))
 
         Row(verticalAlignment = Alignment.CenterVertically) {

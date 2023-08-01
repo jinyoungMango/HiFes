@@ -16,6 +16,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.ssafy.hifes.R
+import com.ssafy.hifes.ui.HifesDestinations
 import com.ssafy.hifes.ui.common.ChipsSelectable
 import com.ssafy.hifes.ui.common.top.TopWithBack
 import com.ssafy.hifes.ui.theme.LightGrey
@@ -54,7 +55,13 @@ fun BoardScreen(
 
                 LazyColumn (modifier = Modifier.padding(16.dp)){
                     items(postList.value!!.size) { index ->
-                        PostItem(postData = postList.value!!.get(index), viewModel.userDataId, {})
+                        PostItem(
+                            postData = postList.value!!.get(index),
+                            viewModel.userDataId,
+                            {postData ->
+                                viewModel.getPostDetail(postData)
+                                navController.navigate(HifesDestinations.BOARD_DETAIL_ROUTE)
+                            })
                     }
                 }
             }
