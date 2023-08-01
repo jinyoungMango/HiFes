@@ -12,6 +12,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.Card
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.RememberObserver
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
@@ -40,27 +41,10 @@ fun ViewPager(modifier: Modifier = Modifier) {
         HorizontalPager(state = pagerState,
             contentPadding = PaddingValues(end = 30.dp),) { page ->
             Card(
-                Modifier
-                    .graphicsLayer {
-                        // Calculate the absolute offset for the current page from the
-                        // scroll position. We use the absolute value which allows us to mirror
-                        // any effects for both directions
-                        val pageOffset = (
-                                (pagerState.currentPage - page) + pagerState
-                                    .currentPageOffsetFraction
-                                ).absoluteValue
-
-                        // We animate the alpha, between 50% and 100%
-//                        alpha = lerp(
-//                            0.5f,
-//                            1f,
-//                            1f - pageOffset.coerceIn(0f, 1f)
-//                        )
-                    },
                 backgroundColor = Color.White.copy(alpha = 0.0f),
                 elevation = 0.dp
             ) {
-                MapScreen()
+                MapScreenContent()
             }
         }
     }

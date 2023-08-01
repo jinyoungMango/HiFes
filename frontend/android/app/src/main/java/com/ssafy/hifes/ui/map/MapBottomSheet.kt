@@ -37,6 +37,6 @@ fun MapBottomSheet(navController: NavController) {
         dragHandle = { BottomSheetDefaults.DragHandle() },
         containerColor = Color.White
     ) {
-        MapScreen()
+        MapScreenContent()
     }
 }

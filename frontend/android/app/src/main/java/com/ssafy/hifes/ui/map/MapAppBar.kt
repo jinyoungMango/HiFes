@@ -58,6 +58,7 @@ fun MapAppBar() {
                 TextField(
                     value = text,
                     onValueChange = { text = it },
+                    maxLines = 1,
                     leadingIcon = {
                         IconButton(onClick = { /* do something on click */ }) {
                             Icon(
