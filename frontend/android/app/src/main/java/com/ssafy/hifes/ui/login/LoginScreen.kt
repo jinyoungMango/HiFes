@@ -81,7 +81,7 @@ fun Buttons(navController: NavController, modifier: Modifier) {
             color = KakaoYellow,
             title = stringResource(R.string.kakao_login),
             onClick = { context ->
-                navController.navigate(HifesDestinations.LOGIN_DETAIL_ROUTE)
+                navController.navigate(HifesDestinations.MY_PAGE_ROUTE)
             },
             textColor = R.color.black
         )
