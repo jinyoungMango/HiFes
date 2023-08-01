@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.ssafy.hifes.R
 import com.ssafy.hifes.data.model.FestivalTableDto
@@ -18,7 +19,11 @@ fun PostContent(
     userDataId : Int
 ) {
     val resultContent = getContent(postData, LocalContext.current, userDataId)
-    Text(text = resultContent)
+    Text(
+        text = resultContent,
+        maxLines = 2,
+        overflow = TextOverflow.Ellipsis
+    )
 }
 
 fun getContent(postData: PostDto, context: Context, userDataId: Int): String {

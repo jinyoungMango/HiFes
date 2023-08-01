@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -12,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -31,14 +33,33 @@ fun PostTitle(
     userDataId: Int
 ) {
     val resultTitle = getTitle(postData, LocalContext.current, userDataId)
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Text(text = resultTitle, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text(
+            text = resultTitle,
+            fontWeight = FontWeight.Bold,
+            fontSize = 16.sp,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
+        )
         if (postData.normalUserId == userDataId && postData.postType == PostType.ASK.label) {
             Spacer(modifier = Modifier.size(8.dp))
             if (postData.hidden != null && postData.hidden!!) {
-                Icon(imageVector = MyIconPack.Postlocked, contentDescription = "잠긴 글", tint = Grey)
+                Icon(
+                    imageVector = MyIconPack.Postlocked,
+                    contentDescription = "잠긴 글",
+                    tint = Grey,
+                    modifier = Modifier.size(16.dp)
+                )
             } else {
-                Icon(imageVector = MyIconPack.Postunlocked, contentDescription = "열린 글", tint = Grey)
+                Icon(
+                    imageVector = MyIconPack.Postunlocked,
+                    contentDescription = "열린 글",
+                    tint = Grey,
+                    modifier = Modifier.size(16.dp)
+                )
             }
         }
     }

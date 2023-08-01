@@ -35,7 +35,6 @@ fun PostItem(
     onClick: () -> Unit
 ) {
     Column {
-        Divider(color = LightGrey, thickness = 2.dp)
         Spacer(modifier = Modifier.size(10.dp))
 
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -51,6 +50,7 @@ fun PostItem(
                 Spacer(modifier = Modifier.size(4.dp))
                 Text(text = CommonUtils.formatSqlDateToString(postData.createdAt))
             }
+            Spacer(modifier = Modifier.size(10.dp))
             PostImage(postData = postData, userDataId = userDataId)
             Spacer(modifier = Modifier.size(10.dp))
         }
