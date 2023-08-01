@@ -16,4 +16,18 @@
     <!-- participated fest-->
     <string name="participated_fest_appbar_title">참여 행사 목록</string>
     <string name="participated_fest_stamp_list_title">스탬프 목록</string>
+
+    <!-- my page -->
+    <string name="mypage_appbar_title">마이페이지</string>
+    <string name="mypage_account">계정</string>
+    <string name="mypage_change_nickname">닉네임 변경</string>
+    <string name="mypage_change_profile_image">프로필 이미지 변경</string>
+    <string name="mypage_logout">로그아웃</string>
+    <string name="mypage_withdraw">회원 탈퇴</string>
+    <string name="mypage_info">정보</string>
+    <string name="mypage_terms">서비스 이용약관</string>
+    <string name="mypage_privacy_policy">개인정보처리방침</string>
+    <string name="mypage_used_library">사용한 라이브러리</string>
+    <string name="mypage_event">행사</string>
+    <string name="mypage_participated_event">참여한 행사</string>
 </resources>

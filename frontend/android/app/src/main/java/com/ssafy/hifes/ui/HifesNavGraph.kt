@@ -6,8 +6,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.hifes.ui.login.LoginDetailScreen
-import com.example.hifes.ui.login.LoginScreen
+import com.ssafy.hifes.ui.login.LoginDetailScreen
+import com.ssafy.hifes.ui.login.LoginScreen
+import com.ssafy.hifes.ui.mypage.MyPageScreen
 import com.ssafy.hifes.data.AppContainer
 import com.ssafy.hifes.ui.participatedfest.ParticipatedFestScreen
 
@@ -35,8 +36,13 @@ fun HifesNavGraph(
         }
         composable(
             route = HifesDestinations.PARTICIPATED_FEST_ROUTE
-        ){ navBackStackEntry ->
+        ) { navBackStackEntry ->
             ParticipatedFestScreen(navController = navController)
+        }
+        composable(
+            route = HifesDestinations.MY_PAGE_ROUTE
+        ){ navBackStackEntry ->
+            MyPageScreen(navController = navController)
         }
     }
 }
