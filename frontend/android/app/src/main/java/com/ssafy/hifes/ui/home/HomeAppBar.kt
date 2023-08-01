@@ -10,6 +10,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -62,7 +63,12 @@ fun HomeAppBar() {
                         .clip(RoundedCornerShape(30.dp))
                         .border(1.dp, Color.Gray, RoundedCornerShape(30.dp))
                         .background(color = Color.White)
-                        .weight(1f) // TextField를 Row의 남은 공간에 채우도록 함
+                        .weight(1f), // TextField를 Row의 남은 공간에 채우도록 함
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = Color.White,
+                        unfocusedContainerColor = Color.White,
+                        disabledContainerColor = Color.White,
+                    )
                 )
 
                 // 추가적인 아이콘
