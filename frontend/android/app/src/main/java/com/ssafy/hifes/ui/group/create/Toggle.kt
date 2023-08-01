@@ -1,4 +1,4 @@
-package com.example.hifes.ui.group.create
+package com.ssafy.hifes.ui.group.create
 
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults

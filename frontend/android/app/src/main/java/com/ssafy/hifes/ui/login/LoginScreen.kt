@@ -1,4 +1,4 @@
-package com.example.hifes.ui.login
+package com.ssafy.hifes.ui.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement

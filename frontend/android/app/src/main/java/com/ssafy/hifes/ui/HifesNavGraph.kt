@@ -6,8 +6,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.hifes.ui.login.LoginDetailScreen
 import com.ssafy.hifes.ui.login.LoginScreen
+import com.ssafy.hifes.ui.login.LoginDetailScreen
 import com.ssafy.hifes.data.AppContainer
 import com.ssafy.hifes.ui.detail.FestivalDetail
 
