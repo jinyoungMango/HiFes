@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
+import 'package:web/board.dart';
 import 'package:web/mypage.dart';
 
 import 'login.dart';
@@ -12,6 +13,7 @@ abstract class Routes {
   static const LOGIN = '/';
   static const LOGININFO = '/logininfo';
   static const MYPAGE = '/mypage';
+  static const BOARD = '/board';
 }
 
 abstract class AppPages {
@@ -24,6 +26,10 @@ abstract class AppPages {
       name: Routes.LOGININFO,
       page: () => LoginInfo(),
     ),
-    GetPage(name: Routes.MYPAGE, page: () => MyPage())
+    GetPage(name: Routes.MYPAGE, page: () => MyPage()),
+    GetPage(
+      name: Routes.BOARD,
+      page: () => Board(),
+    ),
   ];
 }
