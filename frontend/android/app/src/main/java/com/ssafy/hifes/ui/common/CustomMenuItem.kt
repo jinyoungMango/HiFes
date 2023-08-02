@@ -1,6 +1,6 @@
 package com.ssafy.hifes.ui.common
 
-data class MenuItem(
+data class CustomMenuItem(
     var title: String,
     var action: () -> Unit
 )

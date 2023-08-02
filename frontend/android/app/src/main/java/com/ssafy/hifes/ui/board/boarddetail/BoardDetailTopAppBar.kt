@@ -11,24 +11,24 @@ import com.ssafy.hifes.R
 import com.ssafy.hifes.data.model.PostDto
 import com.ssafy.hifes.ui.board.BoardViewModel
 import com.ssafy.hifes.ui.board.boardcommon.PostType
-import com.ssafy.hifes.ui.common.MenuItem
+import com.ssafy.hifes.ui.common.CustomMenuItem
 import com.ssafy.hifes.ui.common.top.TopWithBack
 import com.ssafy.hifes.ui.theme.LightGrey
 
 @Composable
 fun BoardDetailTopAppBar(postData: PostDto, viewModel: BoardViewModel) {
     var appBarTitle = getBoardDetailAppBarTitle(postData.postType, LocalContext.current)
-    var menuList: MutableList<MenuItem> = mutableListOf()
+    var menuList: MutableList<CustomMenuItem> = mutableListOf()
 
     if (postData.normalUserId == viewModel.userDataId) {
         menuList.apply {
             add(
-                MenuItem(
+                CustomMenuItem(
                     stringResource(id = R.string.board_detail_modify),
                     { viewModel.postModify() })
             )
             add(
-                MenuItem(
+                CustomMenuItem(
                     stringResource(id = R.string.board_detail_delete),
                     { viewModel.postDelete() })
             )
