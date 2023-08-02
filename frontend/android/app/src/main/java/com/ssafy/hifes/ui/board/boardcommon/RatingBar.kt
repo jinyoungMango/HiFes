@@ -24,7 +24,7 @@ fun RatingBar(
     starSize : Int,
     starColor : Color
 ) {
-    val filledStarCount = rating.toInt()/1
+    val filledStarCount = rating.toInt()
     val halfStarCount = if(rating-filledStarCount==0f) 0 else 1
     val emptyStarCount = 5-filledStarCount-halfStarCount
 
@@ -37,7 +37,7 @@ fun RatingBar(
                 tint = starColor
             )
         }
-        for(star : Int in 0 until halfStarCount){
+        if(halfStarCount==1){
             Icon(
                 imageVector = MyIconPack.Halffilledstar,
                 contentDescription = "반만 채워진 별",
