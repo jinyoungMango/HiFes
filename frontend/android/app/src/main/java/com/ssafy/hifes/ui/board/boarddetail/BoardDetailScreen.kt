@@ -22,19 +22,21 @@ fun BoardDetailScreen(navController: NavController, viewModel: BoardViewModel) {
     val selectedPost = viewModel.selectedPost.observeAsState()
     val scrollState = rememberScrollState()
     Column(modifier = Modifier.verticalScroll(scrollState)) {
-        BoardDetailTopAppBar(viewModel.selectedPostType)
-        Column(modifier = Modifier.padding(16.dp, 0.dp)) {
-            if (selectedPost.value != null) {
+        if (selectedPost.value != null) {
+            BoardDetailTopAppBar(selectedPost.value!!, viewModel)
+            Column(modifier = Modifier.padding(16.dp, 0.dp)) {
                 BoardDetailHead(postData = selectedPost.value!!)
                 BoardDetailBody(postData = selectedPost.value!!)
+
             }
         }
+
     }
 }
 
 @Composable
 @Preview
-fun PreviewBoardDetailScreen(){
+fun PreviewBoardDetailScreen() {
     val festivalTableList = mutableListOf<FestivalTableDto>()
     val formatter = SimpleDateFormat("yyyy.MM.dd")
     val testDate = java.sql.Date(formatter.parse("2023.04.25").time)

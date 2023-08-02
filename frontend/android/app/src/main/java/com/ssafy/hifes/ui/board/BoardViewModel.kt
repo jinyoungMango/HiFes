@@ -1,5 +1,7 @@
 package com.ssafy.hifes.ui.board
 
+import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -7,6 +9,7 @@ import com.ssafy.hifes.data.model.PostDto
 import com.ssafy.hifes.ui.board.boardcommon.PostType
 import java.text.SimpleDateFormat
 
+private const val TAG = "BoardViewModel"
 class BoardViewModel : ViewModel() {
     val userDataId : Int = 1
     private var _postList : MutableLiveData<MutableList<PostDto>> = MutableLiveData()
@@ -75,6 +78,14 @@ class BoardViewModel : ViewModel() {
     fun getPostDetail(postData : PostDto){//추후 서버 통신 코드가 생기면 이 부분을 서버에게서 게시글 상세를 받아오는 부분으로 변경한다
         selectedPostType = postData.postType
         _selectedPost.postValue(postData)
+    }
+    
+    fun postDelete(){
+        Log.d(TAG, "postDelete: 삭제 ${selectedPost.value}")
+    }
+    
+    fun postModify(){
+        Log.d(TAG, "postModify: 수정 ${selectedPost.value}")
     }
 
 
