@@ -21,7 +21,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ssafy.hifes.R
-import com.ssafy.hifes.ui.common.MenuItem
+import com.ssafy.hifes.ui.common.CustomMenuItem
 
 // 상단 오른쪽에 올 수 있는 것
 // 1. 아무것도 없음
@@ -34,7 +34,7 @@ fun TopWithBack(
     more: Boolean = false,
     btn: Boolean = false,
     btnText: String = "버튼",
-    menuList: MutableList<MenuItem> = mutableListOf(),
+    menuList: MutableList<CustomMenuItem> = mutableListOf(),
     onClick: () -> Unit = {}
 ) {
     var expanded by remember {
