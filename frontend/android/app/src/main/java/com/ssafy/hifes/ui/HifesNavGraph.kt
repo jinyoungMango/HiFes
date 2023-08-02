@@ -16,6 +16,7 @@ import com.ssafy.hifes.ui.mypage.MyPageScreen
 import com.ssafy.hifes.ui.board.BoardScreen
 import com.ssafy.hifes.ui.board.BoardViewModel
 import com.ssafy.hifes.ui.board.boarddetail.BoardDetailScreen
+import com.ssafy.hifes.ui.map.MapViewModel
 import com.ssafy.hifes.ui.participatedfest.ParticipatedFestScreen
 
 
@@ -24,10 +25,11 @@ fun HifesNavGraph(
     appContainer: AppContainer,
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    startDestination: String = HifesDestinations.MAP
+    startDestination: String = HifesDestinations.FESTIVAL_DETAIL
 ) {
 
     val boardViewModel: BoardViewModel = viewModel()
+    val mapViewModel : MapViewModel = viewModel()
 
     NavHost(
         navController = navController,
@@ -62,7 +64,7 @@ fun HifesNavGraph(
         composable(
             route = HifesDestinations.MAP
         ) { navBackStackEntry ->
-            MapScreen(navController = navController)
+            MapScreen(navController = navController, viewModel = mapViewModel)
 
         }
         composable(

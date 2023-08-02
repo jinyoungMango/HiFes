@@ -38,12 +38,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.naver.maps.map.compose.ExperimentalNaverMapApi
+import com.naver.maps.map.compose.NaverMap
 import com.ssafy.hifes.R
 import com.ssafy.hifes.ui.map.StarScore
 import com.ssafy.hifes.util.CommonUtils.formatDateToString
 import java.util.Date
 
 
+@OptIn(ExperimentalNaverMapApi::class)
 @Composable
 fun FestivalDetail(navController: NavHostController) {
     Column(
@@ -112,6 +115,7 @@ fun FestivalDetail(navController: NavHostController) {
                 DetailCommonContent(title = "장소", address = "주소")
                 Spacer(modifier = Modifier.size(12.dp))
                 // MapView
+                NaverMap(modifier = Modifier.size(300.dp))
                 Spacer(modifier = Modifier.size(12.dp))
                 DetailCommonContent(title = "주최", content1 = "대구광역시", content2 = "053 - 248 - 9998")
                 Spacer(modifier = Modifier.size(24.dp))
