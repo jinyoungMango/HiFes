@@ -32,7 +32,7 @@ fun CommentContent(comment: CommentDto) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
-                model = null, //사용자 이미지 url 필요
+                model = "https://picsum.photos/600", //사용자 이미지 url 필요
                 contentDescription = "게시글 이미지",
                 placeholder = rememberVectorPainter(image = MyIconPack.User),
                 modifier = Modifier

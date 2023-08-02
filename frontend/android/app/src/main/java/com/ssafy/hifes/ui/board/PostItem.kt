@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.ssafy.hifes.data.model.FestivalTableDto
 import com.ssafy.hifes.data.model.PostDto
@@ -54,7 +55,7 @@ fun PostItem(
                 Spacer(modifier = Modifier.size(4.dp))
                 PostContent(postData = postData, userDataId)
                 Spacer(modifier = Modifier.size(4.dp))
-                Text(text = CommonUtils.formatSqlDateToString(postData.createdAt))
+                Text(text = CommonUtils.formatSqlDateToString(postData.createdAt), fontSize = 14.sp)
             }
             Spacer(modifier = Modifier.size(10.dp))
             PostImage(postData = postData, userDataId = userDataId)

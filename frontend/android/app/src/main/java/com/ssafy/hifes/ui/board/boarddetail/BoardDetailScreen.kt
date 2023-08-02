@@ -1,9 +1,12 @@
 package com.ssafy.hifes.ui.board.boarddetail
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
@@ -22,16 +25,20 @@ fun BoardDetailScreen(navController: NavController, viewModel: BoardViewModel) {
     val selectedPost = viewModel.selectedPost.observeAsState()
     val scrollState = rememberScrollState()
     Column(modifier = Modifier.verticalScroll(scrollState)) {
+
         if (selectedPost.value != null) {
             BoardDetailTopAppBar(selectedPost.value!!, viewModel)
             Column(modifier = Modifier.padding(16.dp, 0.dp)) {
                 BoardDetailHead(postData = selectedPost.value!!)
                 BoardDetailBody(postData = selectedPost.value!!)
-
+                Spacer(modifier = Modifier.size(20.dp))
+                Divider()
+                Spacer(modifier = Modifier.size(20.dp))
+                BoardDetailComments(viewModel = viewModel)
             }
         }
-
     }
+
 }
 
 @Composable
