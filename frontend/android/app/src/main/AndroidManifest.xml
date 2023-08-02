@@ -17,7 +17,6 @@
         android:usesCleartextTraffic="true"
         android:theme="@style/Theme.Hifes"
         tools:targetApi="31">
-        <meta-data android:name="com.kakao.sdk.AppKey" android:value="${MAP_API_KEY}"/>
         <activity
             android:name=".ui.main.MainActivity"
             android:exported="true"
