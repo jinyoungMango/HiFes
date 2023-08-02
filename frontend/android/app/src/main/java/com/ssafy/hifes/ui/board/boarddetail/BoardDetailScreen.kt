@@ -59,7 +59,7 @@ fun BoardDetailScreen(navController: NavController, viewModel: BoardViewModel) {
                             Spacer(modifier = Modifier.size(20.dp))
                             BoardDetailComments(viewModel = viewModel)
                         }
-                        Spacer(modifier = Modifier.size(40.dp))
+                        Spacer(modifier = Modifier.size(height))
                     }
                     Box(modifier = Modifier.align(Alignment.BottomCenter)) {
                         CommentWriteComponent(
