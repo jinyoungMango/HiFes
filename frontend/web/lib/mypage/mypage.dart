@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:web/constants.dart';
-import 'common.dart';
+
+import '../common.dart';
 
 class MyPage extends StatefulWidget {
   @override
@@ -127,7 +126,7 @@ class _MyPageState extends State<MyPage> with SingleTickerProviderStateMixin {
                                     minimumSize:
                                     MaterialStateProperty.all<Size>(Size(200, 48)),
                                   ),
-                                  onPressed: () {Get.rootDelegate.toNamed(Routes.LOGIN);},
+                                  onPressed: () {Get.rootDelegate.toNamed(Routes.BOARD);},
                                   child: Text(
                                     "등록하기",
                                     style: TextStyle(color: Colors.white),

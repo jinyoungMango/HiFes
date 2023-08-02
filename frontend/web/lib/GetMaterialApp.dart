@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'constants.dart';
 
-
-
 class AppRouterDelegate extends GetDelegate {
   @override
   Widget build(BuildContext context) {
