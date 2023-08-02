@@ -11,6 +11,7 @@ import coil.compose.AsyncImage
 import com.ssafy.hifes.data.model.PostDto
 import com.ssafy.hifes.ui.board.boardcommon.PostType
 import com.ssafy.hifes.ui.iconpack.MyIconPack
+import com.ssafy.hifes.ui.iconpack.myiconpack.Imagenotfound
 import myiconpack.User
 
 @Composable
@@ -38,7 +39,7 @@ fun PostImage(
     AsyncImage(
         model = imageUrl,
         contentDescription = "게시글 이미지",
-        placeholder = rememberVectorPainter(image = MyIconPack.User),
+        placeholder = rememberVectorPainter(image = MyIconPack.Imagenotfound),
         modifier = Modifier
             .size(60.dp)
             .clip(RoundedCornerShape(16.dp))
