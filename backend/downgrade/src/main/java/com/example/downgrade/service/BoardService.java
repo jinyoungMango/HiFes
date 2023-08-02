@@ -52,6 +52,25 @@ public class BoardService {
         return boardDtoList;
     }
 
+    // ========================================== 검색 리스트도 페이지네이션 해보자 ==========================================
+//    @Transactional
+//    public List<BoardDto> getSearchedList(String searchKeyword, int pageNum) {
+//        Page<Board> page = boardRepository.findByTitleContaining(searchKeyword, PageRequest.of(
+//                pageNum - 1, POST_PER_PAGE, Sort.by(Sort.Direction.ASC, "createdDate")
+//        ));
+//
+//        List<Board> boardEntities = page.getContent();
+//        List<BoardDto> boardDtoList = new ArrayList<>();
+//
+//        for (Board board : boardEntities) {
+//            boardDtoList.add(this.convertEntityToDto(board));
+//        }
+//
+//        return boardDtoList;
+//    }
+
+    // ========================================== 검색 리스트도 페이지네이션 해보자 ==========================================
+
     @Transactional
     public BoardDto getPost(Long id) {
         // Optional : NPE(NullPointerException) 방지
@@ -82,8 +101,12 @@ public class BoardService {
 
     // 검색 API
     @Transactional
-    public List<BoardDto> searchPosts(String keyword) {
-        List<Board> boardEntities = boardRepository.findByTitleContaining(keyword);
+    public List<BoardDto> searchPosts(String keyword, int pageNum) {
+        Page<Board> page = boardRepository.findByTitleContaining(keyword, PageRequest.of(
+                pageNum - 1, POST_PER_PAGE, Sort.by(Sort.Direction.ASC, "createdDate")
+        ));
+
+        List<Board> boardEntities = page.getContent();
         List<BoardDto> boardDtoList = new ArrayList<>();
 
         if (boardEntities.isEmpty()) return boardDtoList;
@@ -101,25 +124,49 @@ public class BoardService {
         return boardRepository.count();
     }
 
-    public Integer[] getPageList(Integer curPageNum) {
-        Integer[] pageList = new Integer[PAGE_PER_BLOCK];
+//    public Integer[] getPageList(Integer curPageNum) {
+//        Integer[] pageList = new Integer[PAGE_PER_BLOCK];
+//
+//        // 총 게시글 수
+//        Double totalPosts = Double.valueOf(this.getBoardCount());
+//
+//        // 총 게시글 기준으로 마지막 페이지 번호 계산 (올림으로 계산)
+//        // 전체 게시글 수를 페이지로 나누어서 올림 == 전체 페이지 수
+//        int totalPageNum = (int)(Math.ceil(totalPosts/POST_PER_PAGE));
+//
+//        // 현재 페이지를 기준으로 블럭의 마지막 번호 계산
+//        int blockLastPageNum = Math.min(totalPageNum, curPageNum + PAGE_PER_BLOCK);
+//
+//        // 페이지 시작 번호 조정
+//        curPageNum = (curPageNum <=3) ? 1 : curPageNum - 2;
+//
+//        // 페이지 번호 할당
+//        for (int val = curPageNum, idx = 0; val <= blockLastPageNum; val++, idx++) {
+//            pageList[idx] = val;
+//        }
+//
+//        return pageList;
+//    }
 
-        // 총 게시글 수
-        Double totalPosts = Double.valueOf(this.getBoardCount());
+    public Integer[] getSearchPageList(String keyword, Integer curPageNum) {
+        // 페잊로 나눈 게시물 수를 사용하여 쿼리 변경
+        long totalPosts = (keyword == null || keyword.isEmpty()) ? boardRepository.count()
+                : boardRepository.countByTitleContaining(keyword);
 
-        // 총 게시글 기준으로 마지막 페이지 번호 계산 (올림으로 계산)
-        // 전체 게시글 수를 페이지로 나누어서 올림 == 전체 페이지 수
-        Integer totalPageNum = (int)(Math.ceil(totalPosts/POST_PER_PAGE));
+        Integer totalPageNum = (int) Math.ceil((double) totalPosts / POST_PER_PAGE);
 
-        // 현재 페이지를 기준으로 블럭의 마지막 번호 계산
+
         Integer blockLastPageNum = (totalPageNum > curPageNum + PAGE_PER_BLOCK)
                 ? curPageNum + PAGE_PER_BLOCK
                 : totalPageNum;
 
         // 페이지 시작 번호 조정
-        curPageNum = (curPageNum <=3) ? 1 : curPageNum - 2;
+        curPageNum = (curPageNum <= 3) ? 1 : curPageNum - 2;
 
-        // 페이지 번호 할당
+        // 길이 변경
+        int pageListLength = Math.min(PAGE_PER_BLOCK, blockLastPageNum - curPageNum + 1);
+        Integer[] pageList = new Integer[pageListLength];
+
         for (int val = curPageNum, idx = 0; val <= blockLastPageNum; val++, idx++) {
             pageList[idx] = val;
         }

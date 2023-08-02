@@ -17,9 +17,18 @@ public class User extends Time {
     private Long id;
 
     @Column(nullable = false)
-    private String name;
+    private String organization;  // 기관명
 
     @Column(nullable = false)
+    private String orgNo;  // 기관 전화번호
+
+    @Column(nullable = false)
+    private String orgCode;  // 기관코드
+
+    @Column
+    private String name;
+
+    @Column
     private String email;
 
     @Column
@@ -30,14 +39,20 @@ public class User extends Time {
     private Role role;
 
     @Builder
-    public User(String name, String email, String picture, Role role){
+    public User(String organization, String orgNo, String orgCode, String name, String email, String picture, Role role){
+        this.organization = organization;
+        this.orgNo = orgNo;
+        this.orgCode = orgCode;
         this.name = name;
         this.email = email;
         this.picture = picture;
         this.role = role;
     }
 
-    public User update(String name, String picture) {
+    public User update(String organization, String orgNo, String orgCode, String name, String picture) {
+        this.organization = organization;
+        this.orgNo = orgNo;
+        this.orgCode = orgCode;
         this.name = name;
         this.picture = picture;
         return this;
