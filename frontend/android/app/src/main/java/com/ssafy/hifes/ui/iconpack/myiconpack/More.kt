@@ -1,9 +1,12 @@
 package com.ssafy.hifes.ui.iconpack.myiconpack
 
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PathFillType
 import androidx.compose.ui.graphics.PathFillType.Companion.NonZero
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeCap.Companion.Butt
+import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.StrokeJoin.Companion.Miter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.ImageVector.Builder
@@ -16,40 +19,54 @@ public val MyIconPack.More: ImageVector
         if (_more != null) {
             return _more!!
         }
-        _more = Builder(name = "More", defaultWidth = 2.0.dp, defaultHeight = 9.0.dp, viewportWidth
-                = 2.0f, viewportHeight = 9.0f).apply {
+        _more = Builder(name = "More", defaultWidth = 24.0.dp, defaultHeight = 24.0.dp,
+                viewportWidth = 24.0f, viewportHeight = 24.0f).apply {
+            path(fill = SolidColor(Color(0xFFECECEC)), stroke = null, strokeLineWidth = 0.0f,
+                    strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
+                    pathFillType = NonZero) {
+                moveTo(4.0f, 0.0f)
+                lineTo(20.0f, 0.0f)
+                arcTo(4.0f, 4.0f, 0.0f, false, true, 24.0f, 4.0f)
+                lineTo(24.0f, 20.0f)
+                arcTo(4.0f, 4.0f, 0.0f, false, true, 20.0f, 24.0f)
+                lineTo(4.0f, 24.0f)
+                arcTo(4.0f, 4.0f, 0.0f, false, true, 0.0f, 20.0f)
+                lineTo(0.0f, 4.0f)
+                arcTo(4.0f, 4.0f, 0.0f, false, true, 4.0f, 0.0f)
+                close()
+            }
             path(fill = SolidColor(Color(0xFFBDBDBD)), stroke = null, strokeLineWidth = 0.0f,
                     strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
                     pathFillType = NonZero) {
-                moveTo(0.0f, 7.875f)
-                curveTo(0.0f, 7.64294f, 0.09219f, 7.42038f, 0.25628f, 7.25628f)
-                curveTo(0.42038f, 7.09219f, 0.64294f, 7.0f, 0.875f, 7.0f)
-                curveTo(1.10706f, 7.0f, 1.32962f, 7.09219f, 1.49372f, 7.25628f)
-                curveTo(1.65781f, 7.42038f, 1.75f, 7.64294f, 1.75f, 7.875f)
-                curveTo(1.75f, 8.10706f, 1.65781f, 8.32962f, 1.49372f, 8.49372f)
-                curveTo(1.32962f, 8.65781f, 1.10706f, 8.75f, 0.875f, 8.75f)
-                curveTo(0.64294f, 8.75f, 0.42038f, 8.65781f, 0.25628f, 8.49372f)
-                curveTo(0.09219f, 8.32962f, 0.0f, 8.10706f, 0.0f, 7.875f)
+                moveTo(11.0f, 15.875f)
+                curveTo(11.0f, 15.6429f, 11.0922f, 15.4204f, 11.2563f, 15.2563f)
+                curveTo(11.4204f, 15.0922f, 11.6429f, 15.0f, 11.875f, 15.0f)
+                curveTo(12.1071f, 15.0f, 12.3296f, 15.0922f, 12.4937f, 15.2563f)
+                curveTo(12.6578f, 15.4204f, 12.75f, 15.6429f, 12.75f, 15.875f)
+                curveTo(12.75f, 16.1071f, 12.6578f, 16.3296f, 12.4937f, 16.4937f)
+                curveTo(12.3296f, 16.6578f, 12.1071f, 16.75f, 11.875f, 16.75f)
+                curveTo(11.6429f, 16.75f, 11.4204f, 16.6578f, 11.2563f, 16.4937f)
+                curveTo(11.0922f, 16.3296f, 11.0f, 16.1071f, 11.0f, 15.875f)
                 close()
-                moveTo(0.0f, 4.375f)
-                curveTo(0.0f, 4.14294f, 0.09219f, 3.92038f, 0.25628f, 3.75628f)
-                curveTo(0.42038f, 3.59219f, 0.64294f, 3.5f, 0.875f, 3.5f)
-                curveTo(1.10706f, 3.5f, 1.32962f, 3.59219f, 1.49372f, 3.75628f)
-                curveTo(1.65781f, 3.92038f, 1.75f, 4.14294f, 1.75f, 4.375f)
-                curveTo(1.75f, 4.60706f, 1.65781f, 4.82962f, 1.49372f, 4.99372f)
-                curveTo(1.32962f, 5.15781f, 1.10706f, 5.25f, 0.875f, 5.25f)
-                curveTo(0.64294f, 5.25f, 0.42038f, 5.15781f, 0.25628f, 4.99372f)
-                curveTo(0.09219f, 4.82962f, 0.0f, 4.60706f, 0.0f, 4.375f)
+                moveTo(11.0f, 12.375f)
+                curveTo(11.0f, 12.1429f, 11.0922f, 11.9204f, 11.2563f, 11.7563f)
+                curveTo(11.4204f, 11.5922f, 11.6429f, 11.5f, 11.875f, 11.5f)
+                curveTo(12.1071f, 11.5f, 12.3296f, 11.5922f, 12.4937f, 11.7563f)
+                curveTo(12.6578f, 11.9204f, 12.75f, 12.1429f, 12.75f, 12.375f)
+                curveTo(12.75f, 12.6071f, 12.6578f, 12.8296f, 12.4937f, 12.9937f)
+                curveTo(12.3296f, 13.1578f, 12.1071f, 13.25f, 11.875f, 13.25f)
+                curveTo(11.6429f, 13.25f, 11.4204f, 13.1578f, 11.2563f, 12.9937f)
+                curveTo(11.0922f, 12.8296f, 11.0f, 12.6071f, 11.0f, 12.375f)
                 close()
-                moveTo(0.0f, 0.875f)
-                curveTo(0.0f, 0.64294f, 0.09219f, 0.42038f, 0.25628f, 0.25628f)
-                curveTo(0.42038f, 0.09219f, 0.64294f, 0.0f, 0.875f, 0.0f)
-                curveTo(1.10706f, 0.0f, 1.32962f, 0.09219f, 1.49372f, 0.25628f)
-                curveTo(1.65781f, 0.42038f, 1.75f, 0.64294f, 1.75f, 0.875f)
-                curveTo(1.75f, 1.10706f, 1.65781f, 1.32962f, 1.49372f, 1.49372f)
-                curveTo(1.32962f, 1.65781f, 1.10706f, 1.75f, 0.875f, 1.75f)
-                curveTo(0.64294f, 1.75f, 0.42038f, 1.65781f, 0.25628f, 1.49372f)
-                curveTo(0.09219f, 1.32962f, 0.0f, 1.10706f, 0.0f, 0.875f)
+                moveTo(11.0f, 8.875f)
+                curveTo(11.0f, 8.6429f, 11.0922f, 8.4204f, 11.2563f, 8.2563f)
+                curveTo(11.4204f, 8.0922f, 11.6429f, 8.0f, 11.875f, 8.0f)
+                curveTo(12.1071f, 8.0f, 12.3296f, 8.0922f, 12.4937f, 8.2563f)
+                curveTo(12.6578f, 8.4204f, 12.75f, 8.6429f, 12.75f, 8.875f)
+                curveTo(12.75f, 9.1071f, 12.6578f, 9.3296f, 12.4937f, 9.4937f)
+                curveTo(12.3296f, 9.6578f, 12.1071f, 9.75f, 11.875f, 9.75f)
+                curveTo(11.6429f, 9.75f, 11.4204f, 9.6578f, 11.2563f, 9.4937f)
+                curveTo(11.0922f, 9.3296f, 11.0f, 9.1071f, 11.0f, 8.875f)
                 close()
             }
         }

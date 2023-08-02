@@ -13,15 +13,14 @@ import com.ssafy.hifes.ui.iconpack.MyIconPack
 import com.ssafy.hifes.ui.iconpack.myiconpack.Comment
 
 @Composable
-fun ReComment(onClick : ()->Unit) {
-    Box(modifier = Modifier.size(24.dp).background(Color.LightGray)){
-        IconButton(onClick = { onClick() }) {
-            Icon(
-                imageVector = MyIconPack.Comment,
-                contentDescription = "WriteReComment",
-                modifier = Modifier.size(16.dp)
-            )
-        }
+fun ReComment(onClick: () -> Unit) {
+
+    IconButton(onClick = { onClick() }) {
+        Icon(
+            imageVector = MyIconPack.Comment,
+            contentDescription = "WriteReComment"
+        )
     }
+
 
 }
