@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:web/constants.dart';
 
-import 'common.dart';
+import '../common.dart';
 
 class MyPage extends StatefulWidget {
   @override
