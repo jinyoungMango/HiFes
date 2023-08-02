@@ -1,6 +1,5 @@
 package com.ssafy.hifes.ui.common.top
 
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.DropdownMenuItem
@@ -21,11 +20,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.PopupProperties
 import com.ssafy.hifes.R
-import com.ssafy.hifes.ui.iconpack.MyIconPack
-import com.ssafy.hifes.ui.iconpack.myiconpack.Imagenotfound
-import kotlin.math.exp
+import com.ssafy.hifes.ui.common.MenuItem
 
 // 상단 오른쪽에 올 수 있는 것
 // 1. 아무것도 없음
@@ -38,7 +34,7 @@ fun TopWithBack(
     more: Boolean = false,
     btn: Boolean = false,
     btnText: String = "버튼",
-    menuList: MutableList<TopAppBarMenuItem> = mutableListOf(),
+    menuList: MutableList<MenuItem> = mutableListOf(),
     onClick: () -> Unit = {}
 ) {
     var expanded by remember {

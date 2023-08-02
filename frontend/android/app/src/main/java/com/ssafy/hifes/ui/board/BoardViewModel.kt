@@ -88,5 +88,9 @@ class BoardViewModel : ViewModel() {
         Log.d(TAG, "postModify: 수정 ${selectedPost.value}")
     }
 
+    fun writeReComment(){
+
+    }
+
 
 }
