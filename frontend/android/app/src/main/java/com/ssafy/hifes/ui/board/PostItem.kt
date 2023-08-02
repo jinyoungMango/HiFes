@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -42,7 +43,11 @@ fun PostItem(
             Spacer(modifier = Modifier.size(10.dp))
             Column(modifier = Modifier.weight(1f)) {
                 if(postData.postType== PostType.REVIEW.label){
-                    RatingBar(rating = postData.rating!!)
+                    RatingBar(
+                        rating = postData.rating!!,
+                        starSize = 14,
+                        starColor = Color.Black
+                    )
                     Spacer(modifier = Modifier.size(4.dp))
                 }
                 PostTitle(postData = postData, userDataId)
