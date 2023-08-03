@@ -142,16 +142,44 @@ fun BoardDetailScreen(navController: NavController, viewModel: BoardViewModel) {
                         }
 
                     }
-                    if (selectedPost.value!!.postType != PostType.NOTIFICATION.label) {
-                        Box(modifier = Modifier.align(Alignment.BottomCenter)) {
-                            CommentWriteComponent(
-                                viewModel = viewModel,
-                                onGloballyPositioned = { layoutCoordinates ->
-                                    height = with(localDensity) {
-                                        layoutCoordinates.size.height.toDp()
-                                    }
+                    when(selectedPost.value!!.postType){
+                        PostType.ASK.label ->{
+                            if(selectedPost.value!!.normalUserId==viewModel.userDataId){
+                                Box(modifier = Modifier.align(Alignment.BottomCenter)) {
+                                    CommentWriteComponent(
+                                        viewModel = viewModel,
+                                        onGloballyPositioned = { layoutCoordinates ->
+                                            height = with(localDensity) {
+                                                layoutCoordinates.size.height.toDp()
+                                            }
+                                        }
+                                    )
                                 }
-                            )
+                            }
+                        }
+                        PostType.REVIEW.label->{
+                            Box(modifier = Modifier.align(Alignment.BottomCenter)) {
+                                CommentWriteComponent(
+                                    viewModel = viewModel,
+                                    onGloballyPositioned = { layoutCoordinates ->
+                                        height = with(localDensity) {
+                                            layoutCoordinates.size.height.toDp()
+                                        }
+                                    }
+                                )
+                            }
+                        }
+                        PostType.FREE.label->{
+                            Box(modifier = Modifier.align(Alignment.BottomCenter)) {
+                                CommentWriteComponent(
+                                    viewModel = viewModel,
+                                    onGloballyPositioned = { layoutCoordinates ->
+                                        height = with(localDensity) {
+                                            layoutCoordinates.size.height.toDp()
+                                        }
+                                    }
+                                )
+                            }
                         }
                     }
 
