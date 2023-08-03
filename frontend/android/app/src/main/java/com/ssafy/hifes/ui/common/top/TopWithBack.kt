@@ -1,9 +1,11 @@
 package com.ssafy.hifes.ui.common.top
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -22,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ssafy.hifes.R
 import com.ssafy.hifes.ui.common.CustomMenuItem
+import com.ssafy.hifes.ui.theme.PrimaryPink
 
 // 상단 오른쪽에 올 수 있는 것
 // 1. 아무것도 없음
@@ -80,7 +83,7 @@ fun TopWithBack(
                 }
             }
             if (btn) {
-                Button(onClick = onClick) {
+                Button(onClick = onClick, colors = ButtonDefaults.buttonColors(PrimaryPink)) {
                     Text(text = btnText)
                 }
             }

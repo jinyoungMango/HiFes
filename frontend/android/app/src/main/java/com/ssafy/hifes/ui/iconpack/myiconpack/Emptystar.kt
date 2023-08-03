@@ -18,7 +18,7 @@ public val MyIconPack.Emptystar: ImageVector
         }
         _emptystar = Builder(name = "Emptystar", defaultWidth = 15.0.dp, defaultHeight = 14.0.dp,
                 viewportWidth = 15.0f, viewportHeight = 14.0f).apply {
-            path(fill = SolidColor(Color(0xFF000000)), stroke = null, strokeLineWidth = 0.0f,
+            path(fill = SolidColor(Color(0xFFF11A7B)), stroke = null, strokeLineWidth = 0.0f,
                     strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
                     pathFillType = NonZero) {
                 moveTo(14.9053f, 5.112f)

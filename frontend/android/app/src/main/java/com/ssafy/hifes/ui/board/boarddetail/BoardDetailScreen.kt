@@ -33,6 +33,7 @@ import com.ssafy.hifes.data.model.CommentDto
 import com.ssafy.hifes.data.model.FestivalTableDto
 import com.ssafy.hifes.data.model.PostDto
 import com.ssafy.hifes.ui.board.BoardViewModel
+import com.ssafy.hifes.ui.board.boardcommon.PostType
 import com.ssafy.hifes.ui.board.boarddetail.comment.CommentWriteComponent
 import java.text.SimpleDateFormat
 
@@ -49,19 +50,63 @@ fun BoardDetailScreen(navController: NavController, viewModel: BoardViewModel) {
     val commentList: MutableList<CommentDto> = mutableListOf()
     commentList.apply {
         add(
-            CommentDto(commentId = 1, normalUserId = 1, postId = 1, festivalId = 1, hostId = 1, comment = "댓글내용", createdAt = testDate, createdBy = "사용자 닉네임", updatedAt = testDate, depth = false)
+            CommentDto(
+                commentId = 1,
+                normalUserId = 1,
+                postId = 1,
+                festivalId = 1,
+                hostId = 1,
+                comment = "댓글내용",
+                createdAt = testDate,
+                createdBy = "사용자 닉네임",
+                updatedAt = testDate,
+                depth = false
+            )
         )
         add(
-            CommentDto(commentId = 1, normalUserId = 2, postId = 1, festivalId = 1, hostId = 1, comment = "댓글내용", createdAt = testDate, createdBy = "사용자 닉네임", updatedAt = testDate, depth = false)
+            CommentDto(
+                commentId = 1,
+                normalUserId = 2,
+                postId = 1,
+                festivalId = 1,
+                hostId = 1,
+                comment = "댓글내용",
+                createdAt = testDate,
+                createdBy = "사용자 닉네임",
+                updatedAt = testDate,
+                depth = false
+            )
         )
     }
     val reCommentList: MutableList<CommentDto> = mutableListOf()
     reCommentList.apply {
         add(
-            CommentDto(commentId = 1, normalUserId = 1, postId = 1, festivalId = 1, hostId = 1, comment = "댓글내용", createdAt = testDate, createdBy = "사용자 닉네임", updatedAt = testDate, depth = true)
+            CommentDto(
+                commentId = 1,
+                normalUserId = 1,
+                postId = 1,
+                festivalId = 1,
+                hostId = 1,
+                comment = "댓글내용",
+                createdAt = testDate,
+                createdBy = "사용자 닉네임",
+                updatedAt = testDate,
+                depth = true
+            )
         )
         add(
-            CommentDto(commentId = 1, normalUserId = 1, postId = 1, festivalId = 1, hostId = 1, comment = "댓글내용", createdAt = testDate, createdBy = "사용자 닉네임", updatedAt = testDate, depth = true)
+            CommentDto(
+                commentId = 1,
+                normalUserId = 1,
+                postId = 1,
+                festivalId = 1,
+                hostId = 1,
+                comment = "댓글내용",
+                createdAt = testDate,
+                createdBy = "사용자 닉네임",
+                updatedAt = testDate,
+                depth = true
+            )
         )
     }
 
@@ -76,7 +121,7 @@ fun BoardDetailScreen(navController: NavController, viewModel: BoardViewModel) {
                         .padding(it)
                 ) {
                     LazyColumn(modifier = Modifier.padding(16.dp, 0.dp)) {
-                        item{
+                        item {
                             Column() {
                                 BoardDetailHead(postData = selectedPost.value!!)
                                 BoardDetailBody(postData = selectedPost.value!!)
@@ -85,24 +130,31 @@ fun BoardDetailScreen(navController: NavController, viewModel: BoardViewModel) {
                                 Spacer(modifier = Modifier.size(20.dp))
                             }
                         }
-                        items(commentList.size){index->
-                            BoardDetailComments(viewModel = viewModel, commentList = commentList, reCommentList = reCommentList)
+                        items(commentList.size) { index ->
+                            BoardDetailComments(
+                                viewModel = viewModel,
+                                commentList = commentList,
+                                reCommentList = reCommentList
+                            )
                         }
                         item {
                             Spacer(modifier = Modifier.size(height))
                         }
 
                     }
-                    Box(modifier = Modifier.align(Alignment.BottomCenter)) {
-                        CommentWriteComponent(
-                            viewModel = viewModel,
-                            onGloballyPositioned = { layoutCoordinates ->
-                                height = with(localDensity){
-                                    layoutCoordinates.size.height.toDp()
+                    if (selectedPost.value!!.postType != PostType.NOTIFICATION.label) {
+                        Box(modifier = Modifier.align(Alignment.BottomCenter)) {
+                            CommentWriteComponent(
+                                viewModel = viewModel,
+                                onGloballyPositioned = { layoutCoordinates ->
+                                    height = with(localDensity) {
+                                        layoutCoordinates.size.height.toDp()
+                                    }
                                 }
-                            }
-                        )
+                            )
+                        }
                     }
+
                 }
             }
         )

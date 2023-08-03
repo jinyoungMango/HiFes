@@ -40,6 +40,13 @@ fun BoardScreen(
     val postList = viewModel.postList.observeAsState()
     val boardType = viewModel.boardType.observeAsState()
 
+    val chipInitPostion = when(boardType.value){
+        PostType.NOTIFICATION -> 0
+        PostType.ASK -> 1
+        PostType.FREE ->2
+        else ->3
+    }
+
     Scaffold(
         topBar = { TopWithBack(title = stringResource(id = R.string.board_appbar_title)) },
         floatingActionButton = {
@@ -47,7 +54,7 @@ fun BoardScreen(
                 FloatingActionButton(
                     containerColor = PrimaryPink,
                     contentColor = Color.White,
-                    onClick = {}
+                    onClick = {navController.navigate(HifesDestinations.POST_WRITE_ROUTE)}
                 ) {
                     Icon(Icons.Filled.Add, contentDescription = "Add")
                 }
@@ -66,7 +73,8 @@ fun BoardScreen(
                         stringResource(id = R.string.board_chip_ask),
                         stringResource(id = R.string.board_chip_free),
                         stringResource(id = R.string.board_chip_review)
-                    )
+                    ),
+                    chipInitPostion
                 ) { index ->
                     when (index) {
                         0 -> viewModel.getNotificationPostList()
