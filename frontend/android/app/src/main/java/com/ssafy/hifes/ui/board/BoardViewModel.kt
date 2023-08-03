@@ -20,6 +20,9 @@ class BoardViewModel : ViewModel() {
 
     var selectedPostType = "notification"
 
+    private var _boardType : MutableLiveData<PostType> = MutableLiveData()
+    val boardType : LiveData<PostType> = _boardType
+
     lateinit var postTestDate : java.sql.Date
 
     init {
@@ -38,6 +41,7 @@ class BoardViewModel : ViewModel() {
             add(PostDto(1, 1, 1, 2, "공지5", "내용", "notification", null, null, "글쓴이", postTestDate, postTestDate, 1, null, null))
         }
         _postList.postValue(postListDummyData)
+        _boardType.postValue(PostType.NOTIFICATION)
     }
 
     fun getAskPostList(){
@@ -49,6 +53,7 @@ class BoardViewModel : ViewModel() {
             add(PostDto(1, 1, 1, 2, "남의 문의2 공개글", "내용4", "ask", false, null, "글쓴이", postTestDate, postTestDate, 1, "https://picsum.photos/1000", null))
         }
         _postList.postValue(postListDummyData)
+        _boardType.postValue(PostType.ASK)
     }
 
     fun getFreePostList(){
@@ -61,6 +66,7 @@ class BoardViewModel : ViewModel() {
             add(PostDto(1, 1, 1, 2, "자유글5", "내용5", "free", null, null, "글쓴이", postTestDate, postTestDate, 1, null, null))
         }
         _postList.postValue(postListDummyData)
+        _boardType.postValue(PostType.FREE)
     }
 
     fun getReviewPostList(){
@@ -73,6 +79,7 @@ class BoardViewModel : ViewModel() {
             add(PostDto(1, 1, 1, 2, "리뷰5", "내용", "review", null, null, "글쓴이", postTestDate, postTestDate, 1, null, 2.5f))
         }
         _postList.postValue(postListDummyData)
+        _boardType.postValue(PostType.REVIEW)
     }
 
     fun getPostDetail(postData : PostDto){//추후 서버 통신 코드가 생기면 이 부분을 서버에게서 게시글 상세를 받아오는 부분으로 변경한다
