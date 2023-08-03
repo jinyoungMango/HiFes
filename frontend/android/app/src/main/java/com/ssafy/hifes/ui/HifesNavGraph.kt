@@ -16,6 +16,7 @@ import com.ssafy.hifes.ui.mypage.MyPageScreen
 import com.ssafy.hifes.ui.board.BoardScreen
 import com.ssafy.hifes.ui.board.BoardViewModel
 import com.ssafy.hifes.ui.board.boarddetail.BoardDetailScreen
+import com.ssafy.hifes.ui.board.write.PostWriteScreen
 import com.ssafy.hifes.ui.map.MapViewModel
 import com.ssafy.hifes.ui.participatedfest.ParticipatedFestScreen
 
@@ -77,6 +78,11 @@ fun HifesNavGraph(
             route = HifesDestinations.BOARD_DETAIL_ROUTE
         ) { navBackStackEntry ->
             BoardDetailScreen(navController = navController, viewModel = boardViewModel)
+        }
+        composable(
+            route = HifesDestinations.POST_WRITE_ROUTE
+        ) { navBackStackEntry ->
+            PostWriteScreen(navController = navController,viewModel = boardViewModel)
         }
     }
 }

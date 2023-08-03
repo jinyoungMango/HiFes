@@ -9,35 +9,51 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.ssafy.hifes.R
 import com.ssafy.hifes.data.model.PostDto
+import com.ssafy.hifes.ui.board.BoardViewModel
 import com.ssafy.hifes.ui.board.boardcommon.PostType
+import com.ssafy.hifes.ui.common.CustomMenuItem
 import com.ssafy.hifes.ui.common.top.TopWithBack
 import com.ssafy.hifes.ui.theme.LightGrey
 
 @Composable
-fun BoardDetailTopAppBar(boardType : String) {
-    var appBarTitle = getBoardDetailAppBarTitle(boardType, LocalContext.current)
-    Column {
-        when(boardType){
-            PostType.NOTIFICATION.label -> {
-                TopWithBack(title = appBarTitle)
-            }
-            else -> {
-                TopWithBack(title = appBarTitle, more = true)
-            }
+fun BoardDetailTopAppBar(postData: PostDto, viewModel: BoardViewModel) {
+    var appBarTitle = getBoardDetailAppBarTitle(postData.postType, LocalContext.current)
+    var menuList: MutableList<CustomMenuItem> = mutableListOf()
+
+    if (postData.normalUserId == viewModel.userDataId) {
+        menuList.apply {
+            add(
+                CustomMenuItem(
+                    stringResource(id = R.string.board_detail_modify),
+                    { viewModel.postModify() })
+            )
+            add(
+                CustomMenuItem(
+                    stringResource(id = R.string.board_detail_delete),
+                    { viewModel.postDelete() })
+            )
         }
-        Divider(color = LightGrey, thickness = 2.dp)
     }
 
-
+    Column {
+        if (postData.postType == PostType.NOTIFICATION.label || postData.normalUserId != viewModel.userDataId) {
+            TopWithBack(title = appBarTitle)
+        } else {
+            TopWithBack(title = appBarTitle, more = true, menuList = menuList)
+        }
+    }
+    Divider(color = LightGrey, thickness = 2.dp)
 }
 
-fun getBoardDetailAppBarTitle(boardType: String, context : Context) : String{
+fun getBoardDetailAppBarTitle(boardType: String, context: Context): String {
     var appBarTitle = ""
-    when(boardType){
-        PostType.NOTIFICATION.label -> appBarTitle =  context.getString(R.string.board_chip_notification)
+    when (boardType) {
+        PostType.NOTIFICATION.label -> appBarTitle =
+            context.getString(R.string.board_chip_notification)
+
         PostType.ASK.label -> appBarTitle = context.getString(R.string.board_chip_ask)
-        PostType.FREE.label -> appBarTitle =  context.getString(R.string.board_chip_free)
-        PostType.REVIEW.label -> appBarTitle =  context.getString(R.string.board_chip_review)
+        PostType.FREE.label -> appBarTitle = context.getString(R.string.board_chip_free)
+        PostType.REVIEW.label -> appBarTitle = context.getString(R.string.board_chip_review)
     }
     return appBarTitle
 }

@@ -1,19 +1,16 @@
 package com.ssafy.hifes.ui.board.boarddetail
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -22,13 +19,11 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.ssafy.hifes.data.model.FestivalTableDto
 import com.ssafy.hifes.data.model.PostDto
-import com.ssafy.hifes.ui.board.PostItem
 import com.ssafy.hifes.ui.board.boardcommon.PostType
-import com.ssafy.hifes.ui.board.boardcommon.RatingBar
+import com.ssafy.hifes.ui.board.boardcommon.CustomRatingBar
 import com.ssafy.hifes.ui.iconpack.MyIconPack
 import com.ssafy.hifes.ui.iconpack.myiconpack.Imagenotfound
 import com.ssafy.hifes.ui.theme.PrimaryPink
-import myiconpack.User
 import java.text.SimpleDateFormat
 
 @Composable
@@ -43,7 +38,7 @@ fun BoardDetailBody(postData : PostDto) {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ){
-                RatingBar(
+                CustomRatingBar(
                     rating = postData.rating!!,
                     starSize = 30,
                     starColor = PrimaryPink
