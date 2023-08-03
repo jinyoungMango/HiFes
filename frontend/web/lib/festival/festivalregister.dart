@@ -3,7 +3,16 @@ import 'dart:typed_data';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:web/common.dart';
-import 'dart:html';
+import 'dart:html' as html;
+
+import 'package:webviewx/webviewx.dart';
+
+class FileData {
+  String fileName;
+  String fileUrl;
+
+  FileData(this.fileName, this.fileUrl);
+}
 
 class FestivalRegister extends StatefulWidget {
   @override
@@ -11,8 +20,21 @@ class FestivalRegister extends StatefulWidget {
 }
 
 class _FestivalRegisterState extends State<FestivalRegister> {
+
+  // 다운로드 버튼을 누를 때 호출되는 함수
+  void downloadFile(FileData fileData) {
+    html.AnchorElement anchorElement = html.AnchorElement(href: fileData.fileUrl)
+      ..target = '_blank'
+      ..download = fileData.fileName; // 파일 이름 설정
+    anchorElement.click();
+  }
+
+  // 네이버 지도를 웹뷰로 띄울 때 사용
+  late WebViewXController webviewController;
+
   // 포스터 이미지
   FilePickerResult? poster;
+
   // timeTable
   FilePickerResult? timetable;
 
@@ -34,7 +56,7 @@ class _FestivalRegisterState extends State<FestivalRegister> {
     }
   }
 
- @override
+  @override
   void initState() {
     super.initState();
     timetable = null;
@@ -48,139 +70,250 @@ class _FestivalRegisterState extends State<FestivalRegister> {
       body: SingleChildScrollView(
         child: Center(
           child: Padding(
-            padding: const EdgeInsets.all(80.0),
+            padding: const EdgeInsets.symmetric(horizontal: 80, vertical: 40),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text("이미지 첨부"),
-                Text('포스터 업로드'),
-                InkWell(
-                  onTap: () async {
-                    var picked = await FilePicker.platform.pickFiles();
+                Text("축제 정보 입력", style: TextStyle(fontSize: 48),),
+                SizedBox(height: 40,),
+                Center(
+                  child: InkWell(
+                    onTap: () async {
+                      var picked = await FilePicker.platform.pickFiles();
 
-                    if (picked != null) {
-                      setState(() {
-                        poster = picked;
-                      });
-                    }
-                  },
-                  child: Container(
-                    child: Center(
-                      child: poster != null
-                          ? Image.memory(Uint8List.fromList(poster!.files.first.bytes!))
-                          : Text('이미지가 선택되지 않았습니다.'),
-                    ),
-                    width: 200,
-                    height: 200,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black),
+                      if (picked != null) {
+                        setState(() {
+                          poster = picked;
+                        });
+                      }
+                    },
+                    child: Container(
+                      child: Center(
+                        child: poster != null
+                            ? Image.memory(
+                                Uint8List.fromList(poster!.files.first.bytes!))
+                            : Text('업로드할 포스터를 선택해주세요.'),
+                      ),
+                      width: 800,
+                      height: 400,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.black),
+                      ),
                     ),
                   ),
                 ),
-                Text("행사명"),
+                SizedBox(height: 20,),
                 Container(
-                  width: 400,
-                  child: TextField(
-                    onChanged: (text) {
-                      // 입력 값이 변경될 때 호출되는 콜백 함수
-                      print('입력 값 변경: $text');
-                    },
-                    onSubmitted: (text) {
-                      // 입력이 완료되고 제출(Enter 키를 누름)될 때 호출되는 콜백 함수
-                      print('입력 완료: $text');
-                    },
-                    decoration: InputDecoration(
-                      hintText: '행사명 작성', // 입력란에 표시될 힌트 텍스트
-                      border: OutlineInputBorder(), // 입력란의 테두리 스타일 지정
-                    ),
+                  width: 800,
+                  height: 50,
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          maxLines: null,
+                          expands: true,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: '행사명',
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                Text('개요'),
+                SizedBox(height: 20,),
                 Container(
-                  width: 400,
-                  child: TextField(
-                    onChanged: (text) {
-                      // 입력 값이 변경될 때 호출되는 콜백 함수
-                      print('입력 값 변경: $text');
-                    },
-                    onSubmitted: (text) {
-                      // 입력이 완료되고 제출(Enter 키를 누름)될 때 호출되는 콜백 함수
-                      print('입력 완료: $text');
-                    },
-                    decoration: InputDecoration(
-                      hintText: '개요명 작성', // 입력란에 표시될 힌트 텍스트
-                      border: OutlineInputBorder(), // 입력란의 테두리 스타일 지정
-                    ),
+                  width: 800,
+                  height: 200, // 기본 height 값을 200으로 설정
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          maxLines: null,
+                          expands: true,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: '개요',
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                Text('주소'),
+                SizedBox(height: 20,),
                 Container(
-                  width: 400,
-                  child: TextField(
-                    onChanged: (text) {
-                      // 입력 값이 변경될 때 호출되는 콜백 함수
-                      print('입력 값 변경: $text');
-                    },
-                    onSubmitted: (text) {
-                      // 입력이 완료되고 제출(Enter 키를 누름)될 때 호출되는 콜백 함수
-                      print('입력 완료: $text');
-                    },
-                    decoration: InputDecoration(
-                      hintText: '주소명 작성', // 입력란에 표시될 힌트 텍스트
-                      border: OutlineInputBorder(), // 입력란의 테두리 스타일 지정
-                    ),
+                  width: 800,
+                  height: 50, // 기본 height 값을 200으로 설정
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          maxLines: null,
+                          expands: true,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: '주소',
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                Text('기간'),
+                SizedBox(height: 20,),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     InkWell(
-                      onTap: (){_selectDate(context);},
+                        onTap: () {
+                          _selectDate(context);
+                        },
                         child: Container(
-                          child: Center(child: Text('${startDate.year} ${startDate.month} ${startDate.day}')),
-                      color: Colors.red,
-                      width: 100,
-                      height: 100,
-                    )),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.black, // 테두리 색상
+                              width: 2.0, // 테두리 두께
+                            ),
+                            borderRadius: BorderRadius.circular(
+                                10.0), // 10.0의 반경을 가진 둥근 모서리
+                          ),
+                          child: Center(
+                              child: Text(
+                                  '${startDate.year} ${startDate.month} . ${startDate.day}', style: TextStyle(fontSize: 20),)),
+                          width: 140,
+                          height: 40,
+                        )),
+                    SizedBox(
+                      width: 40,
+                    ),
+                    Text(
+                      "~",
+                      style: TextStyle(fontSize: 20),
+                    ),
+                    SizedBox(
+                      width: 40,
+                    ),
                     InkWell(
-                      onTap: (){_selectDate(context);},
+                      onTap: () {
+                        _selectDate(context);
+                      },
                       child: Container(
-                        child: Center(
-                          child: Text('${startDate.year} ${startDate.month} ${startDate.day}'),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.black, // 테두리 색상
+                            width: 2.0, // 테두리 두께
+                          ),
+                          borderRadius: BorderRadius.circular(
+                              10.0), // 10.0의 반경을 가진 둥근 모서리
                         ),
-                        color: Colors.blue,
-                        width: 100,
-                        height: 100,
+                        child: Center(
+                          child: Text(
+                              '${startDate.year} ${startDate.month} . ${startDate.day}', style: TextStyle(fontSize: 20),),
+                        ),
+                        width: 140,
+                        height: 40,
                       ),
                     )
                   ],
                 ),
+                SizedBox(height: 20,),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      child:
+                      Column(
+                        children: [
+                          Text('일정 양식'),
+                          SizedBox(height: 10,),
+                          InkWell(
+                            onTap: () async {
+                              String fileName = 'demo.txt'; // 예시 파일명
+                              String fileUrl = '/assets/demo.txt'; // 예시 파일의 경로
+                              downloadFile(FileData(fileName, fileUrl));
+                            },
+                            child: Container(
+                              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              constraints: BoxConstraints(
+                                maxWidth: 100,
+                                minHeight: 20,
+                              ),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Colors.black, // 테두리 색상
+                                  width: 2.0, // 테두리 두께
+                                ),
+                                borderRadius: BorderRadius.circular(
+                                    10.0), // 10.0의 반경을 가진 둥근 모서리
+                              ),
+                              child: Center(
+                                child: Text('엑셀 양식'),
+                              ),
 
-                // 엑셀 파일로 시간표를 입력받음.
-                Text('시간표 등록'),
-                InkWell(
-                  onTap: () async {
-                        var picked = await FilePicker.platform.pickFiles();
-
-                        setState(() {
-                          if (picked != null) {
-                            print(picked.files.first.name);
-                            timetable = picked;
-                          }
-                        });
-
-                  },
-                  child: Container(
-                    child: Center(
-                      child: Text(
-                          timetable?.files.first.name ?? ""),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    width: 100,
-                    height: 100,
-                  ),
-                ),
-                Divider(height: 10,),
-                Text("부스 및 마커 등록"),
+                    SizedBox(width: 40,),
+                    Container(
+                      child:
+                      Column(
+                        children: [
+                          Text('일정 업로드'),
+                          SizedBox(height: 10,),
+                          InkWell(
+                            onTap: () async {
+                              var picked = await FilePicker.platform.pickFiles();
 
+                              setState(() {
+                                if (picked != null) {
+                                  print(picked.files.first.name);
+                                  timetable = picked;
+                                }
+                              });
+                            },
+                            child: Container(
+                              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              constraints: BoxConstraints(
+                                maxWidth: 100,
+                                minHeight: 20,
+                              ),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Colors.black, // 테두리 색상
+                                  width: 2.0, // 테두리 두께
+                                ),
+                                borderRadius: BorderRadius.circular(
+                                    10.0), // 10.0의 반경을 가진 둥근 모서리
+                              ),
+                              child: Center(
+                                child: Text(timetable?.files.first.name ?? ""),
+                              ),
+
+                            ),
+                          ),
+
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+                // 엑셀 파일로 시간표를 입력받음.
+                SizedBox(height: 20,),
+                Divider(
+                  height: 10,
+                ),
+                SizedBox(height: 20,),
+                Text("마커 등록", style: TextStyle(fontSize: 48),),
+                SizedBox(height: 20,),
+                WebViewX(
+                    width: 1000,
+                    height: 800,
+                    onWebViewCreated: (controller) {
+                      webviewController = controller;
+                      webviewController.loadContent(
+                          'http://localhost:8080/navermap', SourceType.url);
+                    })
               ],
             ),
           ),
