@@ -42,6 +42,8 @@ dependencies:
   # getX 사용
   get: ^4.6.5
 
+  # 파일 피커
+  file_picker: ^5.3.3
 dev_dependencies:
   flutter_test:
     sdk: flutter
