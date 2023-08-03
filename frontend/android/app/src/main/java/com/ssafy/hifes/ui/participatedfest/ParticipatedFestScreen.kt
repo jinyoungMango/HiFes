@@ -113,10 +113,10 @@ fun ParticipatedFestScreen(
 fun BottomSheetScreenElement() {
     val stampList = mutableListOf<StampMissionDto>()
     stampList.apply {
-        add(StampMissionDto(1, 1, 1, "미션 타이틀", "미션 아웃라인", 1f, 1f))
-        add(StampMissionDto(1, 1, 1, "미션 타이틀", "미션 아웃라인", 1f, 1f))
-        add(StampMissionDto(1, 1, 1, "미션 타이틀", "미션 아웃라인", 1f, 1f))
-        add(StampMissionDto(1, 1, 1, "미션 타이틀", "미션 아웃라인", 1f, 1f))
+        add(StampMissionDto(1, 1, 1, "미션 타이틀", "미션 아웃라인", 1.0, 1.0))
+        add(StampMissionDto(1, 1, 1, "미션 타이틀", "미션 아웃라인", 1.0, 1.0))
+        add(StampMissionDto(1, 1, 1, "미션 타이틀", "미션 아웃라인", 1.0, 1.0))
+        add(StampMissionDto(1, 1, 1, "미션 타이틀", "미션 아웃라인", 1.0, 1.0))
     }
     val stampCount = 10//한 행사에서 받을 수 있는 스탬프의 총 량, 나중에 서버에서 받아올것
     val stampStateList: MutableList<Boolean> = mutableListOf()
