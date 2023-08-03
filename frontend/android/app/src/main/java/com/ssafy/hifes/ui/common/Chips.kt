@@ -31,8 +31,8 @@ import com.ssafy.hifes.ui.theme.PrimaryPink
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChipsSelectable(chips: List<String>, onChipClick : (index : Int) -> Any) {
-    var selected by rememberSaveable { mutableStateOf(0) }
+fun ChipsSelectable(chips: List<String>, initStartPosition : Int = 0, onChipClick : (index : Int) -> Any) {
+    var selected by rememberSaveable { mutableStateOf(initStartPosition) }
 
     LazyRow() {
         itemsIndexed(chips) { index, item ->
@@ -81,7 +81,7 @@ fun HashtagChips(chips: List<String>) {
 @Composable
 fun ChipPrev() {
     Column {
-        ChipsSelectable(listOf("전체", "화장실", "부스", "입구"), {})
+        ChipsSelectable(listOf("전체", "화장실", "부스", "입구"),2, {})
         HashtagChips(chips = listOf("#6명", "대구치맥파티", "#치킨", "맥주", "20대", "#6명", "대구치맥파티", "#치킨", "맥주", "20대"))
     }
 

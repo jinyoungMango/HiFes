@@ -8,7 +8,6 @@ object HifesDestinations {
     const val MY_PAGE_ROUTE = "my_page"
     const val BOARD_ROUTE = "board"
     const val BOARD_DETAIL_ROUTE = "board_detail"
-
     const val GROUP_CREATE = "group_create"
-
+    const val POST_WRITE_ROUTE = "post_write"
 }
