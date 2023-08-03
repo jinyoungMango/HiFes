@@ -23,10 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.naver.maps.geometry.LatLng
-import com.naver.maps.map.NaverMap
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.naver.maps.map.compose.LocationTrackingMode
 import com.naver.maps.map.compose.MapProperties
@@ -38,8 +35,8 @@ import com.naver.maps.map.compose.rememberFusedLocationSource
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 import com.ssafy.hifes.R
+import com.ssafy.hifes.ui.main.MainViewModel
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 
@@ -48,7 +45,7 @@ private const val TAG = "MapScreen_하이페스"
 @OptIn(ExperimentalMaterialApi::class, ExperimentalNaverMapApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MapScreen(viewModel: MapViewModel) {
+fun MapScreen(viewModel: MainViewModel) {
     val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden,
         confirmValueChange = { it != ModalBottomSheetValue.HalfExpanded }
     )
@@ -84,7 +81,7 @@ fun MapScreen(viewModel: MapViewModel) {
 @OptIn(ExperimentalNaverMapApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun AroundMyLocationFestival(
-    viewModel: MapViewModel,
+    viewModel: MainViewModel,
     sheetState: ModalBottomSheetState,
     coroutineScope: CoroutineScope
 ) {
@@ -137,6 +134,6 @@ fun AroundMyLocationFestival(
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
 fun MapScreenPriview() {
-    val mapViewModel: MapViewModel = viewModel()
+    val mapViewModel: MainViewModel = viewModel()
     MapScreen(mapViewModel)
 }
