@@ -56,9 +56,9 @@ fun HomeScreen(navController: NavController, viewModel: MainViewModel) {
     }
 
 
-    LazyColumn (
+    LazyColumn(
         modifier = Modifier.background(color = Color.White)
-    ){
+    ) {
         item {
             HomeGreeting("혹시 이 행사에 참여 중이신가요?")
             HomeFestivalImage(nearestFestival.fesPosterPath)
@@ -175,7 +175,8 @@ fun HomeCardWithImage(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(12.dp).clickable { onClick(festival) },
+            .padding(12.dp)
+            .clickable { onClick(festival) },
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
     ) {

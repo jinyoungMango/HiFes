@@ -1,6 +1,7 @@
 package com.ssafy.hifes.ui
 
 import BottomNavigation
+import NavigationItem
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -11,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.ssafy.hifes.data.AppContainer
-import com.ssafy.hifes.ui.HifesNavGraph
 import com.ssafy.hifes.ui.theme.HifesTheme
 
 @Composable
@@ -27,7 +27,7 @@ fun HifesApp(
             navBackStackEntry?.destination?.route ?: HifesDestinations.LOGIN_ROUTE
         var isBottomBarVisible = true
         navBackStackEntry?.destination?.route?.let { route ->
-            isBottomBarVisible = when(route) {
+            isBottomBarVisible = when (route) {
                 NavigationItem.Home.screenRoute -> true
                 NavigationItem.Map.screenRoute -> true
                 NavigationItem.Group.screenRoute -> true
@@ -36,9 +36,10 @@ fun HifesApp(
         }
         Scaffold(
             bottomBar = {
-                if (isBottomBarVisible) BottomNavigation(navController = navController) }
+                if (isBottomBarVisible) BottomNavigation(navController = navController)
+            }
         ) {
-            Box(Modifier.padding(it)){
+            Box(Modifier.padding(it)) {
                 HifesNavGraph(
                     appContainer = appContainer,
                     navController = navController

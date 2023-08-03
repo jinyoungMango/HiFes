@@ -17,7 +17,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -49,9 +48,7 @@ import com.ssafy.hifes.ui.iconpack.MyIconPack
 import com.ssafy.hifes.ui.iconpack.myiconpack.Imagenotfound
 import com.ssafy.hifes.ui.main.MainViewModel
 import com.ssafy.hifes.ui.map.StarScore
-import com.ssafy.hifes.util.CommonUtils.formatDateToString
 import com.ssafy.hifes.util.CommonUtils.formatSqlDateToString
-import java.util.Date
 
 
 @OptIn(ExperimentalNaverMapApi::class)

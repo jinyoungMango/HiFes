@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.ssafy.hifes.data.model.OrganizedFestivalDto
-import com.ssafy.hifes.data.model.PostDto
 import java.sql.Date
 import java.text.SimpleDateFormat
 
@@ -13,8 +12,8 @@ class MainViewModel : ViewModel() {
         MutableLiveData()
     val festivalList: LiveData<MutableList<OrganizedFestivalDto>> = _festivalList
 
-    private var _selectedFestival : MutableLiveData<OrganizedFestivalDto> = MutableLiveData()
-    val selectedFestival : LiveData<OrganizedFestivalDto> = _selectedFestival
+    private var _selectedFestival: MutableLiveData<OrganizedFestivalDto> = MutableLiveData()
+    val selectedFestival: LiveData<OrganizedFestivalDto> = _selectedFestival
 
     var testDate: Date
 
@@ -75,7 +74,7 @@ class MainViewModel : ViewModel() {
         _festivalList.postValue(festivalListDummyData)
     }
 
-    fun getFestivalDetail(festival : OrganizedFestivalDto) {
+    fun getFestivalDetail(festival: OrganizedFestivalDto) {
         _selectedFestival.postValue(festival)
     }
 }

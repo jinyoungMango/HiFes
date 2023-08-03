@@ -3,15 +3,12 @@ package com.ssafy.hifes.ui.map
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
 
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
@@ -33,7 +30,7 @@ fun MapBottomSheet() {
     }
 
     ModalBottomSheet(
-        onDismissRequest = {  },
+        onDismissRequest = { },
         sheetState = modalBottomSheetState,
         dragHandle = { BottomSheetDefaults.DragHandle() },
         containerColor = Color.White

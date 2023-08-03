@@ -5,21 +5,14 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.Card
-import androidx.compose.material3.ShapeDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.RememberObserver
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.google.android.material.animation.AnimationUtils.lerp
-import kotlin.math.absoluteValue
 
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
@@ -38,8 +31,10 @@ fun ViewPager(modifier: Modifier = Modifier) {
         val pagerState = rememberPagerState(pageCount = {
             10
         })
-        HorizontalPager(state = pagerState,
-            contentPadding = PaddingValues(end = 30.dp),) { page ->
+        HorizontalPager(
+            state = pagerState,
+            contentPadding = PaddingValues(end = 30.dp),
+        ) { page ->
             Card(
                 backgroundColor = Color.White.copy(alpha = 0.0f),
                 elevation = 0.dp

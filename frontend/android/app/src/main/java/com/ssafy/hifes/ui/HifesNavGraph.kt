@@ -17,8 +17,8 @@ import com.ssafy.hifes.ui.group.main.GroupMainScreen
 import com.ssafy.hifes.ui.home.HomeScreen
 import com.ssafy.hifes.ui.login.LoginDetailScreen
 import com.ssafy.hifes.ui.login.LoginScreen
-import com.ssafy.hifes.ui.map.MapScreen
 import com.ssafy.hifes.ui.main.MainViewModel
+import com.ssafy.hifes.ui.map.MapScreen
 import com.ssafy.hifes.ui.mypage.MyPageScreen
 import com.ssafy.hifes.ui.participatedfest.ParticipatedFestScreen
 
