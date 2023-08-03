@@ -114,7 +114,6 @@ fun FestivalDetail(navController: NavHostController) {
                 Spacer(modifier = Modifier.size(12.dp))
                 DetailCommonContent(title = "장소", address = "주소")
                 Spacer(modifier = Modifier.size(12.dp))
-                // MapView
                 NaverMap(modifier = Modifier.size(300.dp))
                 Spacer(modifier = Modifier.size(12.dp))
                 DetailCommonContent(title = "주최", content1 = "대구광역시", content2 = "053 - 248 - 9998")

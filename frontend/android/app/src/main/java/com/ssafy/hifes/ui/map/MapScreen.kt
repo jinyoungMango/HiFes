@@ -48,7 +48,7 @@ private const val TAG = "MapScreen_하이페스"
 @OptIn(ExperimentalMaterialApi::class, ExperimentalNaverMapApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MapScreen(navController: NavController, viewModel: MapViewModel) {
+fun MapScreen(viewModel: MapViewModel) {
     val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden,
         confirmValueChange = { it != ModalBottomSheetValue.HalfExpanded }
     )
@@ -138,5 +138,5 @@ fun AroundMyLocationFestival(
 @Composable
 fun MapScreenPriview() {
     val mapViewModel: MapViewModel = viewModel()
-    MapScreen(navController = rememberNavController(), mapViewModel)
+    MapScreen(mapViewModel)
 }

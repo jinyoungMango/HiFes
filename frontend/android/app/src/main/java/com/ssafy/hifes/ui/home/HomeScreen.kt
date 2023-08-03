@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,26 +22,42 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.ssafy.hifes.R
+import com.ssafy.hifes.ui.iconpack.MyIconPack
+import com.ssafy.hifes.ui.iconpack.myiconpack.Imagenotfound
 
 
 @Composable
 fun HomeScreen() {
-    Column {
-        HomeGreeting("혹시 이 행사에 참여 중이신가요?")
-        HomeFestivalImage(R.drawable.ic_launcher_background)
-        HomeCard(
-            title = "대구치맥페스티벌",
-            content = "content"
-        )
-        HomeMiddleText("이 근처에서 축제 열리는 중!")
-        HomeCardList()
+    LazyColumn (
+        modifier = Modifier.background(color = Color.White)
+//        Modifier
+//            .verticalScroll(rememberScrollState())
+//            .padding(4.dp)
+    ){
+        item {
+            HomeGreeting("혹시 이 행사에 참여 중이신가요?")
+            HomeFestivalImage(R.drawable.ic_launcher_foreground)
+            HomeCard(
+                title = "대구치맥페스티벌",
+                content = "content"
+            )
+            HomeMiddleText("이 근처에서 축제 열리는 중!")
+        }
+        items(5) { index ->
+            HomeCardWithImage(
+                title = "Festival $index",
+                content = "content",
+                imageRes = R.drawable.ic_launcher_background
+            )
+        }
     }
 
 }
@@ -72,10 +89,10 @@ fun HomeGreeting(message: String) {
 
 @Composable
 fun HomeFestivalImage(imageResId: Int) {
-    Image(
-        painter = painterResource(id = imageResId),
-        contentDescription = null,
-        contentScale = ContentScale.Crop,
+    AsyncImage(
+        model = "https://picsum.photos/1600",
+        contentDescription = "게시글 이미지",
+        placeholder = rememberVectorPainter(image = MyIconPack.Imagenotfound),
         modifier = Modifier
             .fillMaxWidth()
             .height(200.dp)
@@ -90,7 +107,7 @@ fun HomeCard(title: String, content: String) {
             .height(220.dp),
         color = Color.White,
         shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp),
-        shadowElevation = 8.dp
+        shadowElevation = 0.dp
     ) {
         Column(
             modifier = Modifier
@@ -136,6 +153,7 @@ fun HomeCardWithImage(title: String, content: String, imageRes: Int) {
             .fillMaxWidth()
             .padding(12.dp),
         shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,

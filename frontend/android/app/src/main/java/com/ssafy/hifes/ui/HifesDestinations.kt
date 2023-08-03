@@ -9,4 +9,5 @@ object HifesDestinations {
     const val MY_PAGE_ROUTE = "my_page"
     const val BOARD_ROUTE = "board"
     const val BOARD_DETAIL_ROUTE = "board_detail"
+    const val HOME = "home"
 }

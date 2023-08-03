@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">Hifes</string>
 
+    <!-- bottom navigation item -->
+    <string name="nav_home">홈</string>
+    <string name="nav_map">지도</string>
+    <string name="nav_group">모임</string>
 
     <!-- login-->
     <string name="login_title">HIFES</string>
