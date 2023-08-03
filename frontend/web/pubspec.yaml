@@ -42,6 +42,12 @@ dependencies:
   # getX 사용
   get: ^4.6.5
 
+  # kakao 사용
+  kakao_flutter_sdk: ^1.4.1 # 전체 추가
+
+  # http 통신
+  http: ^1.1.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
