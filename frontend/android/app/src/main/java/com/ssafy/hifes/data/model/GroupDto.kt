@@ -9,7 +9,7 @@ data class GroupDto(
     var createdAt: Date,
     var maxPop: Int,
     var content: String,
-    var getterLatitude: Float,
-    var getterLongitude: Float,
+    var getterLatitude: Double,
+    var getterLongitude: Double,
     var groupPassword: Int,
 )

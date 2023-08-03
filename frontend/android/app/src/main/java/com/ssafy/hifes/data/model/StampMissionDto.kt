@@ -6,6 +6,6 @@ data class StampMissionDto(
     var hostId: Int,
     var missionTitle: String,
     var missionOutline: String,
-    var missionLatitude: Float,
-    var missionLongitude: Float
+    var missionLatitude: Double,
+    var missionLongitude: Double
 )
