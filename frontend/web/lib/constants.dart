@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
 import 'package:web/board/board.dart';
 import 'package:web/board/noticeboard.dart';
+import 'package:web/festival/festival.dart';
+import 'package:web/festival/festivalregister.dart';
 import 'package:web/mypage/mypage.dart';
 
 import 'board/askboard.dart';
@@ -22,6 +24,8 @@ abstract class Routes {
   static const ASK = '/board/ask';
   static const FREE = '/board/free';
   static const REVIEW = '/board/review';
+  static const REGISTER = '/register';
+  static const FESTIVAL = '/festival';
 }
 
 abstract class AppPages {
@@ -34,5 +38,7 @@ abstract class AppPages {
     GetPage(name: Routes.ASK, page: () => AskPage()),
     GetPage(name: Routes.FREE, page: () => FreePage()),
     GetPage(name: Routes.REVIEW, page: () => ReviewPage()),
+    GetPage(name: Routes.REGISTER, page: () => FestivalRegister()),
+    GetPage(name: Routes.FESTIVAL, page: () => Festival()),
   ];
 }

@@ -126,7 +126,7 @@ class _MyPageState extends State<MyPage> with SingleTickerProviderStateMixin {
                                     minimumSize:
                                     MaterialStateProperty.all<Size>(Size(200, 48)),
                                   ),
-                                  onPressed: () {Get.rootDelegate.toNamed(Routes.BOARD);},
+                                  onPressed: () {Get.rootDelegate.toNamed(Routes.REGISTER);},
                                   child: Text(
                                     "등록하기",
                                     style: TextStyle(color: Colors.white),
@@ -243,7 +243,7 @@ class _MyPageState extends State<MyPage> with SingleTickerProviderStateMixin {
                     minimumSize:
                     MaterialStateProperty.all<Size>(Size(100, 48)),
                   ),
-                  onPressed: () {Get.rootDelegate.toNamed(Routes.LOGIN);},
+                  onPressed: () {Get.rootDelegate.toNamed(Routes.FESTIVAL);},
                   child: Text(
                     "Detail",
                     style: TextStyle(color: Colors.white),
