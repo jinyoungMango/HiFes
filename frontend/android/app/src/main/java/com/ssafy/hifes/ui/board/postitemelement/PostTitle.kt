@@ -1,6 +1,8 @@
 package com.ssafy.hifes.ui.board.postitemelement
 
 import android.content.Context
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -35,15 +37,17 @@ fun PostTitle(
     val resultTitle = getTitle(postData, LocalContext.current, userDataId)
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxWidth()
+        horizontalArrangement = Arrangement.Start
     ) {
         Text(
             text = resultTitle,
             fontWeight = FontWeight.Bold,
             fontSize = 16.sp,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.weight(1f, fill = false)
         )
+
         if (postData.normalUserId == userDataId && postData.postType == PostType.ASK.label) {
             Spacer(modifier = Modifier.size(8.dp))
             if (postData.hidden != null && postData.hidden!!) {
@@ -62,7 +66,9 @@ fun PostTitle(
                 )
             }
         }
+
     }
+
 }
 
 fun getTitle(postData: PostDto, context: Context, userDataId: Int): String {

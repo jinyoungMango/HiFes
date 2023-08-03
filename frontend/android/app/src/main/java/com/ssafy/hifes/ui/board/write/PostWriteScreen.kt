@@ -100,7 +100,7 @@ fun PostWriteScreen(
 
 @Composable
 fun RatingPostWrite() {
-    var rating: Float by remember { mutableStateOf(3.2f) }
+    var rating: Float by remember { mutableStateOf(5f) }
     RatingBar(
         value = rating,
         onValueChange = {

@@ -123,7 +123,7 @@ fun BoardDetailScreen(navController: NavController, viewModel: BoardViewModel) {
                     LazyColumn(modifier = Modifier.padding(16.dp, 0.dp)) {
                         item {
                             Column() {
-                                BoardDetailHead(postData = selectedPost.value!!)
+                                BoardDetailHead(postData = selectedPost.value!!, userDataId = viewModel.userDataId)
                                 BoardDetailBody(postData = selectedPost.value!!)
                                 Spacer(modifier = Modifier.size(20.dp))
                                 Divider()
