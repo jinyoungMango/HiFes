@@ -2,6 +2,7 @@ package com.ssafy.hifes.ui.detail
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
@@ -44,6 +46,7 @@ import coil.compose.AsyncImage
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.naver.maps.map.compose.NaverMap
 import com.ssafy.hifes.R
+import com.ssafy.hifes.ui.HifesDestinations
 import com.ssafy.hifes.ui.iconpack.MyIconPack
 import com.ssafy.hifes.ui.iconpack.myiconpack.Imagenotfound
 import com.ssafy.hifes.ui.main.MainViewModel
@@ -60,13 +63,16 @@ fun FestivalDetail(navController: NavHostController, viewModel: MainViewModel) {
         Column(
             Modifier
                 .verticalScroll(rememberScrollState())
-                .padding(4.dp)
         ) {
 
             Box {
                 AsyncImage(
                     model = festivalData!!.fesPosterPath,
                     contentDescription = "Poster Image",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(250.dp),
+                    contentScale = ContentScale.Crop,
                     placeholder = rememberVectorPainter(image = MyIconPack.Imagenotfound)
                 )
                 Row(
@@ -76,8 +82,13 @@ fun FestivalDetail(navController: NavHostController, viewModel: MainViewModel) {
                         .fillMaxWidth()
                         .padding(4.dp)
                 ) {
-                    DetailIcons(painterResource(R.drawable.icon_board))
-                    DetailIcons(painterResource(R.drawable.icon_map))
+                    DetailIcons(painterResource(R.drawable.icon_board)) {
+                        navController.navigate(
+                            HifesDestinations.BOARD_ROUTE
+                        )
+                    }
+                    DetailIcons(painterResource(R.drawable.icon_map)) {
+                    }
                 }
             }
             Column {
@@ -88,7 +99,7 @@ fun FestivalDetail(navController: NavHostController, viewModel: MainViewModel) {
                     shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
                     shadowElevation = 2.dp
                 ) {
-                    Column(modifier = Modifier.padding(start = 12.dp)) {
+                    Column(modifier = Modifier.padding(start = 12.dp, end = 12.dp)) {
                         Spacer(modifier = Modifier.size(4.dp))
                         Row(
                             verticalAlignment = Alignment.Top,
@@ -97,7 +108,7 @@ fun FestivalDetail(navController: NavHostController, viewModel: MainViewModel) {
                                 .fillMaxWidth()
                                 .padding(end = 8.dp)
                         ) {
-                            DetailIcons(painterResource(R.drawable.icon_share))
+                            DetailIcons(painterResource(R.drawable.icon_share)) {}
                         }
                         DetailTitle(festivalData!!.fesTitle)
                         Row(
@@ -113,7 +124,7 @@ fun FestivalDetail(navController: NavHostController, viewModel: MainViewModel) {
                     }
                 }
                 Column(
-                    modifier = Modifier.padding(start = 12.dp)
+                    modifier = Modifier.padding(start = 12.dp, end = 12.dp)
                 ) {
                     Spacer(modifier = Modifier.size(12.dp))
                     DetailCommonContent(
@@ -124,7 +135,7 @@ fun FestivalDetail(navController: NavHostController, viewModel: MainViewModel) {
                     Spacer(modifier = Modifier.size(12.dp))
                     DetailCommonContent(title = "장소", address = "주소")
                     Spacer(modifier = Modifier.size(12.dp))
-                    NaverMap(modifier = Modifier.size(300.dp))
+                    NaverMap(modifier = Modifier.fillMaxWidth().height(250.dp).padding(8.dp))
                     Spacer(modifier = Modifier.size(12.dp))
                     DetailCommonContent(
                         title = "주최",
@@ -267,7 +278,7 @@ fun Image(
 }
 
 @Composable
-fun DetailIcons(painter: Painter) {
+fun DetailIcons(painter: Painter, onClick: () -> Unit) {
     Icon(
         painter = painter,
         contentDescription = null,
@@ -275,6 +286,9 @@ fun DetailIcons(painter: Painter) {
         modifier = Modifier
             .size(40.dp)
             .padding(4.dp)
+            .clickable {
+                onClick()
+            }
     )
 }
 

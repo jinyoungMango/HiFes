@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -46,7 +47,6 @@ fun HomeScreen(navController: NavController, viewModel: MainViewModel) {
 
     val nearestFestival: OrganizedFestivalDto?
     val nearFestivalList: List<OrganizedFestivalDto>
-
     if (!festivalList.value.isNullOrEmpty()) {
         nearestFestival = festivalList.value!!.first()
         nearFestivalList = festivalList.value!!.drop(1)
@@ -54,14 +54,15 @@ fun HomeScreen(navController: NavController, viewModel: MainViewModel) {
         nearestFestival = OrganizedFestivalDto()
         nearFestivalList = emptyList()
     }
-
-
+    
     LazyColumn(
         modifier = Modifier.background(color = Color.White)
     ) {
         item {
             HomeGreeting("혹시 이 행사에 참여 중이신가요?")
-            HomeFestivalImage(nearestFestival.fesPosterPath)
+            HomeFestivalImage(nearestFestival) {
+                viewModel.getFestivalDetail(it)
+                navController.navigate(HifesDestinations.FESTIVAL_DETAIL)}
             if (nearestFestival != null) {
                 HomeCard(
                     title = nearestFestival.fesTitle,
@@ -109,14 +110,18 @@ fun HomeGreeting(message: String) {
 }
 
 @Composable
-fun HomeFestivalImage(fesPosterPath: String) {
+fun HomeFestivalImage(festival: OrganizedFestivalDto, onClick: (OrganizedFestivalDto) -> Unit) {
     AsyncImage(
-        model = fesPosterPath,
+        model = festival.fesPosterPath,
+        contentScale = ContentScale.Crop,
         contentDescription = "게시글 이미지",
         placeholder = rememberVectorPainter(image = MyIconPack.Imagenotfound),
         modifier = Modifier
             .fillMaxWidth()
-            .height(200.dp)
+            .height(250.dp)
+            .clickable {
+                onClick(festival)
+            }
     )
 }
 

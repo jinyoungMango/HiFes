@@ -13,6 +13,7 @@ import com.ssafy.hifes.ui.board.BoardScreen
 import com.ssafy.hifes.ui.board.BoardViewModel
 import com.ssafy.hifes.ui.board.boarddetail.BoardDetailScreen
 import com.ssafy.hifes.ui.detail.FestivalDetail
+import com.ssafy.hifes.ui.group.create.GroupCreateScreen
 import com.ssafy.hifes.ui.group.main.GroupMainScreen
 import com.ssafy.hifes.ui.home.HomeScreen
 import com.ssafy.hifes.ui.login.LoginDetailScreen
@@ -45,7 +46,7 @@ fun HifesNavGraph(
             MapScreen(mainViewModel)
         }
         composable(NavigationItem.Group.screenRoute) {
-            GroupMainScreen()
+            GroupMainScreen(navController)
         }
         composable(
             route = HifesDestinations.LOGIN_ROUTE
@@ -82,6 +83,11 @@ fun HifesNavGraph(
             route = HifesDestinations.BOARD_DETAIL_ROUTE
         ) {
             BoardDetailScreen(navController = navController, viewModel = boardViewModel)
+        }
+        composable(
+            route = HifesDestinations.GROUP_CREATE
+        ) {
+            GroupCreateScreen(navController = navController)
         }
     }
 }

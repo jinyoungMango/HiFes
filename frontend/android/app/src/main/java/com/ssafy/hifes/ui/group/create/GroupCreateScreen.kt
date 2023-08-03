@@ -24,14 +24,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.ssafy.hifes.ui.group.create.Toggle
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.ssafy.hifes.ui.common.ProfileImg
 import com.ssafy.hifes.ui.common.top.TopWithBack
 import com.ssafy.hifes.ui.theme.PrimaryPink
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GroupCreateScreen() {
+fun GroupCreateScreen(navController: NavController) {
     Scaffold (
         topBar = { TopWithBack(title = "모임 생성", onClick = {})},
         content = {
@@ -73,5 +75,5 @@ fun GroupCreateScreen() {
 @Preview
 @Composable
 fun CreatePrev() {
-    GroupCreateScreen()
+    GroupCreateScreen(rememberNavController())
 }
