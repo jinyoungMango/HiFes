@@ -24,7 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.hifes.ui.group.create.Toggle
+import com.ssafy.hifes.ui.group.create.Toggle
 import com.ssafy.hifes.ui.common.ProfileImg
 import com.ssafy.hifes.ui.common.top.TopWithBack
 import com.ssafy.hifes.ui.theme.PrimaryPink

@@ -25,7 +25,7 @@ import com.ssafy.hifes.R
 
 
 @Composable
-fun MapScreen() {
+fun MapScreenContent() {
     DialogContent(
         image = R.drawable.ic_launcher_foreground,
         score = 4.0,
@@ -39,7 +39,7 @@ fun MapScreen() {
 @Preview(showBackground = true, backgroundColor = 0xFFFFFF)
 @Composable
 fun MapPreview() {
-    MapScreen()
+    MapScreenContent()
 }
 
 @Composable
