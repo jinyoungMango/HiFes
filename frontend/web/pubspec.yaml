@@ -44,6 +44,10 @@ dependencies:
 
   # 파일 피커
   file_picker: ^5.3.3
+
+  # 웹뷰
+  webviewx: ^0.2.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
