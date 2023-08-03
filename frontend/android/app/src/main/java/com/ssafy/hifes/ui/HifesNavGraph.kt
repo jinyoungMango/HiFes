@@ -18,7 +18,7 @@ import com.ssafy.hifes.ui.home.HomeScreen
 import com.ssafy.hifes.ui.login.LoginDetailScreen
 import com.ssafy.hifes.ui.login.LoginScreen
 import com.ssafy.hifes.ui.map.MapScreen
-import com.ssafy.hifes.ui.map.MapViewModel
+import com.ssafy.hifes.ui.main.MainViewModel
 import com.ssafy.hifes.ui.mypage.MyPageScreen
 import com.ssafy.hifes.ui.participatedfest.ParticipatedFestScreen
 
@@ -31,7 +31,7 @@ fun HifesNavGraph(
 ) {
 
     val boardViewModel: BoardViewModel = viewModel()
-    val mapViewModel : MapViewModel = viewModel()
+    val mainViewModel: MainViewModel = viewModel()
 
     NavHost(
         navController = navController,
@@ -39,49 +39,49 @@ fun HifesNavGraph(
         modifier = modifier
     ) {
         composable(NavigationItem.Home.screenRoute) {
-            HomeScreen()
+            HomeScreen(navController, mainViewModel)
         }
         composable(NavigationItem.Map.screenRoute) {
-            MapScreen(mapViewModel)
+            MapScreen(mainViewModel)
         }
         composable(NavigationItem.Group.screenRoute) {
             GroupMainScreen()
         }
-//        composable(
-//            route = HifesDestinations.LOGIN_ROUTE
-//        ) { navBackStackEntry ->
-//            LoginScreen(navController = navController)
-//        }
-//        composable(
-//            route = HifesDestinations.LOGIN_DETAIL_ROUTE
-//        ) { navBackStackEntry ->
-//            LoginDetailScreen(navController = navController)
-//        }
-//        composable(
-//            route = HifesDestinations.FESTIVAL_DETAIL
-//        ) { navBackStackEntry ->
-//            FestivalDetail(navController = navController)
-//        }
-//        composable(
-//            route = HifesDestinations.PARTICIPATED_FEST_ROUTE
-//        ) { navBackStackEntry ->
-//            ParticipatedFestScreen(navController = navController)
-//        }
-//        composable(
-//            route = HifesDestinations.MY_PAGE_ROUTE
-//        ) { navBackStackEntry ->
-//            MyPageScreen(navController = navController)
-//        }
-//        composable(
-//            route = HifesDestinations.BOARD_ROUTE
-//        )
-//        { navBackStackEntry ->
-//            BoardScreen(navController = navController, viewModel = boardViewModel)
-//        }
-//        composable(
-//            route = HifesDestinations.BOARD_DETAIL_ROUTE
-//        ) { navBackStackEntry ->
-//            BoardDetailScreen(navController = navController, viewModel = boardViewModel)
-//        }
+        composable(
+            route = HifesDestinations.LOGIN_ROUTE
+        ) {
+            LoginScreen(navController = navController)
+        }
+        composable(
+            route = HifesDestinations.LOGIN_DETAIL_ROUTE
+        ) {
+            LoginDetailScreen(navController = navController)
+        }
+        composable(
+            route = HifesDestinations.FESTIVAL_DETAIL
+        ) {
+            FestivalDetail(navController = navController, viewModel = mainViewModel)
+        }
+        composable(
+            route = HifesDestinations.PARTICIPATED_FEST_ROUTE
+        ) {
+            ParticipatedFestScreen(navController = navController)
+        }
+        composable(
+            route = HifesDestinations.MY_PAGE_ROUTE
+        ) {
+            MyPageScreen(navController = navController)
+        }
+        composable(
+            route = HifesDestinations.BOARD_ROUTE
+        )
+        {
+            BoardScreen(navController = navController, viewModel = boardViewModel)
+        }
+        composable(
+            route = HifesDestinations.BOARD_DETAIL_ROUTE
+        ) {
+            BoardDetailScreen(navController = navController, viewModel = boardViewModel)
+        }
     }
 }

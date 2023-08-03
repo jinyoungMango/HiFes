@@ -25,8 +25,18 @@ fun HifesApp(
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute =
             navBackStackEntry?.destination?.route ?: HifesDestinations.LOGIN_ROUTE
+        var isBottomBarVisible = true
+        navBackStackEntry?.destination?.route?.let { route ->
+            isBottomBarVisible = when(route) {
+                NavigationItem.Home.screenRoute -> true
+                NavigationItem.Map.screenRoute -> true
+                NavigationItem.Group.screenRoute -> true
+                else -> false
+            }
+        }
         Scaffold(
-            bottomBar = { BottomNavigation(navController = navController) }
+            bottomBar = {
+                if (isBottomBarVisible) BottomNavigation(navController = navController) }
         ) {
             Box(Modifier.padding(it)){
                 HifesNavGraph(
