@@ -48,7 +48,7 @@ fun BoardScreen(
     }
 
     Scaffold(
-        topBar = { TopWithBack(title = stringResource(id = R.string.board_appbar_title)) },
+        topBar = { TopWithBack(navController, title = stringResource(id = R.string.board_appbar_title)) },
         floatingActionButton = {
             if(boardType.value != PostType.NOTIFICATION){
                 FloatingActionButton(

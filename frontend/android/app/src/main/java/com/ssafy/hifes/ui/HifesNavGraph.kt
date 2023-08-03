@@ -1,5 +1,6 @@
 package com.ssafy.hifes.ui
 
+import NavigationItem
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -8,81 +9,91 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.ssafy.hifes.data.AppContainer
-import com.ssafy.hifes.ui.detail.FestivalDetail
-import com.ssafy.hifes.ui.login.LoginDetailScreen
-import com.ssafy.hifes.ui.login.LoginScreen
-import com.ssafy.hifes.ui.map.MapScreen
-import com.ssafy.hifes.ui.mypage.MyPageScreen
 import com.ssafy.hifes.ui.board.BoardScreen
 import com.ssafy.hifes.ui.board.BoardViewModel
 import com.ssafy.hifes.ui.board.boarddetail.BoardDetailScreen
 import com.ssafy.hifes.ui.board.write.PostWriteScreen
-import com.ssafy.hifes.ui.map.MapViewModel
+import com.ssafy.hifes.ui.detail.FestivalDetail
+import com.ssafy.hifes.ui.group.create.GroupCreateScreen
+import com.ssafy.hifes.ui.group.main.GroupMainScreen
+import com.ssafy.hifes.ui.home.HomeScreen
+import com.ssafy.hifes.ui.login.LoginDetailScreen
+import com.ssafy.hifes.ui.login.LoginScreen
+import com.ssafy.hifes.ui.main.MainViewModel
+import com.ssafy.hifes.ui.map.MapScreen
+import com.ssafy.hifes.ui.mypage.MyPageScreen
 import com.ssafy.hifes.ui.participatedfest.ParticipatedFestScreen
-
 
 @Composable
 fun HifesNavGraph(
     appContainer: AppContainer,
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    startDestination: String = HifesDestinations.FESTIVAL_DETAIL
+    startDestination: String = HifesDestinations.LOGIN_ROUTE
 ) {
 
     val boardViewModel: BoardViewModel = viewModel()
-    val mapViewModel : MapViewModel = viewModel()
+    val mainViewModel: MainViewModel = viewModel()
 
     NavHost(
         navController = navController,
         startDestination = startDestination,
         modifier = modifier
     ) {
+        composable(NavigationItem.Home.screenRoute) {
+            HomeScreen(navController, mainViewModel)
+        }
+        composable(NavigationItem.Map.screenRoute) {
+            MapScreen(navController, mainViewModel)
+        }
+        composable(NavigationItem.Group.screenRoute) {
+            GroupMainScreen(navController)
+        }
         composable(
             route = HifesDestinations.LOGIN_ROUTE
-        ) { navBackStackEntry ->
+        ) {
             LoginScreen(navController = navController)
         }
         composable(
             route = HifesDestinations.LOGIN_DETAIL_ROUTE
-        ) { navBackStackEntry ->
+        ) {
             LoginDetailScreen(navController = navController)
         }
         composable(
             route = HifesDestinations.FESTIVAL_DETAIL
-        ) { navBackStackEntry ->
-            FestivalDetail(navController = navController)
+        ) {
+            FestivalDetail(navController = navController, viewModel = mainViewModel)
         }
         composable(
             route = HifesDestinations.PARTICIPATED_FEST_ROUTE
-        ) { navBackStackEntry ->
+        ) {
             ParticipatedFestScreen(navController = navController)
         }
         composable(
             route = HifesDestinations.MY_PAGE_ROUTE
-        ) { navBackStackEntry ->
+        ) {
             MyPageScreen(navController = navController)
-        }
-        composable(
-            route = HifesDestinations.MAP
-        ) { navBackStackEntry ->
-            MapScreen(navController = navController, viewModel = mapViewModel)
-
         }
         composable(
             route = HifesDestinations.BOARD_ROUTE
         )
-        { navBackStackEntry ->
+        {
             BoardScreen(navController = navController, viewModel = boardViewModel)
         }
         composable(
             route = HifesDestinations.BOARD_DETAIL_ROUTE
-        ) { navBackStackEntry ->
+        ) {
             BoardDetailScreen(navController = navController, viewModel = boardViewModel)
         }
         composable(
+            route = HifesDestinations.GROUP_CREATE
+        ) {
+            GroupCreateScreen(navController = navController)
+        }
+        composable(
             route = HifesDestinations.POST_WRITE_ROUTE
-        ) { navBackStackEntry ->
-            PostWriteScreen(navController = navController,viewModel = boardViewModel)
+        ) {
+            PostWriteScreen(navController = navController, viewModel = boardViewModel)
         }
     }
 }

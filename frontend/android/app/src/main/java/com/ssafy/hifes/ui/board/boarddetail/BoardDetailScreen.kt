@@ -112,7 +112,7 @@ fun BoardDetailScreen(navController: NavController, viewModel: BoardViewModel) {
 
     if (selectedPost.value != null) {
         Scaffold(
-            topBar = { BoardDetailTopAppBar(selectedPost.value!!, viewModel) },
+            topBar = { BoardDetailTopAppBar(navController, selectedPost.value!!, viewModel) },
             content = { it ->
                 Box(
                     modifier = Modifier

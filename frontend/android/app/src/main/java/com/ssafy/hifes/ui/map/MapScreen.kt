@@ -3,8 +3,13 @@ package com.ssafy.hifes.ui.map
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetState
@@ -21,12 +26,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.naver.maps.geometry.LatLng
-import com.naver.maps.map.NaverMap
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.naver.maps.map.compose.LocationTrackingMode
 import com.naver.maps.map.compose.MapProperties
@@ -38,17 +44,18 @@ import com.naver.maps.map.compose.rememberFusedLocationSource
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 import com.ssafy.hifes.R
+import com.ssafy.hifes.ui.common.ChipsSelectable
+import com.ssafy.hifes.ui.main.MainViewModel
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 
 private const val TAG = "MapScreen_하이페스"
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalNaverMapApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun MapScreen(navController: NavController, viewModel: MapViewModel) {
+fun MapScreen(navController: NavController, viewModel: MainViewModel) {
     val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden,
         confirmValueChange = { it != ModalBottomSheetValue.HalfExpanded }
     )
@@ -64,17 +71,36 @@ fun MapScreen(navController: NavController, viewModel: MapViewModel) {
         modifier = Modifier.fillMaxSize()
     ) {
         Scaffold(
-            topBar = { MapAppBar() }
-
+            topBar = { MapAppBar(navController) },
+            containerColor = Color.White.copy(alpha = 0.0f)
         ) {
             Box(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(it)
+                    .background(Color.White.copy(alpha = 0.0f))
             ) {
                 AroundMyLocationFestival(viewModel, sheetState, coroutineScope)
                 ViewPager(
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
+                    modifier = Modifier.align(Alignment.BottomCenter)
                 )
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    ChipsSelectable(
+                        listOf(
+                            stringResource(id = R.string.board_chip_notification),
+                            stringResource(id = R.string.board_chip_ask),
+                            stringResource(id = R.string.board_chip_free),
+                            stringResource(id = R.string.board_chip_review)
+                        )
+                    ) { index ->
+                        when (index) {
+
+                        }
+                    }
+                }
             }
         }
     }
@@ -84,7 +110,7 @@ fun MapScreen(navController: NavController, viewModel: MapViewModel) {
 @OptIn(ExperimentalNaverMapApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun AroundMyLocationFestival(
-    viewModel: MapViewModel,
+    viewModel: MainViewModel,
     sheetState: ModalBottomSheetState,
     coroutineScope: CoroutineScope
 ) {
@@ -137,6 +163,6 @@ fun AroundMyLocationFestival(
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
 fun MapScreenPriview() {
-    val mapViewModel: MapViewModel = viewModel()
-    MapScreen(navController = rememberNavController(), mapViewModel)
+    val mainViewModel: MainViewModel = viewModel()
+    MapScreen(rememberNavController(), mainViewModel)
 }

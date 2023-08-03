@@ -17,6 +17,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.ssafy.hifes.ui.HifesDestinations
 import com.ssafy.hifes.ui.common.top.TopWithBack
 import com.ssafy.hifes.ui.theme.PrimaryPink
 
@@ -33,7 +36,7 @@ data class Group(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GroupMainScreen() {
+fun GroupMainScreen(navController: NavController) {
     val tmp = Group(
         "https://fastly.picsum.photos/id/10/2500/1667.jpg?hmac=J04WWC_ebchx3WwzbM-Z4_KC_LeLBWr5LZMaAkWkF68",
         "제목",
@@ -45,7 +48,7 @@ fun GroupMainScreen() {
     var groupList = listOf(tmp, tmp, tmp,tmp, tmp, tmp,tmp, tmp, tmp,tmp, tmp, tmp)
 
     Scaffold(
-        topBar = { TopWithBack(title = "모임") },
+        topBar = { TopWithBack(navController, title = "모임") },
         content = {
             Column (
                 Modifier
@@ -70,7 +73,7 @@ fun GroupMainScreen() {
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /* Handle FAB click */ },
+                onClick = {  navController.navigate(HifesDestinations.GROUP_CREATE) },
                 containerColor = PrimaryPink,
                 contentColor = Color.White
             ) {
@@ -83,5 +86,5 @@ fun GroupMainScreen() {
 @Preview
 @Composable
 fun GroupMainPrev() {
-    GroupMainScreen()
+    GroupMainScreen(navController = rememberNavController())
 }

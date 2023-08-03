@@ -54,7 +54,7 @@ fun LoginDetailScreen(
             .fillMaxHeight(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        TopWithBack(title = stringResource(R.string.more_info_appbar_title))
+        TopWithBack(navController, title = stringResource(R.string.more_info_appbar_title))
         Spacer(modifier = Modifier.size(20.dp))
         ImageAdd()
         Spacer(modifier = Modifier.size(40.dp))
