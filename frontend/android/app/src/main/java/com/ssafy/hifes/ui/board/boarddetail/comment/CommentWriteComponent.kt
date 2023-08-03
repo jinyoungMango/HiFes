@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -44,15 +45,19 @@ fun CommentWriteComponent(
         modifier = Modifier
             .background(color = Color.White)
             .onGloballyPositioned(onGloballyPositioned)
+            .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
     ){
+        Spacer(modifier = Modifier.size(6.dp))
         Row (verticalAlignment = Alignment.CenterVertically){
-            Spacer(modifier = Modifier.size(20.dp))
+            Spacer(modifier = Modifier.size(18.dp))
             OutlinedTextField(
                 value = text,
                 onValueChange = { text = it },
                 colors = TextFieldDefaults.outlinedTextFieldColors(focusedBorderColor = PrimaryPink),
                 placeholder = { Text(text = stringResource(id = R.string.board_detail_write_comment_hint)) },
-                shape = RoundedCornerShape(14.dp)
+                shape = RoundedCornerShape(14.dp),
+                modifier = Modifier.weight(1f)
             )
             Spacer(modifier = Modifier.size(10.dp))
             Icon(
@@ -61,9 +66,9 @@ fun CommentWriteComponent(
                 tint = Color.Unspecified,
                 modifier = Modifier.size(34.dp)
             )
-            Spacer(modifier = Modifier.size(20.dp))
+            Spacer(modifier = Modifier.size(18.dp))
         }
-        Spacer(modifier = Modifier.size(10.dp))
+        Spacer(modifier = Modifier.size(6.dp))
     }
 
 }
