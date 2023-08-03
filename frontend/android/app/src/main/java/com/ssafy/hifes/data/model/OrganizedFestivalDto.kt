@@ -11,6 +11,6 @@ data class OrganizedFestivalDto(
     var fesEndDate: Date,
     var fesOutline: String,
     var fesAddress: String,
-    var fesLatitude: Float,
-    var fesLongitude: Float
+    var fesLatitude: Double,
+    var fesLongitude: Double
 )

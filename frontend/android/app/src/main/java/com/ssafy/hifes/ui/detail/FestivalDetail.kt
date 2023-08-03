@@ -12,7 +12,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
@@ -34,15 +36,25 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.naver.maps.map.compose.ExperimentalNaverMapApi
+import com.naver.maps.map.compose.NaverMap
 import com.ssafy.hifes.R
 import com.ssafy.hifes.ui.map.StarScore
 import com.ssafy.hifes.util.CommonUtils.formatDateToString
 import java.util.Date
 
 
+@OptIn(ExperimentalNaverMapApi::class)
 @Composable
-fun FestivalDetail() {
-    Column {
+fun FestivalDetail(navController: NavHostController) {
+    Column(
+        Modifier
+            .verticalScroll(rememberScrollState())
+            .padding(4.dp)
+    ) {
+
         Box {
             Image(image = painterResource(R.drawable.ic_launcher_foreground))
             Row(
@@ -56,30 +68,42 @@ fun FestivalDetail() {
                 DetailIcons(painterResource(R.drawable.icon_map))
             }
         }
-        Box {
-            HomeCard()
+        Column {
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .offset(y = (-8).dp),
+                shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+                shadowElevation = 2.dp
+            ) {
+                Column(modifier = Modifier.padding(start = 12.dp)) {
+                    Spacer(modifier = Modifier.size(4.dp))
+                    Row(
+                        verticalAlignment = Alignment.Top,
+                        horizontalArrangement = Arrangement.End,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(end = 8.dp)
+                    ) {
+                        DetailIcons(painterResource(R.drawable.icon_share))
+                    }
+                    DetailTitle("2019 대구 치맥 페스티벌")
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        StarScore(score = 4.0)
+                        Spacer(modifier = Modifier.size(12.dp))
+                        navigateToMeetingScreen("12개")
+                    }
+                    Spacer(modifier = Modifier.size(12.dp))
+                    DetailContent("하늘이 내린 최고의 조합, 치킨과 맥주! 매년 여름, 대구에서 치킨과 맥주의 기막힌 조합을 테마로 한 대구치맥페스티벌이 열린다. 치맥페스티벌이라는 말 그대로 축제 기간 동안 맛있는 치킨과 시원한 맥주를 마음껏 즐기며 가수들의 공연을 관람할 수 있다.")
+
+                }
+            }
             Column(
                 modifier = Modifier.padding(start = 12.dp)
             ) {
-                Row(
-                    verticalAlignment = Alignment.Top,
-                    horizontalArrangement = Arrangement.End,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(end = 8.dp)
-                ) {
-                    DetailIcons(painterResource(R.drawable.icon_share))
-                }
-                DetailTitle("2019 대구 치맥 페스티벌")
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    StarScore(score = 4.0)
-                    Spacer(modifier = Modifier.size(12.dp))
-                    navigateToMeetingScreen("12개")
-                }
                 Spacer(modifier = Modifier.size(12.dp))
-                DetailContent("하늘이 내린 최고의 조합, 치킨과 맥주! 매년 여름, 대구에서 치킨과 맥주의 기막힌 조합을 테마로 한 대구치맥페스티벌이 열린다. 치맥페스티벌이라는 말 그대로 축제 기간 동안 맛있는 치킨과 시원한 맥주를 마음껏 즐기며 가수들의 공연을 관람할 수 있다.")
                 DetailCommonContent(
                     title = "일정",
                     content1 = formatDateToString(Date()),
@@ -89,6 +113,9 @@ fun FestivalDetail() {
                 )
                 Spacer(modifier = Modifier.size(12.dp))
                 DetailCommonContent(title = "장소", address = "주소")
+                Spacer(modifier = Modifier.size(12.dp))
+                // MapView
+                NaverMap(modifier = Modifier.size(300.dp))
                 Spacer(modifier = Modifier.size(12.dp))
                 DetailCommonContent(title = "주최", content1 = "대구광역시", content2 = "053 - 248 - 9998")
                 Spacer(modifier = Modifier.size(24.dp))
@@ -101,8 +128,9 @@ fun FestivalDetail() {
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
 fun FestivalDetailPrev() {
-    FestivalDetail()
+    FestivalDetail(navController = rememberNavController())
 }
+
 
 @Composable
 fun DetailCommonContent(title: String, content1: String, content2: String) {
@@ -148,7 +176,6 @@ fun DetailContent(
     Column {
         Text(
             text = visibleText,
-            maxLines = maxLines,
             overflow = TextOverflow.Ellipsis,
         )
         if (content.length > maxLines * 25) {
@@ -211,7 +238,7 @@ fun Image(
         modifier = Modifier
             .fillMaxWidth()
             .height(200.dp)
-            .background(color = Color.Green)
+            .background(color = Color.White)
     )
 }
 
@@ -228,7 +255,7 @@ fun DetailIcons(painter: Painter) {
 }
 
 @Composable
-fun HomeCard() {
+fun FestivalDetailCard() {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
