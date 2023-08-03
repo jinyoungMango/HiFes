@@ -35,7 +35,7 @@ import com.ssafy.hifes.ui.theme.PrimaryPink
 @Composable
 fun GroupCreateScreen(navController: NavController) {
     Scaffold (
-        topBar = { TopWithBack(title = "모임 생성", onClick = {})},
+        topBar = { TopWithBack(navController, title = "모임 생성", onClick = {})},
         content = {
             val scrollState = rememberScrollState()
 

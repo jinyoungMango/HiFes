@@ -27,12 +27,22 @@ fun HifesApp(
             navBackStackEntry?.destination?.route ?: HifesDestinations.LOGIN_ROUTE
         var isBottomBarVisible = true
         navBackStackEntry?.destination?.route?.let { route ->
+            // 이전 화면이 어떤 화면이었는지 확인
+            val previousRoute = navController.previousBackStackEntry?.destination?.route
+
             isBottomBarVisible = when (route) {
                 NavigationItem.Home.screenRoute -> true
                 NavigationItem.Map.screenRoute -> true
                 NavigationItem.Group.screenRoute -> true
                 else -> false
             }
+
+            if (route == NavigationItem.Map.screenRoute && previousRoute == HifesDestinations.FESTIVAL_DETAIL) {
+                isBottomBarVisible = false
+            } else if (route == NavigationItem.Group.screenRoute && previousRoute == HifesDestinations.FESTIVAL_DETAIL) {
+                isBottomBarVisible = false
+            }
+
         }
         Scaffold(
             bottomBar = {

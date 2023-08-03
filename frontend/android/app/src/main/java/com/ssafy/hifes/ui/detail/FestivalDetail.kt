@@ -1,5 +1,6 @@
 package com.ssafy.hifes.ui.detail
 
+import NavigationItem
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -34,12 +35,14 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
@@ -47,6 +50,7 @@ import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.naver.maps.map.compose.NaverMap
 import com.ssafy.hifes.R
 import com.ssafy.hifes.ui.HifesDestinations
+import com.ssafy.hifes.ui.common.top.TopWithBack
 import com.ssafy.hifes.ui.iconpack.MyIconPack
 import com.ssafy.hifes.ui.iconpack.myiconpack.Imagenotfound
 import com.ssafy.hifes.ui.main.MainViewModel
@@ -64,87 +68,98 @@ fun FestivalDetail(navController: NavHostController, viewModel: MainViewModel) {
             Modifier
                 .verticalScroll(rememberScrollState())
         ) {
-
-            Box {
-                AsyncImage(
-                    model = festivalData!!.fesPosterPath,
-                    contentDescription = "Poster Image",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(250.dp),
-                    contentScale = ContentScale.Crop,
-                    placeholder = rememberVectorPainter(image = MyIconPack.Imagenotfound)
-                )
-                Row(
-                    verticalAlignment = Alignment.Top,
-                    horizontalArrangement = Arrangement.End,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(4.dp)
-                ) {
-                    DetailIcons(painterResource(R.drawable.icon_board)) {
-                        navController.navigate(
-                            HifesDestinations.BOARD_ROUTE
-                        )
-                    }
-                    DetailIcons(painterResource(R.drawable.icon_map)) {
+            if (festivalData != null) {
+                TopWithBack(navController, title = festivalData.fesTitle)
+                Box {
+                    AsyncImage(
+                        model = festivalData.fesPosterPath,
+                        contentDescription = "Poster Image",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(250.dp),
+                        contentScale = ContentScale.Crop,
+                        placeholder = rememberVectorPainter(image = MyIconPack.Imagenotfound)
+                    )
+                    Row(
+                        verticalAlignment = Alignment.Top,
+                        horizontalArrangement = Arrangement.End,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(4.dp)
+                    ) {
+                        DetailIcons(painterResource(R.drawable.icon_board)) {
+                            navController.navigate(
+                                HifesDestinations.BOARD_ROUTE
+                            )
+                        }
+                        DetailIcons(painterResource(R.drawable.icon_map)) {
+                            navController.navigate(
+                                NavigationItem.Map.screenRoute
+                            )
+                        }
                     }
                 }
-            }
-            Column {
-                Surface(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .offset(y = (-8).dp),
-                    shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
-                    shadowElevation = 2.dp
-                ) {
-                    Column(modifier = Modifier.padding(start = 12.dp, end = 12.dp)) {
-                        Spacer(modifier = Modifier.size(4.dp))
-                        Row(
-                            verticalAlignment = Alignment.Top,
-                            horizontalArrangement = Arrangement.End,
+                Column {
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .offset(y = (-8).dp),
+                        shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+                        shadowElevation = 2.dp
+                    ) {
+                        Column(modifier = Modifier.padding(start = 12.dp, end = 12.dp)) {
+                            Spacer(modifier = Modifier.size(4.dp))
+                            Row(
+                                verticalAlignment = Alignment.Top,
+                                horizontalArrangement = Arrangement.End,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(end = 8.dp)
+                            ) {
+                                DetailIcons(painterResource(R.drawable.icon_share)) {}
+                            }
+                            DetailTitle(festivalData.fesTitle)
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                StarScore(score = 4.0)
+                                Spacer(modifier = Modifier.size(12.dp))
+                                navigateToMeetingScreen("12개", navController) // 추후 서버에서 가져옴
+                            }
+                            Spacer(modifier = Modifier.size(12.dp))
+                            DetailContent(festivalData.fesOutline)
+
+                        }
+                    }
+                    Column(
+                        modifier = Modifier.padding(start = 12.dp, end = 12.dp)
+                    ) {
+                        Spacer(modifier = Modifier.size(12.dp))
+                        DetailCommonContent(
+                            title = "일정",
+                            content1 = formatSqlDateToString(festivalData.fesStartDate),
+                            content2 = formatSqlDateToString(festivalData.fesEndDate)
+                        )
+                        Spacer(modifier = Modifier.size(12.dp))
+                        DetailCommonContent(title = "장소", address = "주소")
+                        Spacer(modifier = Modifier.size(12.dp))
+                        NaverMap(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(end = 8.dp)
-                        ) {
-                            DetailIcons(painterResource(R.drawable.icon_share)) {}
-                        }
-                        DetailTitle(festivalData!!.fesTitle)
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            StarScore(score = 4.0)
-                            Spacer(modifier = Modifier.size(12.dp))
-                            navigateToMeetingScreen("12개") // 추후 서버에서 가져옴
-                        }
+                                .height(250.dp)
+                                .padding(8.dp)
+                        )
                         Spacer(modifier = Modifier.size(12.dp))
-                        DetailContent(festivalData.fesOutline)
-
+                        DetailCommonContent(
+                            title = "주최",
+                            content1 = "대구광역시",
+                            content2 = "053 - 248 - 9998"
+                        )
+                        Spacer(modifier = Modifier.size(24.dp))
                     }
                 }
-                Column(
-                    modifier = Modifier.padding(start = 12.dp, end = 12.dp)
-                ) {
-                    Spacer(modifier = Modifier.size(12.dp))
-                    DetailCommonContent(
-                        title = "일정",
-                        content1 = formatSqlDateToString(festivalData!!.fesStartDate),
-                        content2 = formatSqlDateToString(festivalData.fesEndDate)
-                    )
-                    Spacer(modifier = Modifier.size(12.dp))
-                    DetailCommonContent(title = "장소", address = "주소")
-                    Spacer(modifier = Modifier.size(12.dp))
-                    NaverMap(modifier = Modifier.fillMaxWidth().height(250.dp).padding(8.dp))
-                    Spacer(modifier = Modifier.size(12.dp))
-                    DetailCommonContent(
-                        title = "주최",
-                        content1 = "대구광역시",
-                        content2 = "053 - 248 - 9998"
-                    )
-                    Spacer(modifier = Modifier.size(24.dp))
-                }
             }
+
         }
     }
 
@@ -231,9 +246,11 @@ fun DetailContent(
 
 
 @Composable
-fun navigateToMeetingScreen(count: String) {
+fun navigateToMeetingScreen(count: String, navController: NavController) {
     OutlinedButton(
-        onClick = { /*TODO*/ },
+        onClick = {
+            navController.navigate(NavigationItem.Group.screenRoute)
+        },
         modifier = Modifier.height(36.dp)
     ) {
         Text(

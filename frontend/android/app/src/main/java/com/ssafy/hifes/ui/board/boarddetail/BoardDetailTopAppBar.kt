@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.ssafy.hifes.R
 import com.ssafy.hifes.data.model.PostDto
 import com.ssafy.hifes.ui.board.boardcommon.PostType
@@ -14,15 +15,15 @@ import com.ssafy.hifes.ui.common.top.TopWithBack
 import com.ssafy.hifes.ui.theme.LightGrey
 
 @Composable
-fun BoardDetailTopAppBar(boardType : String) {
+fun BoardDetailTopAppBar(navController: NavController, boardType : String) {
     var appBarTitle = getBoardDetailAppBarTitle(boardType, LocalContext.current)
     Column {
         when(boardType){
             PostType.NOTIFICATION.label -> {
-                TopWithBack(title = appBarTitle)
+                TopWithBack(navController, title = appBarTitle)
             }
             else -> {
-                TopWithBack(title = appBarTitle, more = true)
+                TopWithBack(navController, title = appBarTitle, more = true)
             }
         }
         Divider(color = LightGrey, thickness = 2.dp)

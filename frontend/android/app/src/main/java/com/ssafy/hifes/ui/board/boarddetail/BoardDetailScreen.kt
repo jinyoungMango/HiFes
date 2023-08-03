@@ -22,7 +22,7 @@ fun BoardDetailScreen(navController: NavController, viewModel: BoardViewModel) {
     val selectedPost = viewModel.selectedPost.observeAsState()
     val scrollState = rememberScrollState()
     Column(modifier = Modifier.verticalScroll(scrollState)) {
-        BoardDetailTopAppBar(viewModel.selectedPostType)
+        BoardDetailTopAppBar(navController, viewModel.selectedPostType)
         Column(modifier = Modifier.padding(16.dp, 0.dp)) {
             if (selectedPost.value != null) {
                 BoardDetailHead(postData = selectedPost.value!!)

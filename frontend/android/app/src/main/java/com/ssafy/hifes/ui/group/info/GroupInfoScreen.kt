@@ -19,6 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.ssafy.hifes.ui.common.top.TopWithBack
 import com.ssafy.hifes.ui.group.info.chat.GroupChatScreen
 import com.ssafy.hifes.ui.group.info.detail.GroupDetailScreen
@@ -27,7 +29,7 @@ import com.ssafy.hifes.ui.theme.PrimaryPink
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GroupInfoScreen() {
+fun GroupInfoScreen(navController: NavController) {
     var selectedTab by remember { mutableStateOf(0) }
     var title = if (selectedTab == 0) "모임 상세"
                 else if (selectedTab == 1) "모임 사진"
@@ -46,7 +48,7 @@ fun GroupInfoScreen() {
         }
     }
 
-    Scaffold(topBar = { TopWithBack(title = title) }, floatingActionButton = {
+    Scaffold(topBar = { TopWithBack(navController, title = title) }, floatingActionButton = {
         floatingButton?.invoke()
     }) {
         Column(modifier = Modifier.padding(it)) {
@@ -70,5 +72,5 @@ fun GroupInfoScreen() {
 @Preview
 @Composable
 fun GroupInfoScreenPrev() {
-    GroupInfoScreen()
+    GroupInfoScreen(rememberNavController())
 }

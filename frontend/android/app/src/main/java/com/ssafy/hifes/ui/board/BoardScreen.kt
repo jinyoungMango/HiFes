@@ -29,7 +29,7 @@ fun BoardScreen(
     val postList = viewModel.postList.observeAsState()
 
     Scaffold(
-        topBar = { TopWithBack(title = stringResource(id = R.string.board_appbar_title)) }
+        topBar = { TopWithBack(navController, title = stringResource(id = R.string.board_appbar_title)) }
     ) {
         if (postList.value != null) {
             Column(

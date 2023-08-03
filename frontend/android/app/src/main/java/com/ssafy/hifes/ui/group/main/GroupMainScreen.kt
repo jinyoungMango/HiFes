@@ -48,7 +48,7 @@ fun GroupMainScreen(navController: NavController) {
     var groupList = listOf(tmp, tmp, tmp,tmp, tmp, tmp,tmp, tmp, tmp,tmp, tmp, tmp)
 
     Scaffold(
-        topBar = { TopWithBack(title = "모임") },
+        topBar = { TopWithBack(navController, title = "모임") },
         content = {
             Column (
                 Modifier

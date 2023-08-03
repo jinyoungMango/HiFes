@@ -43,7 +43,7 @@ fun HifesNavGraph(
             HomeScreen(navController, mainViewModel)
         }
         composable(NavigationItem.Map.screenRoute) {
-            MapScreen(mainViewModel)
+            MapScreen(navController, mainViewModel)
         }
         composable(NavigationItem.Group.screenRoute) {
             GroupMainScreen(navController)
