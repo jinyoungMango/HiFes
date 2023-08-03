@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.ssafy.hifes.R
 import com.ssafy.hifes.data.model.PostDto
 import com.ssafy.hifes.ui.board.BoardViewModel
@@ -16,7 +17,7 @@ import com.ssafy.hifes.ui.common.top.TopWithBack
 import com.ssafy.hifes.ui.theme.LightGrey
 
 @Composable
-fun BoardDetailTopAppBar(postData: PostDto, viewModel: BoardViewModel) {
+fun BoardDetailTopAppBar(navController: NavController, postData: PostDto, viewModel: BoardViewModel) {
     var appBarTitle = getBoardDetailAppBarTitle(postData.postType, LocalContext.current)
     var menuList: MutableList<CustomMenuItem> = mutableListOf()
 
@@ -37,9 +38,9 @@ fun BoardDetailTopAppBar(postData: PostDto, viewModel: BoardViewModel) {
 
     Column {
         if (postData.postType == PostType.NOTIFICATION.label || postData.normalUserId != viewModel.userDataId) {
-            TopWithBack(title = appBarTitle)
+            TopWithBack(navController, title = appBarTitle)
         } else {
-            TopWithBack(title = appBarTitle, more = true, menuList = menuList)
+            TopWithBack(navController, title = appBarTitle, more = true, menuList = menuList)
         }
     }
     Divider(color = LightGrey, thickness = 2.dp)

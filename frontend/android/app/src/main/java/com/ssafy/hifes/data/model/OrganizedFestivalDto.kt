@@ -13,4 +13,7 @@ data class OrganizedFestivalDto(
     var fesAddress: String,
     var fesLatitude: Double,
     var fesLongitude: Double
-)
+) {
+    constructor() : this(0, 0, "", "", Date(java.util.Date().time), Date(java.util.Date().time),
+        "", "", 0.0, 0.0)
+}

@@ -93,7 +93,7 @@ fun ParticipatedFestScreen(
                 .fillMaxHeight(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            TopWithBack(title = stringResource(R.string.participated_fest_appbar_title))
+            TopWithBack(navController, title = stringResource(R.string.participated_fest_appbar_title))
             Spacer(modifier = Modifier.size(20.dp))
             LazyColumn {
                 items(festivalTableList.size) { index ->

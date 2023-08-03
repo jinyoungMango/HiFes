@@ -1,5 +1,6 @@
 package com.ssafy.hifes.ui.login
 
+import NavigationItem
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.rememberNavController
 import com.ssafy.hifes.R
 import com.ssafy.hifes.ui.HifesDestinations
@@ -80,8 +82,12 @@ fun Buttons(navController: NavController, modifier: Modifier) {
         LoginButton(
             color = KakaoYellow,
             title = stringResource(R.string.kakao_login),
-            onClick = { context ->
-                navController.navigate(HifesDestinations.MY_PAGE_ROUTE)
+            onClick = {
+                navController.navigate(NavigationItem.Home.screenRoute) {
+                    popUpTo(navController.graph.findStartDestination().id) {
+                        inclusive = true
+                    }
+                }
             },
             textColor = R.color.black
         )

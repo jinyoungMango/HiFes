@@ -22,6 +22,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.ssafy.hifes.R
 import com.ssafy.hifes.ui.common.CustomMenuItem
 import com.ssafy.hifes.ui.theme.PrimaryPink
@@ -33,6 +35,7 @@ import com.ssafy.hifes.ui.theme.PrimaryPink
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopWithBack(
+    navController: NavController,
     title: String = "타이틀",
     more: Boolean = false,
     btn: Boolean = false,
@@ -97,9 +100,9 @@ fun TopWithBack(
 @Composable
 fun TopPrev() {
     Column(Modifier.padding(vertical = 8.dp)) {
-        TopWithBack(title = "타이틀1")
-        TopWithBack(title = "타이틀2", more = true, onClick = {})
-        TopWithBack(title = "타이틀3", btn = true, btnText = "글쓰기", onClick = {})
+        TopWithBack(rememberNavController(), title = "타이틀1")
+        TopWithBack(rememberNavController(), title = "타이틀2", more = true, onClick = {})
+        TopWithBack(rememberNavController(), title = "타이틀3", btn = true, btnText = "글쓰기", onClick = {})
     }
 
 }

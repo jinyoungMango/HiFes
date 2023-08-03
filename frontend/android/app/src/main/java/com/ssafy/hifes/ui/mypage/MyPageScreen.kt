@@ -61,7 +61,7 @@ fun MyPageScreen(
             .fillMaxHeight()
             .fillMaxWidth()
     ) {
-        TopWithBack(title = stringResource(R.string.mypage_appbar_title))
+        TopWithBack(navController, title = stringResource(R.string.mypage_appbar_title))
         Spacer(modifier = Modifier.size(20.dp))
 
         Column(modifier = Modifier.padding(20.dp, 0.dp)) {

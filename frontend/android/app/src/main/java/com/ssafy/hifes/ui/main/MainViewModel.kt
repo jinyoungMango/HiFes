@@ -1,4 +1,4 @@
-package com.ssafy.hifes.ui.map
+package com.ssafy.hifes.ui.main
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,11 +7,15 @@ import com.ssafy.hifes.data.model.OrganizedFestivalDto
 import java.sql.Date
 import java.text.SimpleDateFormat
 
-class MapViewModel : ViewModel() {
+class MainViewModel : ViewModel() {
     private var _festivalList: MutableLiveData<MutableList<OrganizedFestivalDto>> =
         MutableLiveData()
     val festivalList: LiveData<MutableList<OrganizedFestivalDto>> = _festivalList
-    lateinit var testDate: Date
+
+    private var _selectedFestival: MutableLiveData<OrganizedFestivalDto> = MutableLiveData()
+    val selectedFestival: LiveData<OrganizedFestivalDto> = _selectedFestival
+
+    var testDate: Date
 
     init {
         val formatter = SimpleDateFormat("yyyy.MM.dd")
@@ -68,5 +72,9 @@ class MapViewModel : ViewModel() {
             )
         }
         _festivalList.postValue(festivalListDummyData)
+    }
+
+    fun getFestivalDetail(festival: OrganizedFestivalDto) {
+        _selectedFestival.postValue(festival)
     }
 }
