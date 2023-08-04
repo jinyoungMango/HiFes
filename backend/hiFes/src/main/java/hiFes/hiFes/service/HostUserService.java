@@ -24,7 +24,7 @@ import java.util.Map;
 public class HostUserService {
     private final HostUserRepository hostUserRepository;
 
-    public void signUp(HostUserSignUpDto hostUserSignUpDto, Map<String, Object> context, HttpSession session){
+    public void signUp(HostUserSignUpDto hostUserSignUpDto, Map<String, Object> context/*, HttpSession session*/){
 
         HostUser hostUser = HostUser.builder()
                 .email((String) context.get("email"))
@@ -38,15 +38,19 @@ public class HostUserService {
         hostUserRepository.save(hostUser);
 
         // 로그인 진행. normal이면 여기서 FCM 토큰도 받아야함
-        session.setAttribute("userId", context.get("email"));
+        //session.setAttribute("userId", context.get("email"));
 
     }
 
-    public void login(String email, String token, HttpSession session){
-        session.setAttribute("userId", email);
-//        session.setAttribute("access_Token", token);
-        // normal이면 여기서 FCM 토큰도 저장해야 함
+    public HostUser getByEmail(String email) {
+        return hostUserRepository.findByEmail(email).orElse(null);
     }
+
+//    public void login(String email, String token/*, HttpSession session*/){
+//        session.setAttribute("userId", email);
+////        session.setAttribute("access_Token", token);
+//        // normal이면 여기서 FCM 토큰도 저장해야 함
+//    }
 
 
 

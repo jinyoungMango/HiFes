@@ -30,6 +30,8 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests()
                 .antMatchers("host/sign-up").permitAll()
+                .antMatchers("group/delete").permitAll()
+                .antMatchers("group/create").permitAll()
                 .antMatchers("/","/css/**","/images/**","/js/**","/favicon.ico").permitAll();
 
 
