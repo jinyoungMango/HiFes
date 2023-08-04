@@ -14,11 +14,16 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
+import com.ssafy.hifes.data.model.Group
+import com.ssafy.hifes.ui.board.BoardViewModel
 import com.ssafy.hifes.ui.common.HashtagChips
+import com.ssafy.hifes.ui.group.GroupViewModel
 
 @Composable
-fun GroupDetailScreen() {
+fun GroupDetailScreen(navController: NavController, viewModel: GroupViewModel) {
     val user = User(
         url = "https://fastly.picsum.photos/id/10/2500/1667.jpg?hmac=J04WWC_ebchx3WwzbM-Z4_KC_LeLBWr5LZMaAkWkF68",
         name = "L"
@@ -72,5 +77,5 @@ fun GroupDetailScreen() {
 @Preview
 @Composable
 fun GroupDetailScreenPrev() {
-    GroupDetailScreen()
+    GroupDetailScreen(rememberNavController(), GroupViewModel())
 }
