@@ -1,4 +1,4 @@
-package hiFes.hiFes.dto;
+package hiFes.hiFes.dto.group;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

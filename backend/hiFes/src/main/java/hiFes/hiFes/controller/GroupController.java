@@ -1,8 +1,7 @@
 package hiFes.hiFes.controller;
 
 import hiFes.hiFes.domain.BaseTimeEntity;
-import hiFes.hiFes.dto.GroupCreateDto;
-import hiFes.hiFes.dto.HostUserSignUpDto;
+import hiFes.hiFes.dto.group.GroupCreateDto;
 import hiFes.hiFes.service.GroupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -12,8 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import hiFes.hiFes.service.NormalUserService;
 import org.springframework.web.bind.annotation.RequestBody;
-
-import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -43,6 +40,8 @@ public class GroupController extends BaseTimeEntity {
     @CrossOrigin(origins = "*")
     @PostMapping("group/detail")
     public ResponseEntity<String> groupDetail(/*String accessToken*/ Long id){
+        groupService.groupDetail(id.longValue());
 
+        return ResponseEntity.ok("group detile open group id : " + id);
     }
 }

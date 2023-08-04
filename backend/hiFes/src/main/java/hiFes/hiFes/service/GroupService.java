@@ -1,9 +1,15 @@
 package hiFes.hiFes.service;
 
-import hiFes.hiFes.domain.HostUser;
 import hiFes.hiFes.domain.group.Group;
-import hiFes.hiFes.dto.GroupCreateDto;
+import hiFes.hiFes.domain.group.Hashtag;
+import hiFes.hiFes.domain.group.JoinedGroup;
+import hiFes.hiFes.domain.group.RegisteredHashtag;
+import hiFes.hiFes.dto.group.GroupCreateDto;
+import hiFes.hiFes.dto.group.HashTagDto;
 import hiFes.hiFes.repository.group.GroupRepository;
+import hiFes.hiFes.repository.group.HashtagRepository;
+import hiFes.hiFes.repository.group.JoinedGroupRepository;
+import hiFes.hiFes.repository.group.RegisteredHashtagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,8 +21,11 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class GroupService {
     private final GroupRepository groupRepository;
+    private final JoinedGroupRepository joinedGroupRepository;
+    private final RegisteredHashtagRepository registeredHashtagRepository;
+    private final HashtagRepository hashtagRepository;
 
-    public void groupCreate(GroupCreateDto groupCreateDto){
+    public void groupCreate(/*이메일*/GroupCreateDto groupCreateDto, HashTagDto hashTagDto){
         LocalDateTime now = LocalDateTime.of(2020,9,16,0,0,0);
         Group group = Group.builder()
                 .groupName(groupCreateDto.getGroupName())
@@ -28,16 +37,39 @@ public class GroupService {
 
 
         groupRepository.save(group);
+
+        JoinedGroup joinedGroup = new JoinedGroup();
+        // 이메일로 노말유저 아이디를 찾아서 저장
+//        joinedGroup.setNormalUser(normalUser);
+        joinedGroup.setGroup(group);
+        // 그룹을 생성한 사람이 모임장이 된다.
+        joinedGroup.setIsLeader(true);
+
+        joinedGroupRepository.save(joinedGroup);
+
+        Hashtag hashtag = Hashtag.builder()
+                .title(hashTagDto.getTitle())
+                .build();
+
+        hashtagRepository.save(hashtag);
+
+        RegisteredHashtag registeredHashtag = new RegisteredHashtag();
+        registeredHashtag.setGroup(group);
+
+        registeredHashtagRepository.save(registeredHashtag);
+
+
+
     }
 
     public void groupDelete(Long id){
         groupRepository.deleteById(id);
     }
 
-//    public List<GroupCreateDto> groupDetail(Long id){
-//
-//    }
-//
+    public void groupDetail(Long id){
+
+    }
+
 //    public void groupSearch(){
 //
 //    }
