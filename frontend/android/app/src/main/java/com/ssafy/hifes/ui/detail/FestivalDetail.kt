@@ -69,7 +69,6 @@ fun FestivalDetail(navController: NavHostController, viewModel: MainViewModel) {
                 .verticalScroll(rememberScrollState())
         ) {
             if (festivalData != null) {
-                TopWithBack(navController, title = festivalData.fesTitle)
                 Box {
                     AsyncImage(
                         model = festivalData.fesPosterPath,
