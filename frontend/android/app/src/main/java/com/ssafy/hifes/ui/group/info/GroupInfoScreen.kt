@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -22,18 +21,18 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.ssafy.hifes.ui.common.top.TopWithBack
+import com.ssafy.hifes.ui.group.GroupViewModel
 import com.ssafy.hifes.ui.group.info.chat.GroupChatScreen
 import com.ssafy.hifes.ui.group.info.detail.GroupDetailScreen
 import com.ssafy.hifes.ui.group.info.picture.GroupPictureScreen
 import com.ssafy.hifes.ui.theme.PrimaryPink
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GroupInfoScreen(navController: NavController) {
+fun GroupInfoScreen(navController: NavController, viewModel: GroupViewModel) {
     var selectedTab by remember { mutableStateOf(0) }
     var title = if (selectedTab == 0) "모임 상세"
-                else if (selectedTab == 1) "모임 사진"
-                else "모임 채팅"
+    else if (selectedTab == 1) "모임 사진"
+    else "모임 채팅"
     var floatingButton: @Composable (() -> Unit)? = null
 
     if (selectedTab == 1) {
@@ -56,10 +55,10 @@ fun GroupInfoScreen(navController: NavController) {
                 modifier = Modifier,
                 selected = selectedTab,
                 setSelected = { selectedTab = it },
-                )
+            )
             Spacer(modifier = Modifier.height(24.dp))
             if (selectedTab == 0) {
-                GroupDetailScreen()
+                GroupDetailScreen(navController, viewModel)
             } else if (selectedTab == 1) {
                 GroupPictureScreen()
             } else if (selectedTab == 2) {
@@ -72,5 +71,5 @@ fun GroupInfoScreen(navController: NavController) {
 @Preview
 @Composable
 fun GroupInfoScreenPrev() {
-    GroupInfoScreen(rememberNavController())
+    GroupInfoScreen(rememberNavController(), GroupViewModel())
 }
