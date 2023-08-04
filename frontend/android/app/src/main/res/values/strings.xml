@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Hifes</string>
+    <string name="app_name">하이페스</string>
 
     <!-- bottom navigation item -->
     <string name="nav_home">홈</string>
