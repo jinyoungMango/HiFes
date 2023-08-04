@@ -52,7 +52,7 @@ fun GroupInfoScreen(navController: NavController, viewModel: GroupViewModel) {
     }) {
         Column(modifier = Modifier.padding(it)) {
             GroupTab(
-                modifier = Modifier,
+                modifier = Modifier.padding(it),
                 selected = selectedTab,
                 setSelected = { selectedTab = it },
             )

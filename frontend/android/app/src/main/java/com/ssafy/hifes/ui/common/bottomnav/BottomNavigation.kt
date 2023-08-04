@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Gray
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -22,6 +23,7 @@ import com.ssafy.hifes.ui.common.bottomnav.GROUP
 import com.ssafy.hifes.ui.common.bottomnav.HOME
 import com.ssafy.hifes.ui.common.bottomnav.MAP
 import com.ssafy.hifes.ui.theme.PrimaryPink
+import com.ssafy.hifes.ui.theme.pretendardFamily
 
 
 @Preview
@@ -59,7 +61,7 @@ fun BottomNavigation(navController: NavHostController) {
                             .height(29.dp)
                     )
                 },
-                label = { Text(stringResource(id = item.title), fontSize = 10.sp) },
+                label = { Text(stringResource(id = item.title), fontSize = 10.sp, fontFamily = pretendardFamily, fontWeight = FontWeight.Normal) },
                 selectedContentColor = PrimaryPink,
                 unselectedContentColor = Gray,
                 selected = currentRoute == item.screenRoute,

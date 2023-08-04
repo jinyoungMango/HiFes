@@ -16,6 +16,7 @@ class MainViewModel : ViewModel() {
     val selectedFestival: LiveData<OrganizedFestivalDto> = _selectedFestival
 
     var testDate: Date
+    val festOutline = "하늘이 내린 최고의 조합, 치킨과 맥주! 매년 여름, 대구에서 치킨과 맥주의 기막힌 조합을 테마로 한 대구치맥페스티벌이 열린다. 치맥페스티벌이라는 말 그대로 축제 기간 동안 맛있는 치킨과 시원한 맥주를 마음껏 즐기며 가수들의 공연을 관람할 수 있다. ..."
 
     init {
         val formatter = SimpleDateFormat("yyyy.MM.dd")
@@ -35,7 +36,7 @@ class MainViewModel : ViewModel() {
                     "https://picsum.photos/600",
                     testDate,
                     testDate,
-                    "festival Outline",
+                    festOutline,
                     "festival Address",
                     36.105995,
                     128.42564
@@ -50,7 +51,7 @@ class MainViewModel : ViewModel() {
                     "https://picsum.photos/600",
                     testDate,
                     testDate,
-                    "festival Outline",
+                    festOutline,
                     "festival Address",
                     36.105894,
                     128.42573
@@ -64,7 +65,7 @@ class MainViewModel : ViewModel() {
                     "https://picsum.photos/600",
                     testDate,
                     testDate,
-                    "festival Outline",
+                    festOutline,
                     "festival Address",
                     36.105993,
                     128.4263

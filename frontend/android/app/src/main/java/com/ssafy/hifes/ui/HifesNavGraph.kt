@@ -16,6 +16,7 @@ import com.ssafy.hifes.ui.board.write.PostWriteScreen
 import com.ssafy.hifes.ui.detail.FestivalDetail
 import com.ssafy.hifes.ui.group.GroupViewModel
 import com.ssafy.hifes.ui.group.create.GroupCreateScreen
+import com.ssafy.hifes.ui.group.info.GroupInfoScreen
 import com.ssafy.hifes.ui.group.info.detail.GroupDetailScreen
 import com.ssafy.hifes.ui.group.main.GroupMainScreen
 import com.ssafy.hifes.ui.home.HomeScreen
@@ -101,7 +102,7 @@ fun HifesNavGraph(
         composable(
             route = HifesDestinations.GROUP_DETAIL
         ) {
-            GroupDetailScreen(navController = navController, viewModel = groupViewModel)
+            GroupInfoScreen(navController = navController, viewModel = groupViewModel)
         }
     }
 }

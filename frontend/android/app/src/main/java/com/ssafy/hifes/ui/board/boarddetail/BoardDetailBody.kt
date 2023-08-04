@@ -24,6 +24,7 @@ import com.ssafy.hifes.ui.board.boardcommon.CustomRatingBar
 import com.ssafy.hifes.ui.iconpack.MyIconPack
 import com.ssafy.hifes.ui.iconpack.myiconpack.Imagenotfound
 import com.ssafy.hifes.ui.theme.PrimaryPink
+import com.ssafy.hifes.ui.theme.pretendardFamily
 import java.text.SimpleDateFormat
 
 @Composable
@@ -46,6 +47,7 @@ fun BoardDetailBody(postData : PostDto) {
                 Spacer(modifier = Modifier.size(10.dp))
                 Text(
                     text = postData.rating.toString(),
+                    fontFamily = pretendardFamily,
                     fontWeight = FontWeight.Bold,
                     fontSize = 24.sp,
                     color = PrimaryPink
@@ -68,6 +70,8 @@ fun BoardDetailBody(postData : PostDto) {
         }
         Text(
             text = postData.content,
+            fontFamily = pretendardFamily,
+            fontWeight = FontWeight.Normal,
             fontSize = 14.sp
         )
         Spacer(modifier = Modifier.size(16.dp))

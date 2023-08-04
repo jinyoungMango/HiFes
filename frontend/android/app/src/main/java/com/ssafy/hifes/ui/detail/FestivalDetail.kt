@@ -55,6 +55,7 @@ import com.ssafy.hifes.ui.iconpack.MyIconPack
 import com.ssafy.hifes.ui.iconpack.myiconpack.Imagenotfound
 import com.ssafy.hifes.ui.main.MainViewModel
 import com.ssafy.hifes.ui.map.StarScore
+import com.ssafy.hifes.ui.theme.pretendardFamily
 import com.ssafy.hifes.util.CommonUtils.formatSqlDateToString
 
 
@@ -113,7 +114,7 @@ fun FestivalDetail(navController: NavHostController, viewModel: MainViewModel) {
                                 horizontalArrangement = Arrangement.End,
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(end = 8.dp)
+                                    .padding(top = 2.dp, end = 8.dp)
                             ) {
                                 DetailIcons(painterResource(R.drawable.icon_share)) {}
                             }
@@ -268,12 +269,12 @@ fun DetailTitle(title: String) {
             .fillMaxWidth()
             .height(40.dp)
     ) {
-
         Text(
             text = title,
             color = Color.Black,
+            fontFamily = pretendardFamily,
             fontWeight = FontWeight.Bold,
-            fontSize = 20.sp
+            fontSize = 22.sp
         )
 
     }

@@ -22,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ssafy.hifes.R
+import com.ssafy.hifes.ui.theme.pretendardFamily
 
 
 @Composable
@@ -85,6 +86,7 @@ fun StarScore(score: Double) {
         Text(
             text = score.toString(),
             color = Color.Black,
+            fontFamily = pretendardFamily,
             fontWeight = FontWeight.Bold,
             fontSize = 18.sp
         )
@@ -97,12 +99,15 @@ fun TextTitleWithContent(address: String, startDate: String, endDate: String) {
     Text(
         text = "장소",
         color = Color.Black,
+        fontFamily = pretendardFamily,
         fontWeight = FontWeight.Bold,
         fontSize = 18.sp
     )
     Text(
         text = address,
         color = Color.Black,
+        fontFamily = pretendardFamily,
+        fontWeight = FontWeight.Medium,
         fontSize = 18.sp
     )
 
@@ -110,11 +115,14 @@ fun TextTitleWithContent(address: String, startDate: String, endDate: String) {
     Text(
         text = "일정",
         color = Color.Black,
+        fontFamily = pretendardFamily,
         fontWeight = FontWeight.Bold,
         fontSize = 18.sp
     )
     Text(
         text = address,
+        fontFamily = pretendardFamily,
+        fontWeight = FontWeight.Medium,
         color = Color.Black,
         fontSize = 18.sp
     )

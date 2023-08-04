@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.ssafy.hifes.data.model.Group
+import com.ssafy.hifes.ui.theme.pretendardFamily
 
 @Composable
 fun GroupItem(
@@ -65,13 +66,26 @@ fun GroupItem(
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 Column(Modifier.fillMaxWidth()) {
-                    Text(text = group.title, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                    Text(
+                        text = group.title,
+                        fontFamily = pretendardFamily,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp
+                    )
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text(text = group.content)
+                    Text(
+                        text = group.content,
+                        fontFamily = pretendardFamily,
+                        fontWeight = FontWeight.Normal
+                    )
                     Spacer(modifier = Modifier.height(4.dp))
                     LazyRow() {
                         items(group.hashtag) { item ->
-                            Text(text = "#$item")
+                            Text(
+                                text = "#$item",
+                                fontFamily = pretendardFamily,
+                                fontWeight = FontWeight.Normal
+                            )
                             Spacer(modifier = Modifier.width(4.dp))
                         }
                     }
@@ -80,7 +94,8 @@ fun GroupItem(
             Text(
                 text = "${group.currNum} / ${group.maxNum}", modifier = Modifier
                     .fillMaxWidth()
-                    .padding(end = 16.dp, bottom = 8.dp), textAlign = TextAlign.End
+                    .padding(end = 16.dp, bottom = 8.dp), textAlign = TextAlign.End,
+                fontFamily = pretendardFamily, fontWeight = FontWeight.Normal
             )
         }
     }

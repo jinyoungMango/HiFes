@@ -21,6 +21,7 @@ import com.ssafy.hifes.data.model.PostDto
 import com.ssafy.hifes.ui.board.boardcommon.PostType
 import com.ssafy.hifes.ui.theme.Grey
 import com.ssafy.hifes.ui.theme.LightGrey
+import com.ssafy.hifes.ui.theme.pretendardFamily
 import com.ssafy.hifes.util.CommonUtils
 
 @Composable
@@ -30,6 +31,7 @@ fun BoardDetailHead(postData: PostDto, userDataId: Int) {
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Text(
                 text = "닉네임",//서버에서 게시글 정보 가져올때 닉네임 함께 가져오도록 해야한다
+                fontFamily = pretendardFamily,
                 fontWeight = FontWeight.Bold,
                 fontSize = 14.sp
             )
@@ -37,11 +39,13 @@ fun BoardDetailHead(postData: PostDto, userDataId: Int) {
 
                 if (postData.hidden!!) Text(
                     "비공개",
+                    fontFamily = pretendardFamily,
                     fontWeight = FontWeight.Bold,
                     fontSize = 14.sp
                 )
                 else Text(
                     "공개",
+                    fontFamily = pretendardFamily,
                     fontWeight = FontWeight.Bold,
                     fontSize = 14.sp
                 )
@@ -52,12 +56,14 @@ fun BoardDetailHead(postData: PostDto, userDataId: Int) {
         Spacer(modifier = Modifier.size(4.dp))
         Text(
             text = postData.title,
+            fontFamily = pretendardFamily,
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp
         )
         Spacer(modifier = Modifier.size(4.dp))
         Text(
             text = getBoardDetailHeaderDateSeenTimeString(postData, LocalContext.current),
+            fontFamily = pretendardFamily,
             fontWeight = FontWeight.Normal,
             fontSize = 12.sp,
             color = Grey

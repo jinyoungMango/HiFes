@@ -25,6 +25,8 @@ import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ssafy.hifes.R
@@ -32,6 +34,7 @@ import com.ssafy.hifes.ui.board.BoardViewModel
 import com.ssafy.hifes.ui.iconpack.MyIconPack
 import com.ssafy.hifes.ui.iconpack.myiconpack.Writecomment
 import com.ssafy.hifes.ui.theme.PrimaryPink
+import com.ssafy.hifes.ui.theme.pretendardFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -57,7 +60,8 @@ fun CommentWriteComponent(
                 colors = TextFieldDefaults.outlinedTextFieldColors(focusedBorderColor = PrimaryPink),
                 placeholder = { Text(text = stringResource(id = R.string.board_detail_write_comment_hint)) },
                 shape = RoundedCornerShape(14.dp),
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                textStyle = TextStyle(fontFamily = pretendardFamily, fontWeight = FontWeight.Normal)
             )
             Spacer(modifier = Modifier.size(10.dp))
             Icon(

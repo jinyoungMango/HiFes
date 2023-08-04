@@ -27,6 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.ssafy.hifes.ui.theme.pretendardFamily
 import java.lang.reflect.Member
 
 // https://ichef.bbci.co.uk/news/640/cpsprodpb/E172/production/_126241775_getty_cats.png
@@ -53,14 +54,14 @@ fun GroupMember(user: User) {
                 .clip(CircleShape)
         )
         Spacer(modifier = Modifier.height(8.dp))
-        Text(text = user.name, fontSize = 16.sp)
+        Text(text = user.name, fontSize = 16.sp, fontFamily = pretendardFamily, fontWeight = FontWeight.SemiBold)
     }
 }
 
 @Composable
 fun GroupMemberRow(groupMember: List<User>) {
     Column {
-        Text(text = "멤버", fontSize = 16.sp)
+        Text(text = "멤버", fontSize = 16.sp, fontFamily = pretendardFamily, fontWeight = FontWeight.SemiBold)
         Spacer(modifier = Modifier.height(8.dp))
         LazyRow {
             items(groupMember) { item ->
@@ -74,7 +75,7 @@ fun GroupMemberRow(groupMember: List<User>) {
 @Composable
 fun GroupPictureRow(img: List<Img>) {
     Column {
-        Text(text = "사진", fontSize = 16.sp, )
+        Text(text = "사진", fontSize = 16.sp, fontFamily = pretendardFamily, fontWeight = FontWeight.SemiBold)
         Spacer(modifier = Modifier.height(8.dp))
         LazyRow {
             items(img) { item ->

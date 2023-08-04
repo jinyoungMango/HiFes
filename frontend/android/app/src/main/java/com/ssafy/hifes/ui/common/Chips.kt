@@ -28,10 +28,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ssafy.hifes.ui.theme.PrimaryPink
+import com.ssafy.hifes.ui.theme.pretendardFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChipsSelectable(chips: List<String>, initStartPosition : Int = 0, onChipClick : (index : Int) -> Any) {
+fun ChipsSelectable(
+    chips: List<String>,
+    initStartPosition: Int = 0,
+    onChipClick: (index: Int) -> Any
+) {
     var selected by rememberSaveable { mutableStateOf(initStartPosition) }
 
     LazyRow() {
@@ -41,15 +46,26 @@ fun ChipsSelectable(chips: List<String>, initStartPosition : Int = 0, onChipClic
                 onClick = {
                     selected = index
                     onChipClick(index)
-                          },
-                label = { Text(item) },
-                colors = FilterChipDefaults.filterChipColors(selectedContainerColor = PrimaryPink, selectedLabelColor = Color.White)
+                },
+                label = {
+                    Text(
+                        item,
+                        fontFamily = pretendardFamily,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                },
+                colors = FilterChipDefaults.filterChipColors(
+                    selectedContainerColor = PrimaryPink,
+                    selectedLabelColor = Color.White,
+                    containerColor = Color.White
                 )
+            )
             Spacer(modifier = Modifier.width(16.dp))
         }
     }
 
 }
+
 @Composable
 fun Chip(
     text: String,
@@ -62,27 +78,41 @@ fun Chip(
     ) {
         Text(
             text = text,
-            fontWeight = FontWeight.Bold,
+            fontFamily = pretendardFamily, fontWeight = FontWeight.SemiBold,
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
         )
     }
 }
+
 @Composable
 fun HashtagChips(chips: List<String>) {
-   LazyRow() {
-       items(chips) {item ->
-           Chip(text = item)
-           Spacer(modifier = Modifier.width(16.dp))
-       }
-   }
+    LazyRow() {
+        items(chips) { item ->
+            Chip(text = item)
+            Spacer(modifier = Modifier.width(16.dp))
+        }
+    }
 }
 
 @Preview
 @Composable
 fun ChipPrev() {
     Column {
-        ChipsSelectable(listOf("전체", "화장실", "부스", "입구"),2, {})
-        HashtagChips(chips = listOf("#6명", "대구치맥파티", "#치킨", "맥주", "20대", "#6명", "대구치맥파티", "#치킨", "맥주", "20대"))
+        ChipsSelectable(listOf("전체", "화장실", "부스", "입구"), 2, {})
+        HashtagChips(
+            chips = listOf(
+                "#6명",
+                "대구치맥파티",
+                "#치킨",
+                "맥주",
+                "20대",
+                "#6명",
+                "대구치맥파티",
+                "#치킨",
+                "맥주",
+                "20대"
+            )
+        )
     }
 
 }

@@ -70,39 +70,34 @@ fun MapScreen(navController: NavController, viewModel: MainViewModel) {
         sheetContent = { MapScreenContent() },
         modifier = Modifier.fillMaxSize()
     ) {
-        Scaffold(
-            topBar = { MapAppBar(navController) },
-            containerColor = Color.White.copy(alpha = 0.0f)
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White.copy(alpha = 0.0f))
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(it)
-                    .background(Color.White.copy(alpha = 0.0f))
+            AroundMyLocationFestival(viewModel, sheetState, coroutineScope)
+            ViewPager(
+                modifier = Modifier.align(Alignment.BottomCenter)
+            )
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                AroundMyLocationFestival(viewModel, sheetState, coroutineScope)
-                ViewPager(
-                    modifier = Modifier.align(Alignment.BottomCenter)
-                )
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    ChipsSelectable(
-                        listOf(
-                            stringResource(id = R.string.board_chip_notification),
-                            stringResource(id = R.string.board_chip_ask),
-                            stringResource(id = R.string.board_chip_free),
-                            stringResource(id = R.string.board_chip_review)
-                        )
-                    ) { index ->
-                        when (index) {
+                ChipsSelectable(
+                    listOf(
+                        stringResource(id = R.string.board_chip_notification),
+                        stringResource(id = R.string.board_chip_ask),
+                        stringResource(id = R.string.board_chip_free),
+                        stringResource(id = R.string.board_chip_review)
+                    )
+                ) { index ->
+                    when (index) {
 
-                        }
                     }
                 }
             }
         }
+
     }
 
 }
