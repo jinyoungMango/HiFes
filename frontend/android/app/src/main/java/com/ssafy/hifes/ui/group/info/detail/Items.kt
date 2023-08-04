@@ -96,7 +96,7 @@ fun GroupPictureRow(img: List<Img>) {
 
 @Composable
 fun GroupPictureGrid(img: List<Img>) {
-    LazyVerticalGrid(columns = GridCells.Fixed(3)) {
+    LazyVerticalGrid(columns = GridCells.Fixed(3), modifier = Modifier.padding(8.dp)) {
         items(img) {item ->
             AsyncImage(
                 model = item.url,

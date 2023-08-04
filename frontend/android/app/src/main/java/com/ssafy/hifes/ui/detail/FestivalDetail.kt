@@ -289,7 +289,7 @@ fun Image(
         contentDescription = null,
         modifier = Modifier
             .fillMaxWidth()
-            .height(200.dp)
+            .height(150.dp)
             .background(color = Color.White)
     )
 }

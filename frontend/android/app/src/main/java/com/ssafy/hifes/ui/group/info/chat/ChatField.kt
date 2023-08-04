@@ -43,7 +43,7 @@ fun ChatInputField(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(start = 8.dp, end = 8.dp)
     ) {
         // 채팅 입력 필드
         TextField(

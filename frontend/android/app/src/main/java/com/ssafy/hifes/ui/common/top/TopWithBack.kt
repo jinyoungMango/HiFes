@@ -114,7 +114,7 @@ fun TopWithBack(
             }
             if (btn) {
                 Button(onClick = onClick, colors = ButtonDefaults.buttonColors(PrimaryPink)) {
-                    Text(text = btnText)
+                    Text(text = btnText, fontFamily = pretendardFamily, fontWeight = FontWeight.Bold)
                 }
             }
         },

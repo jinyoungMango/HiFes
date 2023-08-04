@@ -154,7 +154,7 @@ fun TextFieldPostTitle() {
             text = it
         },
         textStyle = TextStyle(fontFamily = pretendardFamily, fontWeight = FontWeight.Normal),
-        placeholder = { Text(text = stringResource(id = R.string.board_write_text_field_title_hint)) },
+        placeholder = { Text(text = stringResource(id = R.string.board_write_text_field_title_hint), fontFamily = pretendardFamily, fontWeight = FontWeight.Normal) },
         colors = TextFieldDefaults.colors(
             disabledTextColor = Color.Transparent,
             focusedContainerColor = Color.White,

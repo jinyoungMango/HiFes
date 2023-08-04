@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,8 +18,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
-import com.ssafy.hifes.data.model.Group
-import com.ssafy.hifes.ui.board.BoardViewModel
 import com.ssafy.hifes.ui.common.HashtagChips
 import com.ssafy.hifes.ui.group.GroupViewModel
 
@@ -53,7 +52,7 @@ fun GroupDetailScreen(navController: NavController, viewModel: GroupViewModel) {
 
         item {
             Box() {
-                Column {
+                Column(modifier = Modifier.padding(12.dp)) {
                     GroupTitle(title = "치맥 파티 가자", num = 6)
                     Spacer(modifier = Modifier.height(24.dp))
                     HashtagChips(chips = listOf("#6명", "대구치맥파티", "#치킨", "맥주", "20대"))

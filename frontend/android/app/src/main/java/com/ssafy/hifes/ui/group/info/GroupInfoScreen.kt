@@ -49,14 +49,14 @@ fun GroupInfoScreen(navController: NavController, viewModel: GroupViewModel) {
 
     Scaffold(topBar = { TopWithBack(navController, title = title) }, floatingActionButton = {
         floatingButton?.invoke()
-    }) {
+    }) { it ->
         Column(modifier = Modifier.padding(it)) {
             GroupTab(
                 modifier = Modifier.padding(it),
                 selected = selectedTab,
                 setSelected = { selectedTab = it },
             )
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(12.dp))
             if (selectedTab == 0) {
                 GroupDetailScreen(navController, viewModel)
             } else if (selectedTab == 1) {
