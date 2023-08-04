@@ -1,13 +1,9 @@
 package hiFes.hiFes.Controller;
 
 
-import hiFes.hiFes.domain.Marker;
-import hiFes.hiFes.domain.OrganizedFestival;
+import hiFes.hiFes.domain.*;
 import hiFes.hiFes.Service.OrganizedFestivalService;
-import hiFes.hiFes.dto.AddOrganizedFestivalRequest;
-import hiFes.hiFes.dto.MarkerResponse;
-import hiFes.hiFes.dto.OrganizedFestivalResponse;
-import hiFes.hiFes.dto.UpdateOrganizedFestivalRequest;
+import hiFes.hiFes.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,12 +17,6 @@ import java.util.stream.Collectors;
 @RestController
 public class OrganizedFestivalApiController {
     private final OrganizedFestivalService organizedFestivalService;
-
-//    @PostMapping("/api/create-festival")
-//    public ResponseEntity<String> addOrganizedFestival(@RequestBody AddOrganizedFestivalRequest request, @RequestParam(name="file") MultipartFile file){
-//        OrganizedFestival savedOrganizedFestival = organizedFestivalService.save(request,file);
-//        return ResponseEntity.status(HttpStatus.CREATED).body("OK");
-//    }
 
     @PostMapping("/api/create-festival")
     public ResponseEntity<String> addOrganizedFestival(@RequestPart("data") AddOrganizedFestivalRequest request, @RequestPart("file") MultipartFile file){
@@ -85,6 +75,37 @@ public class OrganizedFestivalApiController {
                 .collect(Collectors.toList());
         return ResponseEntity.ok()
                 .body(organizedFestivalResponses);
+    }
+
+    @GetMapping("api/festival/{id}/aritems")
+    public ResponseEntity<List<ARItemResponse>> findARItemByFestivalId(@PathVariable long id){
+        List<ARItem> arItems = organizedFestivalService.findARItemByFestivalId(id);
+        List<ARItemResponse> arItemResponses = arItems.stream()
+                .map(ARItemResponse :: new)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok()
+                .body(arItemResponses);
+    }
+
+    @GetMapping("api/festival/{id}/missions")
+    public ResponseEntity<List<StampMissionResponse>> findMissionByFestivalId(@PathVariable long id){
+        List<StampMission> stampMissions = organizedFestivalService.findMissionByFestivalId(id);
+        List<StampMissionResponse> stampMissionResponses = stampMissions.stream()
+                .map(StampMissionResponse :: new)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok()
+                .body(stampMissionResponses);
+
+
+    }
+    @GetMapping("api/festival/{id}/festivalTables")
+    public ResponseEntity<List<FestivalTableResponse>> findFestivalTableByFestivalId(@PathVariable long id) {
+        List<FestivalTable> festivalTables = organizedFestivalService.findFestivalTableByFestivalId(id);
+        List<FestivalTableResponse> festivalTableResponses = festivalTables.stream()
+                .map(FestivalTableResponse::new)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok()
+                .body(festivalTableResponses);
     }
 
 

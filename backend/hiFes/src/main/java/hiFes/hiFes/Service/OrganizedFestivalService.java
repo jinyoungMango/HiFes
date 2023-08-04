@@ -67,14 +67,6 @@ public class OrganizedFestivalService {
 
 
         }
-//        List<AddFestivalTableRequest> festivalTableRequests = request.getFestivalTables();
-//        if (festivalTableRequests != null) {
-//            for (AddFestivalTableRequest festivalTableReq : request.getFestivalTables()) {
-//                FestivalTable festivalTable = festivalTableReq.toEntity(savedOrganizedFestival);
-//                savedOrganizedFestival.getFestivalTables().add(festivalTable);
-//                festivalTableRepository.save(festivalTable);
-//            }
-//        }
 
         List<AddStampMissionRequest> stampMissionRequests = request.getStampMissions();
         if (stampMissionRequests != null) {
@@ -97,10 +89,29 @@ public class OrganizedFestivalService {
         return organizedFestivalRepository.save(savedOrganizedFestival);
     }
 
+
+    //조회
+    public List<OrganizedFestival> findByHost_hostId(long hostId){
+        return organizedFestivalRepository.findByHost_hostId(hostId);
+    }
+
     public OrganizedFestival findById(long id){
         return organizedFestivalRepository.findById(id)
                 .orElseThrow(()-> new IllegalArgumentException("not found: " + id));
     }
+
+    public List<ARItem> findARItemByFestivalId(long festivalId){
+        return arItemRepository.findByOrganizedFestival_festivalId(festivalId);
+    }
+
+    public List<StampMission> findMissionByFestivalId(long festivalId){
+        return stampMissionRepository.findByOrganizedFestival_festivalId(festivalId);
+    }
+
+    public List<FestivalTable> findFestivalTableByFestivalId(long festivalId){
+        return festivalTableRepository.findByOrganizedFestival_festivalId(festivalId);
+    }
+
     @Transactional
     public OrganizedFestival update(long id, UpdateOrganizedFestivalRequest request) {
         OrganizedFestival organizedFestival = organizedFestivalRepository.findById(id)
@@ -171,8 +182,5 @@ public class OrganizedFestivalService {
         stampMissionRepository.deleteById(id);
     }
 
-    public List<OrganizedFestival> findByHost_hostId(long hostId){
-        return organizedFestivalRepository.findByHost_hostId(hostId);
-    }
 
 }
