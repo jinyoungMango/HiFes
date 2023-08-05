@@ -25,12 +25,15 @@ public class ARItem {
     private Long itemId;
 
 //    @Column(name="ARLatitude", nullable = false)
+    @Column(name="ARLatitude")
     private BigDecimal ARLatitude;
 
 //    @Column(name="ARLongitude", nullable = false)
+    @Column(name="ARLongitude")
     private BigDecimal ARLongitude;
 
 //    @Column(name="ARImage", nullable = false)
+
     private String ARImage;
 
     @Lob

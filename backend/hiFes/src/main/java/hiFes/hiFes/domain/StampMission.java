@@ -32,6 +32,7 @@ public class StampMission {
 
     @Column(name = "missionLatitude", nullable = false)
     private BigDecimal missionLatitude;
+
     @Column(name = "missionLongitude", nullable = false)
     private BigDecimal missionLongitude;
 
@@ -56,7 +57,6 @@ public class StampMission {
         this.organizedFestival = organizedFestival;
         this.missionOutline = missionOutline;
     }
-
 
     public void update(UpdateStampMissionRequest request) {
         this.missionId = request.getMissionId();
