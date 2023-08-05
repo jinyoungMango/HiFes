@@ -47,6 +47,7 @@ dependencies {
 
 	implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
 
+	implementation 'com.auth0:java-jwt:4.2.1'
 }
 
 tasks.named('test') {

@@ -1,16 +1,14 @@
-package hiFes.hiFes.controller;
+package hiFes.hiFes.controller.user;
 
 
 import com.google.gson.JsonObject;
-import hiFes.hiFes.domain.HostUser;
-import hiFes.hiFes.dto.HostUserSignUpDto;
-import hiFes.hiFes.repository.HostUserRepository;
-import hiFes.hiFes.service.HostUserService;
+import hiFes.hiFes.domain.user.HostUser;
+import hiFes.hiFes.dto.user.HostUserSignUpDto;
+import hiFes.hiFes.repository.user.HostUserRepository;
+import hiFes.hiFes.service.user.HostUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import javax.net.ssl.HandshakeCompletedEvent;
-import javax.servlet.http.HttpSession;
 import java.util.Map;
 
 @RestController
@@ -21,33 +19,34 @@ public class HostUserController {
 
     @CrossOrigin(origins = "*")
     @PostMapping("host/sign-up")
-    public String signUp(@RequestBody HostUserSignUpDto hostUserSignUpDto, String accessToken/*, HttpSession session*/) throws Exception{
+    public String signUp(@RequestBody HostUserSignUpDto hostUserSignUpDto, String accessToken) throws Exception{
         Map<String, Object> context =  hostUserService.searchKakaoUser(accessToken);
 
-        hostUserService.signUp(hostUserSignUpDto, context/*, session*/);
+        hostUserService.signUp(hostUserSignUpDto, context);
+
+        // 로그인
+        hostUserService.loadUserByUsername((String) context.get("email"));
         return "signup success";
     }
 
     @CrossOrigin(origins = "*")
     @PostMapping("host/login")
-    public String login(String accessToken /*HttpSession session*/) throws Exception{
+    public String login(String accessToken ) throws Exception{
         Map<String, Object> context =  hostUserService.searchKakaoUser(accessToken);
 
         // 만약 받아온 값의 이메일과 추가 정보가 데이터베이스에 있다면 로그인 진행
         if (hostUserRepository.findByEmail((String) context.get("email")).isPresent()) {
             HostUser user = hostUserService.getByEmail((String) context.get("email"));
 
-            // 기업 정보가 저장되지 않았다면 정보 추가 페이지로 이동
+            // 기업 정보까지 저장되어 있다면 로그인 진행
             if(hostUserRepository.findByOrgNo(user.getOrgNo()).isPresent()){
-                return "기업정보저장되지않음";
+                hostUserService.loadUserByUsername((String) context.get("email"));
+                return "로그인 성공";
             }
-//            hostUserService.login((String) context.get("email"), accessToken/*, session*/);
-            return "기업정보 저장됨";
-        }
-        // 없다면 회원가입 진행 일단 엑세스 토큰 저장해두고 리다이렉션?
 
-//        session.setAttribute("access_Token", accessToken);
-        return "회원가입실패";
+        }
+
+        return "로그인실패 회원가입이 필요합니다.";
 
     }
 
@@ -78,18 +77,6 @@ public class HostUserController {
         return info;
 
 
-    }
-    @CrossOrigin(origins = "*")
-    @GetMapping("/test")
-    public JsonObject test(){
-        JsonObject info =new JsonObject();
-
-
-        info.addProperty("email", 11);
-        info.addProperty("name", 12);
-        info.addProperty("orgCode", 13);
-
-        return info;
     }
 
 

@@ -1,4 +1,4 @@
-package hiFes.hiFes.domain;
+package hiFes.hiFes.domain.user;
 
 import lombok.*;
 
@@ -24,4 +24,10 @@ public class HostUser {
     private String orgNo;
     private String orgCode;
     private String email;
+
+    private String refreshToken;
+
+    public void updateRefreshToken(String updateRefreshToken) {
+        this.refreshToken = updateRefreshToken;
+    }
 }

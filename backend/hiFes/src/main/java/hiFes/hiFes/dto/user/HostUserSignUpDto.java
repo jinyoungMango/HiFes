@@ -1,17 +1,16 @@
-package hiFes.hiFes.dto;
+package hiFes.hiFes.dto.user;
+
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Getter
-public class NormalUserSignUpDto {
-
+public class HostUserSignUpDto {
     private String email;
     private String name;
-    private String profilePic;
     private String phoneNo;
-    private String nickname;
-
-
+    private String organization;
+    private String orgNo;
+    private String orgCode;
 }

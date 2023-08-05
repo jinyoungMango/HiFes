@@ -1,7 +1,6 @@
 package hiFes.hiFes.domain.group;
 
-import hiFes.hiFes.domain.NormalUser;
-import hiFes.hiFes.domain.group.Group;
+import hiFes.hiFes.domain.user.NormalUser;
 import lombok.Getter;
 import lombok.Setter;
 

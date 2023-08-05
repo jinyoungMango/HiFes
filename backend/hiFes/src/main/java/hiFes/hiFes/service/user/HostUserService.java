@@ -1,11 +1,14 @@
-package hiFes.hiFes.service;
+package hiFes.hiFes.service.user;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import hiFes.hiFes.domain.NormalUser;
-import hiFes.hiFes.dto.NormalUserSignUpDto;
-import hiFes.hiFes.repository.NormalUserRepository;
+import hiFes.hiFes.domain.user.HostUser;
+import hiFes.hiFes.dto.user.HostUserSignUpDto;
+import hiFes.hiFes.repository.user.HostUserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -16,36 +19,52 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class NormalUserService {
-    private final NormalUserRepository normalUserRepository;
+public class HostUserService implements UserDetailsService {
+    private final HostUserRepository hostUserRepository;
 
+    public void signUp(HostUserSignUpDto hostUserSignUpDto, Map<String, Object> context){
 
-    public void signUp(NormalUserSignUpDto normalUserSignUpDto) throws Exception {
-        if (normalUserRepository.findByEmail(normalUserSignUpDto.getEmail()).isPresent()) {
-            // 이미 데이터베이스에 존재하는 이메일
-            throw new Exception("이미 존재하는 이메일입니다.");
-        }
-
-        // 데이터 베이스에 없는 이메일이라면
-        // 닉네임 빼고 전부 가져와서 넣어야 함
-        NormalUser normalUser = NormalUser.builder()
-                .email(normalUserSignUpDto.getEmail())
-                .name(normalUserSignUpDto.getName())
-                .profilePic(normalUserSignUpDto.getProfilePic())
-                .phoneNo(normalUserSignUpDto.getPhoneNo())
-                .nickname(normalUserSignUpDto.getNickname())
+        HostUser hostUser = HostUser.builder()
+                .email((String) context.get("email"))
+                .name((String) context.get("name"))
+                .phoneNo(hostUserSignUpDto.getPhoneNo())
+                .organization(hostUserSignUpDto.getOrganization())
+                .orgNo(hostUserSignUpDto.getOrgNo())
+                .orgCode(hostUserSignUpDto.getOrgCode())
                 .build();
 
-        normalUserRepository.save(normalUser);
+        hostUserRepository.save(hostUser);
+
+        // 로그인 진행. normal이면 여기서 FCM 토큰도 받아야함
+        //session.setAttribute("userId", context.get("email"));
+
     }
+
+    public HostUser getByEmail(String email) {
+        return hostUserRepository.findByEmail(email).orElse(null);
+    }
+
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        HostUser hostUser = hostUserRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 이메일"));
+
+
+        return org.springframework.security.core.userdetails.User.builder()
+                .username(hostUser.getEmail())
+                .build();
+    }
+
+
 
     public Map<String, Object> searchKakaoUser(String token) {
 
         String reqURL = "https://kapi.kakao.com/v2/user/me";
+        Map<String, Object> context = new HashMap<>();
 
         try {
             URL url = new URL(reqURL);
@@ -87,17 +106,19 @@ public class NormalUserService {
 
             br.close();
 
-            Map<String, Object> context = new HashMap<>();
+
             context.put("id", id);
             context.put("email", email);
             context.put("name", name);
-
-            return context;
 
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
+
+        return context;
     }
+
+
+
 }
