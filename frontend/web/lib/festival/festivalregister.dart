@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:web/common.dart';
 import 'dart:html' as html;
 
@@ -312,7 +313,7 @@ class _FestivalRegisterState extends State<FestivalRegister> {
                     onWebViewCreated: (controller) {
                       webviewController = controller;
                       webviewController.loadContent(
-                          'http://localhost:8080/navermap', SourceType.url);
+                          dotenv.env['YOUR_NAVER_MAP_URL']!, SourceType.url);
                     })
               ],
             ),
