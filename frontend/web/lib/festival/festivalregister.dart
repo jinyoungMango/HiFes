@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:web/common.dart';
 import 'dart:html' as html;
+import 'dart:ui' as ui;
 
-import 'package:webviewx/webviewx.dart';
+//import 'package:webviewx/webviewx.dart';
 
 class FileData {
   String fileName;
@@ -21,6 +22,7 @@ class FestivalRegister extends StatefulWidget {
 }
 
 class _FestivalRegisterState extends State<FestivalRegister> {
+  final html.IFrameElement _iFrameElement = html.IFrameElement();
 
   // 다운로드 버튼을 누를 때 호출되는 함수
   void downloadFile(FileData fileData) {
@@ -31,7 +33,7 @@ class _FestivalRegisterState extends State<FestivalRegister> {
   }
 
   // 네이버 지도를 웹뷰로 띄울 때 사용
-  late WebViewXController webviewController;
+  //late WebViewXController webviewController;
 
   // 포스터 이미지
   FilePickerResult? poster;
@@ -62,7 +64,27 @@ class _FestivalRegisterState extends State<FestivalRegister> {
     super.initState();
     timetable = null;
     poster = null;
+    _iFrameElement.style.height = '80%';
+    _iFrameElement.style.width = '80%';
+    _iFrameElement.src = dotenv.env['YOUR_NAVER_MAP_URL'];
+    _iFrameElement.style.border = 'none';
+
+// ignore: undefined_prefixed_name
+    ui.platformViewRegistry.registerViewFactory(
+      'iframeElement',
+          (int viewId) => _iFrameElement,
+    );
+
+    html.window.addEventListener("message", (event) {
+        var data = (event as html.MessageEvent).data ?? '-';
+        print("데이터는? "+data.toString());
+    });
   }
+
+  final Widget _iframeWidget = HtmlElementView(
+    viewType: 'iframeElement',
+    key: UniqueKey(),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -307,14 +329,14 @@ class _FestivalRegisterState extends State<FestivalRegister> {
                 SizedBox(height: 20,),
                 Text("마커 등록", style: TextStyle(fontSize: 48),),
                 SizedBox(height: 20,),
-                WebViewX(
-                    width: 1000,
-                    height: 800,
-                    onWebViewCreated: (controller) {
-                      webviewController = controller;
-                      webviewController.loadContent(
-                          dotenv.env['YOUR_NAVER_MAP_URL']!, SourceType.url);
-                    })
+                SizedBox(
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
+                  child: _iframeWidget,
+                ),
+                TextButton(onPressed: () async {
+                    _iFrameElement.contentWindow?.postMessage("getMarkerData", "http://localhost:8080");
+                }, child: Text("getData"))
               ],
             ),
           ),
