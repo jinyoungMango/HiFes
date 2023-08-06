@@ -4,18 +4,15 @@ import android.annotation.SuppressLint
 import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.rememberModalBottomSheetState
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -44,6 +41,7 @@ import com.naver.maps.map.compose.rememberFusedLocationSource
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 import com.ssafy.hifes.R
+import com.ssafy.hifes.data.model.OrganizedFestivalDto
 import com.ssafy.hifes.ui.common.ChipsSelectable
 import com.ssafy.hifes.ui.main.MainViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -56,6 +54,9 @@ private const val TAG = "MapScreen_하이페스"
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MapScreen(navController: NavController, viewModel: MainViewModel) {
+    val festivalList = viewModel.festivalList.observeAsState()
+    val mapType = viewModel.mapType.observeAsState()
+
     val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden,
         confirmValueChange = { it != ModalBottomSheetValue.HalfExpanded }
     )
@@ -64,10 +65,9 @@ fun MapScreen(navController: NavController, viewModel: MainViewModel) {
     BackHandler(sheetState.isVisible) {
         coroutineScope.launch { sheetState.hide() }
     }
-
     ModalBottomSheetLayout(
         sheetState = sheetState,
-        sheetContent = { MapScreenContent() },
+        sheetContent = { DialogContent(festivalList.value!![0], 4.0) },
         modifier = Modifier.fillMaxSize()
     ) {
         Box(
@@ -75,27 +75,34 @@ fun MapScreen(navController: NavController, viewModel: MainViewModel) {
                 .fillMaxSize()
                 .background(Color.White.copy(alpha = 0.0f))
         ) {
-            AroundMyLocationFestival(viewModel, sheetState, coroutineScope)
-            ViewPager(
-                modifier = Modifier.align(Alignment.BottomCenter)
-            )
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                ChipsSelectable(
-                    listOf(
-                        stringResource(id = R.string.board_chip_notification),
-                        stringResource(id = R.string.board_chip_ask),
-                        stringResource(id = R.string.board_chip_free),
-                        stringResource(id = R.string.board_chip_review)
-                    )
-                ) { index ->
-                    when (index) {
+            AroundMyLocationFestival(festivalList.value, sheetState, coroutineScope)
+            if (!festivalList.value.isNullOrEmpty()) {
+                ViewPager(
+                    festivalList.value!!,
+                    modifier = Modifier.align(Alignment.BottomCenter)
+                )
+            }
 
+            if (mapType.value == MapType.FESTIVAL) {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    ChipsSelectable(
+                        listOf(
+                            stringResource(id = R.string.board_chip_notification),
+                            stringResource(id = R.string.board_chip_ask),
+                            stringResource(id = R.string.board_chip_free),
+                            stringResource(id = R.string.board_chip_review)
+                        )
+                    ) { index ->
+                        when (index) {
+
+                        }
                     }
                 }
             }
+
         }
 
     }
@@ -105,11 +112,10 @@ fun MapScreen(navController: NavController, viewModel: MainViewModel) {
 @OptIn(ExperimentalNaverMapApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun AroundMyLocationFestival(
-    viewModel: MainViewModel,
+    festivalList: MutableList<OrganizedFestivalDto>?,
     sheetState: ModalBottomSheetState,
     coroutineScope: CoroutineScope
 ) {
-    val festivalList = viewModel.festivalList.observeAsState()
     NaverMap(
         locationSource = rememberFusedLocationSource(),
         properties = MapProperties(
@@ -124,10 +130,10 @@ fun AroundMyLocationFestival(
             mutableStateOf<List<Marker>>(emptyList())
         }
 
-        LaunchedEffect(festivalList.value) {
+        LaunchedEffect(festivalList) {
             markers.forEach { it.map = null }
-            if (festivalList.value != null) {
-                markers = festivalList.value!!.map {
+            if (festivalList != null) {
+                markers = festivalList.map {
                     Marker().apply {
                         position = LatLng(it.fesLatitude, it.fesLongitude)
                         captionText = it.fesTitle
