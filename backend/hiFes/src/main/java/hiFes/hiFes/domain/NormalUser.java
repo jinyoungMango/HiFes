@@ -28,16 +28,16 @@ public class NormalUser {
     @Column(name="id", nullable = false, length = 15)
     private String id;
 
-    @Column(name="password")
+    @Column(name="password",  nullable = false, length = 31)
     private String password;
 
-    @Column(name="name")
+    @Column(name="name",  nullable = false, length = 7)
     private String name;
 
-    @Column(name="phoneNo")
+    @Column(name="phoneNo",  nullable = false, length = 11)
     private String phoneNo;
 
-    @Column(name="nickname")
+    @Column(name="nickname",  nullable = false, length = 15)
     private String nickname;
 
     @Column(name="profilePic", nullable = false)
@@ -46,6 +46,10 @@ public class NormalUser {
     @JsonManagedReference
     @OneToMany(mappedBy = "eventNotificationId", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EventNotification> eventNotificationList = new ArrayList<>();
+
+    @JsonManagedReference
+    @OneToMany(mappedBy = "normalUser", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CompletedStampMission> completedStampMissions = new ArrayList<>();
 
     //일단 파이어베이스 토큰 생략
 

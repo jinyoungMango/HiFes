@@ -4,7 +4,6 @@ package hiFes.hiFes.Service;
 import hiFes.hiFes.domain.EventNotification;
 import hiFes.hiFes.domain.FestivalTable;
 import hiFes.hiFes.domain.NormalUser;
-import hiFes.hiFes.dto.AddEventNotificationRequest;
 import hiFes.hiFes.repository.EventNotificationRepository;
 import hiFes.hiFes.repository.FestivalTableRepository;
 import hiFes.hiFes.repository.NormalUserRepository;
@@ -12,9 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -33,25 +29,23 @@ public class EventNotificationService {
         this.eventNotificationRepository = eventNotificationRepository;
     }
 
-    public void saveEventNotification(Long normalUserId, Long programId){
-        NormalUser normalUser = normalUserRepository.findById(normalUserId).orElseThrow(NoSuchElementException::new);
-        FestivalTable festivalTable = festivalTableRepository.findById(programId).orElseThrow(NoSuchElementException::new);
+    public EventNotification saveEventNotification(Long normalUserId, Long programId){
+        NormalUser normalUser = normalUserRepository.findById(normalUserId).orElseThrow(IllegalArgumentException::new);
+        FestivalTable festivalTable = festivalTableRepository.findById(programId).orElseThrow(IllegalArgumentException::new);
 
         EventNotification eventNotification = new EventNotification();
         eventNotification.setNormalUser(normalUser);
         eventNotification.setFestivalTable(festivalTable);
 
-        eventNotificationRepository.save(eventNotification);
+        return eventNotificationRepository.save(eventNotification);
     }
     @Transactional
     public void deleteByNormalUser_normalUserIdAndFestivalTable_programId(Long normalUserId, Long programId) {
         // EventNotification 조회
-        Optional<EventNotification> eventNotificationOptional = eventNotificationRepository.findByNormalUser_NormalUserIdAndFestivalTable_programId(normalUserId, programId);
+        EventNotification eventNotification = eventNotificationRepository.findByNormalUser_NormalUserIdAndFestivalTable_programId(normalUserId, programId)
+                .orElseThrow(() -> new IllegalArgumentException("EventNotification not found with normalUserId: " + normalUserId + " and programId: " + programId));
 
-        if (!eventNotificationOptional.isPresent()) {
-            throw new IllegalArgumentException("EventNotification not found with normalUserId: " + normalUserId + " and programId: " + programId);
-        }
-
-        eventNotificationRepository.delete(eventNotificationOptional.get());
+        eventNotificationRepository.delete(eventNotification);
     }
+
 }

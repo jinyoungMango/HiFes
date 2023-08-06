@@ -1,5 +1,6 @@
 package hiFes.hiFes.Controller;
 
+import hiFes.hiFes.Service.EventNotificationService;
 import hiFes.hiFes.domain.EventNotification;
 import hiFes.hiFes.domain.FestivalTable;
 import hiFes.hiFes.domain.NormalUser;
@@ -15,27 +16,14 @@ import java.util.NoSuchElementException;
 @RestController
 public class EventNotificationApiController {
 
-    private final NormalUserRepository normalUserRepository;
-    private final FestivalTableRepository festivalTableRepository;
-    private final EventNotificationRepository eventNotificationRepository;
-
     @Autowired
-    public EventNotificationApiController(NormalUserRepository normalUserRepository, FestivalTableRepository festivalTableRepository, EventNotificationRepository eventNotificationRepository) {
-        this.normalUserRepository = normalUserRepository;
-        this.festivalTableRepository = festivalTableRepository;
-        this.eventNotificationRepository = eventNotificationRepository;
-    }
+    private EventNotificationService eventNotificationService;
+    @Autowired
+    private EventNotificationRepository eventNotificationRepository;
 
     @PostMapping("api/{normalUserId}/regist-eventNotifications/{programId}")
     public EventNotification saveEventNotification(@PathVariable Long normalUserId, @PathVariable Long programId) {
-        NormalUser normalUser = normalUserRepository.findById(normalUserId).orElseThrow(NoSuchElementException::new);
-        FestivalTable festivalTable = festivalTableRepository.findById(programId).orElseThrow(NoSuchElementException::new);
-
-        EventNotification eventNotification = new EventNotification();
-        eventNotification.setNormalUser(normalUser);
-        eventNotification.setFestivalTable(festivalTable);
-
-        return eventNotificationRepository.save(eventNotification);
+        return eventNotificationService.saveEventNotification(normalUserId, programId);
     }
 
     @DeleteMapping("api/{normalUserId}/delete-eventNotifications/{programId}")

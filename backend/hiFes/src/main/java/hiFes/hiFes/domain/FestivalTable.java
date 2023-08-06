@@ -28,6 +28,7 @@ public class FestivalTable {
     @Column(name="programTitle", nullable = false, length = 31)
     private String programTitle;
 
+    @Column(name="programOutline")
     private String programOutline;
 
     @Column(name="startTime", nullable = false)

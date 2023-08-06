@@ -11,23 +11,22 @@ import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 
-//중간 객체 이벤트 일정-회원
 @Entity
 @NoArgsConstructor
 @Getter
 @Setter
-@Table(name="EventNotification")
-public class EventNotification {
+@Table(name="CompletedStampMission")
+public class CompletedStampMission {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="eventNotificationId")
-    private Long eventNotificationId;
+    @Column(name="id")
+    private Long id;
 
     @ManyToOne
-    @JoinColumn(name="programId")
+    @JoinColumn(name="missionId")
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonBackReference
-    private FestivalTable festivalTable;
+    private StampMission stampMission;
 
     @ManyToOne
     @JoinColumn(name="normalUserId")
