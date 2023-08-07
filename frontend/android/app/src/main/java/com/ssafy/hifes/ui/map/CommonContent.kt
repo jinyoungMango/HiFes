@@ -1,6 +1,7 @@
 package com.ssafy.hifes.ui.map
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -35,13 +36,6 @@ import com.ssafy.hifes.ui.theme.LightGrey
 import com.ssafy.hifes.ui.theme.pretendardFamily
 import com.ssafy.hifes.util.CommonUtils
 
-
-@Composable
-fun MapScreenContent(festival: OrganizedFestivalDto) {
-    MapCard(festival)
-}
-
-
 @Preview(showBackground = true, backgroundColor = 0xFFFFFF)
 @Composable
 fun MapPreview() {
@@ -49,12 +43,15 @@ fun MapPreview() {
 }
 
 @Composable
-fun MapCard(festival: OrganizedFestivalDto) {
+fun MapCard(festival: OrganizedFestivalDto, onClick: (OrganizedFestivalDto) -> Unit) {
     Card(
         modifier = Modifier
             .height(160.dp)
             .fillMaxWidth()
-            .padding(12.dp),
+            .padding(12.dp)
+            .clickable {
+                onClick(festival)
+            },
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(8.dp)
@@ -67,11 +64,18 @@ fun MapCard(festival: OrganizedFestivalDto) {
 }
 
 @Composable
-fun DialogContent(festival: OrganizedFestivalDto, score: Double) {
+fun DialogContent(
+    festival: OrganizedFestivalDto,
+    score: Double,
+    onClick: (OrganizedFestivalDto) -> Unit
+) {
     Spacer(modifier = Modifier.size(8.dp))
-    Column {
+    Column(modifier = Modifier.clickable {
+        onClick(festival)
+    }) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth(),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {

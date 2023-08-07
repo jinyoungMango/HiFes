@@ -191,8 +191,8 @@ fun FestivalLocation(lat: Double, lng: Double, title: String) {
         Marker(
             state = MarkerState(position = festivalLatLng),
             captionText = title,
+            captionTextSize = 14.sp,
             icon = OverlayImage.fromResource(R.drawable.icon_marker),
-//            width = 30.dp,
             )
     }
 }

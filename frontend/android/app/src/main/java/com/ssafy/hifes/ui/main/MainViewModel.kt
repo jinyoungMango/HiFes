@@ -41,7 +41,7 @@ class MainViewModel : ViewModel() {
                 OrganizedFestivalDto(
                     1,
                     1,
-                    "대구치맥페스티벌",
+                    "2019 대구치맥페스티벌",
                     "https://picsum.photos/600",
                     testDate,
                     testDate,
@@ -56,13 +56,13 @@ class MainViewModel : ViewModel() {
                 OrganizedFestivalDto(
                     1,
                     1,
-                    "대구치맥페스티벌",
+                    "2020 대구치맥페스티벌",
                     "https://picsum.photos/600",
                     testDate,
                     testDate,
                     festOutline,
                     "festival Address",
-                    36.105894,
+                    36.107894,
                     128.42573
                 )
             )
@@ -70,7 +70,7 @@ class MainViewModel : ViewModel() {
                 OrganizedFestivalDto(
                     1,
                     1,
-                    "대구치맥페스티벌",
+                    "2021 대구치맥페스티벌",
                     "https://picsum.photos/600",
                     testDate,
                     testDate,

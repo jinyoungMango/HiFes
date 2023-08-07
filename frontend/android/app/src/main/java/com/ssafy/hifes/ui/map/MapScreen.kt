@@ -15,14 +15,12 @@ import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -32,7 +30,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -54,6 +51,7 @@ import com.naver.maps.map.overlay.OverlayImage
 import com.ssafy.hifes.R
 import com.ssafy.hifes.data.model.MarkerDto
 import com.ssafy.hifes.data.model.OrganizedFestivalDto
+import com.ssafy.hifes.ui.HifesDestinations
 import com.ssafy.hifes.ui.common.ChipsSelectable
 import com.ssafy.hifes.ui.detail.DetailViewModel
 import com.ssafy.hifes.ui.detail.map.MarkerDetailDialog
@@ -83,6 +81,8 @@ fun MapScreen(
     )
     val coroutineScope = rememberCoroutineScope()
 
+    var selectedFestival by remember { mutableStateOf<OrganizedFestivalDto?>(null) }
+
     BackHandler(sheetState.isVisible) {
         coroutineScope.launch { sheetState.hide() }
     }
@@ -91,7 +91,15 @@ fun MapScreen(
         content = {
             ModalBottomSheetLayout(
                 sheetState = sheetState,
-                sheetContent = { DialogContent(festivalList.value!![0], 4.0) },
+                sheetContent = {
+                    selectedFestival?.let { festival ->
+                        // 추후 서버에서 가져온 score로 변경
+                        DialogContent(festival, 4.0) {
+                            viewModel.getFestivalDetail(festival)
+                            navController.navigate(HifesDestinations.FESTIVAL_DETAIL)
+                        }
+                    }
+                },
                 modifier = Modifier.fillMaxSize()
             ) {
                 Box(
@@ -105,11 +113,13 @@ fun MapScreen(
                                 festivalList.value,
                                 sheetState,
                                 coroutineScope
-                            )
+                            ) { selectedFestival = it }
                             if (!festivalList.value.isNullOrEmpty()) {
                                 ViewPager(
-                                    festivalList.value!!,
-                                    modifier = Modifier.align(Alignment.BottomCenter)
+                                    navController = navController,
+                                    festivalList = festivalList.value!!,
+                                    modifier = Modifier.align(Alignment.BottomCenter),
+                                    viewModel = viewModel
                                 )
                             }
                         }
@@ -164,7 +174,8 @@ fun MapScreen(
 fun AroundMyLocationFestivalMap(
     festivalList: MutableList<OrganizedFestivalDto>?,
     sheetState: ModalBottomSheetState,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
+    onFestivalSelected: (OrganizedFestivalDto) -> Unit
 ) {
     NaverMap(
         locationSource = rememberFusedLocationSource(),
@@ -192,19 +203,19 @@ fun AroundMyLocationFestivalMap(
                 }
             }
         }
-        markers.forEach {
+        markers.forEachIndexed { index, marker ->
             Marker(
-                state = MarkerState(position = it.position),
-                captionText = it.captionText,
-                icon = it.icon,
-                onClick = {
-                    Log.d(TAG, "AroundMyLocationFestival: 클릭")
-                    coroutineScope.launch {
-                        sheetState.show()
-                    }
-                    true
+                state = MarkerState(position = marker.position),
+                captionText = marker.captionText,
+                icon = marker.icon
+            ) {
+                Log.d(TAG, "AroundMyLocationFestival: 클릭")
+                coroutineScope.launch {
+                    onFestivalSelected(festivalList!![index]) // Set the selected festival
+                    sheetState.show()
                 }
-            )
+                true
+            }
         }
 
     }
