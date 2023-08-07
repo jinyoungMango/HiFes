@@ -1,5 +1,6 @@
 package com.ssafy.hifes.ui.main
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,6 +10,7 @@ import com.ssafy.hifes.ui.map.MapType
 import java.sql.Date
 import java.text.SimpleDateFormat
 
+private const val TAG = "MainViewModel_하이페스"
 class MainViewModel : ViewModel() {
     private var _festivalList: MutableLiveData<MutableList<OrganizedFestivalDto>> =
         MutableLiveData()
@@ -83,5 +85,14 @@ class MainViewModel : ViewModel() {
 
     fun getFestivalDetail(festival: OrganizedFestivalDto) {
         _selectedFestival.postValue(festival)
+    }
+
+    fun updateMapTypeFestival() {
+        _mapType.postValue(MapType.FESTIVAL)
+    }
+
+    fun updateMapTypeGeneral() {
+        _mapType.postValue(MapType.GENERAL)
+        Log.d(TAG, "updateMapTypeGeneral: ")
     }
 }

@@ -22,6 +22,7 @@ import com.ssafy.hifes.R
 import com.ssafy.hifes.ui.common.bottomnav.GROUP
 import com.ssafy.hifes.ui.common.bottomnav.HOME
 import com.ssafy.hifes.ui.common.bottomnav.MAP
+import com.ssafy.hifes.ui.main.MainViewModel
 import com.ssafy.hifes.ui.theme.PrimaryPink
 import com.ssafy.hifes.ui.theme.pretendardFamily
 
@@ -30,12 +31,12 @@ import com.ssafy.hifes.ui.theme.pretendardFamily
 @Composable
 fun HomePrev() {
     val navController = rememberNavController()
-    BottomNavigation(navController = navController)
+    BottomNavigation(navController = navController, MainViewModel())
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun BottomNavigation(navController: NavHostController) {
+fun BottomNavigation(navController: NavHostController, viewModel: MainViewModel) {
     val items = listOf<NavigationItem>(
         NavigationItem.Home,
         NavigationItem.Map,
@@ -61,13 +62,23 @@ fun BottomNavigation(navController: NavHostController) {
                             .height(29.dp)
                     )
                 },
-                label = { Text(stringResource(id = item.title), fontSize = 10.sp, fontFamily = pretendardFamily, fontWeight = FontWeight.Normal) },
+                label = {
+                    Text(
+                        stringResource(id = item.title),
+                        fontSize = 10.sp,
+                        fontFamily = pretendardFamily,
+                        fontWeight = FontWeight.Normal
+                    )
+                },
                 selectedContentColor = PrimaryPink,
                 unselectedContentColor = Gray,
                 selected = currentRoute == item.screenRoute,
                 alwaysShowLabel = false,
                 onClick = {
                     navController.navigate(item.screenRoute) {
+                        if (item.screenRoute == MAP) {
+                            viewModel.updateMapTypeGeneral()
+                        }
                         navController.graph.startDestinationRoute?.let {
                             popUpTo(it) { saveState = true }
                         }

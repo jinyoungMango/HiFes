@@ -32,12 +32,12 @@ fun HifesNavGraph(
     appContainer: AppContainer,
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
+    mainViewModel: MainViewModel,
 //    startDestination: String = HifesDestinations.LOGIN_ROUTE
     startDestination: String = NavigationItem.Home.screenRoute
 ) {
 
     val boardViewModel: BoardViewModel = viewModel()
-    val mainViewModel: MainViewModel = viewModel()
     val groupViewModel: GroupViewModel = viewModel()
 
     NavHost(

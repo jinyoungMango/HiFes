@@ -54,6 +54,7 @@ import com.ssafy.hifes.ui.common.top.TopWithBack
 import com.ssafy.hifes.ui.iconpack.MyIconPack
 import com.ssafy.hifes.ui.iconpack.myiconpack.Imagenotfound
 import com.ssafy.hifes.ui.main.MainViewModel
+import com.ssafy.hifes.ui.map.MapType
 import com.ssafy.hifes.ui.map.StarScore
 import com.ssafy.hifes.ui.theme.pretendardFamily
 import com.ssafy.hifes.util.CommonUtils.formatSqlDateToString
@@ -93,6 +94,7 @@ fun FestivalDetail(navController: NavHostController, viewModel: MainViewModel) {
                             )
                         }
                         DetailIcons(painterResource(R.drawable.icon_map)) {
+                            viewModel.updateMapTypeFestival()
                             navController.navigate(
                                 NavigationItem.Map.screenRoute
                             )
@@ -150,6 +152,7 @@ fun FestivalDetail(navController: NavHostController, viewModel: MainViewModel) {
                                 .padding(8.dp)
                         )
                         Spacer(modifier = Modifier.size(12.dp))
+                        // 추후 서버에서 가져온 데이터로 변경
                         DetailCommonContent(
                             title = "주최",
                             content1 = "대구광역시",

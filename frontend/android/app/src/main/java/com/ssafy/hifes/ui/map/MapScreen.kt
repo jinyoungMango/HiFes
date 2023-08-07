@@ -12,7 +12,12 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.Scaffold
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.rememberModalBottomSheetState
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -42,8 +47,10 @@ import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 import com.ssafy.hifes.R
 import com.ssafy.hifes.data.model.OrganizedFestivalDto
+import com.ssafy.hifes.ui.HifesDestinations
 import com.ssafy.hifes.ui.common.ChipsSelectable
 import com.ssafy.hifes.ui.main.MainViewModel
+import com.ssafy.hifes.ui.theme.PrimaryPink
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -51,7 +58,7 @@ import kotlinx.coroutines.launch
 private const val TAG = "MapScreen_하이페스"
 
 @OptIn(ExperimentalMaterialApi::class)
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun MapScreen(navController: NavController, viewModel: MainViewModel) {
     val festivalList = viewModel.festivalList.observeAsState()
@@ -65,47 +72,68 @@ fun MapScreen(navController: NavController, viewModel: MainViewModel) {
     BackHandler(sheetState.isVisible) {
         coroutineScope.launch { sheetState.hide() }
     }
-    ModalBottomSheetLayout(
-        sheetState = sheetState,
-        sheetContent = { DialogContent(festivalList.value!![0], 4.0) },
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.White.copy(alpha = 0.0f))
-        ) {
-            AroundMyLocationFestival(festivalList.value, sheetState, coroutineScope)
-            if (!festivalList.value.isNullOrEmpty()) {
-                ViewPager(
-                    festivalList.value!!,
-                    modifier = Modifier.align(Alignment.BottomCenter)
-                )
-            }
 
-            if (mapType.value == MapType.FESTIVAL) {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
+    Scaffold(
+        content = {
+            ModalBottomSheetLayout(
+                sheetState = sheetState,
+                sheetContent = { DialogContent(festivalList.value!![0], 4.0) },
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.White.copy(alpha = 0.0f))
                 ) {
-                    ChipsSelectable(
-                        listOf(
-                            stringResource(id = R.string.board_chip_notification),
-                            stringResource(id = R.string.board_chip_ask),
-                            stringResource(id = R.string.board_chip_free),
-                            stringResource(id = R.string.board_chip_review)
+                    Log.d(TAG, "MapScreen: ${mapType.value}")
+                    if (mapType.value == MapType.GENERAL) {
+                        Log.d(TAG, "MapScreen: ")
+                    }
+                    AroundMyLocationFestival(festivalList.value, sheetState, coroutineScope)
+                    if (!festivalList.value.isNullOrEmpty() && mapType.value == MapType.GENERAL) {
+                        ViewPager(
+                            festivalList.value!!,
+                            modifier = Modifier.align(Alignment.BottomCenter)
                         )
-                    ) { index ->
-                        when (index) {
+                    }
 
+                    if (mapType.value == MapType.FESTIVAL) {
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            ChipsSelectable(
+                                listOf(
+                                    stringResource(id = R.string.board_chip_notification),
+                                    stringResource(id = R.string.board_chip_ask),
+                                    stringResource(id = R.string.board_chip_free),
+                                    stringResource(id = R.string.board_chip_review)
+                                )
+                            ) { index ->
+                                when (index) {
+
+                                }
+                            }
                         }
                     }
+                }
+
+            }
+        },
+        floatingActionButton = {
+            if (mapType.value == MapType.FESTIVAL) {
+                FloatingActionButton(
+                    onClick = { navController.navigate(HifesDestinations.GROUP_CREATE) },
+                    containerColor = PrimaryPink,
+                    contentColor = Color.White
+                ) {
+                    Icon(Icons.Filled.Add, contentDescription = "Add")
                 }
             }
 
         }
+    )
 
-    }
 
 }
 
