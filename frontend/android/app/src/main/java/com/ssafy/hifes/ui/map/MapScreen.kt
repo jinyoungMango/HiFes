@@ -19,6 +19,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -72,6 +73,7 @@ fun MapScreen(
     val festivalList = viewModel.festivalList.observeAsState()
     val mapType = viewModel.mapType.observeAsState()
     val boothList = detailViewModel.markerList.observeAsState()
+    val selectedBoothChip = detailViewModel.selectedBoothChip.observeAsState()
 
     val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden,
         confirmValueChange = { it != ModalBottomSheetValue.HalfExpanded }
@@ -110,9 +112,10 @@ fun MapScreen(
                         }
 
                         MapType.FESTIVAL -> {
-                            BoothMap(boothList.value!!, sheetState, coroutineScope)
+                            BoothMap(boothList.value!!, selectedBoothChip.value ?: 0)
                             ChipsSelectable(
                                 listOf(
+                                    R.string.map_chip_total,
                                     R.string.map_chip_sale_booth,
                                     R.string.map_chip_food_booth,
                                     R.string.map_chip_restaurant_booth,
@@ -122,9 +125,7 @@ fun MapScreen(
                                     R.string.map_chip_enterance
                                 ).map { stringResource(id = it) }
                             ) { index ->
-                                when (index) {
-
-                                }
+                                detailViewModel.updateSelectedBoothChip(index)
                             }
                         }
 
@@ -135,6 +136,7 @@ fun MapScreen(
             }
         },
         floatingActionButton = {
+            // 현재 사용자가 그룹이 있는지 없는지 판단하에 보여주기
             if (mapType.value == MapType.FESTIVAL) {
                 FloatingActionButton(
                     onClick = { /* 모임콜 기능 */ },
@@ -206,12 +208,11 @@ fun AroundMyLocationFestivalMap(
 
 }
 
-@OptIn(ExperimentalNaverMapApi::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalNaverMapApi::class)
 @Composable
 fun BoothMap(
     boothList: MutableList<MarkerDto>,
-    sheetState: ModalBottomSheetState,
-    coroutineScope: CoroutineScope
+    selectedBoothChip: Int,
 ) {
 
     var markers by remember {
@@ -230,7 +231,7 @@ fun BoothMap(
 
             Marker().apply {
                 position = LatLng(it.boothLatitude, it.boothLongitude)
-//                    captionText = it.boothName
+                subCaptionText = it.boothNo.toString()
                 icon = OverlayImage.fromResource(setMarkerIcon(it.boothNo))
             }
         }
@@ -253,16 +254,29 @@ fun BoothMap(
         cameraPositionState = cameraPositionState
     ) {
 
-        markers.forEach {
-            Marker(
-                state = MarkerState(position = it.position),
-                captionText = it.captionText,
-                icon = it.icon,
-                onClick = {
-                    showDialog = true
-                    true
-                }
-            )
+        markers.forEach { marker ->
+            if (selectedBoothChip == 0) {
+                Marker(
+                    state = MarkerState(position = marker.position),
+                    captionText = marker.captionText,
+                    icon = marker.icon,
+                    onClick = {
+                        showDialog = true
+                        true
+                    }
+                )
+            } else if (marker.subCaptionText == selectedBoothChip.toString()) {
+                Marker(
+                    state = MarkerState(position = marker.position),
+                    captionText = marker.captionText,
+                    icon = marker.icon,
+                    onClick = {
+                        showDialog = true
+                        true
+                    }
+                )
+            }
+
         }
     }
 }

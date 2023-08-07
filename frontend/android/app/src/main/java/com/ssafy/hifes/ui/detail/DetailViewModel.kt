@@ -10,6 +10,9 @@ class DetailViewModel : ViewModel() {
         MutableLiveData()
     val markerList: LiveData<MutableList<MarkerDto>> = _markerList
 
+    private var _selectedBoothChip : MutableLiveData<Int> = MutableLiveData()
+    val selectedBoothChip : LiveData<Int> = _selectedBoothChip
+
     init {
         getMarkerList()
     }
@@ -62,6 +65,10 @@ class DetailViewModel : ViewModel() {
             )
         }
         _markerList.postValue(markerListDummyData)
+    }
+
+    fun updateSelectedBoothChip(index: Int) {
+        _selectedBoothChip.postValue(index)
     }
 
 }
