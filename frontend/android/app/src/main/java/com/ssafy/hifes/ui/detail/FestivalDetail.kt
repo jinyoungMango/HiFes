@@ -45,8 +45,15 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
+import com.naver.maps.geometry.LatLng
+import com.naver.maps.map.CameraPosition
+import com.naver.maps.map.compose.CameraPositionState
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
+import com.naver.maps.map.compose.Marker
+import com.naver.maps.map.compose.MarkerState
 import com.naver.maps.map.compose.NaverMap
+import com.naver.maps.map.compose.rememberCameraPositionState
+import com.naver.maps.map.overlay.OverlayImage
 import com.ssafy.hifes.R
 import com.ssafy.hifes.ui.HifesDestinations
 import com.ssafy.hifes.ui.iconpack.MyIconPack
@@ -142,12 +149,7 @@ fun FestivalDetail(navController: NavHostController, viewModel: MainViewModel) {
                         Spacer(modifier = Modifier.size(12.dp))
                         DetailCommonContent(title = "장소", address = "주소")
                         Spacer(modifier = Modifier.size(12.dp))
-                        NaverMap(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(250.dp)
-                                .padding(8.dp)
-                        )
+                        FestivalLocation(festivalData.fesLatitude, festivalData.fesLongitude, festivalData.fesTitle)
                         Spacer(modifier = Modifier.size(12.dp))
                         // 추후 서버에서 가져온 데이터로 변경
                         DetailCommonContent(
@@ -172,6 +174,28 @@ fun FestivalDetailPrev() {
     FestivalDetail(navController = rememberNavController(), MainViewModel())
 }
 
+@OptIn(ExperimentalNaverMapApi::class)
+@Composable
+fun FestivalLocation(lat: Double, lng: Double, title: String) {
+    val festivalLatLng = LatLng(lat, lng)
+    val cameraPositionState: CameraPositionState = rememberCameraPositionState {
+        position = CameraPosition(festivalLatLng, 14.0)
+    }
+    NaverMap(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(250.dp)
+            .padding(8.dp),
+        cameraPositionState = cameraPositionState
+    ) {
+        Marker(
+            state = MarkerState(position = festivalLatLng),
+            captionText = title,
+            icon = OverlayImage.fromResource(R.drawable.icon_marker),
+//            width = 30.dp,
+            )
+    }
+}
 
 @Composable
 fun DetailCommonContent(title: String, content1: String, content2: String) {
