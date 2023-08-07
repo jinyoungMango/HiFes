@@ -5,12 +5,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.ssafy.hifes.data.model.OrganizedFestivalDto
-import com.ssafy.hifes.ui.board.boardcommon.PostType
 import com.ssafy.hifes.ui.map.MapType
 import java.sql.Date
 import java.text.SimpleDateFormat
 
 private const val TAG = "MainViewModel_하이페스"
+
 class MainViewModel : ViewModel() {
     private var _festivalList: MutableLiveData<MutableList<OrganizedFestivalDto>> =
         MutableLiveData()

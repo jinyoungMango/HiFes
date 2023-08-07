@@ -49,7 +49,10 @@ fun HifesApp(
         val mainViewModel: MainViewModel = viewModel()
         Scaffold(
             bottomBar = {
-                if (isBottomBarVisible) BottomNavigation(navController = navController, mainViewModel)
+                if (isBottomBarVisible) BottomNavigation(
+                    navController = navController,
+                    mainViewModel
+                )
             }
         ) {
             Box(Modifier.padding(it)) {

@@ -17,7 +17,6 @@ import com.ssafy.hifes.ui.detail.FestivalDetail
 import com.ssafy.hifes.ui.group.GroupViewModel
 import com.ssafy.hifes.ui.group.create.GroupCreateScreen
 import com.ssafy.hifes.ui.group.info.GroupInfoScreen
-import com.ssafy.hifes.ui.group.info.detail.GroupDetailScreen
 import com.ssafy.hifes.ui.group.main.GroupMainScreen
 import com.ssafy.hifes.ui.home.HomeScreen
 import com.ssafy.hifes.ui.login.LoginDetailScreen
