@@ -1,6 +1,6 @@
 package com.ssafy.hifes.ui.home
 
-import android.util.Log
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,21 +27,26 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
+import com.ssafy.hifes.R
 import com.ssafy.hifes.data.model.OrganizedFestivalDto
 import com.ssafy.hifes.ui.HifesDestinations
 import com.ssafy.hifes.ui.iconpack.MyIconPack
 import com.ssafy.hifes.ui.iconpack.myiconpack.Imagenotfound
 import com.ssafy.hifes.ui.main.MainViewModel
+import com.ssafy.hifes.ui.theme.pretendardFamily
 
 private const val TAG = "HomeScreen_하이페"
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HomeScreen(navController: NavController, viewModel: MainViewModel) {
     val festivalList = viewModel.festivalList.observeAsState()
@@ -54,33 +60,43 @@ fun HomeScreen(navController: NavController, viewModel: MainViewModel) {
         nearestFestival = OrganizedFestivalDto()
         nearFestivalList = emptyList()
     }
-    
-    LazyColumn(
-        modifier = Modifier.background(color = Color.White)
-    ) {
-        item {
-            HomeGreeting("혹시 이 행사에 참여 중이신가요?")
-            HomeFestivalImage(nearestFestival) {
-                viewModel.getFestivalDetail(it)
-                navController.navigate(HifesDestinations.FESTIVAL_DETAIL)}
-            if (nearestFestival != null) {
-                HomeCard(
-                    title = nearestFestival.fesTitle,
-                    content = nearestFestival.fesOutline
-                )
+
+    Scaffold(topBar = {
+        HomeAppBar(navController)
+    },
+        content = {
+            LazyColumn(
+                modifier = Modifier
+                    .background(color = Color.White)
+                    .padding(it),
+            ) {
+                item {
+                    HomeGreeting(stringResource(id = R.string.home_greeting))
+                    Column(modifier = Modifier.clickable {
+                        viewModel.getFestivalDetail(nearestFestival)
+                        navController.navigate(HifesDestinations.FESTIVAL_DETAIL)
+                    }) {
+                        HomeFestivalImage(nearestFestival)
+                        if (nearestFestival != null) {
+                            HomeCard(
+                                nearestFestival
+                            )
+                        }
+                    }
+
+                    HomeMiddleText(stringResource(id = R.string.home_middle_ment))
+                }
+                items(nearFestivalList.size) { festival ->
+                    HomeCardWithImage(
+                        nearFestivalList[festival]
+                    ) { fesData ->
+                        viewModel.getFestivalDetail(fesData)
+                        navController.navigate(HifesDestinations.FESTIVAL_DETAIL)
+                    }
+                }
             }
-            HomeMiddleText("이 근처에서 축제 열리는 중!")
-        }
-        items(nearFestivalList.size) { festival ->
-            HomeCardWithImage(
-                nearFestivalList[festival]
-            ) { fesData ->
-                Log.d(TAG, "HomeScreen: ")
-                viewModel.getFestivalDetail(fesData)
-                navController.navigate(HifesDestinations.FESTIVAL_DETAIL)
-            }
-        }
-    }
+        })
+
 
 }
 
@@ -103,14 +119,16 @@ fun HomeGreeting(message: String) {
     ) {
         Text(
             color = Color.White,
+            fontFamily = pretendardFamily,
             fontWeight = FontWeight.Bold,
+            fontSize = 16.sp,
             text = message
         )
     }
 }
 
 @Composable
-fun HomeFestivalImage(festival: OrganizedFestivalDto, onClick: (OrganizedFestivalDto) -> Unit) {
+fun HomeFestivalImage(festival: OrganizedFestivalDto) {
     AsyncImage(
         model = festival.fesPosterPath,
         contentScale = ContentScale.Crop,
@@ -119,18 +137,15 @@ fun HomeFestivalImage(festival: OrganizedFestivalDto, onClick: (OrganizedFestiva
         modifier = Modifier
             .fillMaxWidth()
             .height(250.dp)
-            .clickable {
-                onClick(festival)
-            }
     )
 }
 
 @Composable
-fun HomeCard(title: String, content: String) {
+fun HomeCard(nearestFestival: OrganizedFestivalDto) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .height(220.dp),
+            .height(220.dp).padding(8.dp),
         color = Color.White,
         shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp),
         shadowElevation = 0.dp
@@ -140,9 +155,21 @@ fun HomeCard(title: String, content: String) {
                 .fillMaxSize()
                 .padding(12.dp)
         ) {
-            Text(title, fontWeight = FontWeight.Bold)
+            Text(
+                nearestFestival.fesTitle,
+                fontFamily = pretendardFamily,
+                fontWeight = FontWeight.Bold,
+                fontSize = 24.sp
+            )
             Spacer(modifier = Modifier.height(8.dp))
-            Text(content, fontSize = 12.sp)
+            Text(
+                nearestFestival.fesOutline,
+                fontFamily = pretendardFamily,
+                fontWeight = FontWeight.Medium,
+                fontSize = 16.sp,
+                maxLines = 4,
+                overflow = TextOverflow.Ellipsis
+            )
             Spacer(modifier = Modifier.height(20.dp))
         }
     }
@@ -165,8 +192,9 @@ fun HomeMiddleText(message: String) {
             Text(
                 text = message,
                 color = Color.Black,
+                fontFamily = pretendardFamily,
                 fontWeight = FontWeight.Bold,
-                fontSize = 18.sp
+                fontSize = 16.sp,
             )
         }
     }
@@ -180,15 +208,16 @@ fun HomeCardWithImage(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(12.dp)
+            .height(140.dp)
+            .padding(10.dp)
             .clickable { onClick(festival) },
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(18.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
     ) {
         Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.padding(12.dp)
+            modifier = Modifier
+                .padding(12.dp)
+                .height(140.dp),
         ) {
             AsyncImage(
                 model = festival.fesPosterPath,
@@ -202,14 +231,20 @@ fun HomeCardWithImage(
                 Text(
                     text = festival.fesTitle,
                     color = Color.Black,
-                    fontWeight = FontWeight.Bold,
+                    fontFamily = pretendardFamily,
+                    fontWeight = FontWeight.SemiBold,
                     fontSize = 18.sp,
                     modifier = Modifier.padding(horizontal = 12.dp)
                 )
+                Spacer(modifier = Modifier.size(8.dp))
                 Text(
                     text = festival.fesOutline,
-                    fontSize = 18.sp,
-                    modifier = Modifier.padding(horizontal = 12.dp)
+                    fontFamily = pretendardFamily,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 14.sp,
+                    modifier = Modifier.padding(horizontal = 12.dp),
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
 

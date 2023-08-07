@@ -13,9 +13,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.ssafy.hifes.ui.iconpack.MyIconPack
 import com.ssafy.hifes.ui.iconpack.myiconpack.Leave
+import com.ssafy.hifes.ui.theme.pretendardFamily
 
 @Composable
 fun Leave() {
@@ -23,7 +25,7 @@ fun Leave() {
         IconButton(onClick = { /*TODO*/ }) {
             Image(imageVector = MyIconPack.Leave, contentDescription = null, modifier = Modifier.fillMaxSize())
         }
-        Text(text = "탈퇴하기", color = Color(0xFF979797), modifier = Modifier.clickable {  })
+        Text(text = "탈퇴하기", color = Color(0xFF979797), modifier = Modifier.clickable {  }, fontFamily = pretendardFamily, fontWeight = FontWeight.Medium)
     }
 }
 

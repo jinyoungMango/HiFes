@@ -27,6 +27,7 @@ import com.ssafy.hifes.ui.iconpack.MyIconPack
 import com.ssafy.hifes.ui.iconpack.myiconpack.Postlocked
 import com.ssafy.hifes.ui.iconpack.myiconpack.Postunlocked
 import com.ssafy.hifes.ui.theme.Grey
+import com.ssafy.hifes.ui.theme.pretendardFamily
 import java.text.SimpleDateFormat
 
 @Composable
@@ -41,6 +42,7 @@ fun PostTitle(
     ) {
         Text(
             text = resultTitle,
+            fontFamily = pretendardFamily,
             fontWeight = FontWeight.Bold,
             fontSize = 16.sp,
             maxLines = 1,
