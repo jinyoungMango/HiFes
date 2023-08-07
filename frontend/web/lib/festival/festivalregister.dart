@@ -7,8 +7,6 @@ import 'package:web/common.dart';
 import 'dart:html' as html;
 import 'dart:ui' as ui;
 
-//import 'package:webviewx/webviewx.dart';
-
 class FileData {
   String fileName;
   String fileUrl;
@@ -31,9 +29,6 @@ class _FestivalRegisterState extends State<FestivalRegister> {
       ..download = fileData.fileName; // 파일 이름 설정
     anchorElement.click();
   }
-
-  // 네이버 지도를 웹뷰로 띄울 때 사용
-  //late WebViewXController webviewController;
 
   // 포스터 이미지
   FilePickerResult? poster;
