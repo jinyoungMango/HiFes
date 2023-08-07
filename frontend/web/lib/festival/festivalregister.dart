@@ -64,8 +64,6 @@ class _FestivalRegisterState extends State<FestivalRegister> {
     super.initState();
     timetable = null;
     poster = null;
-    _iFrameElement.style.height = '80%';
-    _iFrameElement.style.width = '80%';
     _iFrameElement.src = dotenv.env['YOUR_NAVER_MAP_URL'];
     _iFrameElement.style.border = 'none';
 
