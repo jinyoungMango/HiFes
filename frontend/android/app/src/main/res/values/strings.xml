@@ -61,7 +61,7 @@
     <!-- Map -->
     <string name="map_chip_sale_booth">판매 부스</string>
     <string name="map_chip_food_booth">먹거리 부스</string>
-    <string name="map_chip_restaurant_booth">판매 부스</string>
+    <string name="map_chip_restaurant_booth">식당 부스</string>
     <string name="map_chip_staff">스태프</string>
     <string name="map_chip_safety_staff">안전 요원</string>
     <string name="map_chip_toilet">화장실</string>

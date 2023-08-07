@@ -33,7 +33,8 @@ class MainViewModel : ViewModel() {
     }
 
 
-    fun getOrganizedFestivalList() { //추후 서버 통신 코드가 생기면 이 부분을 서버에게서 공지 게시글 리스트를 받아오는것으로 변경한다
+    // 홈 화면, 일반 맵 화면에서 사용하는 축제 리스트
+    fun getOrganizedFestivalList() { //추후 서버 통신 코드가 생기면 이 부분을 서버에게서 축제 리스트를 받아오는것으로 변경한다
         var festivalListDummyData = mutableListOf<OrganizedFestivalDto>()
         festivalListDummyData.apply {
             add(

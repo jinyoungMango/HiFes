@@ -30,10 +30,9 @@ import androidx.compose.ui.window.Dialog
 import com.ssafy.hifes.R
 
 
-@Preview
 @Composable
-fun MarkerDetailDialog() {
-    Dialog(onDismissRequest = {}) {
+fun MarkerDetailDialog(onDismissRequest: () -> Unit) {
+    Dialog(onDismissRequest = onDismissRequest) {
         Surface(
             modifier = Modifier
                 .width(200.dp)
@@ -99,4 +98,10 @@ fun CustomDialog(
         }
     }
 
+}
+
+@Preview
+@Composable
+fun MarkerPreview() {
+    MarkerDetailDialog(onDismissRequest = {})
 }

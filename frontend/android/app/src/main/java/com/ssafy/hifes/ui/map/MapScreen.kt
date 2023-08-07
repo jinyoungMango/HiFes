@@ -32,10 +32,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.naver.maps.geometry.LatLng
+import com.naver.maps.map.CameraPosition
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.naver.maps.map.compose.LocationTrackingMode
 import com.naver.maps.map.compose.MapProperties
@@ -43,12 +43,16 @@ import com.naver.maps.map.compose.MapUiSettings
 import com.naver.maps.map.compose.Marker
 import com.naver.maps.map.compose.MarkerState
 import com.naver.maps.map.compose.NaverMap
+import com.naver.maps.map.compose.rememberCameraPositionState
 import com.naver.maps.map.compose.rememberFusedLocationSource
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 import com.ssafy.hifes.R
+import com.ssafy.hifes.data.model.MarkerDto
 import com.ssafy.hifes.data.model.OrganizedFestivalDto
 import com.ssafy.hifes.ui.common.ChipsSelectable
+import com.ssafy.hifes.ui.detail.DetailViewModel
+import com.ssafy.hifes.ui.detail.map.MarkerDetailDialog
 import com.ssafy.hifes.ui.main.MainViewModel
 import com.ssafy.hifes.ui.theme.PrimaryPink
 import kotlinx.coroutines.CoroutineScope
@@ -60,9 +64,14 @@ private const val TAG = "MapScreen_하이페스"
 @OptIn(ExperimentalMaterialApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun MapScreen(navController: NavController, viewModel: MainViewModel) {
+fun MapScreen(
+    navController: NavController,
+    viewModel: MainViewModel,
+    detailViewModel: DetailViewModel
+) {
     val festivalList = viewModel.festivalList.observeAsState()
     val mapType = viewModel.mapType.observeAsState()
+    val boothList = detailViewModel.markerList.observeAsState()
 
     val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden,
         confirmValueChange = { it != ModalBottomSheetValue.HalfExpanded }
@@ -85,38 +94,41 @@ fun MapScreen(navController: NavController, viewModel: MainViewModel) {
                         .fillMaxSize()
                         .background(Color.White.copy(alpha = 0.0f))
                 ) {
-                    Log.d(TAG, "MapScreen: ${mapType.value}")
-                    if (mapType.value == MapType.GENERAL) {
-                        Log.d(TAG, "MapScreen: ")
-                    }
-                    AroundMyLocationFestival(festivalList.value, sheetState, coroutineScope)
-                    if (!festivalList.value.isNullOrEmpty() && mapType.value == MapType.GENERAL) {
-                        ViewPager(
-                            festivalList.value!!,
-                            modifier = Modifier.align(Alignment.BottomCenter)
-                        )
-                    }
-
-                    if (mapType.value == MapType.FESTIVAL) {
-
-                        ChipsSelectable(
-                            listOf(
-                                stringResource(id = R.string.map_chip_sale_booth),
-                                stringResource(
-                                    id = R.string.map_chip_food_booth
-                                ),
-                                stringResource(id = R.string.map_chip_restaurant_booth),
-                                stringResource(id = R.string.map_chip_staff),
-                                stringResource(id = R.string.map_chip_safety_staff),
-                                stringResource(id = R.string.map_chip_toilet),
-                                stringResource(id = R.string.map_chip_enterance),
+                    when (mapType.value) {
+                        MapType.GENERAL -> {
+                            AroundMyLocationFestivalMap(
+                                festivalList.value,
+                                sheetState,
+                                coroutineScope
                             )
-                        ) { index ->
-                            when (index) {
-
+                            if (!festivalList.value.isNullOrEmpty()) {
+                                ViewPager(
+                                    festivalList.value!!,
+                                    modifier = Modifier.align(Alignment.BottomCenter)
+                                )
                             }
                         }
 
+                        MapType.FESTIVAL -> {
+                            BoothMap(boothList.value!!, sheetState, coroutineScope)
+                            ChipsSelectable(
+                                listOf(
+                                    R.string.map_chip_sale_booth,
+                                    R.string.map_chip_food_booth,
+                                    R.string.map_chip_restaurant_booth,
+                                    R.string.map_chip_staff,
+                                    R.string.map_chip_safety_staff,
+                                    R.string.map_chip_toilet,
+                                    R.string.map_chip_enterance
+                                ).map { stringResource(id = it) }
+                            ) { index ->
+                                when (index) {
+
+                                }
+                            }
+                        }
+
+                        else -> {}
                     }
                 }
 
@@ -137,16 +149,14 @@ fun MapScreen(navController: NavController, viewModel: MainViewModel) {
                     )
                 }
             }
-
         }
     )
-
-
 }
+
 
 @OptIn(ExperimentalNaverMapApi::class, ExperimentalMaterialApi::class)
 @Composable
-fun AroundMyLocationFestival(
+fun AroundMyLocationFestivalMap(
     festivalList: MutableList<OrganizedFestivalDto>?,
     sheetState: ModalBottomSheetState,
     coroutineScope: CoroutineScope
@@ -196,9 +206,84 @@ fun AroundMyLocationFestival(
 
 }
 
+@OptIn(ExperimentalNaverMapApi::class, ExperimentalMaterialApi::class)
+@Composable
+fun BoothMap(
+    boothList: MutableList<MarkerDto>,
+    sheetState: ModalBottomSheetState,
+    coroutineScope: CoroutineScope
+) {
+
+    var markers by remember {
+        mutableStateOf<List<Marker>>(emptyList())
+    }
+    var latAvg = 0.0
+    var lngAvg = 0.0
+    var boothAvgLatLng by remember { mutableStateOf(LatLng(0.0, 0.0)) }
+    val cameraPositionState = rememberCameraPositionState()
+
+    LaunchedEffect(boothList) {
+        markers.forEach { it.map = null }
+        markers = boothList.map {
+            latAvg += it.boothLatitude
+            lngAvg += it.boothLongitude
+
+            Marker().apply {
+                position = LatLng(it.boothLatitude, it.boothLongitude)
+//                    captionText = it.boothName
+                icon = OverlayImage.fromResource(setMarkerIcon(it.boothNo))
+            }
+        }
+
+        latAvg /= boothList.size
+        lngAvg /= boothList.size
+        Log.d(TAG, "BoothMap: $latAvg, $lngAvg")
+
+        boothAvgLatLng = LatLng(latAvg, lngAvg)
+        cameraPositionState.position = CameraPosition(boothAvgLatLng, 14.0)
+    }
+
+    var showDialog by remember { mutableStateOf(false) }
+
+    if (showDialog) {
+        MarkerDetailDialog(onDismissRequest = { showDialog = false })
+    }
+
+    NaverMap(
+        cameraPositionState = cameraPositionState
+    ) {
+
+        markers.forEach {
+            Marker(
+                state = MarkerState(position = it.position),
+                captionText = it.captionText,
+                icon = it.icon,
+                onClick = {
+                    showDialog = true
+                    true
+                }
+            )
+        }
+    }
+}
+
+
+fun setMarkerIcon(boothNo: Int): Int {
+    var markerImg = 0
+    when (boothNo) {
+        1 -> markerImg = R.drawable.marker_sale_booth
+        2 -> markerImg = R.drawable.marker_food_booth
+        3 -> markerImg = R.drawable.marker_restaurant_booth
+        4 -> markerImg = R.drawable.marker_staff
+        5 -> markerImg = R.drawable.marker_safety_staff
+        6 -> markerImg = R.drawable.marker_toilet
+        7 -> markerImg = R.drawable.marker_enterance
+    }
+    return markerImg
+}
+
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
 fun MapScreenPriview() {
-    val mainViewModel: MainViewModel = viewModel()
-    MapScreen(rememberNavController(), mainViewModel)
+    MapScreen(rememberNavController(), MainViewModel(), DetailViewModel())
 }
