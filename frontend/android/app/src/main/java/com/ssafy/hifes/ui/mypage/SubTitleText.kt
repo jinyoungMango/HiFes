@@ -10,13 +10,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ssafy.hifes.ui.theme.pretendardFamily
 
 @Composable
 fun SubTitleText(title: String, onClick: () -> Unit) {
     ClickableText(
         text = AnnotatedString(title), onClick = { onClick() },
         style = TextStyle(
-            fontWeight = FontWeight.Light,
+            fontFamily = pretendardFamily,
+            fontWeight = FontWeight.Normal,
             fontSize = 16.sp
         ),
         modifier = Modifier

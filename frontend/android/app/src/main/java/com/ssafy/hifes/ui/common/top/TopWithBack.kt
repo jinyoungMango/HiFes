@@ -1,8 +1,11 @@
 package com.ssafy.hifes.ui.common.top
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -17,16 +20,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.ssafy.hifes.R
 import com.ssafy.hifes.ui.common.CustomMenuItem
 import com.ssafy.hifes.ui.theme.PrimaryPink
+import com.ssafy.hifes.ui.theme.pretendardFamily
 
 // 상단 오른쪽에 올 수 있는 것
 // 1. 아무것도 없음
@@ -49,18 +56,38 @@ fun TopWithBack(
 
     CenterAlignedTopAppBar(
         navigationIcon = {
-            IconButton(onClick = { /* 뒤로가기 */ }) {
-                Icon(
-                    ImageVector.vectorResource(R.drawable.baseline_arrow_back_ios_24),
-                    contentDescription = null
-                )
+            Row(
+                modifier = Modifier
+                    .height(60.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                IconButton(onClick = { navController.popBackStack() }) {
+                    Icon(
+                        ImageVector.vectorResource(R.drawable.icon_back),
+                        contentDescription = null
+                    )
+                }
             }
         },
 
         title = {
-            Text(title)
-        },
+            Row(
+                modifier = Modifier
+                    .height(60.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    title,
+                    fontFamily = pretendardFamily,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp
+                )
+            }
 
+        },
+        modifier = Modifier.height(60.dp),
         actions = {
             if (more) {
                 IconButton(onClick = { expanded = !expanded }) {
@@ -79,7 +106,7 @@ fun TopWithBack(
                                 menuItem.action()
                                 expanded = false
                             }
-                        ){
+                        ) {
                             Text(text = menuItem.title)
                         }
                     }
@@ -87,7 +114,7 @@ fun TopWithBack(
             }
             if (btn) {
                 Button(onClick = onClick, colors = ButtonDefaults.buttonColors(PrimaryPink)) {
-                    Text(text = btnText)
+                    Text(text = btnText, fontFamily = pretendardFamily, fontWeight = FontWeight.Bold)
                 }
             }
         },
@@ -102,7 +129,12 @@ fun TopPrev() {
     Column(Modifier.padding(vertical = 8.dp)) {
         TopWithBack(rememberNavController(), title = "타이틀1")
         TopWithBack(rememberNavController(), title = "타이틀2", more = true, onClick = {})
-        TopWithBack(rememberNavController(), title = "타이틀3", btn = true, btnText = "글쓰기", onClick = {})
+        TopWithBack(
+            rememberNavController(),
+            title = "타이틀3",
+            btn = true,
+            btnText = "글쓰기",
+            onClick = {})
     }
 
 }

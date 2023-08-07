@@ -35,7 +35,6 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
@@ -50,11 +49,11 @@ import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.naver.maps.map.compose.NaverMap
 import com.ssafy.hifes.R
 import com.ssafy.hifes.ui.HifesDestinations
-import com.ssafy.hifes.ui.common.top.TopWithBack
 import com.ssafy.hifes.ui.iconpack.MyIconPack
 import com.ssafy.hifes.ui.iconpack.myiconpack.Imagenotfound
 import com.ssafy.hifes.ui.main.MainViewModel
 import com.ssafy.hifes.ui.map.StarScore
+import com.ssafy.hifes.ui.theme.pretendardFamily
 import com.ssafy.hifes.util.CommonUtils.formatSqlDateToString
 
 
@@ -69,7 +68,6 @@ fun FestivalDetail(navController: NavHostController, viewModel: MainViewModel) {
                 .verticalScroll(rememberScrollState())
         ) {
             if (festivalData != null) {
-                TopWithBack(navController, title = festivalData.fesTitle)
                 Box {
                     AsyncImage(
                         model = festivalData.fesPosterPath,
@@ -93,6 +91,7 @@ fun FestivalDetail(navController: NavHostController, viewModel: MainViewModel) {
                             )
                         }
                         DetailIcons(painterResource(R.drawable.icon_map)) {
+                            viewModel.updateMapTypeFestival()
                             navController.navigate(
                                 NavigationItem.Map.screenRoute
                             )
@@ -114,7 +113,7 @@ fun FestivalDetail(navController: NavHostController, viewModel: MainViewModel) {
                                 horizontalArrangement = Arrangement.End,
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(end = 8.dp)
+                                    .padding(top = 2.dp, end = 8.dp)
                             ) {
                                 DetailIcons(painterResource(R.drawable.icon_share)) {}
                             }
@@ -150,6 +149,7 @@ fun FestivalDetail(navController: NavHostController, viewModel: MainViewModel) {
                                 .padding(8.dp)
                         )
                         Spacer(modifier = Modifier.size(12.dp))
+                        // 추후 서버에서 가져온 데이터로 변경
                         DetailCommonContent(
                             title = "주최",
                             content1 = "대구광역시",
@@ -269,12 +269,12 @@ fun DetailTitle(title: String) {
             .fillMaxWidth()
             .height(40.dp)
     ) {
-
         Text(
             text = title,
             color = Color.Black,
+            fontFamily = pretendardFamily,
             fontWeight = FontWeight.Bold,
-            fontSize = 20.sp
+            fontSize = 22.sp
         )
 
     }
@@ -289,7 +289,7 @@ fun Image(
         contentDescription = null,
         modifier = Modifier
             .fillMaxWidth()
-            .height(200.dp)
+            .height(150.dp)
             .background(color = Color.White)
     )
 }

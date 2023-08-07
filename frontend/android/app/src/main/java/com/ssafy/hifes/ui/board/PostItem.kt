@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -22,6 +23,7 @@ import com.ssafy.hifes.ui.board.postitemelement.PostContent
 import com.ssafy.hifes.ui.board.postitemelement.PostImage
 import com.ssafy.hifes.ui.board.postitemelement.PostTitle
 import com.ssafy.hifes.ui.theme.LightGrey
+import com.ssafy.hifes.ui.theme.pretendardFamily
 import com.ssafy.hifes.util.CommonUtils
 import java.text.SimpleDateFormat
 
@@ -49,7 +51,7 @@ fun PostItem(
                 Spacer(modifier = Modifier.size(4.dp))
                 PostContent(postData = postData, userDataId)
                 Spacer(modifier = Modifier.size(4.dp))
-                Text(text = CommonUtils.formatSqlDateToString(postData.createdAt), fontSize = 14.sp)
+                Text(text = CommonUtils.formatSqlDateToString(postData.createdAt), fontSize = 14.sp, fontFamily = pretendardFamily, fontWeight = FontWeight.Normal)
             }
             Spacer(modifier = Modifier.size(10.dp))
             PostImage(postData = postData, userDataId = userDataId)

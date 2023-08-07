@@ -39,13 +39,17 @@ fun MapAppBar(navController: NavController) {
 
     TopAppBar(
         title = { Text(text = "My App") },
+        modifier = Modifier.height(60.dp),
         colors = topAppBarColors(
             containerColor = Color.White.copy(alpha = 0.0f)
         ),
         actions = {
-            Row(verticalAlignment = Alignment.CenterVertically) { // Row 레이아웃 사용
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.height(60.dp)
+            ) { // Row 레이아웃 사용
                 var text by remember { mutableStateOf("") }
-                IconButton(onClick = { navController.popBackStack()}) {
+                IconButton(onClick = { navController.popBackStack() }) {
                     Icon(
                         painter = otherImage,
                         contentDescription = "Other icon",
