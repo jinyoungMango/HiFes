@@ -2,7 +2,10 @@ package com.ssafy.hifes.ui.common
 
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -30,7 +33,7 @@ import androidx.compose.ui.unit.dp
 import com.ssafy.hifes.ui.theme.PrimaryPink
 import com.ssafy.hifes.ui.theme.pretendardFamily
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun ChipsSelectable(
     chips: List<String>,
@@ -39,8 +42,11 @@ fun ChipsSelectable(
 ) {
     var selected by rememberSaveable { mutableStateOf(initStartPosition) }
 
-    LazyRow() {
-        itemsIndexed(chips) { index, item ->
+    FlowRow(
+        modifier = Modifier.padding(start = 8.dp, end = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+    ) {
+        chips.forEachIndexed { index, item ->
             FilterChip(
                 selected = selected == index,
                 onClick = {
@@ -60,7 +66,6 @@ fun ChipsSelectable(
                     containerColor = Color.White
                 )
             )
-            Spacer(modifier = Modifier.width(16.dp))
         }
     }
 

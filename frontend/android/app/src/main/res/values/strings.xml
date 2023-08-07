@@ -57,4 +57,14 @@
     <string name="board_write_appbar_title">작성</string>
     <string name="board_write_text_field_title_hint">제목을 입력하세요</string>
     <string name="board_write_text_field_content_hint">내용을 입력하세요</string>
+
+    <!-- Map -->
+    <string name="map_chip_sale_booth">판매 부스</string>
+    <string name="map_chip_food_booth">먹거리 부스</string>
+    <string name="map_chip_restaurant_booth">판매 부스</string>
+    <string name="map_chip_staff">스태프</string>
+    <string name="map_chip_safety_staff">안전 요원</string>
+    <string name="map_chip_toilet">화장실</string>
+    <string name="map_chip_enterance">출입구</string>
+
 </resources>

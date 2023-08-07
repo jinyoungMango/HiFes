@@ -3,16 +3,21 @@ package com.ssafy.hifes.ui.map
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Shapes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.rememberModalBottomSheetState
@@ -29,8 +34,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -98,23 +106,25 @@ fun MapScreen(navController: NavController, viewModel: MainViewModel) {
                     }
 
                     if (mapType.value == MapType.FESTIVAL) {
-                        Column(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                        ) {
-                            ChipsSelectable(
-                                listOf(
-                                    stringResource(id = R.string.board_chip_notification),
-                                    stringResource(id = R.string.board_chip_ask),
-                                    stringResource(id = R.string.board_chip_free),
-                                    stringResource(id = R.string.board_chip_review)
-                                )
-                            ) { index ->
-                                when (index) {
 
-                                }
+                        ChipsSelectable(
+                            listOf(
+                                stringResource(id = R.string.map_chip_sale_booth),
+                                stringResource(
+                                    id = R.string.map_chip_food_booth
+                                ),
+                                stringResource(id = R.string.map_chip_restaurant_booth),
+                                stringResource(id = R.string.map_chip_staff),
+                                stringResource(id = R.string.map_chip_safety_staff),
+                                stringResource(id = R.string.map_chip_toilet),
+                                stringResource(id = R.string.map_chip_enterance),
+                            )
+                        ) { index ->
+                            when (index) {
+
                             }
                         }
+
                     }
                 }
 
@@ -123,11 +133,16 @@ fun MapScreen(navController: NavController, viewModel: MainViewModel) {
         floatingActionButton = {
             if (mapType.value == MapType.FESTIVAL) {
                 FloatingActionButton(
-                    onClick = { navController.navigate(HifesDestinations.GROUP_CREATE) },
+                    onClick = { /* 모임콜 기능 */ },
                     containerColor = PrimaryPink,
-                    contentColor = Color.White
+                    contentColor = Color.White,
+                    shape = MaterialTheme.shapes.small.copy(CornerSize(percent = 50)),
                 ) {
-                    Icon(Icons.Filled.Add, contentDescription = "Add")
+                    Icon(
+                        painterResource(id = R.drawable.icon_group),
+                        contentDescription = "Add",
+                        modifier = Modifier.size(24.dp)
+                    )
                 }
             }
 
