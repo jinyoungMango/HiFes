@@ -17,7 +17,6 @@ public class HostUser {
     @Column
     private Long id;
 
-    private String profilePic;
     private String name;
     private String phoneNo;
     private String organization;
