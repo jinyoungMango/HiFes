@@ -14,6 +14,9 @@ import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Scaffold
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -145,9 +148,9 @@ fun MapScreen(
                     shape = MaterialTheme.shapes.small.copy(CornerSize(percent = 50)),
                 ) {
                     Icon(
-                        painterResource(id = R.drawable.icon_group),
-                        contentDescription = "Add",
-                        modifier = Modifier.size(24.dp)
+                        Icons.Filled.Notifications,
+                        contentDescription = "Group Call",
+                        modifier = Modifier.size(28.dp)
                     )
                 }
             }
