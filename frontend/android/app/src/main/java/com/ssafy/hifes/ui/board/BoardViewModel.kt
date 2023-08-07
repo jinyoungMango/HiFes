@@ -1,5 +1,6 @@
 package com.ssafy.hifes.ui.board
 
+import android.net.Uri
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.LiveData
@@ -8,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import com.ssafy.hifes.data.model.PostDto
 import com.ssafy.hifes.ui.board.boardcommon.PostType
 import java.text.SimpleDateFormat
+import kotlin.math.log
 
 private const val TAG = "BoardViewModel"
 class BoardViewModel : ViewModel() {
@@ -22,6 +24,9 @@ class BoardViewModel : ViewModel() {
 
     private var _boardType : MutableLiveData<PostType> = MutableLiveData()
     val boardType : LiveData<PostType> = _boardType
+
+    private var _imageUri : MutableLiveData<Uri> = MutableLiveData()
+    val imageUri : LiveData<Uri> = _imageUri
 
     lateinit var postTestDate : java.sql.Date
 
@@ -86,6 +91,11 @@ class BoardViewModel : ViewModel() {
         selectedPostType = postData.postType
         _selectedPost.postValue(postData)
     }
+
+    fun postWrite(postData: PostDto){
+        Log.d(TAG, "postWrite: 타입 ${boardType}")
+        Log.d(TAG, "postWrite: 작성할 데이터 ${postData}")
+    }
     
     fun postDelete(){
         Log.d(TAG, "postDelete: 삭제 ${selectedPost.value}")
@@ -97,6 +107,10 @@ class BoardViewModel : ViewModel() {
 
     fun writeReComment(){
 
+    }
+
+    fun setImage(uri : Uri){
+        _imageUri.postValue(uri)
     }
 
 
