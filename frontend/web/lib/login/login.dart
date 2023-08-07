@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -115,7 +116,7 @@ class LoginPage extends StatelessWidget {
       print('카카오계정으로 로그인 성공 ${token.accessToken}');
 
       // 여기서 토큰을 서버에 넘긴다
-      var url = Uri.http('192.168.100.178:8080', 'host/login');
+      var url = Uri.http(dotenv.env['YOUR_URL']!, 'host/login');
       var response = await http.post(url, body: {'accessToken' : token.accessToken});
 
       print('Response status: ${response.statusCode}');
