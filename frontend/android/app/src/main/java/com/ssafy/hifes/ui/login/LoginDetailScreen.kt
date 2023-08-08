@@ -54,6 +54,7 @@ import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.accompanist.permissions.rememberPermissionState
 import com.ssafy.hifes.R
 import com.ssafy.hifes.ui.common.PermissionDeniedScreen
+import com.ssafy.hifes.ui.common.ProfileImg
 import com.ssafy.hifes.ui.common.top.TopWithBack
 import com.ssafy.hifes.ui.theme.Grey
 import com.ssafy.hifes.ui.theme.PrimaryPink
@@ -65,6 +66,7 @@ fun LoginDetailScreen(
     navController: NavController
 ) {
     val context = LocalContext.current
+    var imageUri by remember { mutableStateOf<Uri?>(null) }
 
     val permissionList: List<String> =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -92,7 +94,7 @@ fun LoginDetailScreen(
         ) {
             TopWithBack(navController, title = stringResource(R.string.more_info_appbar_title))
             Spacer(modifier = Modifier.size(20.dp))
-            ImageAdd()
+            ProfileImg(imageUri = imageUri, onImageChange = { uri -> imageUri = uri })
             Spacer(modifier = Modifier.size(40.dp))
             TextFieldNickName()
             Spacer(modifier = Modifier.weight(1f))
@@ -116,34 +118,6 @@ fun LoginDetailScreen(
     }
 }
 
-@Composable
-fun ImageAdd() {
-    Box() {
-        Image(
-            painterResource(id = R.drawable.icon_user),
-            contentDescription = "profile image",
-            modifier = Modifier
-                .size(150.dp)
-                .background(color = Grey, shape = CircleShape),
-        )
-        IconButton(
-            onClick = { },
-            modifier = Modifier
-                .background(
-                    color = PrimaryPink,
-                    shape = CircleShape
-                )
-                .align(Alignment.BottomEnd)
-
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.icon_camera),
-                contentDescription = "add profile image",
-                tint = colorResource(id = R.color.white)
-            )
-        }
-    }
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
