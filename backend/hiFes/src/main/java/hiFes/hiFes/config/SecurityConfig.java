@@ -2,6 +2,11 @@ package hiFes.hiFes.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import hiFes.hiFes.handler.LoginFailureHandler;
+import hiFes.hiFes.handler.LoginSuccessHandler;
+import hiFes.hiFes.repository.user.HostUserRepository;
+import hiFes.hiFes.repository.user.NormalUserRepository;
+import hiFes.hiFes.service.user.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +22,9 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
+    private final JwtService jwtService;
+    private final HostUserRepository hostUserRepository;
+    private final NormalUserRepository normalUserRepository;
 
 
     @Bean
@@ -30,6 +38,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests()
                 .antMatchers("host/sign-up").permitAll()
+                .antMatchers("host/login").permitAll()
                 .antMatchers("group/delete").permitAll()
                 .antMatchers("group/create").permitAll()
                 .antMatchers("/","/css/**","/images/**","/js/**","/favicon.ico").permitAll();
@@ -38,7 +47,15 @@ public class SecurityConfig {
         return http.build();
     }
 
+    @Bean
+    public LoginSuccessHandler loginSuccessHandler() {
+        return new LoginSuccessHandler(jwtService, hostUserRepository, normalUserRepository);
+    }
 
+    @Bean
+    public LoginFailureHandler loginFailureHandler() {
+        return new LoginFailureHandler();
+    }
 
 
 

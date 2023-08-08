@@ -12,6 +12,6 @@ public class NormalUserSignUpDto {
     private String profilePic;
     private String phoneNo;
     private String nickname;
-
+    private String accessToken;
 
 }

@@ -11,4 +11,5 @@ public class HostUserSignUpDto {
     private String organization;
     private String orgNo;
     private String orgCode;
+    private String accessToken;
 }

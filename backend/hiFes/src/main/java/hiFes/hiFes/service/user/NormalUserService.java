@@ -25,6 +25,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class NormalUserService {
     private final NormalUserRepository normalUserRepository;
+    private final JwtService jwtService;
 
 
     public void signUp(NormalUserSignUpDto normalUserSignUpDto, Map<String, Object> context) throws Exception {
@@ -47,14 +48,17 @@ public class NormalUserService {
     }
 
 
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        NormalUser normalUser = normalUserRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 이메일"));
+    public Boolean login(String email) throws UsernameNotFoundException {
 
+        String accessToken = jwtService.createAccessToken(email); // JwtService의 createAccessToken을 사용하여 AccessToken 발급
+        String refreshToken = jwtService.createRefreshToken();
 
-        return org.springframework.security.core.userdetails.User.builder()
-                .username(normalUser.getEmail())
-                .build();
+        normalUserRepository.findByEmail(email)
+                .ifPresent(user -> {
+                    user.updateRefreshToken(refreshToken);
+                    normalUserRepository.saveAndFlush(user);});
+
+        return true;
     }
     public Map<String, Object> searchKakaoUser(String token) {
 

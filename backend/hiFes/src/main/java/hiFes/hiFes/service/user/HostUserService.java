@@ -5,33 +5,37 @@ import com.google.gson.JsonParser;
 import hiFes.hiFes.domain.user.HostUser;
 import hiFes.hiFes.dto.user.HostUserSignUpDto;
 import hiFes.hiFes.repository.user.HostUserRepository;
+import io.jsonwebtoken.Jwt;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class HostUserService implements UserDetailsService {
+public class HostUserService  {
     private final HostUserRepository hostUserRepository;
+    private final JwtService jwtService;
 
     public void signUp(HostUserSignUpDto hostUserSignUpDto, Map<String, Object> context){
 
         HostUser hostUser = HostUser.builder()
                 .email((String) context.get("email"))
                 .name((String) context.get("name"))
+//                .email("emailtest1023@test.com")
                 .phoneNo(hostUserSignUpDto.getPhoneNo())
                 .organization(hostUserSignUpDto.getOrganization())
                 .orgNo(hostUserSignUpDto.getOrgNo())
@@ -49,14 +53,23 @@ public class HostUserService implements UserDetailsService {
         return hostUserRepository.findByEmail(email).orElse(null);
     }
 
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        HostUser hostUser = hostUserRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 이메일"));
+    public Map<String, String> login(String email) throws UsernameNotFoundException {
 
+        System.out.println(email + "**********************************************************************************************");
 
-        return org.springframework.security.core.userdetails.User.builder()
-                .username(hostUser.getEmail())
-                .build();
+        String accessToken = jwtService.createAccessToken(email); // JwtService의 createAccessToken을 사용하여 AccessToken 발급
+        String refreshToken = jwtService.createRefreshToken();
+
+        hostUserRepository.findByEmail(email)
+                .ifPresent(user -> {
+                    user.updateRefreshToken(refreshToken);
+                    hostUserRepository.saveAndFlush(user);});
+
+        HashMap<String, String> tokens = new HashMap<String, String>();
+        tokens.put("accessToken", accessToken);
+        tokens.put("refreshToken", refreshToken);
+
+        return tokens;
     }
 
 

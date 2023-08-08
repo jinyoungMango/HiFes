@@ -24,11 +24,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 
 @RequiredArgsConstructor
 @Slf4j
 public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
-    private static final String NO_CHECK_URL = "/login";
+    private static final String[] NO_CHECK_URLS = {"host/login", "host/sign-up", "normal/login", "normal/sign-up"};
 
     private final JwtService jwtService;
     private final HostUserRepository hostUserRepository;
@@ -38,7 +39,8 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if (request.getRequestURI().equals(NO_CHECK_URL)) {
+        String requestUri = request.getRequestURI();
+        if (Arrays.asList(NO_CHECK_URLS).contains(requestUri)){
             filterChain.doFilter(request, response);
             return;
         }
