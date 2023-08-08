@@ -53,11 +53,11 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.accompanist.permissions.rememberPermissionState
 import com.ssafy.hifes.R
+import com.ssafy.hifes.ui.common.PermissionDeniedScreen
 import com.ssafy.hifes.ui.common.top.TopWithBack
 import com.ssafy.hifes.ui.theme.Grey
 import com.ssafy.hifes.ui.theme.PrimaryPink
 import com.ssafy.hifes.ui.theme.SecondApricot
-import com.ssafy.hifes.util.checkAndRequestPermissions
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
@@ -110,8 +110,8 @@ fun LoginDetailScreen(
         SideEffect {
             permissionState.launchMultiplePermissionRequest()
         }
-        Column() {
-            Text(text = "앱사용을 위해 권한이 필요합니다")
+        Column {
+            PermissionDeniedScreen()
         }
     }
 }
