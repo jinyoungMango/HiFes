@@ -26,11 +26,11 @@ class DetailViewModel : ViewModel() {
                     1,
                     1,
                     1,
-                    "마커명1",
+                    "판매 부스1",
                     36.106995,
                     128.420854,
                     "https://picsum.photos/600",
-                    "마커 설명",
+                    "판매 부스1 설명",
                     1,
                     "color"
                 )
@@ -40,11 +40,11 @@ class DetailViewModel : ViewModel() {
                     1,
                     1,
                     1,
-                    "마커명1",
+                    "먹거리 부스1",
                     36.106217,
                     128.420875,
                     "https://picsum.photos/600",
-                    "마커 설명",
+                    "먹기리 부스1 설명",
                     2,
                     "color"
                 )
@@ -54,11 +54,39 @@ class DetailViewModel : ViewModel() {
                     1,
                     1,
                     1,
-                    "마커명1",
+                    "식당 부스1",
                     36.107060,
                     128.423344,
                     "https://picsum.photos/600",
-                    "마커 설명",
+                    "식당 부스1 설명",
+                    3,
+                    "color"
+                )
+            )
+            add(
+                MarkerDto(
+                    1,
+                    1,
+                    1,
+                    "식당 부스2",
+                    36.107360,
+                    128.425344,
+                    "https://picsum.photos/600",
+                    "식당 부스2 설명 식당 부스2 설명 식당 부스2 설명 식당 부스2 설명",
+                    3,
+                    "color"
+                )
+            )
+            add(
+                MarkerDto(
+                    1,
+                    1,
+                    1,
+                    "식당 부스3",
+                    36.107560,
+                    128.428344,
+                    "https://picsum.photos/600",
+                    "식당 부스3 설명",
                     3,
                     "color"
                 )

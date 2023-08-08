@@ -49,6 +49,7 @@ import com.naver.maps.map.compose.rememberFusedLocationSource
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 import com.ssafy.hifes.R
+import com.ssafy.hifes.data.model.CustomMarker
 import com.ssafy.hifes.data.model.MarkerDto
 import com.ssafy.hifes.data.model.OrganizedFestivalDto
 import com.ssafy.hifes.ui.HifesDestinations
@@ -211,7 +212,7 @@ fun AroundMyLocationFestivalMap(
             ) {
                 Log.d(TAG, "AroundMyLocationFestival: 클릭")
                 coroutineScope.launch {
-                    onFestivalSelected(festivalList!![index]) // Set the selected festival
+                    onFestivalSelected(festivalList!![index])
                     sheetState.show()
                 }
                 true
@@ -230,24 +231,29 @@ fun BoothMap(
 ) {
 
     var markers by remember {
-        mutableStateOf<List<Marker>>(emptyList())
+        mutableStateOf<List<CustomMarker>>(emptyList())
     }
+
     var latAvg = 0.0
     var lngAvg = 0.0
     var boothAvgLatLng by remember { mutableStateOf(LatLng(0.0, 0.0)) }
     val cameraPositionState = rememberCameraPositionState()
 
     LaunchedEffect(boothList) {
-        markers.forEach { it.map = null }
+        markers.forEach { it.marker.map = null }
         markers = boothList.map {
             latAvg += it.boothLatitude
             lngAvg += it.boothLongitude
 
-            Marker().apply {
-                position = LatLng(it.boothLatitude, it.boothLongitude)
-                subCaptionText = it.boothNo.toString()
-                icon = OverlayImage.fromResource(setMarkerIcon(it.boothNo))
-            }
+            CustomMarker(
+                marker = Marker().apply {
+                    position = LatLng(it.boothLatitude, it.boothLongitude)
+                    subCaptionText = it.boothNo.toString()
+                    icon = OverlayImage.fromResource(setMarkerIcon(it.boothNo))
+                },
+                boothName = it.boothName,
+                description = it.description
+            )
         }
 
         latAvg /= boothList.size
@@ -259,22 +265,26 @@ fun BoothMap(
     }
 
     var showDialog by remember { mutableStateOf(false) }
+    var title by remember { mutableStateOf("") }
+    var content by remember { mutableStateOf("") }
 
     if (showDialog) {
-        MarkerDetailDialog(onDismissRequest = { showDialog = false })
+        MarkerDetailDialog(title, content, onDismissRequest = { showDialog = false })
     }
 
     NaverMap(
         cameraPositionState = cameraPositionState
     ) {
-
-        markers.forEach { marker ->
+        markers.forEach { customMarker ->
+            val marker = customMarker.marker
             if (selectedBoothChip == 0) {
                 Marker(
                     state = MarkerState(position = marker.position),
                     captionText = marker.captionText,
                     icon = marker.icon,
                     onClick = {
+                        title = customMarker.boothName
+                        content = customMarker.description
                         showDialog = true
                         true
                     }
@@ -283,14 +293,15 @@ fun BoothMap(
                 Marker(
                     state = MarkerState(position = marker.position),
                     captionText = marker.captionText,
-                    icon = marker.icon,
-                    onClick = {
-                        showDialog = true
-                        true
-                    }
-                )
+                    icon = marker.icon
+                ) {
+                    Log.d(TAG, "BoothMap: ")
+                    title = customMarker.boothName
+                    content = customMarker.description
+                    showDialog = true
+                    true
+                }
             }
-
         }
     }
 }
