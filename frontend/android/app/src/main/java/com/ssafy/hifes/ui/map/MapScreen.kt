@@ -230,7 +230,6 @@ fun BoothMap(
     boothList: MutableList<MarkerDto>,
     selectedBoothChip: Int,
 ) {
-
     var markers by remember {
         mutableStateOf<List<CustomMarker>>(emptyList())
     }
@@ -274,6 +273,13 @@ fun BoothMap(
     }
 
     NaverMap(
+        locationSource = rememberFusedLocationSource(),
+        properties = MapProperties(
+            locationTrackingMode = LocationTrackingMode.Follow,
+        ),
+        uiSettings = MapUiSettings(
+            isLocationButtonEnabled = true,
+        ),
         cameraPositionState = cameraPositionState
     ) {
         markers.forEach { customMarker ->
