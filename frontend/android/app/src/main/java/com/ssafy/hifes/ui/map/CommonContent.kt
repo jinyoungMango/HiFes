@@ -1,6 +1,7 @@
 package com.ssafy.hifes.ui.map
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -35,13 +36,6 @@ import com.ssafy.hifes.ui.theme.LightGrey
 import com.ssafy.hifes.ui.theme.pretendardFamily
 import com.ssafy.hifes.util.CommonUtils
 
-
-@Composable
-fun MapScreenContent(festival: OrganizedFestivalDto) {
-    MapCard(festival)
-}
-
-
 @Preview(showBackground = true, backgroundColor = 0xFFFFFF)
 @Composable
 fun MapPreview() {
@@ -49,12 +43,15 @@ fun MapPreview() {
 }
 
 @Composable
-fun MapCard(festival: OrganizedFestivalDto) {
+fun MapCard(festival: OrganizedFestivalDto, onClick: (OrganizedFestivalDto) -> Unit) {
     Card(
         modifier = Modifier
             .height(160.dp)
             .fillMaxWidth()
-            .padding(12.dp),
+            .padding(12.dp)
+            .clickable {
+                onClick(festival)
+            },
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(8.dp)
@@ -67,11 +64,18 @@ fun MapCard(festival: OrganizedFestivalDto) {
 }
 
 @Composable
-fun DialogContent(festival: OrganizedFestivalDto, score: Double) {
+fun DialogContent(
+    festival: OrganizedFestivalDto,
+    score: Double,
+    onClick: (OrganizedFestivalDto) -> Unit
+) {
     Spacer(modifier = Modifier.size(8.dp))
-    Column {
+    Column(modifier = Modifier.clickable {
+        onClick(festival)
+    }) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth(),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -85,14 +89,14 @@ fun DialogContent(festival: OrganizedFestivalDto, score: Double) {
 
         Spacer(modifier = Modifier.size(8.dp))
         Divider(color = LightGrey, thickness = 2.dp)
-        MapCommonContent(festival = festival, score = score)
+        MapCommonContent(festival = festival, score = score, false)
     }
 
 
 }
 
 @Composable
-fun MapCommonContent(festival: OrganizedFestivalDto, score: Double) {
+fun MapCommonContent(festival: OrganizedFestivalDto, score: Double, isViewPager: Boolean = true) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.padding(12.dp)
@@ -108,12 +112,32 @@ fun MapCommonContent(festival: OrganizedFestivalDto, score: Double) {
         )
         Spacer(modifier = Modifier.size(12.dp))
         Column {
+            if (isViewPager) {
+                Text(
+                    text = festival.fesTitle,
+                    color = Color.Black,
+                    fontFamily = pretendardFamily,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 16.sp
+                )
+                Spacer(modifier = Modifier.size(4.dp))
+            }
             StarScore(score)
             TextTitleWithContent(
-                address = festival.fesAddress, startDate = CommonUtils.formatSqlDateToString(
-                    festival.fesStartDate
-                ), endDate = CommonUtils.formatSqlDateToString(festival.fesEndDate)
+                title = "장소",
+                content = festival.fesAddress
             )
+            if (!isViewPager) {
+                val date = "${
+                    CommonUtils.formatSqlDateToString(
+                        festival.fesStartDate
+                    )
+                } ~ ${CommonUtils.formatSqlDateToString(festival.fesEndDate)}"
+                TextTitleWithContent(
+                    title = "일정",
+                    content = date
+                )
+            }
         }
     }
 }
@@ -139,34 +163,20 @@ fun StarScore(score: Double) {
 }
 
 @Composable
-fun TextTitleWithContent(address: String, startDate: String, endDate: String) {
+fun TextTitleWithContent(title: String, content: String) {
     Spacer(modifier = Modifier.size(2.dp))
     Text(
-        text = "장소",
+        text = title,
         color = Color.Black,
         fontFamily = pretendardFamily,
         fontWeight = FontWeight.SemiBold,
         fontSize = 14.sp
     )
     Text(
-        text = address,
+        text = content,
         fontFamily = pretendardFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 14.sp
     )
 
-    Spacer(modifier = Modifier.size(4.dp))
-    Text(
-        text = "일정",
-        color = Color.Black,
-        fontFamily = pretendardFamily,
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 14.sp
-    )
-    Text(
-        text = address,
-        fontFamily = pretendardFamily,
-        fontWeight = FontWeight.Normal,
-        fontSize = 14.sp
-    )
 }

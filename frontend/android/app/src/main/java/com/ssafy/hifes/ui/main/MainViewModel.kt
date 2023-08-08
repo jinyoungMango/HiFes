@@ -33,14 +33,15 @@ class MainViewModel : ViewModel() {
     }
 
 
-    fun getOrganizedFestivalList() { //추후 서버 통신 코드가 생기면 이 부분을 서버에게서 공지 게시글 리스트를 받아오는것으로 변경한다
+    // 홈 화면, 일반 맵 화면에서 사용하는 축제 리스트
+    fun getOrganizedFestivalList() { //추후 서버 통신 코드가 생기면 이 부분을 서버에게서 축제 리스트를 받아오는것으로 변경한다
         var festivalListDummyData = mutableListOf<OrganizedFestivalDto>()
         festivalListDummyData.apply {
             add(
                 OrganizedFestivalDto(
                     1,
                     1,
-                    "대구치맥페스티벌",
+                    "2019 대구치맥페스티벌",
                     "https://picsum.photos/600",
                     testDate,
                     testDate,
@@ -55,13 +56,13 @@ class MainViewModel : ViewModel() {
                 OrganizedFestivalDto(
                     1,
                     1,
-                    "대구치맥페스티벌",
+                    "2020 대구치맥페스티벌",
                     "https://picsum.photos/600",
                     testDate,
                     testDate,
                     festOutline,
                     "festival Address",
-                    36.105894,
+                    36.107894,
                     128.42573
                 )
             )
@@ -69,7 +70,7 @@ class MainViewModel : ViewModel() {
                 OrganizedFestivalDto(
                     1,
                     1,
-                    "대구치맥페스티벌",
+                    "2021 대구치맥페스티벌",
                     "https://picsum.photos/600",
                     testDate,
                     testDate,

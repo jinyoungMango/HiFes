@@ -13,6 +13,7 @@ import com.ssafy.hifes.ui.board.BoardScreen
 import com.ssafy.hifes.ui.board.BoardViewModel
 import com.ssafy.hifes.ui.board.boarddetail.BoardDetailScreen
 import com.ssafy.hifes.ui.board.write.PostWriteScreen
+import com.ssafy.hifes.ui.detail.DetailViewModel
 import com.ssafy.hifes.ui.detail.FestivalDetail
 import com.ssafy.hifes.ui.group.GroupViewModel
 import com.ssafy.hifes.ui.group.create.GroupCreateScreen
@@ -38,6 +39,7 @@ fun HifesNavGraph(
 
     val boardViewModel: BoardViewModel = viewModel()
     val groupViewModel: GroupViewModel = viewModel()
+    val detailViewModel: DetailViewModel = viewModel()
 
     NavHost(
         navController = navController,
@@ -48,7 +50,7 @@ fun HifesNavGraph(
             HomeScreen(navController, mainViewModel)
         }
         composable(NavigationItem.Map.screenRoute) {
-            MapScreen(navController, mainViewModel)
+            MapScreen(navController, mainViewModel, detailViewModel)
         }
         composable(NavigationItem.Group.screenRoute) {
             GroupMainScreen(navController, groupViewModel)
