@@ -6,7 +6,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:web/common.dart';
 import 'dart:html' as html;
 
-import 'package:webviewx/webviewx.dart';
 
 class FileData {
   String fileName;
@@ -29,9 +28,6 @@ class _FestivalRegisterState extends State<FestivalRegister> {
       ..download = fileData.fileName; // 파일 이름 설정
     anchorElement.click();
   }
-
-  // 네이버 지도를 웹뷰로 띄울 때 사용
-  late WebViewXController webviewController;
 
   // 포스터 이미지
   FilePickerResult? poster;
@@ -307,14 +303,7 @@ class _FestivalRegisterState extends State<FestivalRegister> {
                 SizedBox(height: 20,),
                 Text("마커 등록", style: TextStyle(fontSize: 48),),
                 SizedBox(height: 20,),
-                WebViewX(
-                    width: 1000,
-                    height: 800,
-                    onWebViewCreated: (controller) {
-                      webviewController = controller;
-                      webviewController.loadContent(
-                          dotenv.env['YOUR_NAVER_MAP_URL']!, SourceType.url);
-                    })
+
               ],
             ),
           ),
