@@ -24,11 +24,11 @@ import com.ssafy.hifes.ui.group.GroupViewModel
 @Composable
 fun GroupDetailScreen(navController: NavController, viewModel: GroupViewModel) {
     val user = User(
-        url = "https://fastly.picsum.photos/id/10/2500/1667.jpg?hmac=J04WWC_ebchx3WwzbM-Z4_KC_LeLBWr5LZMaAkWkF68",
-        name = "L"
+        url = "https://picsum.photos/600",
+        name = "name"
     )
     val img = Img(
-        url = "https://fastly.picsum.photos/id/237/200/300.jpg?hmac=TmmQSbShHz9CdQm0NkEjx1Dyh_Y984R9LpNrpvH2D_U"
+        url = "https://picsum.photos/600"
     )
 
     LazyColumn {
