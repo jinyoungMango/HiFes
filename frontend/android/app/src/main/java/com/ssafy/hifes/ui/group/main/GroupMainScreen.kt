@@ -4,9 +4,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.Divider
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -36,7 +38,6 @@ fun GroupMainScreen(navController: NavController, viewModel: GroupViewModel) {
                     .padding(horizontal = 16.dp)
             ) {
                 SearchGroup()
-                Spacer(Modifier.height(16.dp))
                 if (!groupList.value.isNullOrEmpty()) {
                     LazyColumn(Modifier.weight(1f)) {
                         items(groupList.value!!.size) { index ->
@@ -46,7 +47,10 @@ fun GroupMainScreen(navController: NavController, viewModel: GroupViewModel) {
                                 viewModel.getGroupDetail(groupData)
                                 navController.navigate(HifesDestinations.GROUP_DETAIL)
                             }
-                            Spacer(modifier = Modifier.height(16.dp))
+                            Spacer(modifier = Modifier.size(4.dp))
+                            if (index < groupList.value!!.size - 1) {
+                                Divider(modifier = Modifier.padding(start = 16.dp, end = 16.dp))
+                            }
                         }
                     }
                 }

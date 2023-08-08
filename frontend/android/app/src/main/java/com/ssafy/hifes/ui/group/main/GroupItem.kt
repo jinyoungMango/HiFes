@@ -16,6 +16,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Bottom
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,10 +25,13 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.ssafy.hifes.data.model.Group
+import com.ssafy.hifes.ui.group.GroupViewModel
+import com.ssafy.hifes.ui.main.MainViewModel
 import com.ssafy.hifes.ui.theme.pretendardFamily
 
 @Composable
@@ -35,68 +39,71 @@ fun GroupItem(
     group: Group,
     onClick: (Group) -> Unit
 ) {
-    Card(
-        elevation = CardDefaults.cardElevation(defaultElevation = 16.dp),
-        modifier = Modifier
+    Column(
+        Modifier
             .fillMaxWidth()
             .clickable {
                 onClick(group)
             },
-        colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
-        Column(
+        Row(
             Modifier
                 .fillMaxWidth()
-                .padding(top = 8.dp)
+                .padding(start = 16.dp, end = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(start = 16.dp, top = 8.dp, end = 16.dp)
-            ) {
-                AsyncImage(
-                    model = group.url,
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    placeholder = ColorPainter(Color.Green),
-                    modifier = Modifier
-                        .size(64.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                        .align(Bottom)
+            AsyncImage(
+                model = group.url,
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                placeholder = ColorPainter(Color.Green),
+                modifier = Modifier
+                    .size(100.dp)
+                    .clip(RoundedCornerShape(8.dp))
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Column(Modifier.fillMaxWidth()) {
+                Spacer(modifier = Modifier.size(18.dp))
+                Text(
+                    text = group.title,
+                    fontFamily = pretendardFamily,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 16.sp
                 )
-                Spacer(modifier = Modifier.width(16.dp))
-                Column(Modifier.fillMaxWidth()) {
-                    Text(
-                        text = group.title,
-                        fontFamily = pretendardFamily,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = group.content,
-                        fontFamily = pretendardFamily,
-                        fontWeight = FontWeight.Normal
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    LazyRow() {
-                        items(group.hashtag) { item ->
-                            Text(
-                                text = "#$item",
-                                fontFamily = pretendardFamily,
-                                fontWeight = FontWeight.Normal
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                        }
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = group.content,
+                    fontFamily = pretendardFamily,
+                    fontWeight = FontWeight.Normal
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                LazyRow() {
+                    items(group.hashtag) { item ->
+                        Text(
+                            text = "#$item",
+                            fontFamily = pretendardFamily,
+                            fontWeight = FontWeight.Normal
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
                     }
                 }
+                Text(
+                    text = "${group.currNum} / ${group.maxNum}", modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(end = 8.dp, bottom = 8.dp), textAlign = TextAlign.End,
+                    fontFamily = pretendardFamily, fontWeight = FontWeight.Normal, fontSize = 14.sp
+                )
             }
-            Text(
-                text = "${group.currNum} / ${group.maxNum}", modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(end = 16.dp, bottom = 8.dp), textAlign = TextAlign.End,
-                fontFamily = pretendardFamily, fontWeight = FontWeight.Normal
-            )
+
         }
+
+
     }
+
+}
+
+@Preview
+@Composable
+fun GroupItemPreview() {
+//    GroupItem(group = GroupViewModel().groupList.value[0]!!, onClick = )
 }
