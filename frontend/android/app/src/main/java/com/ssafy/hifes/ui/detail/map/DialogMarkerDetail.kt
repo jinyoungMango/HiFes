@@ -1,6 +1,7 @@
 package com.ssafy.hifes.ui.detail.map
 
-import androidx.compose.foundation.Image
+import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,38 +12,44 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.ssafy.hifes.R
+import com.ssafy.hifes.ui.theme.PrimaryPink
+import com.ssafy.hifes.ui.theme.pretendardFamily
 
+
+private const val TAG = "DialogMarkerDetail_하이페스"
 
 @Composable
-fun MarkerDetailDialog(onDismissRequest: () -> Unit) {
+fun MarkerDetailDialog(title: String, content: String, onDismissRequest: () -> Unit) {
     Dialog(onDismissRequest = onDismissRequest) {
         Surface(
             modifier = Modifier
-                .width(200.dp)
+                .width(220.dp)
                 .wrapContentHeight(),
             shape = RoundedCornerShape(12.dp),
             color = Color.White
         ) {
-            CustomDialog(title = "title", message = "message") {
+            CustomDialog(title = title, message = content, onDismiss = onDismissRequest)
 
-            }
         }
     }
 }
@@ -62,38 +69,37 @@ fun CustomDialog(
         Text(
             text = title,
             color = Color.Black,
-            fontSize = 16.sp
+            fontFamily = pretendardFamily,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 18.sp
         )
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(8.dp))
         Divider(color = Color.Black)
-        Spacer(modifier = Modifier.height(12.dp))
-        Image(
-            painter = painterResource(id = R.drawable.ic_launcher_foreground),
-            contentDescription = null,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(150.dp)
-                .clip(RoundedCornerShape(8.dp))
-        )
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(16.dp))
+
         Text(
             text = message,
             color = Color.Black,
-            fontSize = 12.sp
+            fontFamily = pretendardFamily,
+            fontWeight = FontWeight.Medium,
+            fontSize = 14.sp
         )
         Spacer(modifier = Modifier.height(20.dp))
-        Button(
-            onClick = { onDismiss() },
+
+        Surface(
             shape = CircleShape,
-            modifier = Modifier.size(34.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = colorResource(id = R.color.main)
-            ),
+            modifier = Modifier
+                .size(34.dp)
+                .clickable {
+                    onDismiss()
+                },
+            color = PrimaryPink
         ) {
-            Text(
-                text = "X",
-                fontSize = 16.sp,
-                color = Color.White
+            Icon(
+                imageVector = Icons.Rounded.Close,
+                contentDescription = "Close",
+                modifier = Modifier.size(16.dp),
+                tint = Color.White
             )
         }
     }
@@ -103,5 +109,5 @@ fun CustomDialog(
 @Preview
 @Composable
 fun MarkerPreview() {
-    MarkerDetailDialog(onDismissRequest = {})
+    MarkerDetailDialog("title", "content", onDismissRequest = {})
 }
