@@ -1,7 +1,6 @@
 package com.ssafy.hifes.ui.login
 
 import NavigationItem
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -31,8 +30,6 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.rememberNavController
 import com.ssafy.hifes.R
 import com.ssafy.hifes.ui.HifesDestinations
-import com.ssafy.hifes.ui.animations.WavesAnimation
-import com.ssafy.hifes.ui.splash.SplashScreen
 import com.ssafy.hifes.ui.theme.Grey
 import com.ssafy.hifes.ui.theme.KakaoYellow
 import com.ssafy.hifes.ui.theme.NaverGreen
@@ -44,7 +41,9 @@ fun LoginScreen(navController: NavController) {
     var isSplashFinished by remember { mutableStateOf(false) }
 
     Column(
-        modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .fillMaxHeight(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -124,8 +123,10 @@ fun LoginMaintain() {
         modifier = Modifier.fillMaxWidth()
     ) {
         RadioButton(selected = false, onClick = { }, modifier = Modifier.padding(0.dp))
-        Text(text = stringResource(id = R.string.login_maintain), fontSize = 12.sp,
-        fontFamily = pretendardFamily, fontWeight = FontWeight.Light)
+        Text(
+            text = stringResource(id = R.string.login_maintain), fontSize = 12.sp,
+            fontFamily = pretendardFamily, fontWeight = FontWeight.Light
+        )
     }
 }
 
