@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 
 @NoArgsConstructor
@@ -21,4 +22,6 @@ public class GroupCreateDto {
     private BigDecimal getterLongitude;
     private String getterOutline;
     private Integer groupPassword;
+
+    private ArrayList hashtags;
 }

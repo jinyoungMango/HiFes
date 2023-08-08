@@ -2,12 +2,10 @@ package hiFes.hiFes.service.user;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import hiFes.hiFes.domain.user.HostUser;
 import hiFes.hiFes.domain.user.NormalUser;
 import hiFes.hiFes.dto.user.NormalUserSignUpDto;
 import hiFes.hiFes.repository.user.NormalUserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 

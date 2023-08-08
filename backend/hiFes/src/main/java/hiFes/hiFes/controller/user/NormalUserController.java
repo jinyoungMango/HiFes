@@ -1,7 +1,6 @@
 package hiFes.hiFes.controller.user;
 
 import com.google.gson.JsonObject;
-import hiFes.hiFes.domain.user.HostUser;
 import hiFes.hiFes.domain.user.NormalUser;
 import hiFes.hiFes.dto.user.NormalUserSignUpDto;
 import hiFes.hiFes.repository.user.NormalUserRepository;

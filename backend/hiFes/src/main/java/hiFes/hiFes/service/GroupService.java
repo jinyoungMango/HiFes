@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -27,7 +28,7 @@ public class GroupService {
     private final RegisteredHashtagRepository registeredHashtagRepository;
     private final HashtagRepository hashtagRepository;
 
-    public void groupCreate(/*이메일*/GroupCreateDto groupCreateDto, HashTagDto hashTagDto,NormalUser normalUser){
+    public void groupCreate(/*이메일*/GroupCreateDto groupCreateDto, NormalUser normalUser){
         LocalDateTime now = LocalDateTime.of(2020,9,16,0,0,0);
         Group group = Group.builder()
                 .groupName(groupCreateDto.getGroupName())
@@ -40,6 +41,9 @@ public class GroupService {
 
         groupRepository.save(group);
 
+        ArrayList hashtags =  groupCreateDto.getHashtags();
+
+
 
 
         JoinedGroup joinedGroup = new JoinedGroup();
@@ -51,11 +55,11 @@ public class GroupService {
 
         joinedGroupRepository.save(joinedGroup);
 
-        Hashtag hashtag = Hashtag.builder()
-                .title(hashTagDto.getTitle())
-                .build();
-
-        hashtagRepository.save(hashtag);
+//        Hashtag hashtag = Hashtag.builder()
+//                .title(hashTagDto.getTitle())
+//                .build();
+//
+//        hashtagRepository.save(hashtag);
 
         RegisteredHashtag registeredHashtag = new RegisteredHashtag();
         registeredHashtag.setGroup(group);

@@ -65,6 +65,7 @@ public class HostUserController {
             // 기업 정보까지 저장되어 있다면 로그인 진행
 
             Map<String, String> tokens =  hostUserService.login((String) context.get("email"));
+            tokens.put("userId", user.getId().toString());
 
             return tokens;
 
@@ -90,13 +91,18 @@ public class HostUserController {
         String accessToken = jwtService.extractAccessToken(request).orElse("");
         String email = jwtService.extractEmail(accessToken).orElse("");
         HostUser user = hostUserService.getByEmail(email);
+//        HostUser user = hostUserService.getById(id);
         JsonObject info =new JsonObject();
 
-        info.addProperty("email", email);
+//        System.out.println(user.getOrgNo() + " ------------------------------------------");
+//        System.out.println(TestUser.getOrgNo() + " ---++++++---------------------------------------");
+
+        info.addProperty("email", user.getEmail());
         info.addProperty("name", user.getName());
         info.addProperty("orgNo", user.getOrgNo());
         info.addProperty("orgCode", user.getOrgCode());
         info.addProperty("organization", user.getOrganization());
+        info.addProperty("phoneNo", user.getPhoneNo());
 
         return info;
 

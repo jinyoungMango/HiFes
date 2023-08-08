@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import hiFes.hiFes.service.user.NormalUserService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -29,13 +30,14 @@ public class GroupController extends BaseTimeEntity {
 
     @CrossOrigin(origins = "*")
     @PostMapping("group/create")
-    public ResponseEntity<String> groupCreate(String accessToken, @RequestBody GroupCreateDto groupCreateDto, HashTagDto hashTagDto){
+    public ResponseEntity<String> groupCreate(String accessToken, @RequestBody GroupCreateDto groupCreateDto){
+        // 아래 코드는 멕세스토큰 제대로 적용되는 것 확인 후 수정. 현재는 카카오 엑세스 토큰
         Map<String, Object> context =  normalUserService.searchKakaoUser(accessToken);
         // 해시태그는 리스트로 온다고 함!!! 아직은 해시태그 하나만 저장 가능
 
         Optional<NormalUser> optionalUser  = normalUserRepository.findByEmail((String) context.get("email"));
         NormalUser normalUser = optionalUser.orElse(null);
-        groupService.groupCreate(groupCreateDto, hashTagDto, normalUser);
+        groupService.groupCreate(groupCreateDto,normalUser);
 
 
         return ResponseEntity.ok("group create success");

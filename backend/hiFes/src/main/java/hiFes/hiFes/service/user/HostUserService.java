@@ -5,20 +5,14 @@ import com.google.gson.JsonParser;
 import hiFes.hiFes.domain.user.HostUser;
 import hiFes.hiFes.dto.user.HostUserSignUpDto;
 import hiFes.hiFes.repository.user.HostUserRepository;
-import io.jsonwebtoken.Jwt;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
@@ -53,12 +47,23 @@ public class HostUserService  {
         return hostUserRepository.findByEmail(email).orElse(null);
     }
 
+    public HostUser getById(Long id) {
+        return hostUserRepository.findById(id).orElse(null);
+    }
+
     public Map<String, String> login(String email) throws UsernameNotFoundException {
 
         System.out.println(email + "**********************************************************************************************");
 
         String accessToken = jwtService.createAccessToken(email); // JwtService의 createAccessToken을 사용하여 AccessToken 발급
         String refreshToken = jwtService.createRefreshToken();
+
+        if (accessToken.equals(refreshToken)){
+            System.out.println("같습니다 ////////////////////////////////////////////////////////////////");
+        }
+
+        System.out.println("access token 5555555555555555555555555555555555555555555555555"+ accessToken);
+        System.out.println("refresh &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&"+ refreshToken);
 
         hostUserRepository.findByEmail(email)
                 .ifPresent(user -> {

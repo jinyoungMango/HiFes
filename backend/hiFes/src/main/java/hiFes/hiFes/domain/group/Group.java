@@ -14,9 +14,6 @@ import java.util.Date;
 @AllArgsConstructor
 public class Group {
 
-    public Group() {
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column

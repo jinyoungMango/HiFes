@@ -51,6 +51,7 @@ public class JwtService {
         return JWT.create()
                 .withSubject(REFRESH_TOKEN_SUBJECT)
                 .withExpiresAt(new Date(now.getTime() + refreshTokenExpirationPeriod))
+                .withClaim(EMAIL_CLAIM, email)
                 .sign(Algorithm.HMAC512(secretKey));
     }
 
