@@ -13,15 +13,31 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import com.ssafy.hifes.ui.theme.pretendardFamily
 
 @Composable
 fun GroupTitle(title: String, num: Int) {
-    Box (modifier = Modifier.fillMaxWidth(), ){
-        Row (modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
-            Text(text = title, fontWeight = FontWeight.Bold, fontSize = 24.sp)
-            Column (horizontalAlignment = Alignment.CenterHorizontally){
-                Text(text = "인원", color = Color.Gray, fontSize = 16.sp)
-                Text(text = "$num 명", fontWeight = FontWeight.Bold, fontSize = 24.sp)
+    Box(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(text = title, fontFamily = pretendardFamily, fontWeight = FontWeight.Bold, fontSize = 24.sp)
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    text = "인원",
+                    color = Color.Gray,
+                    fontSize = 16.sp,
+                    fontFamily = pretendardFamily,
+                    fontWeight = FontWeight.Normal
+                )
+                Text(
+                    text = "$num 명",
+                    fontFamily = pretendardFamily,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 24.sp
+                )
             }
         }
     }

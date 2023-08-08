@@ -17,6 +17,8 @@ public class BaseController {
     @GetMapping("/")
     public String index(Model model) {
 
+        // CustomOAuth2UerService.java 에서 로그인 성곡 시 세션에 SessionUser 를 저장하도록 구성
+        // -> 즉, 로그인 성공 시 httpSession.getAttribute("user") 에서 값을 가져올 수 있다.
         SessionUser user = (SessionUser) httpSession.getAttribute("user");
 
         if (user != null) {

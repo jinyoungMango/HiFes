@@ -5,24 +5,28 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.ssafy.hifes.R
 import com.ssafy.hifes.data.model.FestivalTableDto
 import com.ssafy.hifes.data.model.PostDto
 import com.ssafy.hifes.ui.board.boardcommon.PostType
+import com.ssafy.hifes.ui.theme.pretendardFamily
 import java.text.SimpleDateFormat
 
 @Composable
 fun PostContent(
     postData: PostDto,
-    userDataId : Int
+    userDataId: Int
 ) {
     val resultContent = getContent(postData, LocalContext.current, userDataId)
     Text(
         text = resultContent,
         maxLines = 2,
-        overflow = TextOverflow.Ellipsis
+        overflow = TextOverflow.Ellipsis,
+        fontFamily = pretendardFamily,
+        fontWeight = FontWeight.Normal
     )
 }
 

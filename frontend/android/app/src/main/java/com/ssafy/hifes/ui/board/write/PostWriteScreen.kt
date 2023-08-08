@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -42,6 +43,7 @@ import com.ssafy.hifes.ui.iconpack.myiconpack.Emptystar
 import com.ssafy.hifes.ui.iconpack.myiconpack.Filledstar
 import com.ssafy.hifes.ui.iconpack.myiconpack.Imageadd
 import com.ssafy.hifes.ui.theme.PrimaryPink
+import com.ssafy.hifes.ui.theme.pretendardFamily
 
 
 private const val TAG = "PostWriteScreen"
@@ -117,7 +119,7 @@ fun setHiddenPostWrite() {
 
     Row(verticalAlignment = Alignment.CenterVertically) {
         Spacer(modifier = Modifier.size(10.dp))
-        Text(text = stateText, modifier = Modifier.weight(1f), fontWeight = FontWeight.Bold)
+        Text(text = stateText, modifier = Modifier.weight(1f), fontFamily = pretendardFamily, fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.size(10.dp))
         Switch(
             checked = isHidden,
@@ -151,7 +153,8 @@ fun TextFieldPostTitle() {
         onValueChange = {
             text = it
         },
-        placeholder = { Text(text = stringResource(id = R.string.board_write_text_field_title_hint)) },
+        textStyle = TextStyle(fontFamily = pretendardFamily, fontWeight = FontWeight.Normal),
+        placeholder = { Text(text = stringResource(id = R.string.board_write_text_field_title_hint), fontFamily = pretendardFamily, fontWeight = FontWeight.Normal) },
         colors = TextFieldDefaults.colors(
             disabledTextColor = Color.Transparent,
             focusedContainerColor = Color.White,
@@ -169,11 +172,12 @@ fun TextFieldPostContent() {
     var text by remember { mutableStateOf("") }
     TextField(
         modifier = Modifier.fillMaxWidth(),
+        textStyle = TextStyle(fontFamily = pretendardFamily, fontWeight = FontWeight.Normal),
         value = text,
         onValueChange = {
             text = it
         },
-        placeholder = { Text(text = stringResource(id = R.string.board_write_text_field_content_hint)) },
+        placeholder = { Text(text = stringResource(id = R.string.board_write_text_field_content_hint), fontFamily = pretendardFamily, fontWeight = FontWeight.Normal) },
         colors = TextFieldDefaults.colors(
             disabledTextColor = Color.Transparent,
             focusedContainerColor = Color.White,

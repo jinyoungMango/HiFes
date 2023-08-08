@@ -20,10 +20,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.ssafy.hifes.ui.theme.pretendardFamily
 
 
 @Composable
@@ -79,14 +81,16 @@ fun ChatBubble(
                     Text(
                         text = chatItem.text,
                         color = textColor,
-                        fontSize = 24.sp,
+                        fontFamily = pretendardFamily,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 20.sp,
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
                     )
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = "8:29 pm", color = Color.Gray)
+            Text(text = "8:29 pm", color = Color.Gray, fontFamily = pretendardFamily, fontWeight = FontWeight.Light)
 
         }
     }

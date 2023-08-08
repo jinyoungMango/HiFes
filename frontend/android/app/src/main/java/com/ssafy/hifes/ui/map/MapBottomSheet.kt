@@ -35,7 +35,7 @@ fun MapBottomSheet() {
         dragHandle = { BottomSheetDefaults.DragHandle() },
         containerColor = Color.White
     ) {
-        MapScreenContent()
+//        MapScreenContent()
     }
 }
 

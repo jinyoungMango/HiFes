@@ -1,6 +1,5 @@
 package com.example.downgrade.dto;
 
-import com.example.downgrade.domain.Role;
 import com.example.downgrade.domain.User;
 import lombok.Builder;
 import lombok.Getter;
@@ -49,7 +48,6 @@ public class OAuthAttributes {
                 .name(name)
                 .email(email)
                 .picture(picture)
-                .role(Role.GUEST)
                 .build();
     }
 }

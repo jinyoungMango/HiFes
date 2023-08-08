@@ -13,3 +13,12 @@ data class GroupDto(
     var getterLongitude: Double,
     var groupPassword: Int,
 )
+
+data class Group(
+    val url: String,
+    val title: String,
+    val content: String,
+    val hashtag: List<String>,
+    val currNum: Int,
+    val maxNum: Int
+)

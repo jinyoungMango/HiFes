@@ -2,9 +2,9 @@ package com.ssafy.hifes
 
 import android.app.Application
 import android.content.SharedPreferences
-import com.ssafy.hifes.data.local.AppPreferences
 import com.ssafy.hifes.data.AppContainer
 import com.ssafy.hifes.data.AppContainerImpl
+import com.ssafy.hifes.data.local.AppPreferences
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp

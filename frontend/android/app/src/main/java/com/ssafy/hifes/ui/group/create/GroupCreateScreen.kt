@@ -30,6 +30,7 @@ import androidx.navigation.compose.rememberNavController
 import com.ssafy.hifes.ui.common.ProfileImg
 import com.ssafy.hifes.ui.common.top.TopWithBack
 import com.ssafy.hifes.ui.theme.PrimaryPink
+import com.ssafy.hifes.ui.theme.pretendardFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,6 +43,7 @@ fun GroupCreateScreen(navController: NavController) {
             Column(
                 Modifier
                     .padding(it)
+                    .padding(start = 18.dp, end = 18.dp)
                     .verticalScroll(scrollState)
                     ,
                 horizontalAlignment = Alignment.CenterHorizontally) {
@@ -58,7 +60,7 @@ fun GroupCreateScreen(navController: NavController) {
                 Spacer(modifier = Modifier.height(24.dp))
                 Row (modifier = Modifier.fillMaxWidth(),  horizontalArrangement = Arrangement.SpaceBetween){
                     Button(modifier = Modifier.weight(1f), shape = MaterialTheme.shapes.medium,border = BorderStroke(1.dp, PrimaryPink), onClick = { /*TODO*/ }, colors = ButtonDefaults.buttonColors(containerColor = Color.White, contentColor = Color.Black )) {
-                        Text(text = "취소")
+                        Text(text = "취소", fontFamily = pretendardFamily, fontWeight = FontWeight.Bold)
                     }
                     Spacer(modifier = Modifier.width(40.dp))
                     Button(modifier = Modifier.weight(1f), shape = MaterialTheme.shapes.medium,onClick = { /*TODO*/ }, colors = ButtonDefaults.buttonColors(containerColor = PrimaryPink, )) {
