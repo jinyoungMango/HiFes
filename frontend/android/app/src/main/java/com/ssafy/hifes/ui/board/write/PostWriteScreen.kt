@@ -83,6 +83,11 @@ fun PostWriteScreen(
                 btn = true,
                 btnText = stringResource(id = R.string.board_write_finish),
                 onClick = {
+                    var imageFile = if(imageUri==null){
+                        null
+                    }else{
+                        UriUtil.toFile(context, imageUri!!)
+                    }
                     viewModel.postWrite(
                         PostDto(
                             0,
@@ -100,10 +105,10 @@ fun PostWriteScreen(
                             0,
                             imageUri.toString(),
                             rating
-                        )
+                        ),
+                        imageFile
                     )
-                    if(imageUri!=null)
-                        UriUtil.toFile(context, imageUri!!)
+
                 })
         },
         content = { it ->

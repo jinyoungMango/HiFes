@@ -3,6 +3,10 @@ package com.ssafy.hifes.util
 import android.content.Context
 import android.net.Uri
 import android.os.Environment
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import java.io.File
 import java.io.FileOutputStream
 
@@ -42,9 +46,17 @@ object UriUtil {
 
     // get file name & extension
     fun getFileName(context: Context, uri: Uri): String {
-        val name = uri.toString().split("/").last()
+        //val name = uri.toString().split("/").last()
+        val name = "uritoimage"
         val ext = context.contentResolver.getType(uri)!!.split("/").last()
 
         return "$name.$ext"
+    }
+}
+
+object MultipartUtil {
+    fun getImageBody(file: File): MultipartBody.Part {
+        val requestFile = RequestBody.create("multipart/form-data".toMediaTypeOrNull(), file)
+        return MultipartBody.Part.createFormData("files", file.name, requestFile)
     }
 }

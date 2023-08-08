@@ -8,6 +8,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.ssafy.hifes.data.model.PostDto
 import com.ssafy.hifes.ui.board.boardcommon.PostType
+import com.ssafy.hifes.util.MultipartUtil
+import okhttp3.MultipartBody
+import java.io.File
 import java.text.SimpleDateFormat
 import kotlin.math.log
 
@@ -25,8 +28,7 @@ class BoardViewModel : ViewModel() {
     private var _boardType : MutableLiveData<PostType> = MutableLiveData()
     val boardType : LiveData<PostType> = _boardType
 
-    private var _imageUri : MutableLiveData<Uri> = MutableLiveData()
-    val imageUri : LiveData<Uri> = _imageUri
+    private var postImageFile : File? = null
 
     lateinit var postTestDate : java.sql.Date
 
@@ -92,9 +94,16 @@ class BoardViewModel : ViewModel() {
         _selectedPost.postValue(postData)
     }
 
-    fun postWrite(postData: PostDto){
+    fun postWrite(postData: PostDto, imageFile : File?){
         Log.d(TAG, "postWrite: 타입 ${boardType}")
         Log.d(TAG, "postWrite: 작성할 데이터 ${postData}")
+        if(imageFile != null){
+            //보낼 이미지 있는 경우의 통신
+            val files: MutableList<MultipartBody.Part> = mutableListOf()
+            files.add(MultipartUtil.getImageBody(imageFile))
+        }else{
+            //없는 경우의 통신
+        }
     }
     
     fun postDelete(){
@@ -107,10 +116,6 @@ class BoardViewModel : ViewModel() {
 
     fun writeReComment(){
 
-    }
-
-    fun setImage(uri : Uri){
-        _imageUri.postValue(uri)
     }
 
 
