@@ -1,6 +1,7 @@
 package com.ssafy.hifes.ui.board.boarddetail.comment
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,7 +10,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -43,37 +46,42 @@ fun CommentWriteComponent(
     onGloballyPositioned:(LayoutCoordinates) -> Unit,
 ) {
     var text by remember { mutableStateOf("") }
+    Surface {
+        Column (
+            modifier = Modifier
+                .background(color = Color.White)
+                .onGloballyPositioned(onGloballyPositioned)
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ){
+            Spacer(modifier = Modifier.size(6.dp))
+            Row (verticalAlignment = Alignment.CenterVertically){
+                Spacer(modifier = Modifier.size(18.dp))
+                OutlinedTextField(
+                    value = text,
+                    onValueChange = { text = it },
+                    colors = TextFieldDefaults.outlinedTextFieldColors(focusedBorderColor = PrimaryPink),
+                    placeholder = { Text(text = stringResource(id = R.string.board_detail_write_comment_hint)) },
+                    shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier.weight(1f),
+                    textStyle = TextStyle(fontFamily = pretendardFamily, fontWeight = FontWeight.Normal)
+                )
+                Spacer(modifier = Modifier.size(10.dp))
+                IconButton(onClick = {}) {
+                    Icon(
+                        imageVector = MyIconPack.Writecomment,
+                        contentDescription = "댓글 쓰기",
+                        tint = Color.Unspecified,
+                        modifier = Modifier.size(34.dp)
+                    )
+                }
 
-    Column (
-        modifier = Modifier
-            .background(color = Color.White)
-            .onGloballyPositioned(onGloballyPositioned)
-            .fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ){
-        Spacer(modifier = Modifier.size(6.dp))
-        Row (verticalAlignment = Alignment.CenterVertically){
-            Spacer(modifier = Modifier.size(18.dp))
-            OutlinedTextField(
-                value = text,
-                onValueChange = { text = it },
-                colors = TextFieldDefaults.outlinedTextFieldColors(focusedBorderColor = PrimaryPink),
-                placeholder = { Text(text = stringResource(id = R.string.board_detail_write_comment_hint)) },
-                shape = RoundedCornerShape(14.dp),
-                modifier = Modifier.weight(1f),
-                textStyle = TextStyle(fontFamily = pretendardFamily, fontWeight = FontWeight.Normal)
-            )
-            Spacer(modifier = Modifier.size(10.dp))
-            Icon(
-                imageVector = MyIconPack.Writecomment,
-                contentDescription = "댓글 쓰기",
-                tint = Color.Unspecified,
-                modifier = Modifier.size(34.dp)
-            )
-            Spacer(modifier = Modifier.size(18.dp))
+                Spacer(modifier = Modifier.size(18.dp))
+            }
+            Spacer(modifier = Modifier.size(6.dp))
         }
-        Spacer(modifier = Modifier.size(6.dp))
     }
+
 
 }
 
