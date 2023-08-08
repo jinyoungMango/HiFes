@@ -1,6 +1,7 @@
 package com.ssafy.hifes.ui.login
 
 import NavigationItem
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,11 +14,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -27,6 +31,8 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.rememberNavController
 import com.ssafy.hifes.R
 import com.ssafy.hifes.ui.HifesDestinations
+import com.ssafy.hifes.ui.animations.WavesAnimation
+import com.ssafy.hifes.ui.splash.SplashScreen
 import com.ssafy.hifes.ui.theme.Grey
 import com.ssafy.hifes.ui.theme.KakaoYellow
 import com.ssafy.hifes.ui.theme.NaverGreen
@@ -34,19 +40,20 @@ import com.ssafy.hifes.ui.theme.PrimaryPink
 import com.ssafy.hifes.ui.theme.pretendardFamily
 
 @Composable
-fun LoginScreen(
-    navController: NavController
-) {
+fun LoginScreen(navController: NavController) {
+    var isSplashFinished by remember { mutableStateOf(false) }
+
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .fillMaxHeight(),
+        modifier = Modifier.fillMaxWidth().fillMaxHeight(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        LogoAndTitle()
-        Buttons(navController, Modifier.padding(40.dp, 20.dp))
-
+        if (!isSplashFinished) {
+            SplashScreen(onFinished = { isSplashFinished = true })
+        } else {
+            LogoAndTitle()
+            Buttons(navController, Modifier.padding(40.dp, 20.dp))
+        }
     }
 }
 
