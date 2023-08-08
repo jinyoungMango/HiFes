@@ -76,6 +76,7 @@ fun MapScreen(
     val mapType = viewModel.mapType.observeAsState()
     val boothList = detailViewModel.markerList.observeAsState()
     val selectedBoothChip = detailViewModel.selectedBoothChip.observeAsState()
+    detailViewModel.updateSelectedBoothChip(0)
 
     val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden,
         confirmValueChange = { it != ModalBottomSheetValue.HalfExpanded }
