@@ -66,7 +66,7 @@ fun GroupDetailScreen(navController: NavController, viewModel: GroupViewModel) {
         }
 
         item {
-            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.BottomEnd) {
+            Box(modifier = Modifier.fillMaxWidth().padding(12.dp), contentAlignment = Alignment.BottomEnd) {
                 Leave()
             }
         }
