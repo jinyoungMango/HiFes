@@ -57,13 +57,10 @@ fun GroupCreateScreen(navController: NavController) {
                 ProfileImg(imageUri = imageUri, onImageChange = { uri -> imageUri = uri })
                 Spacer(modifier = Modifier.height(16.dp))
                 TextFieldWithCaption(caption = "모임명")
-                TextFieldWithCaption(caption = "비밀번호")
+
                 DropdownWithCaption(caption = "최대 인원")
                 TextFieldWithCaption(caption = "태그 작성")
-                Row (modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween){
-                    Text("모임 공개", fontFamily = pretendardFamily,fontWeight = FontWeight.SemiBold)
-                    Toggle()
-                }
+
                 Spacer(modifier = Modifier.height(24.dp))
                 Row (modifier = Modifier.fillMaxWidth(),  horizontalArrangement = Arrangement.SpaceBetween){
                     Button(modifier = Modifier.weight(1f), shape = MaterialTheme.shapes.medium,border = BorderStroke(1.dp, PrimaryPink), onClick = { /*TODO*/ }, colors = ButtonDefaults.buttonColors(containerColor = Color.White, contentColor = Color.Black )) {
