@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -44,14 +45,16 @@ fun LoginScreen(navController: NavController) {
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight(),
-        verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if (!isSplashFinished) {
             SplashScreen(onFinished = { isSplashFinished = true })
         } else {
-            LogoAndTitle()
-            Buttons(navController, Modifier.padding(40.dp, 20.dp))
+            Spacer(modifier = Modifier.weight(1f))
+            Column(modifier = Modifier.weight(3f).fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                LogoAndTitle()
+                Buttons(navController, Modifier.padding(40.dp, 20.dp))
+            }
         }
     }
 }
@@ -103,32 +106,10 @@ fun Buttons(navController: NavController, modifier: Modifier) {
             },
             textColor = R.color.black
         )
-        Spacer(modifier = Modifier.size(10.dp))
-        LoginButton(
-            color = NaverGreen,
-            title = stringResource(R.string.naver_login),
-            onClick = {
-                navController.navigate(HifesDestinations.LOGIN_DETAIL_ROUTE)
-            },
-            textColor = R.color.white
-        )
-        LoginMaintain()
+
     }
 }
 
-@Composable
-fun LoginMaintain() {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        RadioButton(selected = false, onClick = { }, modifier = Modifier.padding(0.dp))
-        Text(
-            text = stringResource(id = R.string.login_maintain), fontSize = 12.sp,
-            fontFamily = pretendardFamily, fontWeight = FontWeight.Light
-        )
-    }
-}
 
 @Preview
 @Composable
