@@ -71,7 +71,7 @@ class _FestivalRegisterState extends State<FestivalRegister> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text("축제 정보 입력", style: TextStyle(fontSize: 48),),
+                Text("축제 정보 입력", style: TextStyle(fontSize: 40),),
                 SizedBox(height: 40,),
                 Center(
                   child: InkWell(
@@ -89,7 +89,7 @@ class _FestivalRegisterState extends State<FestivalRegister> {
                         child: poster != null
                             ? Image.memory(
                                 Uint8List.fromList(poster!.files.first.bytes!))
-                            : Text('업로드할 포스터를 선택해주세요.'),
+                            : Text('업로드할 포스터를 선택해주세요.', style: TextStyle(fontSize: 20)),
                       ),
                       width: 800,
                       height: 400,
@@ -220,12 +220,12 @@ class _FestivalRegisterState extends State<FestivalRegister> {
                       child:
                       Column(
                         children: [
-                          Text('일정 양식'),
+                          Text('일정 양식', style: TextStyle(fontSize: 20)),
                           SizedBox(height: 10,),
                           InkWell(
                             onTap: () async {
-                              String fileName = 'demo.txt'; // 예시 파일명
-                              String fileUrl = '/assets/demo.txt'; // 예시 파일의 경로
+                              String fileName = 'timetable.xlsx'; // 예시 파일명
+                              String fileUrl = '/assets/hifes_timetable.xlsx'; // 예시 파일의 경로
                               downloadFile(FileData(fileName, fileUrl));
                             },
                             child: Container(
@@ -256,7 +256,7 @@ class _FestivalRegisterState extends State<FestivalRegister> {
                       child:
                       Column(
                         children: [
-                          Text('일정 업로드'),
+                          Text('일정 업로드', style: TextStyle(fontSize: 20),),
                           SizedBox(height: 10,),
                           InkWell(
                             onTap: () async {
@@ -301,7 +301,7 @@ class _FestivalRegisterState extends State<FestivalRegister> {
                   height: 10,
                 ),
                 SizedBox(height: 20,),
-                Text("마커 등록", style: TextStyle(fontSize: 48),),
+                Text("마커 등록", style: TextStyle(fontSize: 40),),
                 SizedBox(height: 20,),
 
               ],
