@@ -1,8 +1,8 @@
-package hiFes.hiFes.controller;
+package hiFes.hiFes.Controller;
 
 
 import hiFes.hiFes.domain.*;
-import hiFes.hiFes.service.OrganizedFestivalService;
+import hiFes.hiFes.Service.OrganizedFestivalService;
 import hiFes.hiFes.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,8 +19,9 @@ public class OrganizedFestivalApiController {
     private final OrganizedFestivalService organizedFestivalService;
 
     @PostMapping("/api/create-festival")
-    public ResponseEntity<String> addOrganizedFestival(@RequestPart("data") AddOrganizedFestivalRequest request, @RequestPart("file") MultipartFile file){
-        OrganizedFestival savedOrganizedFestival = organizedFestivalService.save(request,file);
+    public ResponseEntity<String> addOrganizedFestival(@RequestPart("data") AddOrganizedFestivalRequest request, @RequestPart("file") MultipartFile file, @RequestPart("image") MultipartFile image)
+    throws Exception{
+        OrganizedFestival savedOrganizedFestival = organizedFestivalService.save(request,file,image);
         return ResponseEntity.status(HttpStatus.CREATED).body("OK");
     }
 
@@ -32,12 +33,16 @@ public class OrganizedFestivalApiController {
     }
 
     @PutMapping("api/update-festival/{id}")
-    public ResponseEntity<OrganizedFestival> updateOrganizedFestival(@PathVariable long id, @RequestBody UpdateOrganizedFestivalRequest request){
+    public ResponseEntity<OrganizedFestival> updateOrganizedFestival(@PathVariable long id, @RequestPart("data") UpdateOrganizedFestivalRequest request,
+                                                                     @RequestPart("file") MultipartFile file, @RequestPart("image") MultipartFile image)
+    throws Exception{
 
-        OrganizedFestival updateOrganizedFestival = organizedFestivalService.update(id, request);
+        OrganizedFestival updateOrganizedFestival = organizedFestivalService.update(id, request, file, image);
         return ResponseEntity.ok()
                 .body(updateOrganizedFestival);
     }
+
+
 
     @DeleteMapping("api/delete-aritem/{id}")
     public ResponseEntity<Void> deleteARItem(@PathVariable long id){
