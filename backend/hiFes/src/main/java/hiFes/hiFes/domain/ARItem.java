@@ -4,10 +4,7 @@ package hiFes.hiFes.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import hiFes.hiFes.dto.UpdateARItemRequest;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -17,6 +14,7 @@ import java.math.BigDecimal;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@Setter
 @Table(name="ARItem")
 public class ARItem {
     @Id
@@ -24,13 +22,15 @@ public class ARItem {
     @Column(name="itemId", updatable = false)
     private Long itemId;
 
-//    @Column(name="ARLatitude", nullable = false)
+    @Column(name="ARLatitude", nullable = false)
+//    @Column(name="ARLatitude")
     private BigDecimal ARLatitude;
 
-//    @Column(name="ARLongitude", nullable = false)
+    @Column(name="ARLongitude", nullable = false)
+//    @Column(name="ARLongitude")
     private BigDecimal ARLongitude;
 
-//    @Column(name="ARImage", nullable = false)
+    @Column(name="ARImage", nullable = false)
     private String ARImage;
 
     @Lob
@@ -57,7 +57,7 @@ public class ARItem {
         this.ARImage = request.getArImage();
         this.giftInfo = request.getGiftInfo();
         this.ARLongitude = request.getArLongitude();
-        this.itemId = request.getItemId();
+//        this.itemId = request.getItemId();
 
 
     }

@@ -1,6 +1,7 @@
 package hiFes.hiFes.dto;
 
 
+import hiFes.hiFes.domain.OrganizedFestival;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -28,6 +29,7 @@ public class UpdateOrganizedFestivalRequest {
     private List<UpdateFestivalTableRequest> festivalTables;
     private List<UpdateMarkerRequest> markers;
 
+//
 
     public UpdateOrganizedFestivalRequest(Long festivalId, String fesAddress, String fesOutline, String fesPosterPath,
                                           String fesTitle, LocalDate fesEndDate, LocalDate fesStartDate, BigDecimal fesLatitude, BigDecimal fesLongitude,
