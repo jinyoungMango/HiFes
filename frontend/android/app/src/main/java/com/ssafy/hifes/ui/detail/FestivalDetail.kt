@@ -1,9 +1,9 @@
 package com.ssafy.hifes.ui.detail
 
 import NavigationItem
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,9 +15,12 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -30,6 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
@@ -81,7 +85,7 @@ fun FestivalDetail(navController: NavHostController, viewModel: MainViewModel) {
                         contentDescription = "Poster Image",
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(250.dp),
+                            .height(288.dp),
                         contentScale = ContentScale.Crop,
                         placeholder = rememberVectorPainter(image = MyIconPack.Imagenotfound)
                     )
@@ -91,25 +95,27 @@ fun FestivalDetail(navController: NavHostController, viewModel: MainViewModel) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(4.dp)
+                            .padding(top = 4.dp)
                     ) {
-                        DetailIcons(painterResource(R.drawable.icon_board)) {
-                            navController.navigate(
-                                HifesDestinations.BOARD_ROUTE
-                            )
-                        }
                         DetailIcons(painterResource(R.drawable.icon_map)) {
                             viewModel.updateMapTypeFestival()
                             navController.navigate(
                                 NavigationItem.Map.screenRoute
                             )
                         }
+                        DetailIcons(painterResource(R.drawable.icon_board)) {
+                            navController.navigate(
+                                HifesDestinations.BOARD_ROUTE
+                            )
+                        }
+                        DetailIcons(painterResource(R.drawable.icon_share)) {}
                     }
                 }
                 Column {
                     Surface(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .offset(y = (-8).dp),
+                            .offset(y = (-12).dp),
                         shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
                         shadowElevation = 2.dp
                     ) {
@@ -120,18 +126,15 @@ fun FestivalDetail(navController: NavHostController, viewModel: MainViewModel) {
                                 horizontalArrangement = Arrangement.End,
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(top = 2.dp, end = 8.dp)
+                                    .padding(top = 4.dp, end = 8.dp, bottom = 6.dp)
                             ) {
-                                DetailIcons(painterResource(R.drawable.icon_share)) {}
-                            }
-                            DetailTitle(festivalData.fesTitle)
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                StarScore(score = 4.0)
-                                Spacer(modifier = Modifier.size(12.dp))
                                 navigateToMeetingScreen("12개", navController) // 추후 서버에서 가져옴
                             }
+                            DetailTitle(festivalData.fesTitle)
+
+                            StarScore(score = 4.0)
+
+
                             Spacer(modifier = Modifier.size(12.dp))
                             DetailContent(festivalData.fesOutline)
 
@@ -149,7 +152,11 @@ fun FestivalDetail(navController: NavHostController, viewModel: MainViewModel) {
                         Spacer(modifier = Modifier.size(12.dp))
                         DetailCommonContent(title = "장소", address = "주소")
                         Spacer(modifier = Modifier.size(12.dp))
-                        FestivalLocation(festivalData.fesLatitude, festivalData.fesLongitude, festivalData.fesTitle)
+                        FestivalLocation(
+                            festivalData.fesLatitude,
+                            festivalData.fesLongitude,
+                            festivalData.fesTitle
+                        )
                         Spacer(modifier = Modifier.size(12.dp))
                         // 추후 서버에서 가져온 데이터로 변경
                         DetailCommonContent(
@@ -193,7 +200,7 @@ fun FestivalLocation(lat: Double, lng: Double, title: String) {
             captionText = title,
             captionTextSize = 14.sp,
             icon = OverlayImage.fromResource(R.drawable.icon_marker),
-            )
+        )
     }
 }
 
@@ -275,12 +282,14 @@ fun navigateToMeetingScreen(count: String, navController: NavController) {
         onClick = {
             navController.navigate(NavigationItem.Group.screenRoute)
         },
-        modifier = Modifier.height(36.dp)
+        modifier = Modifier.height(36.dp),
+        border = BorderStroke(0.3.dp, Color.Gray)
     ) {
         Text(
             text = "모임 : $count",
+            fontFamily = pretendardFamily,
             fontSize = 14.sp,
-            fontWeight = FontWeight.Bold,
+            fontWeight = FontWeight.SemiBold,
             color = Color.Black
         )
     }
@@ -320,17 +329,25 @@ fun Image(
 
 @Composable
 fun DetailIcons(painter: Painter, onClick: () -> Unit) {
-    Icon(
-        painter = painter,
-        contentDescription = null,
-        tint = Color.Black,
+    IconButton(
+        onClick = onClick,
         modifier = Modifier
-            .size(40.dp)
-            .padding(4.dp)
-            .clickable {
-                onClick()
-            }
+            .padding(6.dp)
+            .size(44.dp)
+            .shadow(elevation = 4.dp, shape = CircleShape, ambientColor = Color.LightGray),
+        colors = IconButtonDefaults.filledIconButtonColors(containerColor = Color.White),
+        content = {
+            Icon(
+                painter = painter,
+                contentDescription = "painter",
+                tint = Color.DarkGray,
+                modifier = Modifier
+                    .size(34.dp)
+                    .padding(4.dp)
+            )
+        }
     )
+
 }
 
 @Composable

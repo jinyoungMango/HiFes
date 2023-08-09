@@ -21,7 +21,7 @@ class GroupViewModel : ViewModel()  {
         //추후 서버 통신 코드가 생기면 이 부분을 서버에게서 모임 리스트를 받아오는것으로 변경한다
         var groupListDummyData = mutableListOf<Group>()
         val tmp = Group(
-            "https://fastly.picsum.photos/id/10/2500/1667.jpg?hmac=J04WWC_ebchx3WwzbM-Z4_KC_LeLBWr5LZMaAkWkF68",
+            "https://picsum.photos/600",
             "제목",
             "내용",
             hashtag = listOf("1", "2", "3", "4"),
