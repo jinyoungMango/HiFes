@@ -151,6 +151,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging-ktx'
     implementation("com.google.firebase:firebase-firestore-ktx")
 
+    // lottie
+    implementation "com.airbnb.android:lottie-compose:6.1.0"
+
     //permission for compose
     implementation "com.google.accompanist:accompanist-permissions:<version>"
 }

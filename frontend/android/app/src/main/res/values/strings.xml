@@ -17,6 +17,7 @@
     <string name="home_greeting">혹시 이 행사에 참여 중이신가요?</string>
     <string name="home_middle_ment">이 근처에서 축제 열리는 중!</string>
     <string name="home_app_bar">이벤트를 검색해보세요</string>
+    <string name="home_bottom_ment">이런 축제는 어떤가요?</string>
 
     <!-- more info-->
     <string name="more_info_appbar_title">추가정보 입력</string>
@@ -67,5 +68,8 @@
     <string name="map_chip_safety_staff">안전 요원</string>
     <string name="map_chip_toilet">화장실</string>
     <string name="map_chip_enterance">출입구</string>
+
+    <!-- Group -->
+    <string name="group_app_bar">제목 · 해시태그로 검색</string>
 
 </resources>
