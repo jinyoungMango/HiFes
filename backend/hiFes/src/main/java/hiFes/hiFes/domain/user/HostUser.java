@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 @Entity
 @Builder
 @AllArgsConstructor
+@Table(name = "host_user")
 public class HostUser {
 
     @Id

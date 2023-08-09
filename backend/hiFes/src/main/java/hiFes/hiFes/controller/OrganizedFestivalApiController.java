@@ -1,8 +1,8 @@
-package hiFes.hiFes.Controller;
+package hiFes.hiFes.controller;
 
 
 import hiFes.hiFes.domain.*;
-import hiFes.hiFes.Service.OrganizedFestivalService;
+import hiFes.hiFes.service.OrganizedFestivalService;
 import hiFes.hiFes.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

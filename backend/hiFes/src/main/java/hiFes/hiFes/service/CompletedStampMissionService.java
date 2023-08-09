@@ -1,16 +1,15 @@
-package hiFes.hiFes.Service;
+package hiFes.hiFes.service;
 
 import hiFes.hiFes.domain.CompletedStampMission;
-import hiFes.hiFes.domain.NormalUser;
 import hiFes.hiFes.domain.StampMission;
-import hiFes.hiFes.dto.CompletedStampMissionResponse;
+import hiFes.hiFes.domain.user.NormalUser;
 import hiFes.hiFes.repository.*;
+import hiFes.hiFes.repository.user.NormalUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @Service
 public class CompletedStampMissionService {
@@ -44,7 +43,7 @@ public class CompletedStampMissionService {
     }
 
     public List<CompletedStampMission> getCompletedStampMissionsByNormalUserId(Long normalUserId){
-        return completedStampMissionRepository.findByNormalUser_normalUserId(normalUserId);
+        return completedStampMissionRepository.findByNormalUser_id(normalUserId);
     }
 
 }

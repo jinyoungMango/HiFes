@@ -50,11 +50,11 @@ fun GroupMember(user: User) {
             contentScale = ContentScale.Crop,
             placeholder = ColorPainter(Color.Green),
             modifier = Modifier
-                .size(64.dp)
+                .size(68.dp)
                 .clip(CircleShape)
         )
         Spacer(modifier = Modifier.height(8.dp))
-        Text(text = user.name, fontSize = 16.sp, fontFamily = pretendardFamily, fontWeight = FontWeight.SemiBold)
+        Text(text = user.name, fontSize = 14.sp, fontFamily = pretendardFamily, fontWeight = FontWeight.Normal)
     }
 }
 
@@ -88,7 +88,7 @@ fun GroupPictureRow(img: List<Img>) {
                         .size(80.dp)
                         .clip(RoundedCornerShape(16.dp))
                 )
-                Spacer(modifier = Modifier.width(16.dp))
+                Spacer(modifier = Modifier.width(14.dp))
             }
         }
     }

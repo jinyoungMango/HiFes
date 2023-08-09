@@ -80,7 +80,7 @@ fun Chip(
     Surface(
         modifier = modifier,
         shape = RoundedCornerShape(16.dp),
-        border = BorderStroke(1.dp, Color.LightGray)
+        border = BorderStroke(0.5.dp, Color.LightGray)
     ) {
         Text(
             text = text,
@@ -95,7 +95,7 @@ fun HashtagChips(chips: List<String>) {
     LazyRow() {
         items(chips) { item ->
             Chip(text = item)
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(14.dp))
         }
     }
 }

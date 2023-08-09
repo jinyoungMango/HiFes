@@ -1,4 +1,4 @@
-package hiFes.hiFes.Service;
+package hiFes.hiFes.service;
 
 import hiFes.hiFes.domain.Marker;
 import hiFes.hiFes.repository.MarkerRepository;

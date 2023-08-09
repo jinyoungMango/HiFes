@@ -80,6 +80,34 @@ class MainViewModel : ViewModel() {
                     128.4263
                 )
             )
+            add(
+                OrganizedFestivalDto(
+                    1,
+                    1,
+                    "2021 대구치맥페스티벌",
+                    "https://picsum.photos/600",
+                    testDate,
+                    testDate,
+                    festOutline,
+                    "festival Address",
+                    36.105993,
+                    128.4263
+                )
+            )
+            add(
+                OrganizedFestivalDto(
+                    1,
+                    1,
+                    "2021 대구치맥페스티벌",
+                    "https://picsum.photos/600",
+                    testDate,
+                    testDate,
+                    festOutline,
+                    "festival Address",
+                    36.105993,
+                    128.4263
+                )
+            )
         }
         _festivalList.postValue(festivalListDummyData)
     }

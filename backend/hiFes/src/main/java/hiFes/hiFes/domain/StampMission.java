@@ -41,10 +41,7 @@ public class StampMission {
 
     private OrganizedFestival organizedFestival;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "hostId")
-//    @OnDelete(action = OnDeleteAction.CASCADE)
-//    private Host host;
+
 
     @Builder
     public StampMission(String missionTitle, String missionOutline, BigDecimal missionLatitude, BigDecimal missionLongitude,

@@ -35,8 +35,8 @@ fun GroupTitle(title: String, num: Int) {
                 Text(
                     text = "$num 명",
                     fontFamily = pretendardFamily,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 24.sp
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 20.sp
                 )
             }
         }

@@ -4,6 +4,7 @@ package hiFes.hiFes.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import hiFes.hiFes.domain.user.HostUser;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -68,13 +69,13 @@ public class OrganizedFestival {
     private final List<Marker> markers = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "hostId")
+    @JoinColumn(name = "id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonBackReference
-    private Host host;
+    private HostUser hostUser;
 
     @Builder
-    public OrganizedFestival(Host host, String fesTitle, String fesOutline, String fesAddress, String fesPosterPath, LocalDate fesStartDate, LocalDate fesEndDate, BigDecimal fesLatitude, BigDecimal fesLongitude){
+    public OrganizedFestival(HostUser hostUser, String fesTitle, String fesOutline, String fesAddress, String fesPosterPath, LocalDate fesStartDate, LocalDate fesEndDate, BigDecimal fesLatitude, BigDecimal fesLongitude){
         this.fesTitle = fesTitle;
         this.fesLatitude = fesLatitude;
         this.fesAddress = fesAddress;
@@ -82,7 +83,7 @@ public class OrganizedFestival {
         this.fesEndDate = fesEndDate;
         this.fesPosterPath = fesPosterPath;
         this.fesOutline = fesOutline;
-        this.host = host;
+        this.hostUser = hostUser;
         this.fesStartDate = fesStartDate;
 
     }
