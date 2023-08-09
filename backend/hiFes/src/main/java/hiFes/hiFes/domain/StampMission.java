@@ -4,10 +4,7 @@ package hiFes.hiFes.domain;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.sun.istack.NotNull;
 import hiFes.hiFes.dto.UpdateStampMissionRequest;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -15,8 +12,9 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @Getter
+@Setter
 @Table(name="StampMission")
 public class StampMission {
     @Id
@@ -32,6 +30,7 @@ public class StampMission {
 
     @Column(name = "missionLatitude", nullable = false)
     private BigDecimal missionLatitude;
+
     @Column(name = "missionLongitude", nullable = false)
     private BigDecimal missionLongitude;
 
@@ -57,9 +56,8 @@ public class StampMission {
         this.missionOutline = missionOutline;
     }
 
-
     public void update(UpdateStampMissionRequest request) {
-        this.missionId = request.getMissionId();
+//        this.missionId = request.getMissionId();
         this.missionTitle = request.getMissionTitle();
         this.missionLatitude = request.getMissionLatitude();
         this.missionLongitude = request.getMissionLongitude();
