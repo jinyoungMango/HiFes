@@ -4,11 +4,7 @@ package hiFes.hiFes.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import hiFes.hiFes.domain.user.HostUser;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -20,6 +16,7 @@ import java.util.List;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name="OrganizedFestival")
 public class OrganizedFestival {
@@ -74,10 +71,10 @@ public class OrganizedFestival {
     @JoinColumn(name = "hostId")
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonBackReference
-    private HostUser hostUser;
+    private Host host;
 
     @Builder
-    public OrganizedFestival( String fesTitle, String fesOutline, String fesAddress, String fesPosterPath, LocalDate fesStartDate, LocalDate fesEndDate, BigDecimal fesLatitude, BigDecimal fesLongitude){
+    public OrganizedFestival(Host host, String fesTitle, String fesOutline, String fesAddress, String fesPosterPath, LocalDate fesStartDate, LocalDate fesEndDate, BigDecimal fesLatitude, BigDecimal fesLongitude){
         this.fesTitle = fesTitle;
         this.fesLatitude = fesLatitude;
         this.fesAddress = fesAddress;
@@ -85,14 +82,14 @@ public class OrganizedFestival {
         this.fesEndDate = fesEndDate;
         this.fesPosterPath = fesPosterPath;
         this.fesOutline = fesOutline;
-//        this.host = host;
+        this.host = host;
         this.fesStartDate = fesStartDate;
 
     }
 
-    public void OrganizedFestivalupdate(Long festivalId, String fesTitle, String fesOutline, String fesAddress, String fesPosterPath, LocalDate fesStartDate, LocalDate fesEndDate, BigDecimal fesLatitude, BigDecimal fesLongitude){
+    public void OrganizedFestivalupdate( String fesTitle, String fesOutline, String fesAddress, String fesPosterPath, LocalDate fesStartDate, LocalDate fesEndDate, BigDecimal fesLatitude, BigDecimal fesLongitude){
         this.fesTitle = fesTitle;
-        this.festivalId = festivalId;
+//        this.festivalId = festivalId;
         this.fesLatitude = fesLatitude;
         this.fesAddress = fesAddress;
         this.fesLongitude = fesLongitude;
