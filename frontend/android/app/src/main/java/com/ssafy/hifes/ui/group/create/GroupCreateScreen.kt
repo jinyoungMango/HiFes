@@ -54,7 +54,7 @@ fun GroupCreateScreen(navController: NavController) {
                 DropdownWithCaption(caption = "최대 인원")
                 TextFieldWithCaption(caption = "태그 작성")
                 Row (modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween){
-                    Text("모임 공개", fontWeight = FontWeight.Bold)
+                    Text("모임 공개", fontFamily = pretendardFamily,fontWeight = FontWeight.SemiBold)
                     Toggle()
                 }
                 Spacer(modifier = Modifier.height(24.dp))
@@ -62,7 +62,7 @@ fun GroupCreateScreen(navController: NavController) {
                     Button(modifier = Modifier.weight(1f), shape = MaterialTheme.shapes.medium,border = BorderStroke(1.dp, PrimaryPink), onClick = { /*TODO*/ }, colors = ButtonDefaults.buttonColors(containerColor = Color.White, contentColor = Color.Black )) {
                         Text(text = "취소", fontFamily = pretendardFamily, fontWeight = FontWeight.Bold)
                     }
-                    Spacer(modifier = Modifier.width(40.dp))
+                    Spacer(modifier = Modifier.width(24.dp))
                     Button(modifier = Modifier.weight(1f), shape = MaterialTheme.shapes.medium,onClick = { /*TODO*/ }, colors = ButtonDefaults.buttonColors(containerColor = PrimaryPink, )) {
                         Text(text = "생성")
                     }
