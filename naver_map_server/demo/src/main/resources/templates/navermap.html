@@ -231,7 +231,7 @@
                 }
             }
 
-            var confirmText = `마커이름: ${markerList[selectedMarkerIndex].markerTitle} \n마커 설명: ${markerList[selectedMarkerIndex].markerDescription}\n\n해당마커를 삭제하시겠습니까?`
+            var confirmText = `마커 이름: ${markerList[selectedMarkerIndex].markerTitle} \n마커 설명: ${markerList[selectedMarkerIndex].markerDescription}\n\n해당마커를 삭제하시겠습니까?`
             if (selectedMarkerIndex != -1) {
                 if (confirm(confirmText) == true) {//확인 클릭
                     marker.setMap(null)//지도에서 마커를 없앤다
