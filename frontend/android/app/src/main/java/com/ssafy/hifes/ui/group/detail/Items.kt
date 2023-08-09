@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.ssafy.hifes.ui.theme.pretendardFamily
 
 // https://ichef.bbci.co.uk/news/640/cpsprodpb/E172/production/_126241775_getty_cats.png
 
@@ -43,7 +44,7 @@ fun GroupMember(user: User) {
                 .clip(CircleShape)
         )
         Spacer(modifier = Modifier.height(8.dp))
-        Text(text = user.name, fontSize = 16.sp)
+        Text(text = user.name, fontFamily = pretendardFamily, fontWeight = FontWeight.Medium, fontSize = 14.sp)
     }
 }
 

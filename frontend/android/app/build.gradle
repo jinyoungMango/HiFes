@@ -144,6 +144,9 @@ dependencies {
     //rating bar for compose
     implementation 'com.github.a914-gowtham:compose-ratingbar:1.3.4'
 
+    // lottie
+    implementation "com.airbnb.android:lottie-compose:6.1.0"
+
     //permission for compose
     implementation "com.google.accompanist:accompanist-permissions:<version>"
 }
