@@ -20,7 +20,7 @@ public class NormalUserController {
     private final JwtService jwtService;
 
     @CrossOrigin(origins = "*")
-    @PostMapping("normal/sign-up")
+    @PostMapping("normal/signUp")
     public String signUp(@RequestBody NormalUserSignUpDto normalUserSignUpDto) throws Exception{
         String accessToken = normalUserSignUpDto.getAccessToken();
         String test = normalUserSignUpDto.getNickname();
