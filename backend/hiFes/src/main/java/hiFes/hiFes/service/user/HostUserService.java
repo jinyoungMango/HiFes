@@ -1,6 +1,7 @@
 package hiFes.hiFes.service.user;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import hiFes.hiFes.domain.user.HostUser;
 import hiFes.hiFes.dto.user.HostUserSignUpDto;
@@ -51,31 +52,25 @@ public class HostUserService  {
         return hostUserRepository.findById(id).orElse(null);
     }
 
-    public Map<String, String> login(String email) throws UsernameNotFoundException {
 
-        System.out.println(email + "**********************************************************************************************");
+    public JsonObject login(String email) throws UsernameNotFoundException {
 
         String accessToken = jwtService.createAccessToken(email); // JwtService의 createAccessToken을 사용하여 AccessToken 발급
         String refreshToken = jwtService.createRefreshToken();
-
-        if (accessToken.equals(refreshToken)){
-            System.out.println("같습니다 ////////////////////////////////////////////////////////////////");
-        }
-
-        System.out.println("access token 5555555555555555555555555555555555555555555555555"+ accessToken);
-        System.out.println("refresh &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&"+ refreshToken);
 
         hostUserRepository.findByEmail(email)
                 .ifPresent(user -> {
                     user.updateRefreshToken(refreshToken);
                     hostUserRepository.saveAndFlush(user);});
 
-        HashMap<String, String> tokens = new HashMap<String, String>();
-        tokens.put("accessToken", accessToken);
-        tokens.put("refreshToken", refreshToken);
+        JsonObject tokens =new JsonObject();
+
+        tokens.addProperty("accessToken", accessToken);
+        tokens.addProperty("refreshToken", refreshToken);
 
         return tokens;
     }
+
 
 
 
