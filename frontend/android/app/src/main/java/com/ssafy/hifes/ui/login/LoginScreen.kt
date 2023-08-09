@@ -1,6 +1,7 @@
 package com.ssafy.hifes.ui.login
 
-import NavigationItem
+import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -29,13 +30,15 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.rememberNavController
+import com.kakao.sdk.auth.model.OAuthToken
+import com.kakao.sdk.user.UserApiClient
 import com.ssafy.hifes.R
-import com.ssafy.hifes.ui.HifesDestinations
 import com.ssafy.hifes.ui.theme.Grey
 import com.ssafy.hifes.ui.theme.KakaoYellow
-import com.ssafy.hifes.ui.theme.NaverGreen
 import com.ssafy.hifes.ui.theme.PrimaryPink
 import com.ssafy.hifes.ui.theme.pretendardFamily
+
+private const val TAG = "LoginScreen_하이페스"
 
 @Composable
 fun LoginScreen(navController: NavController) {
@@ -51,11 +54,16 @@ fun LoginScreen(navController: NavController) {
             SplashScreen(onFinished = { isSplashFinished = true })
         } else {
             Spacer(modifier = Modifier.weight(1f))
-            Column(modifier = Modifier.weight(3f).fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(
+                modifier = Modifier
+                    .weight(3f)
+                    .fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 LogoAndTitle()
                 Buttons(navController, Modifier.padding(40.dp, 20.dp))
             }
         }
+
     }
 }
 
@@ -91,6 +99,7 @@ fun LogoAndTitle() {
 
 @Composable
 fun Buttons(navController: NavController, modifier: Modifier) {
+    val context = LocalContext.current
     Column(
         modifier = modifier
     ) {
@@ -98,11 +107,8 @@ fun Buttons(navController: NavController, modifier: Modifier) {
             color = KakaoYellow,
             title = stringResource(R.string.kakao_login),
             onClick = {
-                navController.navigate(NavigationItem.Home.screenRoute) {
-                    popUpTo(navController.graph.findStartDestination().id) {
-                        inclusive = true
-                    }
-                }
+                login2(navController, context)
+
             },
             textColor = R.color.black
         )
@@ -110,6 +116,28 @@ fun Buttons(navController: NavController, modifier: Modifier) {
     }
 }
 
+private fun login2(navController: NavController, context: Context) {
+    // 카카오계정으로 로그인 공통 callback 구성
+    val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
+        if (error != null) {
+            Log.e("카카오계정으로 로그인 실패", error.toString())
+        } else if (token != null) {
+            Log.i("카카오계정으로 로그인 성공 ${token.accessToken}", token.accessToken)
+            // jwt 토큰 발급 & sharedPreferences에 jwt 토큰 저장
+            navController.navigate(NavigationItem.Home.screenRoute) {
+                popUpTo(navController.graph.findStartDestination().id) {
+                    inclusive = true
+                }
+            }
+        }
+    }
+    // 카카오계정으로 로그인
+    UserApiClient.instance.loginWithKakaoAccount(
+        context,
+        callback = callback
+    )
+
+}
 
 @Preview
 @Composable
