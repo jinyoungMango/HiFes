@@ -6,11 +6,10 @@ plugins {
     id 'com.google.dagger.hilt.android'
 }
 
-def getLocalProperty(String propertyName) {
-    Properties properties = new Properties()
-    properties.load(project.rootProject.file('local.properties').newDataInputStream())
-    return properties.getProperty(propertyName)
-}
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+def api_key = properties.getProperty('api_key')
+def client_id = properties.getProperty('client_id')
 
 
 android {
@@ -29,8 +28,10 @@ android {
             useSupportLibrary true
         }
 
-        manifestPlaceholders = [client_id: getLocalProperty('client_id')]
-        resValue "string", "client_id", "\"${getLocalProperty('client_id')}\""
+        manifestPlaceholders = [client_id: client_id, API_KEY: api_key]
+        resValue "string", "client_id", client_id
+        // api key 변수 지정
+        buildConfigField "String", "API_KEY", "\"" + api_key + "\""
     }
 
     buildTypes {
@@ -62,6 +63,9 @@ android {
     }
     dataBinding {
         enabled = true
+    }
+    buildFeatures {
+        buildConfig true
     }
 }
 
@@ -149,4 +153,7 @@ dependencies {
 
     //permission for compose
     implementation "com.google.accompanist:accompanist-permissions:<version>"
+
+    // kakao login
+    implementation "com.kakao.sdk:v2-user:2.15.0"
 }
