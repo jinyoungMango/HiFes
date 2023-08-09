@@ -1,15 +1,11 @@
-package hiFes.hiFes.Controller;
+package hiFes.hiFes.controller;
 
-import hiFes.hiFes.Service.EventNotificationService;
-import hiFes.hiFes.Service.GetGiftService;
+import hiFes.hiFes.service.GetGiftService;
 import hiFes.hiFes.domain.*;
-import hiFes.hiFes.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.NoSuchElementException;
 
 @RestController
 public class GetGiftApiController {

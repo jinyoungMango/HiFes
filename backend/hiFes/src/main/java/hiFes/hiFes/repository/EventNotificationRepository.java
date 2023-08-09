@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface EventNotificationRepository extends JpaRepository<EventNotification, Long> {
-    Optional<EventNotification> findByNormalUser_NormalUserIdAndFestivalTable_programId(Long normalUserId, Long programId);
+    Optional<EventNotification> findByNormalUser_idAndFestivalTable_programId(Long id, Long programId);
 
 
     @Transactional
-    void deleteByNormalUser_normalUserIdAndFestivalTable_programId(Long normalUserId, Long programId);
+    void deleteByNormalUser_idAndFestivalTable_programId(Long id, Long programId);
 }

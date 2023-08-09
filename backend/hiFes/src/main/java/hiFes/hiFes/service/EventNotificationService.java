@@ -1,12 +1,12 @@
-package hiFes.hiFes.Service;
+package hiFes.hiFes.service;
 
 
 import hiFes.hiFes.domain.EventNotification;
 import hiFes.hiFes.domain.FestivalTable;
-import hiFes.hiFes.domain.NormalUser;
+import hiFes.hiFes.domain.user.NormalUser;
 import hiFes.hiFes.repository.EventNotificationRepository;
 import hiFes.hiFes.repository.FestivalTableRepository;
-import hiFes.hiFes.repository.NormalUserRepository;
+import hiFes.hiFes.repository.user.NormalUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,7 +42,7 @@ public class EventNotificationService {
     @Transactional
     public void deleteByNormalUser_normalUserIdAndFestivalTable_programId(Long normalUserId, Long programId) {
         // EventNotification 조회
-        EventNotification eventNotification = eventNotificationRepository.findByNormalUser_NormalUserIdAndFestivalTable_programId(normalUserId, programId)
+        EventNotification eventNotification = eventNotificationRepository.findByNormalUser_idAndFestivalTable_programId(normalUserId, programId)
                 .orElseThrow(() -> new IllegalArgumentException("EventNotification not found with normalUserId: " + normalUserId + " and programId: " + programId));
 
         eventNotificationRepository.delete(eventNotification);

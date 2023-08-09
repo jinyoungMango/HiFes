@@ -1,8 +1,10 @@
-package hiFes.hiFes.Service;
+package hiFes.hiFes.service;
 
 
 import hiFes.hiFes.domain.*;
+import hiFes.hiFes.domain.user.NormalUser;
 import hiFes.hiFes.repository.*;
+import hiFes.hiFes.repository.user.NormalUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

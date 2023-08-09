@@ -1,9 +1,9 @@
-package hiFes.hiFes.Controller;
+package hiFes.hiFes.controller;
 
 
 import hiFes.hiFes.domain.Marker;
-import hiFes.hiFes.Service.MarkerService;
-import hiFes.hiFes.Service.OrganizedFestivalService;
+import hiFes.hiFes.service.MarkerService;
+import hiFes.hiFes.service.OrganizedFestivalService;
 import hiFes.hiFes.dto.MarkerResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

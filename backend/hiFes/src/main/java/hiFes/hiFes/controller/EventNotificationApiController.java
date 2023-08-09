@@ -1,17 +1,11 @@
-package hiFes.hiFes.Controller;
+package hiFes.hiFes.controller;
 
-import hiFes.hiFes.Service.EventNotificationService;
+import hiFes.hiFes.service.EventNotificationService;
 import hiFes.hiFes.domain.EventNotification;
-import hiFes.hiFes.domain.FestivalTable;
-import hiFes.hiFes.domain.NormalUser;
 import hiFes.hiFes.repository.EventNotificationRepository;
-import hiFes.hiFes.repository.FestivalTableRepository;
-import hiFes.hiFes.repository.NormalUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.NoSuchElementException;
 
 @RestController
 public class EventNotificationApiController {
@@ -28,7 +22,7 @@ public class EventNotificationApiController {
 
     @DeleteMapping("api/{normalUserId}/delete-eventNotifications/{programId}")
     public ResponseEntity<Void> deleteEventNotification(@PathVariable Long normalUserId, @PathVariable Long programId){
-        eventNotificationRepository.deleteByNormalUser_normalUserIdAndFestivalTable_programId(normalUserId,programId);
+        eventNotificationRepository.deleteByNormalUser_idAndFestivalTable_programId(normalUserId,programId);
         return ResponseEntity.ok()
                 .build();
     }
