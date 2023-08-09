@@ -156,4 +156,7 @@ dependencies {
 
     // kakao login
     implementation "com.kakao.sdk:v2-user:2.15.0"
+
+    // kakao link
+    implementation "com.kakao.sdk:v2-share:2.11.2"
 }
