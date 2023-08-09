@@ -1,13 +1,9 @@
-package hiFes.hiFes.Controller;
+package hiFes.hiFes.controller;
 
 
-import hiFes.hiFes.Service.CompletedStampMissionService;
-import hiFes.hiFes.Service.GetGiftService;
+import hiFes.hiFes.service.CompletedStampMissionService;
 import hiFes.hiFes.domain.CompletedStampMission;
-import hiFes.hiFes.domain.GetGift;
-import hiFes.hiFes.domain.OrganizedFestival;
 import hiFes.hiFes.dto.CompletedStampMissionResponse;
-import hiFes.hiFes.dto.OrganizedFestivalResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

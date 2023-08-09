@@ -2,6 +2,7 @@ package hiFes.hiFes.domain;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import hiFes.hiFes.domain.user.NormalUser;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

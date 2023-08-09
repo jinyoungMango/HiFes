@@ -1,4 +1,4 @@
-package hiFes.hiFes.Service;
+package hiFes.hiFes.service;
 
 
 
@@ -6,9 +6,7 @@ import hiFes.hiFes.ExcelUtils;
 import hiFes.hiFes.domain.*;
 import hiFes.hiFes.dto.*;
 import hiFes.hiFes.repository.*;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -16,8 +14,6 @@ import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 //@RequiredArgsConstructor
@@ -117,7 +113,7 @@ public class OrganizedFestivalService {
 
     //조회
     public List<OrganizedFestival> findByHost_hostId(long hostId){
-        return organizedFestivalRepository.findByHost_hostId(hostId);
+        return organizedFestivalRepository.findByHostUser_Id(hostId);
     }
 
     public OrganizedFestival findById(long id){
