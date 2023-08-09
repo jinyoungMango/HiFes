@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Hifes</string>
+    <string name="app_name">하이페스</string>
 
     <!-- bottom navigation item -->
     <string name="nav_home">홈</string>
@@ -12,6 +12,12 @@
     <string name="kakao_login">카카오 로그인</string>
     <string name="naver_login">네이버 로그인</string>
     <string name="login_maintain">로그인 유지</string>
+
+    <!-- Home -->
+    <string name="home_greeting">혹시 이 행사에 참여 중이신가요?</string>
+    <string name="home_middle_ment">이 근처에서 축제 열리는 중!</string>
+    <string name="home_app_bar">이벤트를 검색해보세요</string>
+
     <!-- more info-->
     <string name="more_info_appbar_title">추가정보 입력</string>
     <string name="more_info_edittext_hint">닉네임</string>
@@ -51,4 +57,15 @@
     <string name="board_write_appbar_title">작성</string>
     <string name="board_write_text_field_title_hint">제목을 입력하세요</string>
     <string name="board_write_text_field_content_hint">내용을 입력하세요</string>
+
+    <!-- Map -->
+    <string name="map_chip_total">전체</string>
+    <string name="map_chip_sale_booth">판매 부스</string>
+    <string name="map_chip_food_booth">먹거리 부스</string>
+    <string name="map_chip_restaurant_booth">식당 부스</string>
+    <string name="map_chip_staff">스태프</string>
+    <string name="map_chip_safety_staff">안전 요원</string>
+    <string name="map_chip_toilet">화장실</string>
+    <string name="map_chip_enterance">출입구</string>
+
 </resources>

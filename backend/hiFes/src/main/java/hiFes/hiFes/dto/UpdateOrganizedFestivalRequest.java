@@ -29,7 +29,6 @@ public class UpdateOrganizedFestivalRequest {
     private List<UpdateFestivalTableRequest> festivalTables;
     private List<UpdateMarkerRequest> markers;
 
-//
 
     public UpdateOrganizedFestivalRequest(Long festivalId, String fesAddress, String fesOutline, String fesPosterPath,
                                           String fesTitle, LocalDate fesEndDate, LocalDate fesStartDate, BigDecimal fesLatitude, BigDecimal fesLongitude,

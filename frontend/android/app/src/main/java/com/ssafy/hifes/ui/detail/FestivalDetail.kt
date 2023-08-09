@@ -35,7 +35,6 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
@@ -46,15 +45,22 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
+import com.naver.maps.geometry.LatLng
+import com.naver.maps.map.CameraPosition
+import com.naver.maps.map.compose.CameraPositionState
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
+import com.naver.maps.map.compose.Marker
+import com.naver.maps.map.compose.MarkerState
 import com.naver.maps.map.compose.NaverMap
+import com.naver.maps.map.compose.rememberCameraPositionState
+import com.naver.maps.map.overlay.OverlayImage
 import com.ssafy.hifes.R
 import com.ssafy.hifes.ui.HifesDestinations
-import com.ssafy.hifes.ui.common.top.TopWithBack
 import com.ssafy.hifes.ui.iconpack.MyIconPack
 import com.ssafy.hifes.ui.iconpack.myiconpack.Imagenotfound
 import com.ssafy.hifes.ui.main.MainViewModel
 import com.ssafy.hifes.ui.map.StarScore
+import com.ssafy.hifes.ui.theme.pretendardFamily
 import com.ssafy.hifes.util.CommonUtils.formatSqlDateToString
 
 
@@ -69,7 +75,6 @@ fun FestivalDetail(navController: NavHostController, viewModel: MainViewModel) {
                 .verticalScroll(rememberScrollState())
         ) {
             if (festivalData != null) {
-                TopWithBack(navController, title = festivalData.fesTitle)
                 Box {
                     AsyncImage(
                         model = festivalData.fesPosterPath,
@@ -93,6 +98,7 @@ fun FestivalDetail(navController: NavHostController, viewModel: MainViewModel) {
                             )
                         }
                         DetailIcons(painterResource(R.drawable.icon_map)) {
+                            viewModel.updateMapTypeFestival()
                             navController.navigate(
                                 NavigationItem.Map.screenRoute
                             )
@@ -114,7 +120,7 @@ fun FestivalDetail(navController: NavHostController, viewModel: MainViewModel) {
                                 horizontalArrangement = Arrangement.End,
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(end = 8.dp)
+                                    .padding(top = 2.dp, end = 8.dp)
                             ) {
                                 DetailIcons(painterResource(R.drawable.icon_share)) {}
                             }
@@ -143,13 +149,9 @@ fun FestivalDetail(navController: NavHostController, viewModel: MainViewModel) {
                         Spacer(modifier = Modifier.size(12.dp))
                         DetailCommonContent(title = "장소", address = "주소")
                         Spacer(modifier = Modifier.size(12.dp))
-                        NaverMap(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(250.dp)
-                                .padding(8.dp)
-                        )
+                        FestivalLocation(festivalData.fesLatitude, festivalData.fesLongitude, festivalData.fesTitle)
                         Spacer(modifier = Modifier.size(12.dp))
+                        // 추후 서버에서 가져온 데이터로 변경
                         DetailCommonContent(
                             title = "주최",
                             content1 = "대구광역시",
@@ -172,6 +174,28 @@ fun FestivalDetailPrev() {
     FestivalDetail(navController = rememberNavController(), MainViewModel())
 }
 
+@OptIn(ExperimentalNaverMapApi::class)
+@Composable
+fun FestivalLocation(lat: Double, lng: Double, title: String) {
+    val festivalLatLng = LatLng(lat, lng)
+    val cameraPositionState: CameraPositionState = rememberCameraPositionState {
+        position = CameraPosition(festivalLatLng, 14.0)
+    }
+    NaverMap(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(250.dp)
+            .padding(8.dp),
+        cameraPositionState = cameraPositionState
+    ) {
+        Marker(
+            state = MarkerState(position = festivalLatLng),
+            captionText = title,
+            captionTextSize = 14.sp,
+            icon = OverlayImage.fromResource(R.drawable.icon_marker),
+            )
+    }
+}
 
 @Composable
 fun DetailCommonContent(title: String, content1: String, content2: String) {
@@ -269,12 +293,12 @@ fun DetailTitle(title: String) {
             .fillMaxWidth()
             .height(40.dp)
     ) {
-
         Text(
             text = title,
             color = Color.Black,
+            fontFamily = pretendardFamily,
             fontWeight = FontWeight.Bold,
-            fontSize = 20.sp
+            fontSize = 22.sp
         )
 
     }
@@ -289,7 +313,7 @@ fun Image(
         contentDescription = null,
         modifier = Modifier
             .fillMaxWidth()
-            .height(200.dp)
+            .height(150.dp)
             .background(color = Color.White)
     )
 }

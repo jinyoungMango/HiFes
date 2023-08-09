@@ -17,6 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -30,6 +31,7 @@ import com.ssafy.hifes.ui.theme.Grey
 import com.ssafy.hifes.ui.theme.KakaoYellow
 import com.ssafy.hifes.ui.theme.NaverGreen
 import com.ssafy.hifes.ui.theme.PrimaryPink
+import com.ssafy.hifes.ui.theme.pretendardFamily
 
 @Composable
 fun LoginScreen(
@@ -51,21 +53,25 @@ fun LoginScreen(
 @Composable
 fun LogoAndTitle() {
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         Image(
             painterResource(id = R.drawable.logo_hifes),
             contentDescription = "logo",
             modifier = Modifier.size(80.dp)
         )
+        Spacer(modifier = Modifier.size(20.dp))
         Text(
             text = stringResource(id = R.string.login_sub_title),
-            fontWeight = FontWeight.Black,
+            fontFamily = pretendardFamily,
+            fontWeight = FontWeight.Bold,
             color = Grey,
-            fontSize = 14.sp
+            fontSize = 16.sp
         )
         Text(
             text = stringResource(id = R.string.login_title),
+            fontFamily = pretendardFamily,
             fontWeight = FontWeight.Black,
             color = PrimaryPink,
             fontSize = 32.sp
@@ -95,7 +101,7 @@ fun Buttons(navController: NavController, modifier: Modifier) {
         LoginButton(
             color = NaverGreen,
             title = stringResource(R.string.naver_login),
-            onClick = { context ->
+            onClick = {
                 navController.navigate(HifesDestinations.LOGIN_DETAIL_ROUTE)
             },
             textColor = R.color.white
@@ -111,7 +117,8 @@ fun LoginMaintain() {
         modifier = Modifier.fillMaxWidth()
     ) {
         RadioButton(selected = false, onClick = { }, modifier = Modifier.padding(0.dp))
-        Text(text = stringResource(id = R.string.login_maintain), fontSize = 10.sp)
+        Text(text = stringResource(id = R.string.login_maintain), fontSize = 12.sp,
+        fontFamily = pretendardFamily, fontWeight = FontWeight.Light)
     }
 }
 

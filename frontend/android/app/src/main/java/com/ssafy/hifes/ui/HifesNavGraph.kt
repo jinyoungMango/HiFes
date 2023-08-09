@@ -13,8 +13,11 @@ import com.ssafy.hifes.ui.board.BoardScreen
 import com.ssafy.hifes.ui.board.BoardViewModel
 import com.ssafy.hifes.ui.board.boarddetail.BoardDetailScreen
 import com.ssafy.hifes.ui.board.write.PostWriteScreen
+import com.ssafy.hifes.ui.detail.DetailViewModel
 import com.ssafy.hifes.ui.detail.FestivalDetail
+import com.ssafy.hifes.ui.group.GroupViewModel
 import com.ssafy.hifes.ui.group.create.GroupCreateScreen
+import com.ssafy.hifes.ui.group.info.GroupInfoScreen
 import com.ssafy.hifes.ui.group.main.GroupMainScreen
 import com.ssafy.hifes.ui.home.HomeScreen
 import com.ssafy.hifes.ui.login.LoginDetailScreen
@@ -29,11 +32,14 @@ fun HifesNavGraph(
     appContainer: AppContainer,
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    startDestination: String = HifesDestinations.LOGIN_ROUTE
+    mainViewModel: MainViewModel,
+//    startDestination: String = HifesDestinations.LOGIN_ROUTE
+    startDestination: String = NavigationItem.Home.screenRoute
 ) {
 
     val boardViewModel: BoardViewModel = viewModel()
-    val mainViewModel: MainViewModel = viewModel()
+    val groupViewModel: GroupViewModel = viewModel()
+    val detailViewModel: DetailViewModel = viewModel()
 
     NavHost(
         navController = navController,
@@ -44,10 +50,10 @@ fun HifesNavGraph(
             HomeScreen(navController, mainViewModel)
         }
         composable(NavigationItem.Map.screenRoute) {
-            MapScreen(navController, mainViewModel)
+            MapScreen(navController, mainViewModel, detailViewModel)
         }
         composable(NavigationItem.Group.screenRoute) {
-            GroupMainScreen(navController)
+            GroupMainScreen(navController, groupViewModel)
         }
         composable(
             route = HifesDestinations.LOGIN_ROUTE
@@ -94,6 +100,11 @@ fun HifesNavGraph(
             route = HifesDestinations.POST_WRITE_ROUTE
         ) {
             PostWriteScreen(navController = navController, viewModel = boardViewModel)
+        }
+        composable(
+            route = HifesDestinations.GROUP_DETAIL
+        ) {
+            GroupInfoScreen(navController = navController, viewModel = groupViewModel)
         }
     }
 }

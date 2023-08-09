@@ -9,9 +9,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.ssafy.hifes.data.AppContainer
+import com.ssafy.hifes.ui.main.MainViewModel
 import com.ssafy.hifes.ui.theme.HifesTheme
 
 @Composable
@@ -44,15 +46,20 @@ fun HifesApp(
             }
 
         }
+        val mainViewModel: MainViewModel = viewModel()
         Scaffold(
             bottomBar = {
-                if (isBottomBarVisible) BottomNavigation(navController = navController)
+                if (isBottomBarVisible) BottomNavigation(
+                    navController = navController,
+                    mainViewModel
+                )
             }
         ) {
             Box(Modifier.padding(it)) {
                 HifesNavGraph(
                     appContainer = appContainer,
-                    navController = navController
+                    navController = navController,
+                    mainViewModel = mainViewModel
                 )
             }
         }

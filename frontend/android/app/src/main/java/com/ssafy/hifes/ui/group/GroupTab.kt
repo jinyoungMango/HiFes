@@ -32,11 +32,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.ssafy.hifes.ui.theme.PrimaryPink
+import com.ssafy.hifes.ui.theme.pretendardFamily
 
 @Composable
 fun GroupTab(modifier: Modifier, selected: Int, setSelected: (Int) -> Unit) {
@@ -124,6 +126,8 @@ private fun MyTabItem(
             text = text,
             color = tabTextColor,
             textAlign = TextAlign.Center,
+            fontFamily = pretendardFamily,
+            fontWeight = FontWeight.SemiBold
         )
     }
 }

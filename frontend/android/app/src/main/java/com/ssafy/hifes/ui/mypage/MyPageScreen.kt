@@ -24,6 +24,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.ssafy.hifes.R
+import com.ssafy.hifes.ui.HifesDestinations
 
 import com.ssafy.hifes.ui.common.top.TopWithBack
 import com.ssafy.hifes.ui.iconpack.MyIconPack
@@ -104,7 +105,9 @@ fun MyPageScreen(
             GreyBorderItem(
                 title = stringResource(id = R.string.mypage_event),
                 subTitleList = eventSubTitles,
-                onClick = testFun
+                onClick = {
+                    navController.navigate(HifesDestinations.PARTICIPATED_FEST_ROUTE)
+                }
             )
         }
     }
