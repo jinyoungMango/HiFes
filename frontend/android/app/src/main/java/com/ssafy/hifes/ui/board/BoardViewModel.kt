@@ -1,5 +1,6 @@
 package com.ssafy.hifes.ui.board
 
+import android.net.Uri
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.LiveData
@@ -7,7 +8,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.ssafy.hifes.data.model.PostDto
 import com.ssafy.hifes.ui.board.boardcommon.PostType
+import com.ssafy.hifes.util.MultipartUtil
+import okhttp3.MultipartBody
+import java.io.File
 import java.text.SimpleDateFormat
+import kotlin.math.log
 
 private const val TAG = "BoardViewModel"
 class BoardViewModel : ViewModel() {
@@ -22,6 +27,8 @@ class BoardViewModel : ViewModel() {
 
     private var _boardType : MutableLiveData<PostType> = MutableLiveData()
     val boardType : LiveData<PostType> = _boardType
+
+    private var postImageFile : File? = null
 
     lateinit var postTestDate : java.sql.Date
 
@@ -85,6 +92,18 @@ class BoardViewModel : ViewModel() {
     fun getPostDetail(postData : PostDto){//추후 서버 통신 코드가 생기면 이 부분을 서버에게서 게시글 상세를 받아오는 부분으로 변경한다
         selectedPostType = postData.postType
         _selectedPost.postValue(postData)
+    }
+
+    fun postWrite(postData: PostDto, imageFile : File?){
+        Log.d(TAG, "postWrite: 타입 ${boardType}")
+        Log.d(TAG, "postWrite: 작성할 데이터 ${postData}")
+        if(imageFile != null){
+            //보낼 이미지 있는 경우의 통신
+            val files: MutableList<MultipartBody.Part> = mutableListOf()
+            files.add(MultipartUtil.getImageBody(imageFile))
+        }else{
+            //없는 경우의 통신
+        }
     }
     
     fun postDelete(){

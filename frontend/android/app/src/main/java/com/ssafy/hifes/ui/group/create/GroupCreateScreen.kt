@@ -1,5 +1,6 @@
 package com.ssafy.hifes.ui.group.create
 
+import android.net.Uri
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -35,6 +40,8 @@ import com.ssafy.hifes.ui.theme.pretendardFamily
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GroupCreateScreen(navController: NavController) {
+    var imageUri by remember { mutableStateOf<Uri?>(null) }
+
     Scaffold (
         topBar = { TopWithBack(navController, title = "모임 생성", onClick = {})},
         content = {
@@ -47,7 +54,7 @@ fun GroupCreateScreen(navController: NavController) {
                     .verticalScroll(scrollState)
                     ,
                 horizontalAlignment = Alignment.CenterHorizontally) {
-                ProfileImg()
+                ProfileImg(imageUri = imageUri, onImageChange = { uri -> imageUri = uri })
                 Spacer(modifier = Modifier.height(16.dp))
                 TextFieldWithCaption(caption = "모임명")
                 TextFieldWithCaption(caption = "비밀번호")
