@@ -7,7 +7,7 @@ import javax.persistence.GenerationType;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Entity
+@Entity(name="normal_user")
 @Builder
 @AllArgsConstructor
 

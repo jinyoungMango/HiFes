@@ -23,5 +23,5 @@ public class GroupCreateDto {
     private String getterOutline;
     private Integer groupPassword;
 
-    private ArrayList hashtags;
+    private String[] hashtags;
 }

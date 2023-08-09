@@ -41,7 +41,24 @@ public class GroupService {
 
         groupRepository.save(group);
 
-        ArrayList hashtags =  groupCreateDto.getHashtags();
+//        String[] hashtags = groupCreateDto.getHashtags();
+//        int hashLen = hashtags.length;
+//        for (int i = 0; i <= hashLen; i++) {
+//            RegisteredHashtag registeredHashtag = new RegisteredHashtag();
+//            registeredHashtag.setGroup(group);
+//            if (hashtagRepository.existsByTag(hashtags[i])) {
+//                Hashtag tag = hashtagRepository.findByTag(hashtags[i]);
+//                registeredHashtag.setHashtag(tag);
+//            } else {
+//                Hashtag hashtag = Hashtag.builder()
+//                        .title(hashtags[i])
+//                        .build();
+//                hashtagRepository.save(hashtag);
+//
+//                registeredHashtag.setHashtag(hashtag);
+//            }
+//            registeredHashtagRepository.save(registeredHashtag);
+//        }
 
 
 
@@ -67,6 +84,15 @@ public class GroupService {
         registeredHashtagRepository.save(registeredHashtag);
 
 
+
+    }
+
+    public void groupJoin(NormalUser normalUser, Group group){
+        JoinedGroup joinedGroup = new JoinedGroup();
+        joinedGroup.setNormalUser(normalUser);
+        joinedGroup.setGroup(group);
+        joinedGroup.setIsLeader(false);
+        joinedGroupRepository.save(joinedGroup);
 
     }
 
