@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <title>마커 등록 지도</title>
+    <script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId="></script>
+
+    <style>
+        .modal-overlay {
+            display: none;
+            /* Hidden by default */
+            position: fixed;
+            /* Stay in place */
+            z-index: 1;
+            /* Sit on top */
+
+            width: 100%;
+            /* Full width */
+            height: 100%;
+            /* Full height */
+
+            background-color: rgb(0, 0, 0);
+            /* Fallback color */
+            background-color: rgba(0, 0, 0, 0.4);
+            /* Black w/ opacity */
+            align-content:center;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+        .modal-content-text{
+            font-size: large;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .modal-subtitle-text{
+            font-size: medium;
+            font-weight: 300;
+        }
+        .marker-title-box{
+            margin-bottom: 20px;
+        }
+        #marker-title{
+            width: 100%;
+        }
+        #marker-description{
+            width: 100%;
+            height: 50px;
+        }
+        .space{
+            height: 30px;
+        }
+        .mini-space{
+            height: 10px;
+        }
+        .button-box{
+            text-align: center;
+        }
+        button{
+            border: 1px solid rgb(241, 26, 123);
+            background-color: rgba(0,0,0,0);
+            color: rgb(241, 26, 123);
+            padding-top: 8px;
+            padding-bottom: 8px;
+            padding-left: 15px;
+            padding-right: 15px;
+            border-radius: 5px;
+        }
+        button:hover{
+            color: white;
+            background-color: rgb(241, 26, 123);
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="myModal" class="modal-overlay">
+        <div class="modal-content">
+            <p class="modal-content-text">마커 등록</p>
+            <div class="modal-subtitle-text">마커 종류 선택</div>
+            <div class="mini-space"></div>
+            <div class="radio-box">
+                <span>
+                    <span class="raido-item"><label><input class="marker_radio" type="radio" name="marker" value="sell">판매 부스</label></span>
+                    <span class="raido-item"><label><input class="marker_radio" type="radio" name="marker" value="food">먹거리 부스</label></span>
+                    <span class="raido-item"><label><input class="marker_radio" type="radio" name="marker" value="restaurant">식당 부스</label></span>
+                    <span class="raido-item"><label><input class="marker_radio" type="radio" name="marker" value="staff">스태프 위치</label></span>
+                    <span class="raido-item"><label><input class="marker_radio" type="radio" name="marker" value="safety_staff">안전 요원 위치</label></span>
+                    <span class="raido-item"><label><input class="marker_radio" type="radio" name="marker" value="toilet">화장실</label></span>
+                    <span class="raido-item"><label><input class="marker_radio" type="radio" name="marker" value="enterance">출입구</label></span>
+                </span>
+            </div>
+
+            <div class="space"></div>
+            <div id="marker-title-box">
+                <div class="modal-subtitle-text">마커 이름</div>
+                <div class="mini-space"></div>
+                <input id="marker-title" type="text">
+            </div>
+            <div class="space"></div>
+            <div>
+                <div class="modal-subtitle-text">마커 설명</div>
+                <div class="mini-space"></div>
+                <textarea id="marker-description" type="text"></textarea>
+            </div>
+            <div class="space"></div>
+            <div class="button-box">
+                <button id="cancel">취소</button>
+                <button id="ok">확인</button>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="map" style="width:100%;height:600px;"></div>
+
+    <script>
+        var markerId = 0
+        var modal = document.getElementById('myModal') //모달창
+        var okButton = document.getElementById('ok') //확인 버튼
+        var cancelButton = document.getElementById('cancel') //취소 버튼
+        var currentMarkerPosition //가장 마지막에 선택된 마커 위경도
+        var markerRadioButtons = document.getElementsByClassName("marker_radio")//라디오버튼 리스트
+        var currentSelectedMarkerType //가장 마지막에 선택된 마커의 타입
+        var currentSelectedRadioButton //가장 마지막에 선택된 마커 라디오 버튼 dom 객체
+        var markerTitle = document.getElementById("marker-title") //마커이름
+        var markerDescription = document.getElementById("marker-description") //마커설명
+
+        var mapOptions = {
+            center: new naver.maps.LatLng(37.3595704, 127.105399),
+            zoom: 15
+        };
+
+        // 지도 띄우기
+        var map = new naver.maps.Map('map', mapOptions);
+
+        var markerList = new Array();//지도에 추가된 마커 리스트
+
+        function getMarkerType() {//모달창에서 선택한 마커의 타입을 가져와 저장
+            var selected = Array.from(markerRadioButtons).find(radio => radio.checked)
+            if (selected != undefined) {
+                currentSelectedMarkerType = selected.value
+                currentSelectedRadioButton = selected
+            }
+        }
+
+        okButton.addEventListener('click', function (event) {// click 이벤트 발생시, 두번째 인자의 함수가 실행된다.
+            getMarkerType()
+
+            if (currentSelectedMarkerType == undefined) {
+                alert("마커 타입을 선택하세요!")
+            } else if(markerTitle.value == "" || markerDescription.value == ""){
+                alert("제목과 설명을 입력하세요!")
+            }else {
+                modal.style.display = "none"
+
+                //지도에 마커를 추가한다
+                var marker = new naver.maps.Marker({ 
+                    position: currentMarkerPosition,
+                    map: map,
+                    icon: `images/marker_${currentSelectedMarkerType}.png`
+                });
+
+                //마커 리스트에 마커 정보를 넣는다, 플러터로 보낼 값
+                var markerData = {
+                    boothLatitude: currentMarkerPosition._lat,
+                    boothLongitude: currentMarkerPosition._lng,
+                    markerType: currentSelectedMarkerType,
+                    markerId : markerId, //마커 삭제를 위해 존재하는 마커 식별값, 플러터에서는 필요없는값
+                    markerTitle : markerTitle.value,
+                    markerDescription : markerDescription.value
+                }
+
+                markerList.push(markerData);
+                var markerIndex = markerId
+                
+                //마커 클릭시 실행할 이벤트를 등록한다
+                naver.maps.Event.addListener(marker, "click", () => { markerClickListener(marker, markerIndex) })
+                
+                //다음 마커를 위해 식별값 1을 올린다
+                markerId = markerId+1 
+
+                //모달창에 있는 라디오버튼, 입력창을 초기화
+                markerTitle.value=""
+                markerDescription.value=""
+                currentSelectedRadioButton.checked = false
+                currentSelectedMarkerType=undefined
+            }
+
+        });
+
+        //모달창에서 취소 버튼을 눌렀을때 일어날 이벤트
+        cancelButton.addEventListener('click', function (event) {
+            getMarkerType()
+            modal.style.display = "none"
+            markerTitle.value=""
+            markerDescription.value=""
+            if(currentSelectedRadioButton != undefined){
+                currentSelectedRadioButton.checked = false
+            }
+            currentSelectedMarkerType=undefined
+        })
+
+
+        //지도를 클릭했을때 일어나는 이벤트 등록
+        naver.maps.Event.addListener(map, 'click', function (e) {
+            currentMarkerPosition = e.coord//가장 최근에 선택된 위경도를 저장하는 변수에 클릭된 위경도 저장
+            modal.style.display = "block"//마커 정보를 입력하는 모달창을 띄운다
+        });
+
+
+        //마커 클릭 시 일어나는일을 작성한 함수, 마커 삭제를 물어보는 alert창이 나타난다, alert에는 마커 정보가 나타난다
+        var markerClickListener = function (marker, markerIndex) {
+            var selectedMarkerIndex = -1 //선택된 마커의 markerList에서의 인덱스 번호
+
+            for (var i = 0; i < markerList.length; i++) {
+                if (markerIndex == markerList[i].markerId) {
+                    selectedMarkerIndex = i
+                }
+            }
+
+            var confirmText = `마커 이름: ${markerList[selectedMarkerIndex].markerTitle} \n마커 설명: ${markerList[selectedMarkerIndex].markerDescription}\n\n해당마커를 삭제하시겠습니까?`
+            if (selectedMarkerIndex != -1) {
+                if (confirm(confirmText) == true) {//확인 클릭
+                    marker.setMap(null)//지도에서 마커를 없앤다
+                    markerList.splice(selectedMarkerIndex, 1)//markerList에서 마커 삭제
+                }
+            }
+
+        }
+
+        //플러터에서 오는 이벤트를 수신, 이벤트 발생시 receiveParentMessage 함수를 실행
+        window.addEventListener("message", receiveParentMessage, false)
+
+        function receiveParentMessage(e) {
+            var obj = JSON.parse(JSON.stringify(markerList)) //markerList를 json으로 파싱한다
+            window.parent.postMessage(obj, "http://localhost:3000") //플러터에게 이벤트를 일으키면서 동시에 파싱한 데이터를 보낸다
+        }	
+    </script>
+</body>
+
+</html>
