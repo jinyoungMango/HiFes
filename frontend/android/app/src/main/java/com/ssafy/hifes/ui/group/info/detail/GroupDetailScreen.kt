@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -14,17 +15,20 @@ import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.ssafy.hifes.ui.common.HashtagChips
+import com.ssafy.hifes.ui.group.GroupViewModel
 
 @Composable
-fun GroupDetailScreen() {
+fun GroupDetailScreen(navController: NavController, viewModel: GroupViewModel) {
     val user = User(
-        url = "https://fastly.picsum.photos/id/10/2500/1667.jpg?hmac=J04WWC_ebchx3WwzbM-Z4_KC_LeLBWr5LZMaAkWkF68",
-        name = "L"
+        url = "https://picsum.photos/600",
+        name = "name"
     )
     val img = Img(
-        url = "https://fastly.picsum.photos/id/237/200/300.jpg?hmac=TmmQSbShHz9CdQm0NkEjx1Dyh_Y984R9LpNrpvH2D_U"
+        url = "https://picsum.photos/600"
     )
 
     LazyColumn {
@@ -48,7 +52,7 @@ fun GroupDetailScreen() {
 
         item {
             Box() {
-                Column {
+                Column(modifier = Modifier.padding(12.dp)) {
                     GroupTitle(title = "치맥 파티 가자", num = 6)
                     Spacer(modifier = Modifier.height(24.dp))
                     HashtagChips(chips = listOf("#6명", "대구치맥파티", "#치킨", "맥주", "20대"))
@@ -62,7 +66,7 @@ fun GroupDetailScreen() {
         }
 
         item {
-            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.BottomEnd) {
+            Box(modifier = Modifier.fillMaxWidth().padding(12.dp), contentAlignment = Alignment.BottomEnd) {
                 Leave()
             }
         }
@@ -72,5 +76,5 @@ fun GroupDetailScreen() {
 @Preview
 @Composable
 fun GroupDetailScreenPrev() {
-    GroupDetailScreen()
+    GroupDetailScreen(rememberNavController(), GroupViewModel())
 }

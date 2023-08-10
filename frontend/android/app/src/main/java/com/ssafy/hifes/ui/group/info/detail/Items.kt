@@ -27,6 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.ssafy.hifes.ui.theme.pretendardFamily
 import java.lang.reflect.Member
 
 // https://ichef.bbci.co.uk/news/640/cpsprodpb/E172/production/_126241775_getty_cats.png
@@ -49,18 +50,18 @@ fun GroupMember(user: User) {
             contentScale = ContentScale.Crop,
             placeholder = ColorPainter(Color.Green),
             modifier = Modifier
-                .size(64.dp)
+                .size(68.dp)
                 .clip(CircleShape)
         )
         Spacer(modifier = Modifier.height(8.dp))
-        Text(text = user.name, fontSize = 16.sp)
+        Text(text = user.name, fontSize = 14.sp, fontFamily = pretendardFamily, fontWeight = FontWeight.Normal)
     }
 }
 
 @Composable
 fun GroupMemberRow(groupMember: List<User>) {
     Column {
-        Text(text = "멤버", fontSize = 16.sp)
+        Text(text = "멤버", fontSize = 16.sp, fontFamily = pretendardFamily, fontWeight = FontWeight.SemiBold)
         Spacer(modifier = Modifier.height(8.dp))
         LazyRow {
             items(groupMember) { item ->
@@ -74,7 +75,7 @@ fun GroupMemberRow(groupMember: List<User>) {
 @Composable
 fun GroupPictureRow(img: List<Img>) {
     Column {
-        Text(text = "사진", fontSize = 16.sp, )
+        Text(text = "사진", fontSize = 16.sp, fontFamily = pretendardFamily, fontWeight = FontWeight.SemiBold)
         Spacer(modifier = Modifier.height(8.dp))
         LazyRow {
             items(img) { item ->
@@ -87,7 +88,7 @@ fun GroupPictureRow(img: List<Img>) {
                         .size(80.dp)
                         .clip(RoundedCornerShape(16.dp))
                 )
-                Spacer(modifier = Modifier.width(16.dp))
+                Spacer(modifier = Modifier.width(14.dp))
             }
         }
     }
@@ -95,7 +96,7 @@ fun GroupPictureRow(img: List<Img>) {
 
 @Composable
 fun GroupPictureGrid(img: List<Img>) {
-    LazyVerticalGrid(columns = GridCells.Fixed(3)) {
+    LazyVerticalGrid(columns = GridCells.Fixed(3), modifier = Modifier.padding(8.dp)) {
         items(img) {item ->
             AsyncImage(
                 model = item.url,

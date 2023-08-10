@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.sp
 import com.ssafy.hifes.R
 import com.ssafy.hifes.ui.theme.KakaoYellow
 import com.ssafy.hifes.ui.theme.NaverGreen
+import com.ssafy.hifes.ui.theme.pretendardFamily
 
 @Composable
 fun LoginButton(color: Color, title: String, onClick: (context: Context) -> Unit, textColor: Int) {
@@ -38,6 +39,7 @@ fun LoginButton(color: Color, title: String, onClick: (context: Context) -> Unit
         Text(
             text = title,
             color = colorResource(textColor),
+            fontFamily = pretendardFamily,
             fontWeight = FontWeight.Bold,
             fontSize = 14.sp
         )

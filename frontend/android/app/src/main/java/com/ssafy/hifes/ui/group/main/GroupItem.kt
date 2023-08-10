@@ -1,5 +1,6 @@
 package com.ssafy.hifes.ui.group.main
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,6 +16,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.Bottom
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,100 +29,81 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.ssafy.hifes.data.model.Group
+import com.ssafy.hifes.ui.group.GroupViewModel
+import com.ssafy.hifes.ui.main.MainViewModel
+import com.ssafy.hifes.ui.theme.pretendardFamily
 
 @Composable
 fun GroupItem(
-    url: String,
-    title: String,
-    content: String,
-    hashtag: List<String>,
-    currNum: Int,
-    maxNum: Int
+    group: Group,
+    onClick: (Group) -> Unit
 ) {
-        Card(elevation = CardDefaults.cardElevation(defaultElevation = 16.dp), modifier = Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = Color.White)) {
-            Column(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp)) {
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(start = 16.dp, top = 8.dp, end = 16.dp)) {
-                    AsyncImage(
-                        model = url,
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        placeholder = ColorPainter(Color.Green),
-                        modifier = Modifier
-                            .size(64.dp)
-                            .clip(RoundedCornerShape(8.dp))
-                            .align(Bottom)
-                    )
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Column(Modifier.fillMaxWidth()) {
-                        Text(text = title, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(text = content)
-                        Spacer(modifier = Modifier.height(4.dp))
-                        LazyRow() {
-                            items(hashtag) { item ->
-                                Text(text = "#$item")
-                                Spacer(modifier = Modifier.width(4.dp))
-                            }
-                        }
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .clickable {
+                onClick(group)
+            },
+    ) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, end = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            AsyncImage(
+                model = group.url,
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                placeholder = ColorPainter(Color.Green),
+                modifier = Modifier
+                    .size(100.dp)
+                    .clip(RoundedCornerShape(8.dp))
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Column(Modifier.fillMaxWidth()) {
+                Spacer(modifier = Modifier.size(18.dp))
+                Text(
+                    text = group.title,
+                    fontFamily = pretendardFamily,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 16.sp
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = group.content,
+                    fontFamily = pretendardFamily,
+                    fontWeight = FontWeight.Normal
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                LazyRow() {
+                    items(group.hashtag) { item ->
+                        Text(
+                            text = "#$item",
+                            fontFamily = pretendardFamily,
+                            fontWeight = FontWeight.Normal
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
                     }
                 }
-                Text(text = "$currNum / $maxNum", modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(end = 16.dp, bottom = 8.dp), textAlign = TextAlign.End)
+                Text(
+                    text = "${group.currNum} / ${group.maxNum}", modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(end = 8.dp, bottom = 8.dp), textAlign = TextAlign.End,
+                    fontFamily = pretendardFamily, fontWeight = FontWeight.Normal, fontSize = 14.sp
+                )
             }
+
         }
+
+
     }
 
+}
 
 @Preview
 @Composable
-fun GroupPrev() {
-    val hashtag = listOf("1", "2", "3", "4")
-
-    Column(Modifier.padding(horizontal = 8.dp)) {
-        GroupItem(
-            "https://fastly.picsum.photos/id/10/2500/1667.jpg?hmac=J04WWC_ebchx3WwzbM-Z4_KC_LeLBWr5LZMaAkWkF68",
-            "제목",
-            "내용",
-            hashtag = hashtag,
-            3,
-            6
-        )
-        Spacer(modifier = Modifier.height(24.dp))
-
-        GroupItem(
-            "https://fastly.picsum.photos/id/10/2500/1667.jpg?hmac=J04WWC_ebchx3WwzbM-Z4_KC_LeLBWr5LZMaAkWkF68",
-            "제목",
-            "내용",
-            hashtag = hashtag,
-            3,
-            6
-        )
-        Spacer(modifier = Modifier.height(24.dp))
-
-        GroupItem(
-            "https://fastly.picsum.photos/id/10/2500/1667.jpg?hmac=J04WWC_ebchx3WwzbM-Z4_KC_LeLBWr5LZMaAkWkF68",
-            "제목",
-            "내용",
-            hashtag = hashtag,
-            3,
-            6
-        )
-        Spacer(modifier = Modifier.height(24.dp))
-
-        GroupItem(
-            "https://fastly.picsum.photos/id/10/2500/1667.jpg?hmac=J04WWC_ebchx3WwzbM-Z4_KC_LeLBWr5LZMaAkWkF68",
-            "제목",
-            "내용",
-            hashtag = hashtag,
-            3,
-            6
-        )
-    }
+fun GroupItemPreview() {
+//    GroupItem(group = GroupViewModel().groupList.value[0]!!, onClick = )
 }

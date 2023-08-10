@@ -22,6 +22,7 @@ import com.ssafy.hifes.ui.iconpack.MyIconPack
 import com.ssafy.hifes.ui.iconpack.myiconpack.Imagenotfound
 import com.ssafy.hifes.ui.theme.Grey
 import com.ssafy.hifes.ui.theme.LightGrey
+import com.ssafy.hifes.ui.theme.pretendardFamily
 import myiconpack.User
 import java.text.SimpleDateFormat
 
@@ -40,12 +41,12 @@ fun CommentContent(comment: CommentDto) {
                     .clip(RoundedCornerShape(4.dp))
             )
             Spacer(modifier = Modifier.size(10.dp))
-            Text(text = comment.createdBy, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+            Text(text = comment.createdBy, fontFamily = pretendardFamily,fontWeight = FontWeight.Bold, fontSize = 14.sp)
         }
         Spacer(modifier = Modifier.size(14.dp))
         Text(text = comment.comment, fontSize = 14.sp)
         Spacer(modifier = Modifier.size(14.dp))
-        Text(text = getCommentWriteTime(comment), fontWeight = FontWeight.Light, fontSize = 12.sp, color = Grey)
+        Text(text = getCommentWriteTime(comment), fontFamily = pretendardFamily,fontWeight = FontWeight.Light, fontSize = 12.sp, color = Grey)
     }
 }
 
