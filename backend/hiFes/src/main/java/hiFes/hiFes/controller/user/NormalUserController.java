@@ -24,7 +24,7 @@ public class NormalUserController {
 
     @CrossOrigin(origins = "*")
     @PostMapping("normal/signUp")
-    public JsonObject signUp(NormalUserSignUpDto normalUserSignUpDto,  @RequestPart("image") MultipartFile image) throws Exception{
+    public JsonObject signUp(@RequestBody NormalUserSignUpDto normalUserSignUpDto,  @RequestPart("image") MultipartFile image) throws Exception{
         String accessToken = normalUserSignUpDto.getAccessToken();
 
         Map<String, Object> context =  normalUserService.searchKakaoUser(accessToken);
@@ -38,6 +38,9 @@ public class NormalUserController {
         return loginSuccess;
 
     }
+
+
+
 
 
 
