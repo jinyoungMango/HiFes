@@ -23,7 +23,7 @@ public class GroupPictureService {
     private final MyPicRepository myPicRepository;
 
     public String GroupPictureUpload(NormalUser normalUser, Group group, MultipartFile image) throws Exception{
-        String projectPath = System.getProperty("user.dir") +"\\hiFes\\src\\main\\resources\\static\\images";
+        String projectPath = System.getProperty("user.dir") +"\\src\\main\\resources\\static\\images";
         String imageName = image.getOriginalFilename();
         File saveImage = new File(projectPath, imageName);
         image.transferTo(saveImage);
