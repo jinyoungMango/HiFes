@@ -32,5 +32,6 @@ public class NormalUser {
     public void updateRefreshToken(String updateRefreshToken) {
         this.refreshToken = updateRefreshToken;
     }
+    public void updateFCMToken(String FCMToken){this.firebaseToken = FCMToken;}
 
 }

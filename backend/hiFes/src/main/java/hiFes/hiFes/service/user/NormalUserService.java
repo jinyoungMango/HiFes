@@ -1,6 +1,7 @@
 package hiFes.hiFes.service.user;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import hiFes.hiFes.domain.user.NormalUser;
 import hiFes.hiFes.dto.user.NormalUserSignUpDto;
@@ -46,7 +47,7 @@ public class NormalUserService {
     }
 
 
-    public Boolean login(String email) throws UsernameNotFoundException {
+    public JsonObject login(String email) throws UsernameNotFoundException {
 
         String accessToken = jwtService.createAccessToken(email); // JwtService의 createAccessToken을 사용하여 AccessToken 발급
         String refreshToken = jwtService.createRefreshToken();
@@ -56,7 +57,13 @@ public class NormalUserService {
                     user.updateRefreshToken(refreshToken);
                     normalUserRepository.saveAndFlush(user);});
 
-        return true;
+        JsonObject tokens =new JsonObject();
+
+
+        tokens.addProperty("accessToken", accessToken);
+        tokens.addProperty("refreshToken", refreshToken);
+
+        return tokens;
     }
     public Map<String, Object> searchKakaoUser(String token) {
 

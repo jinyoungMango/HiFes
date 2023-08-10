@@ -30,14 +30,14 @@ public class GroupController extends BaseTimeEntity {
 
     @CrossOrigin(origins = "*")
     @PostMapping("group/create")
-    public ResponseEntity<String> groupCreate(String accessToken, @RequestBody GroupCreateDto groupCreateDto){
-        // 아래 코드는 멕세스토큰 제대로 적용되는 것 확인 후 수정. 현재는 카카오 엑세스 토큰
-        Map<String, Object> context =  normalUserService.searchKakaoUser(accessToken);
-        // 해시태그는 리스트로 온다고 함!!! 아직은 해시태그 하나만 저장 가능
-
-        Optional<NormalUser> optionalUser  = normalUserRepository.findByEmail((String) context.get("email"));
-        NormalUser normalUser = optionalUser.orElse(null);
-        groupService.groupCreate(groupCreateDto,normalUser);
+    public ResponseEntity<String> groupCreate(/*String accessToken,*/ @RequestBody GroupCreateDto groupCreateDto){
+//        // 아래 코드는 멕세스토큰 제대로 적용되는 것 확인 후 수정. 현재는 카카오 엑세스 토큰
+//        Map<String, Object> context =  normalUserService.searchKakaoUser(accessToken);
+//        // 해시태그는 리스트로 온다고 함!!! 아직은 해시태그 하나만 저장 가능
+//
+//        Optional<NormalUser> optionalUser  = normalUserRepository.findByEmail((String) context.get("email"));
+//        NormalUser normalUser = optionalUser.orElse(null);
+        groupService.groupCreate(groupCreateDto/*,normalUser*/);
 
 
         return ResponseEntity.ok("group create success");
@@ -75,6 +75,14 @@ public class GroupController extends BaseTimeEntity {
     @GetMapping("group/list/{searchWord}")
     public List groupSearchList(@PathVariable String searchWord){
         List<Group> groupList = groupService.getGroupSearch(searchWord);
+
+        return groupList;
+    }
+
+    @CrossOrigin(origins = "*")
+    @GetMapping("group/list/hashtag/{searchTag}")
+    public List groupHashtagSearchList(@PathVariable String searchTag){
+        List<Group> groupList = groupService.getGroupHashtagSearch(searchTag);
 
         return groupList;
     }

@@ -1,15 +1,16 @@
 package hiFes.hiFes.domain.group;
 
-import hiFes.hiFes.domain.group.Group;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Getter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 @Entity
 public class Hashtag {
 
@@ -21,7 +22,4 @@ public class Hashtag {
     private String title;
 
 
-
-    @ManyToOne
-    private Group group;
 }

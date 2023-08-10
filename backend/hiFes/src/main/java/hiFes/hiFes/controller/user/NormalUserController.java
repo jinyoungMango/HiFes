@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
+import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,7 +22,7 @@ public class NormalUserController {
 
     @CrossOrigin(origins = "*")
     @PostMapping("normal/signUp")
-    public String signUp(@RequestBody NormalUserSignUpDto normalUserSignUpDto) throws Exception{
+    public JsonObject signUp(@RequestBody NormalUserSignUpDto normalUserSignUpDto) throws Exception{
         String accessToken = normalUserSignUpDto.getAccessToken();
         String test = normalUserSignUpDto.getNickname();
         System.out.println(accessToken + "***********************************************************" + test);
@@ -31,25 +32,38 @@ public class NormalUserController {
         normalUserService.signUp(normalUserSignUpDto, context);
 
         // 로그인
-        normalUserService.login((String) context.get("email"));
-        return "signup success";
+        return normalUserService.login((String) context.get("email"));
+
     }
 
     @CrossOrigin(origins = "*")
     @PostMapping("normal/login")
-    public Boolean login(String accessToken){
-        System.out.println(accessToken + "++++++++++++++++++++++++++++++++++++++++++++");
+    public Object login(String accessToken){
         Map<String, Object> context =  normalUserService.searchKakaoUser(accessToken);
-
-        // 만약 받아온 값의 이메일과 추가 정보가 데이터베이스에 있다면 로그인 진행
         if (normalUserRepository.findByEmail((String) context.get("email")).isPresent()) {
 
-            normalUserService.login((String) context.get("email"));
-            return true;
-
+            return normalUserService.login((String) context.get("email"));
         }
 
         return false;
+
+    }
+
+    @CrossOrigin(origins = "*")
+    @PostMapping("normal/fcmSave")
+    public Boolean fcmSave(HttpServletRequest request, String fcmToken){
+        try{
+            String accessToken = jwtService.extractAccessToken(request).orElse("");
+            String email = jwtService.extractEmail(accessToken).orElse("");
+            NormalUser user = normalUserService.getByEmail(email);
+
+            user.updateFCMToken(fcmToken);
+
+            return true;
+        }
+        catch (Exception e) {
+            return false;
+        }
 
     }
 
