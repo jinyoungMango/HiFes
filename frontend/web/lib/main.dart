@@ -21,7 +21,7 @@ void main() async{
     debugShowCheckedModeBanner: false,
     defaultTransition: Transition.fade,
     getPages: AppPages.pages,
-    routerDelegate: AppRouterDelegate(),
+    routerDelegate: AppRouterDelegate(),theme: ThemeData(fontFamily: 'Pretendard'),
   ));
 }
 
