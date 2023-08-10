@@ -41,6 +41,7 @@ class _FestivalRegisterState extends State<FestivalRegister> {
 
   // 마커 리스트
   List<MarkerDto>? markers;
+  List<MarkerDto>? stampMarkers;
 
   // 포스터 이미지
   FilePickerResult? poster;
@@ -96,6 +97,7 @@ class _FestivalRegisterState extends State<FestivalRegister> {
     timetable = null;
     poster = null;
     markers = [];
+    stampMarkers = [];
     _iFrameElement.src = dotenv.env['YOUR_NAVER_MAP_URL'];
     _iFrameElement.style.border = 'none';
 
@@ -109,21 +111,36 @@ class _FestivalRegisterState extends State<FestivalRegister> {
     html.window.addEventListener("message", (event) {
       // 마커 정보 초기화
       markers?.clear();
+      stampMarkers?.clear();
 
       // 마커 배열 추가
       List<dynamic> data = (event as html.MessageEvent).data ?? '-';
       for (var item in data) {
-        markers?.add(MarkerDto(
-            boothLatitude: item['boothLatitude'],
-            boothLongitude: item['boothLongitude'],
-            markerType: item['markerType'],
-            markerId: item['markerId'],
-            markerTitle: item['markerTitle'],
-            markerDescription: item['markerDescription']));
+        if(item['markerType']=="stamp"){
+          stampMarkers?.add(MarkerDto(
+              boothLatitude: item['boothLatitude'],
+              boothLongitude: item['boothLongitude'],
+              markerType: item['markerType'],
+              markerId: item['markerId'],
+              markerTitle: item['markerTitle'],
+              markerDescription: item['markerDescription']));
+        }else{
+          markers?.add(MarkerDto(
+              boothLatitude: item['boothLatitude'],
+              boothLongitude: item['boothLongitude'],
+              markerType: item['markerType'],
+              markerId: item['markerId'],
+              markerTitle: item['markerTitle'],
+              markerDescription: item['markerDescription']));
+        }
       }
 
       // 마커아이템 확인
       for (var item in markers!) {
+        print(item);
+      }
+      print("------스탬프-------");
+      for (var item in stampMarkers!){
         print(item);
       }
     });
@@ -428,7 +445,7 @@ class _FestivalRegisterState extends State<FestivalRegister> {
                     onPressed: () async {
                       _iFrameElement.contentWindow?.postMessage(
                           "getMarkerData", "http://i9d104.p.ssafy.io:8081");
-                    },
+                      },
                     child: Text("getData"))
 
               ],
