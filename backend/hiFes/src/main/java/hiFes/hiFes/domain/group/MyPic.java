@@ -22,4 +22,8 @@ public class MyPic {
     @ManyToOne
     @JoinColumn(name = "groupId")
     private Group group;
+
+    @ManyToOne
+    @JoinColumn(name = "sharedPicId")
+    private SharedPic sharedPic;
 }

@@ -1,13 +1,12 @@
-package hiFes.hiFes.controller;
+package hiFes.hiFes.controller.group;
 
 import com.google.gson.JsonObject;
 import hiFes.hiFes.domain.BaseTimeEntity;
 import hiFes.hiFes.domain.group.Group;
 import hiFes.hiFes.domain.user.NormalUser;
 import hiFes.hiFes.dto.group.GroupCreateDto;
-import hiFes.hiFes.dto.group.HashTagDto;
 import hiFes.hiFes.repository.user.NormalUserRepository;
-import hiFes.hiFes.service.GroupService;
+import hiFes.hiFes.service.group.GroupService;
 import hiFes.hiFes.service.user.JwtService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -18,10 +17,7 @@ import hiFes.hiFes.service.user.NormalUserService;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor

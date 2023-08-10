@@ -1,4 +1,4 @@
-package hiFes.hiFes.service;
+package hiFes.hiFes.service.group;
 
 import com.google.gson.JsonObject;
 import hiFes.hiFes.domain.group.Group;
