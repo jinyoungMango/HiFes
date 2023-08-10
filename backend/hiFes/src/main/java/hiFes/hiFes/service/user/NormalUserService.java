@@ -7,6 +7,7 @@ import hiFes.hiFes.domain.user.NormalUser;
 import hiFes.hiFes.dto.user.NormalUserSignUpDto;
 import hiFes.hiFes.repository.user.NormalUserRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.xmlbeans.impl.xb.xsdschema.Public;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -130,4 +131,11 @@ public class NormalUserService {
         }
         return null;
     }
+
+//    public String getNickNameById(Long userId) {
+//        NormalUser normalUser = normalUserRepository.findById(userId)
+//                .orElseThrow(() -> new IllegalArgumentException("No User Found"));
+//
+//        return normalUser.getNickname();
+//    }
 }
