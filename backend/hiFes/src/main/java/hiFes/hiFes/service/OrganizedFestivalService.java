@@ -208,7 +208,7 @@ public class OrganizedFestivalService {
 //            }
 //        }
 
-    //업데이트 일정
+        //업데이트 일정
 
         try {
             List<FestivalTable> newFestivalTableData = ExcelUtils.readFestivalTable(file.getInputStream());

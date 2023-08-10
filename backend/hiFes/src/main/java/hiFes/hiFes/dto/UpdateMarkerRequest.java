@@ -16,8 +16,8 @@ public class UpdateMarkerRequest {
     private Long markerId;
 
 
-    public UpdateMarkerRequest(Long markerId, String boothName, String description,
-                               BigDecimal boothLongitude, BigDecimal boothLatitude,
+    public UpdateMarkerRequest(Long markerId, String boothName, String description, String markerColor,
+                               String showingImg, BigDecimal boothLongitude, BigDecimal boothLatitude,
                                int boothNo){
         this.boothLatitude = boothLatitude;
         this.boothLongitude = boothLongitude;

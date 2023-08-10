@@ -28,6 +28,49 @@ public class GroupService {
     private final RegisteredHashtagRepository registeredHashtagRepository;
     private final HashtagRepository hashtagRepository;
 
+//    public void groupCreate(/*이메일*/GroupCreateDto groupCreateDto){
+//        LocalDateTime now = LocalDateTime.of(2020,9,16,0,0,0);
+//        Group group = Group.builder()
+//                .groupName(groupCreateDto.getGroupName())
+//                .groupPic(groupCreateDto.getGroupPic())
+//                .maxPop(groupCreateDto.getMaxPop())
+//                .content(groupCreateDto.getContent())
+//                .build();
+//
+//
+//        groupRepository.save(group);
+//
+//        String[] hashtags = groupCreateDto.getHashtags();
+//        int hashLen = hashtags.length;
+//        for (int i = 0; i < hashLen; i++) {
+//            RegisteredHashtag registeredHashtag = new RegisteredHashtag();
+//            registeredHashtag.setGroup(group);
+//            if (hashtagRepository.existsByTitle(hashtags[i])) {
+//                Hashtag tag = hashtagRepository.findByTitle(hashtags[i]);
+//                registeredHashtag.setHashtag(tag);
+//            } else {
+//                Hashtag hashtag = Hashtag.builder()
+//                        .title(hashtags[i])
+//                        .build();
+//                hashtagRepository.save(hashtag);
+//
+//                registeredHashtag.setHashtag(hashtag);
+//            }
+//            registeredHashtagRepository.save(registeredHashtag);
+//        }
+//
+//
+//
+//
+//        RegisteredHashtag registeredHashtag = new RegisteredHashtag();
+//        registeredHashtag.setGroup(group);
+//
+//        registeredHashtagRepository.save(registeredHashtag);
+//
+//
+//
+//    }
+
     public void groupCreate(/*이메일*/GroupCreateDto groupCreateDto, NormalUser normalUser){
         LocalDateTime now = LocalDateTime.of(2020,9,16,0,0,0);
         Group group = Group.builder()
@@ -41,7 +84,24 @@ public class GroupService {
 
         groupRepository.save(group);
 
-        ArrayList hashtags =  groupCreateDto.getHashtags();
+        String[] hashtags = groupCreateDto.getHashtags();
+        int hashLen = hashtags.length;
+        for (int i = 0; i <= hashLen; i++) {
+            RegisteredHashtag registeredHashtag = new RegisteredHashtag();
+            registeredHashtag.setGroup(group);
+            if (hashtagRepository.existsByTitle(hashtags[i])) {
+                Hashtag tag = hashtagRepository.findByTitle(hashtags[i]);
+                registeredHashtag.setHashtag(tag);
+            } else {
+                Hashtag hashtag = Hashtag.builder()
+                        .title(hashtags[i])
+                        .build();
+                hashtagRepository.save(hashtag);
+
+                registeredHashtag.setHashtag(hashtag);
+            }
+            registeredHashtagRepository.save(registeredHashtag);
+        }
 
 
 
@@ -55,11 +115,6 @@ public class GroupService {
 
         joinedGroupRepository.save(joinedGroup);
 
-//        Hashtag hashtag = Hashtag.builder()
-//                .title(hashTagDto.getTitle())
-//                .build();
-//
-//        hashtagRepository.save(hashtag);
 
         RegisteredHashtag registeredHashtag = new RegisteredHashtag();
         registeredHashtag.setGroup(group);
@@ -67,6 +122,15 @@ public class GroupService {
         registeredHashtagRepository.save(registeredHashtag);
 
 
+
+    }
+
+    public void groupJoin(NormalUser normalUser, Group group){
+        JoinedGroup joinedGroup = new JoinedGroup();
+        joinedGroup.setNormalUser(normalUser);
+        joinedGroup.setGroup(group);
+        joinedGroup.setIsLeader(false);
+        joinedGroupRepository.save(joinedGroup);
 
     }
 
@@ -84,5 +148,19 @@ public class GroupService {
 
     public List<Group> getGroupSearch(String searchWord){
         return groupRepository.findBygroupNameContainingOrContentContaining(searchWord, searchWord);
+    }
+
+    public Group getById(Long id) {
+        return groupRepository.findById(id).orElse(null);
+    }
+
+    public List<Group> getGroupHashtagSearch(String searchTag){
+        List<RegisteredHashtag> registeredHashtags = registeredHashtagRepository.findByHashtagTitleContaining(searchTag);
+        List<Group> groups = new ArrayList<>();
+        for (RegisteredHashtag registeredHashtag : registeredHashtags) {
+            Group group = registeredHashtag.getGroup();
+            groups.add(group);
+        }
+        return groups;
     }
 }

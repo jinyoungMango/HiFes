@@ -41,6 +41,7 @@ public class FestivalTable {
     @JoinColumn(name = "festivalId")
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonBackReference
+
     private OrganizedFestival organizedFestival;
 
     @JsonManagedReference

@@ -7,7 +7,7 @@ import javax.persistence.GenerationType;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Entity
+@Entity(name="normal_user")
 @Builder
 @AllArgsConstructor
 
@@ -32,5 +32,6 @@ public class NormalUser {
     public void updateRefreshToken(String updateRefreshToken) {
         this.refreshToken = updateRefreshToken;
     }
+    public void updateFCMToken(String FCMToken){this.firebaseToken = FCMToken;}
 
 }

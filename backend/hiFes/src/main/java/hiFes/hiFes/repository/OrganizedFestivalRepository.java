@@ -11,9 +11,7 @@ public interface OrganizedFestivalRepository extends JpaRepository<OrganizedFest
     //List<OrganizedFestival> findByHost_hostId(Long hostId);
 
     List<OrganizedFestival> findByHostUser_Id(Long hostUserId);
-
     @Query(value = "SELECT * FROM OrganizedFestival order by RAND() limit 3",nativeQuery = true)
     List<OrganizedFestival> findAll();
-
 }
 
