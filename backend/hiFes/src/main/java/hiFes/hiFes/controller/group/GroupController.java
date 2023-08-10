@@ -29,9 +29,22 @@ public class GroupController extends BaseTimeEntity {
 
     // 주석한 부분은 유저 관련 기능이다.
 
+//    @CrossOrigin(origins = "*")
+//    @PostMapping("group/create")
+//    public ResponseEntity<String> groupCreate(HttpServletRequest request, GroupCreateDto groupCreateDto,  @RequestPart("image") MultipartFile image) throws Exception {
+////        String accessToken = jwtService.extractAccessToken(request).orElse("");
+////        String email = jwtService.extractEmail(accessToken).orElse("");
+//        NormalUser user = normalUserService.getByEmail("test00000@test.com");
+//
+//        groupService.groupCreate(groupCreateDto, user, image);
+//
+//
+//        return ResponseEntity.ok("group create success");
+//    }
+
     @CrossOrigin(origins = "*")
     @PostMapping("group/create")
-    public ResponseEntity<String> groupCreate(HttpServletRequest request, GroupCreateDto groupCreateDto,  @RequestPart("image") MultipartFile image) throws Exception {
+    public ResponseEntity<String> groupCreate(HttpServletRequest request, @RequestPart("groupCreateDto") GroupCreateDto groupCreateDto, @RequestPart("image")  MultipartFile image) throws Exception {
         String accessToken = jwtService.extractAccessToken(request).orElse("");
         String email = jwtService.extractEmail(accessToken).orElse("");
         NormalUser user = normalUserService.getByEmail(email);
