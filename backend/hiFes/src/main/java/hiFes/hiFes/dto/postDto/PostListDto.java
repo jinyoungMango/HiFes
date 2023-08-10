@@ -13,13 +13,13 @@ public class PostListDto {
     private String postType;
     private String title;
     private String content;
-    private LocalDateTime createdAt;
+//    private LocalDateTime createdAt;
 
     public PostListDto(Post post) {
         this.id = post.getId();
         this.postType = post.getPostType();
         this.title = post.getTitle();
         this.content = post.getContent();
-        this.createdAt = post.getCreatedAt();
+//        this.createdAt = post.getCreatedAt();
     }
 }

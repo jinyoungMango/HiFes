@@ -28,7 +28,8 @@ public class Comment extends BaseEntity {
     @JoinColumn(name = "post_id")
     private Post post;
 
-//    private Member createdBy;
+    @Column(columnDefinition = "TEXT")
+    private Long createdBy;
 
 
     @ManyToOne(fetch = LAZY)
@@ -55,10 +56,11 @@ public class Comment extends BaseEntity {
 
     // 빌더
     @Builder
-    public Comment(Post post, String content, Comment parent) {
+    public Comment(Post post, String content, Comment parent, Long createdBy) {
         this.post = post;
         this.content = content;
         this.parent = parent;
+        this.createdBy = createdBy;
     }
 
     // 메서드

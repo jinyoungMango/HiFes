@@ -10,12 +10,14 @@ public class CommentCreateDto {
     private Long postId;
     private String content;
     private Long parentId;
+    private Long createdBy;
 
     @Builder
-    public CommentCreateDto(Long postId, String content, Long parentId) {
+    public CommentCreateDto(Long postId, String content, Long parentId, Long createdBy) {
         this.postId = postId;
         this.content = content;
         this.parentId = parentId;
+        this.createdBy = createdBy;
     }
 
 }

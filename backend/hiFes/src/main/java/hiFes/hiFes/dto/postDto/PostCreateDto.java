@@ -12,12 +12,14 @@ public class PostCreateDto {
     private String postType;
     private String title;
     private String content;
+    private Long createdBy;
 
     @Builder
-    public PostCreateDto(String postType,String title, String content) {
+    public PostCreateDto(String postType,String title, String content, Long createdBy) {
         this.postType = postType;
         this.title = title;
         this.content = content;
+        this.createdBy = createdBy;
     }
 
     public Post toEntity() {
@@ -25,6 +27,7 @@ public class PostCreateDto {
                 .postType(postType)
                 .title(title)
                 .content(content)
+                .createdBy(createdBy)
                 .build();
     }
 

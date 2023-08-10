@@ -1,5 +1,6 @@
 package hiFes.hiFes.dto.postDto;
 
+import hiFes.hiFes.domain.BaseEntity;
 import hiFes.hiFes.domain.Post;
 import hiFes.hiFes.dto.commentDto.CommentDto;
 import lombok.Getter;
@@ -17,13 +18,8 @@ public class PostDto {
     private String content;
     private String postType;
     private boolean isHidden;
-
     private String hideReason;
-
-    @CreatedDate
     private LocalDateTime createdAt;
-
-    @LastModifiedDate
     private LocalDateTime updatedAt;
 
     private int views;
@@ -32,13 +28,13 @@ public class PostDto {
 
     public PostDto(Post post) {
         this.id = post.getId();
+        this.createdAt = post.getCreatedAt();
+        this.updatedAt = post.getUpdatedAt();
         this.title = post.getTitle();
         this.content = post.getContent();
         this.postType = post.getPostType();
         this.isHidden = post.isHidden();
         this.hideReason = post.getHideReason();
-        this.createdAt = post.getCreatedAt();
-        this.updatedAt = post.getUpdatedAt();
         this.topLevelComments = post.getTopLevelComments().stream()
                 .map(CommentDto::new)
                 .collect(Collectors.toList());

@@ -24,20 +24,20 @@ public class CommentService {
     public Comment create(CommentCreateDto createDto) {
         Post post = postRepository.findById(createDto.getPostId())
                 .orElseThrow(() -> new EntityNotFoundException("No Post Found"));
-        Comment parent = null;
+        Comment parentId = null;
         if (createDto.getParentId() != null) {
-            parent = commentRepository.findById(createDto.getParentId())
+            parentId = commentRepository.findById(createDto.getParentId())
                     .orElseThrow(() -> new EntityNotFoundException("대댓글이 아님"));
         }
 
         Comment newComment = Comment.builder()
                 .post(post)
                 .content(createDto.getContent())
-                .parent(parent)
+                .parent(parentId)
                 .build();
 
-        if (parent != null) {
-            parent.addChildComment(newComment);
+        if (parentId != null) {
+            parentId.addChildComment(newComment);
         }
 
         return commentRepository.save(newComment);

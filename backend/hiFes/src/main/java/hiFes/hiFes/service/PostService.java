@@ -1,9 +1,18 @@
 package hiFes.hiFes.service;
 
+import hiFes.hiFes.domain.Comment;
 import hiFes.hiFes.domain.Post;
+import hiFes.hiFes.domain.user.HostUser;
+import hiFes.hiFes.domain.user.NormalUser;
+import hiFes.hiFes.dto.commentDto.CommentDto;
 import hiFes.hiFes.dto.postDto.*;
+import hiFes.hiFes.repository.CommentRepository;
 import hiFes.hiFes.repository.PostRepository;
+import hiFes.hiFes.repository.user.HostUserRepository;
+import hiFes.hiFes.repository.user.NormalUserRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,7 +24,12 @@ import java.util.stream.Collectors;
 public class PostService {
 
     private final PostRepository postRepository;
+    private final HostUserRepository hostUserRepository;
+    private final NormalUserRepository normalUserRepository;
+    private final CommentRepository commentRepository;
 
+
+    @Transactional
     public List<PostListDto> getPostsByType(String postType) {
         List<PostListDto> allPosts = searchAllPosts();
         return allPosts.stream()
@@ -25,8 +39,25 @@ public class PostService {
 
 
     @Transactional
-    public Long create(PostCreateDto requestDto) {
-        return postRepository.save(requestDto.toEntity()).getId();
+    public void create(PostCreateDto createDto) {
+        Long userId = createDto.getCreatedBy();
+//        String userType
+        String userRecognizer;
+
+        if (userId >= 1 && userId <= 300) {
+            HostUser hostUser = hostUserRepository.findById(userId)
+                    .orElseThrow(() -> new IllegalArgumentException("!!!No Host User Found!!!"));
+//            userType = "Host";
+            userRecognizer = hostUser.getOrganization();
+
+        } else {
+            NormalUser normalUser = normalUserRepository.findById(userId)
+                    .orElseThrow(() -> new IllegalArgumentException("!!!No Normal User Found!!!"));
+
+//            userType = "Normal";
+            userRecognizer = normalUser.getNickname();
+        }
+        postRepository.save(createDto.toEntity());
     }
 
 //    @Transactional
@@ -53,6 +84,12 @@ public class PostService {
     public PostDto findById(Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다."));
+
+        List<Comment> topLevelComments = commentRepository.findAllByPostIdAndParentIsNull(postId);
+        List<CommentDto> topLevelCommentListDto = topLevelComments.stream()
+                .map(CommentDto::new)
+                .collect(Collectors.toList());
+
         PostDto postDto = new PostDto(post);
 
         return postDto;

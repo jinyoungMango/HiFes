@@ -22,9 +22,9 @@ public class PostController {
 
 
     @PostMapping("/create")
-    public ResponseEntity<?> create(@RequestBody PostCreateDto requestDto) {
-        postService.create(requestDto);
-        return ResponseEntity.ok(requestDto);
+    public ResponseEntity<?> create(@RequestBody PostCreateDto createDto) {
+        postService.create(createDto);
+        return ResponseEntity.ok(createDto);
     }
 
 

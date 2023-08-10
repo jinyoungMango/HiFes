@@ -1,5 +1,7 @@
 package hiFes.hiFes.domain;
 
+import hiFes.hiFes.domain.user.HostUser;
+import hiFes.hiFes.domain.user.NormalUser;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,6 +11,8 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static javax.persistence.FetchType.LAZY;
 
 @Entity
 @Getter
@@ -31,6 +35,13 @@ public class Post extends BaseEntity {
     private boolean isHidden;
 
     private String hideReason;
+    //    FK
+    @ManyToOne(fetch = LAZY)
+    @JoinColumn
+    private OrganizedFestival organizedFestival;
+
+    @Column(columnDefinition = "TEXT")
+    private Long createdBy;
 
     private int views;
 
@@ -53,9 +64,10 @@ public class Post extends BaseEntity {
     }
 
     @Builder
-    public Post(Long id, String title, String content, String postType, boolean isHidden,
+    public Post(Long id, Long createdBy, String title, String content, String postType, boolean isHidden,
                 String hideReason, float rating, List<Comment> comments) {
         this.id = id;
+        this.createdBy = createdBy;
         this.title = title;
         this.content = content;
         this.postType = postType;
@@ -65,17 +77,8 @@ public class Post extends BaseEntity {
         this.rating = rating;
         this.comments = comments;
     }
-//    FK
-//    @ManyToOne
-//    private Long festivalId;
 
-//    @ManyToOne
-//    private Long hostId;
 
-//    @ManyToOne
-//    private Long normalUserId
-
-//    private Member createdBy;
     // == 메서드 == //
 
     public void update(String title, String content, String postType) {
