@@ -89,7 +89,8 @@ public class HostUserController {
         info.addProperty("orgNo", user.getOrg_no());
         info.addProperty("orgCode", user.getOrg_code());
         info.addProperty("organization", user.getOrganization());
-        info.addProperty("phoneNo", user.getPhone_no());
+        info.addProperty("phoneNo2", user.getPhone_no());
+        info.addProperty("phoneNo", user.getPhoneNo());
 
         return info;
 
