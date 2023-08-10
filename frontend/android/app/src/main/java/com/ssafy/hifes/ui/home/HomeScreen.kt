@@ -4,7 +4,9 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,8 +14,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Scaffold
@@ -27,7 +32,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -44,7 +52,6 @@ import com.ssafy.hifes.ui.iconpack.myiconpack.Imagenotfound
 import com.ssafy.hifes.ui.main.MainViewModel
 import com.ssafy.hifes.ui.theme.pretendardFamily
 
-private const val TAG = "HomeScreen_하이페"
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
@@ -63,41 +70,144 @@ fun HomeScreen(navController: NavController, viewModel: MainViewModel) {
 
     Scaffold(topBar = {
         HomeAppBar(navController)
-    },
-        content = {
-            LazyColumn(
-                modifier = Modifier
-                    .background(color = Color.White)
-                    .padding(it),
-            ) {
-                item {
-                    HomeGreeting(stringResource(id = R.string.home_greeting))
-                    Column(modifier = Modifier.clickable {
-                        viewModel.getFestivalDetail(nearestFestival)
-                        navController.navigate(HifesDestinations.FESTIVAL_DETAIL)
-                    }) {
-                        HomeFestivalImage(nearestFestival)
-                        if (nearestFestival != null) {
-                            HomeCard(
-                                nearestFestival
-                            )
-                        }
-                    }
-
-                    HomeMiddleText(stringResource(id = R.string.home_middle_ment))
+    }
+    ) {
+        Column(
+            modifier = Modifier
+                .background(color = Color.White)
+                .padding(it)
+                .verticalScroll(rememberScrollState()),
+        ) {
+            HomeGreeting(stringResource(id = R.string.home_greeting))
+            Column(modifier = Modifier.clickable {
+                viewModel.getFestivalDetail(nearestFestival)
+                navController.navigate(HifesDestinations.FESTIVAL_DETAIL)
+            }) {
+                HomeFestivalImage(nearestFestival)
+                if (nearestFestival != null) {
+                    HomeCard(
+                        nearestFestival
+                    )
                 }
-                items(nearFestivalList.size) { festival ->
-                    HomeCardWithImage(
-                        nearFestivalList[festival]
+            }
+
+            HomeMiddleText(stringResource(id = R.string.home_middle_ment))
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp), // 아이템 사이의 간격
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                items(nearFestivalList.size) { index ->
+                    RoundedImageWithText(
+                        modifier = Modifier
+                            .width(200.dp)
+                            .height(240.dp),
+                        nearFestivalList[index]
                     ) { fesData ->
                         viewModel.getFestivalDetail(fesData)
                         navController.navigate(HifesDestinations.FESTIVAL_DETAIL)
                     }
+                    Spacer(modifier = Modifier.size(4.dp))
                 }
+
             }
-        })
+            Spacer(modifier = Modifier.size(24.dp))
+            HomeMiddleText(stringResource(id = R.string.home_bottom_ment))
+            Spacer(modifier = Modifier.size(8.dp))
+            // 추후에 서버를 연결 후 전체 FestivalList를 전달한다.
+            RandomFestivalsRow(nearFestivalList) { fesData ->
+                viewModel.getFestivalDetail(fesData)
+                navController.navigate(HifesDestinations.FESTIVAL_DETAIL)
+            }
+
+        }
+    }
 
 
+}
+
+@Composable
+fun RandomFestivalsRow(
+    festivalList: List<OrganizedFestivalDto>,
+    onClick: (OrganizedFestivalDto) -> Unit
+) {
+    // 랜덤으로 리스트를 섞은 후 3개의 항목을 선택
+    val randomFestivals = festivalList.shuffled().take(3)
+
+    val context = LocalContext.current
+    val displayMetrics = context.resources.displayMetrics
+    val screenWidth = displayMetrics.widthPixels / LocalDensity.current.density
+    val spacerWidth = 8 // Spacer의 너비
+    val sidePadding = 16 // start와 end에 추가할 padding
+
+    val availableWidth = screenWidth - 2 * sidePadding - (randomFestivals.size - 1) * spacerWidth
+    val itemWidth = availableWidth / randomFestivals.size
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = sidePadding.dp, end = sidePadding.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        randomFestivals.forEachIndexed { index, festival ->
+            RoundedImageWithText(
+                modifier = Modifier
+                    .width(itemWidth.dp)
+                    .height(180.dp),
+                festival = festival,
+                onClick = onClick
+            )
+
+            // 마지막 항목이 아닐 때만 Spacer 추가
+            if (index < randomFestivals.size - 1) {
+                Spacer(modifier = Modifier.width(spacerWidth.dp))
+            }
+        }
+    }
+}
+
+
+@Composable
+fun RoundedImageWithText(
+    modifier: Modifier = Modifier,
+    festival: OrganizedFestivalDto,
+    onClick: (OrganizedFestivalDto) -> Unit
+) {
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(12.dp))
+            .clickable { onClick(festival) }
+    ) {
+        AsyncImage(
+            model = festival.fesPosterPath,
+            contentDescription = "Card Image",
+            placeholder = rememberVectorPainter(image = MyIconPack.Imagenotfound),
+            modifier = Modifier
+                .fillMaxSize()
+                .clip(RoundedCornerShape(12.dp)),
+            contentScale = ContentScale.Crop
+        )
+
+        Surface(
+            color = Color.Black.copy(alpha = 0.2f),
+            modifier = Modifier
+                .fillMaxSize()
+                .clip(RoundedCornerShape(12.dp))
+        ) {}
+
+        Text(
+            text = festival.fesTitle,
+            color = Color.White,
+            style = TextStyle(
+                fontFamily = pretendardFamily,
+                fontWeight = FontWeight.Medium,
+                fontSize = 14.sp
+            ),
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(start = 8.dp, bottom = 8.dp),
+        )
+    }
 }
 
 
@@ -145,7 +255,8 @@ fun HomeCard(nearestFestival: OrganizedFestivalDto) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .height(220.dp).padding(8.dp),
+            .height(220.dp)
+            .padding(8.dp),
         color = Color.White,
         shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp),
         shadowElevation = 0.dp
@@ -180,14 +291,13 @@ fun HomeMiddleText(message: String) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .height(50.dp)
+            .height(32.dp),
+        color = Color.White
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(12.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+                .padding(start = 20.dp),
         ) {
             Text(
                 text = message,

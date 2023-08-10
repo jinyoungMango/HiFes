@@ -1,6 +1,7 @@
 package hiFes.hiFes.dto;
 
 
+import hiFes.hiFes.domain.OrganizedFestival;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

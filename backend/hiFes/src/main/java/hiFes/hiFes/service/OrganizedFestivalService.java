@@ -1,16 +1,20 @@
 package hiFes.hiFes.service;
 
 
+
 import hiFes.hiFes.ExcelUtils;
 import hiFes.hiFes.domain.*;
 import hiFes.hiFes.dto.*;
 import hiFes.hiFes.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.transaction.Transactional;
+import java.io.File;
 import java.io.IOException;
-import java.util.List;
+import java.math.BigDecimal;
+import java.util.*;
 
 //@RequiredArgsConstructor
 @Service
@@ -32,13 +36,29 @@ public class OrganizedFestivalService {
         this.markerRepository = markerRepository;
         this.stampMissionRepository = stampMissionRepository;
         this.festivalTableRepository = festivalTableRepository;
-
         this.organizedFestivalRepository =organizedFestivalRepository;
     }
 
 
     @Transactional
-    public OrganizedFestival save(AddOrganizedFestivalRequest request, MultipartFile file) {
+    public OrganizedFestival save(AddOrganizedFestivalRequest request, MultipartFile file, MultipartFile image) throws Exception {
+
+        String[] LatLong =  getLatLonFromGoogleApi(request.getFesAddress());
+        BigDecimal fesLatitude = new BigDecimal(LatLong[0]);
+        BigDecimal fesLongitude = new BigDecimal(LatLong[1]);
+        request.setFesLatitude(fesLatitude);
+        request.setFesLongitude(fesLongitude);
+
+
+        //이미지 처리
+        String projectPath = System.getProperty("user.dir") +"\\hiFes\\src\\main\\resources\\static\\images";
+//        UUID uuid = UUID.randomUUID();
+//        String imageName = uuid + "_" + image.getOriginalFilename();
+        String imageName = image.getOriginalFilename();
+        File saveImage = new File(projectPath, imageName);
+        image.transferTo(saveImage);
+
+        request.setFesPosterPath("/images/"+  imageName);
         OrganizedFestival savedOrganizedFestival = request.toEntity();
 
 
@@ -77,6 +97,7 @@ public class OrganizedFestivalService {
             }
         }
 
+
         List<AddMarkerRequest> markerRequests = request.getMarkers();
         if (markerRequests != null) {
             for (AddMarkerRequest markerReq : request.getMarkers()) {
@@ -113,53 +134,96 @@ public class OrganizedFestivalService {
     }
 
     @Transactional
-    public OrganizedFestival update(long id, UpdateOrganizedFestivalRequest request) {
+    public OrganizedFestival update(long id, UpdateOrganizedFestivalRequest request, MultipartFile file, MultipartFile image)throws Exception {
+
         OrganizedFestival organizedFestival = organizedFestivalRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("not found: " + id));
 
+        String[] LatLong =  getLatLonFromGoogleApi(request.getFesAddress());
+        BigDecimal fesLatitude = new BigDecimal(LatLong[0]);
+        BigDecimal fesLongitude = new BigDecimal(LatLong[1]);
+        request.setFesLatitude(fesLatitude);
+        request.setFesLongitude(fesLongitude);
+
+
+        //update하기 전에 사진 다 삭제하고 다시 넣기
+        String projectPath = System.getProperty("user.dir") +"\\hiFes\\src\\main\\resources\\static\\images";
+        // 이 행사의 포스터 주소 삭제
+        // Db에 저장된 포스터 삭제
+        String imagePath = projectPath + organizedFestival.getFesPosterPath();
+        String imageName = image.getOriginalFilename();
+        File saveImage = new File(projectPath, imageName);
+        if(saveImage.exists()){
+            saveImage.delete();
+        }
+
+        image.transferTo(saveImage);
+        request.setFesPosterPath("/images/"+  imageName);
+
+
+
         // Update 주최 행사
-        organizedFestival.OrganizedFestivalupdate(request.getFestivalId(), request.getFesTitle(), request.getFesOutline(), request.getFesAddress(), request.getFesPosterPath(), request.getFesStartDate(), request.getFesEndDate(),request.getFesLatitude(), request.getFesLongitude());
-
-
+        organizedFestival.OrganizedFestivalupdate(request.getFesTitle(), request.getFesOutline(),
+                request.getFesAddress(), request.getFesPosterPath(), request.getFesStartDate(),
+                request.getFesEndDate(), request.getFesLatitude(), request.getFesLongitude());
 
 
         // Update 스탬프 미션
         for (UpdateStampMissionRequest stampMissionReq : request.getStampMissions()) {
-            System.out.println("스탬프 미션 저장 전 아이디 = " + stampMissionReq.getMissionId());
 
-            StampMission stampMission = stampMissionRepository.findById(stampMissionReq.getMissionId())
-                    .orElseThrow(() -> new IllegalArgumentException("Stamp mission not found: " + stampMissionReq.getMissionId()));
-            stampMission.update(stampMissionReq);
+            if (stampMissionReq.getMissionId() == null || stampMissionReq.getMissionId() == 0) {
+                // 새로운 미션 추가
+                StampMission newStampMission = new StampMission();
+                // 사용자가 입력한 데이터로 새 미션 생성
+                newStampMission.update(stampMissionReq);
+                newStampMission.setOrganizedFestival(organizedFestival);
+                // 새 미션 저장
+                stampMissionRepository.save(newStampMission);
+            } else {
+                // 기존 스탬프 미션 업데이트
+                StampMission stampMission = stampMissionRepository.findById(stampMissionReq.getMissionId())
+                        .orElseThrow(() -> new IllegalArgumentException("Stamp mission not found: " + stampMissionReq.getMissionId()));
+                stampMission.update(stampMissionReq);
+            }
+        }
+
+//        System.out.println("ar 저장 전 아이디 = " + request.getArItems());
+//        // Update AR 아이템
+//        for (UpdateARItemRequest arItemReq : request.getArItems()) {
+//
+//            ARItem arItem = arItemRepository.findById(arItemReq.getItemId())
+//                    .orElseThrow(() -> new IllegalArgumentException("AR item not found: " + arItemReq.getItemId()));
+//            arItem.update(arItemReq);
+//        }
+
+    //업데이트 일정
+        try {
+            List<FestivalTable> newFestivalTableData = ExcelUtils.readFestivalTable(file.getInputStream());
+            festivalTableRepository.deleteByOrganizedFestival_festivalId(id);
+            for (FestivalTable ft : newFestivalTableData) {
+                ft.setOrganizedFestival(organizedFestival);
+            }
+            festivalTableRepository.saveAll(newFestivalTableData);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to read festival table Excel file.", e);
         }
 
 
+        for (UpdateMarkerRequest markerReq : request.getMarkers()) {
 
-        // Update AR 아이템
-        for (UpdateARItemRequest arItemReq : request.getArItems()) {
-            ARItem arItem = arItemRepository.findById(arItemReq.getItemId())
-                    .orElseThrow(() -> new IllegalArgumentException("AR item not found: " + arItemReq.getItemId()));
-            arItem.update(arItemReq);
+            if (markerReq.getMarkerId() == null || markerReq.getMarkerId() == 0) {
+                Marker newMarker = new Marker();
+                newMarker.update(markerReq);
+                newMarker.setOrganizedFestival(organizedFestival);
+                markerRepository.save(newMarker);
+            } else {
+                Marker marker = markerRepository.findById(markerReq.getMarkerId())
+                        .orElseThrow(() -> new IllegalArgumentException("Marker not found" + markerReq.getMarkerId()));
+                marker.update(markerReq);
+            }
         }
-
-        // Update 행사 일정
-        for (UpdateFestivalTableRequest festivalScheduleReq : request.getFestivalTables()) {
-            FestivalTable festivalTable = festivalTableRepository.findById(festivalScheduleReq.getProgramId())
-                    .orElseThrow(() -> new IllegalArgumentException("Festival schedule not found: " + festivalScheduleReq.getProgramId()));
-            festivalTable.update(festivalScheduleReq);
-        }
-
-
-        List<UpdateMarkerRequest> markerRequests = request.getMarkers();
-        // Update 부스 마커
-        for (UpdateMarkerRequest boothMarkerReq : request.getMarkers()) {
-            Marker boothMarker = markerRepository.findById(boothMarkerReq.getMarkerId())
-                    .orElseThrow(() -> new IllegalArgumentException("Booth marker not found: " + boothMarkerReq.getMarkerId()));
-            boothMarker.update(boothMarkerReq);
-        }
-
         return organizedFestivalRepository.save(organizedFestival);
     }
-
 
     // 삭제 메서드
     public void deleteARItem(long id){
@@ -183,4 +247,44 @@ public class OrganizedFestivalService {
     }
 
 
+    public String[] getLatLonFromGoogleApi(String fesAddress) {
+        String apiKey = "AIzaSyBe3i_41gwVR9efodpGJQuxCx1Qyr1ZDtE";
+        String apiUrl = "https://maps.googleapis.com/maps/api/geocode/json";
+        // fesAddress를 URL 인코딩합니다.
+//        String encodedAddress = URLEncoder.encode(fesAddress, "UTF-8");
+//        System.out.println(encodedAddress);
+        WebClient webClient = WebClient.builder().build();
+        Map<String, Object> response = webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .scheme("https")
+                        .host("maps.googleapis.com")
+                        .path("/maps/api/geocode/json")
+                        .queryParam("address", fesAddress)
+                        .queryParam("key", apiKey)
+                        .build())
+                .retrieve()
+                .bodyToMono(Map.class)
+                .block();
+        List<Map<String, Object>> results = (List<Map<String, Object>>) response.get("results");
+
+        if (!results.isEmpty()) {
+            Map<String, Object> firstResult = results.get(0);
+            Map<String, Object> geometry = (Map<String, Object>) firstResult.get("geometry");
+            Map<String, Object> location = (Map<String, Object>) geometry.get("location");
+
+            Double latitude = (Double) location.get("lat");
+            Double Longitude = (Double) location.get("lng");
+            String[] LatLng = new String[2];
+            String stringLatitude = Double.toString(latitude);
+            String stringLongitude = Double.toString(Longitude);
+            LatLng[0] = stringLatitude;
+            LatLng[1] = stringLongitude;
+            return LatLng;
+
+        } else {
+            System.out.println("No results found");
+        }
+        return null;
+
+    }
 }

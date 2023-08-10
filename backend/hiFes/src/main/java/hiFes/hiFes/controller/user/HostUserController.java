@@ -35,9 +35,10 @@ public class HostUserController {
 //        return "signup success";
 //    }
 
+
     @CrossOrigin(origins = "*")
     @PostMapping("host/sign-up")
-    public String signUp(@RequestBody HostUserSignUpDto hostUserSignUpDto) throws Exception{
+    public JsonObject  signUp(@RequestBody HostUserSignUpDto hostUserSignUpDto) throws Exception{
         String accessToken = hostUserSignUpDto.getAccessToken();
         String test = hostUserSignUpDto.getOrganization();
         System.out.println(accessToken + "***********************************************************" + test);
@@ -45,12 +46,12 @@ public class HostUserController {
 
         hostUserService.signUp(hostUserSignUpDto, context);
         // 로그인
-        hostUserService.login((String) context.get("email"));
-        return "signup success";
+        return hostUserService.login((String) context.get("email"));
     }
 
     @CrossOrigin(origins = "*")
     @PostMapping("host/login")
+    @ResponseBody
     public Object login(@RequestBody Map<String, String> accessToken ) throws Exception{
         System.out.println(accessToken.get("accessToken") + "++++++++++++++++++++++++++++++++++++++++++++");
         Map<String, Object> context =  hostUserService.searchKakaoUser(accessToken.get("accessToken"));
@@ -64,16 +65,18 @@ public class HostUserController {
             System.out.println("????????????????????????????????????????????????????????????" + user.getOrgNo());
             // 기업 정보까지 저장되어 있다면 로그인 진행
 
-            Map<String, String> tokens =  hostUserService.login((String) context.get("email"));
-            tokens.put("userId", user.getId().toString());
+//            tokens.put("userId", user.getId().toString());
 
-            return tokens;
+            return hostUserService.login((String) context.get("email"));
 
 
 
         }
+        JsonObject loginFail = new JsonObject();
+        loginFail.addProperty("result", false);
 
-        return false;
+
+        return loginFail;
 
     }
 
@@ -88,13 +91,13 @@ public class HostUserController {
     @ResponseBody
     @PostMapping("host/myPage")
     public JsonObject myPage(HttpServletRequest request){
-        String accessToken = jwtService.extractAccessToken(request).orElse("");
-        String email = jwtService.extractEmail(accessToken).orElse("");
+        String email = jwtService.extractEmail(request.getHeader("accessToken")).orElse("");
+        System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" + email);
         HostUser user = hostUserService.getByEmail(email);
 //        HostUser user = hostUserService.getById(id);
         JsonObject info =new JsonObject();
 
-//        System.out.println(user.getOrgNo() + " ------------------------------------------");
+        System.out.println(user.getOrgNo() + " ------------------------------------------");
 //        System.out.println(TestUser.getOrgNo() + " ---++++++---------------------------------------");
 
         info.addProperty("email", user.getEmail());
@@ -108,6 +111,8 @@ public class HostUserController {
 
 
     }
+
+
 
 
 }

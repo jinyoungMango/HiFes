@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 @Entity
 @Builder
 @AllArgsConstructor
+
 public class NormalUser {
 
     @Id

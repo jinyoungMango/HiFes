@@ -10,17 +10,17 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SwaggerConfig {
 
-    @Bean
-    public OpenAPI openAPI(
-            @Value("${springdoc.version}") String version
-    ) {
+        @Bean
+        public OpenAPI openAPI(
+                @Value("${springdoc.version}") String version
+        ) {
 
-        Info info = new Info()
-                .title("HiFes API 문서") // 타이틀
-                .version(version) // 문서 버전
-                .description("잘못된 부분이나 오류 발생 시 바로 말씀해주세요."); // 문서 설명
+            Info info = new Info()
+                    .title("HiFes API 문서") // 타이틀
+                    .version(version) // 문서 버전
+                    .description("잘못된 부분이나 오류 발생 시 바로 말씀해주세요."); // 문서 설명
 
-        return new OpenAPI()
-                .info(info);
-    }
+            return new OpenAPI()
+                    .info(info);
+        }
 }
