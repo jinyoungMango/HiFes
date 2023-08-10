@@ -17,7 +17,5 @@ public class GroupCreateDto {
     private LocalDateTime createdAt;
     private Integer maxPop;
     private String content;
-    private Integer groupPassword;
-
     private String[] hashtags;
 }

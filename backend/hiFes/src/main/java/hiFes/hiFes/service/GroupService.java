@@ -78,7 +78,6 @@ public class GroupService {
 //                .groupPic(groupCreateDto.getGroupPic())
                 .maxPop(groupCreateDto.getMaxPop())
                 .content(groupCreateDto.getContent())
-                .groupPassword(groupCreateDto.getGroupPassword())
                 .build();
 
 
