@@ -1,5 +1,6 @@
-package hiFes.hiFes.service;
+package hiFes.hiFes.service.group;
 
+import com.google.gson.JsonObject;
 import hiFes.hiFes.domain.group.Group;
 import hiFes.hiFes.domain.group.Hashtag;
 import hiFes.hiFes.domain.group.JoinedGroup;
@@ -13,8 +14,10 @@ import hiFes.hiFes.repository.group.JoinedGroupRepository;
 import hiFes.hiFes.repository.group.RegisteredHashtagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.File;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,13 +74,19 @@ public class GroupService {
 //
 //    }
 
-    public void groupCreate(/*이메일*/GroupCreateDto groupCreateDto, NormalUser normalUser){
+    public void groupCreate(GroupCreateDto groupCreateDto, NormalUser normalUser, MultipartFile image) throws Exception {
+        String projectPath = System.getProperty("user.dir") +"\\src\\main\\resources\\static\\images";
+        String imageName = image.getOriginalFilename();
+        File saveImage = new File(projectPath, imageName);
+        image.transferTo(saveImage);
+
         LocalDateTime now = LocalDateTime.of(2020,9,16,0,0,0);
         Group group = Group.builder()
                 .groupName(groupCreateDto.getGroupName())
-//                .groupPic(groupCreateDto.getGroupPic())
+                .groupPic("/images/"+  imageName)
                 .maxPop(groupCreateDto.getMaxPop())
                 .content(groupCreateDto.getContent())
+                .festivalId(groupCreateDto.getFestivalId())
                 .build();
 
 
@@ -139,6 +148,54 @@ public class GroupService {
 
     public Group groupDetail(Long id){
         return groupRepository.findById(id).get();
+    }
+
+    public List<Group> findFesGroup(Long FesId){
+        return groupRepository.findByFestivalId(FesId);
+    }
+
+    public Boolean isJoinedFesGroup(Long userId, Long fesId){
+        List<JoinedGroup> joinedGroups = joinedGroupRepository.findByNormalUserId(userId);
+        List<Long> festivalIds = new ArrayList<>();
+        for (JoinedGroup joinedGroup : joinedGroups) {
+            festivalIds.add(joinedGroup.getGroup().getFestivalId());
+        }
+
+        for (Long festivalId : festivalIds) {
+            if (festivalId.equals(fesId)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public JsonObject isJoined(Long GroupId, NormalUser user){
+        Group group = getById(GroupId);
+        Long fesId = group.getFestivalId();
+        Long userId = user.getId();
+
+        JsonObject info = new JsonObject();
+        // 이 그룹과 연관된 행사에 이 유저는 가입되어 있는가?
+        info.addProperty("isJoinedFesGroup",isJoinedFesGroup(userId, fesId));
+
+
+
+        if (joinedGroupRepository.existsByNormalUserAndGroup(user, group)){
+            info.addProperty("isJoinedGroup", true);
+            JoinedGroup joinedGroup =  joinedGroupRepository.findByNormalUserAndGroup(user, group);
+            if (joinedGroup.getIsLeader()){
+                info.addProperty("isLeader", true);
+            }
+            else{
+                info.addProperty("isLeader", false);
+            }
+        }
+        else{
+            info.addProperty("isJoinedGroup", false);
+            info.addProperty("isLeader", false);
+        }
+        return info;
     }
 
     public List<Group> getGrouplist(){
