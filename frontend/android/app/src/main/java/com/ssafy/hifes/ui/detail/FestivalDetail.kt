@@ -1,6 +1,9 @@
 package com.ssafy.hifes.ui.detail
 
 import NavigationItem
+import android.content.ActivityNotFoundException
+import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -38,6 +41,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
@@ -49,6 +53,13 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
+import com.kakao.sdk.common.util.KakaoCustomTabsClient
+import com.kakao.sdk.share.ShareClient
+import com.kakao.sdk.share.WebSharerClient
+import com.kakao.sdk.template.model.Button
+import com.kakao.sdk.template.model.Content
+import com.kakao.sdk.template.model.FeedTemplate
+import com.kakao.sdk.template.model.Link
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraPosition
 import com.naver.maps.map.compose.CameraPositionState
@@ -58,7 +69,9 @@ import com.naver.maps.map.compose.MarkerState
 import com.naver.maps.map.compose.NaverMap
 import com.naver.maps.map.compose.rememberCameraPositionState
 import com.naver.maps.map.overlay.OverlayImage
+import com.ssafy.hifes.BuildConfig
 import com.ssafy.hifes.R
+import com.ssafy.hifes.data.model.OrganizedFestivalDto
 import com.ssafy.hifes.ui.HifesDestinations
 import com.ssafy.hifes.ui.iconpack.MyIconPack
 import com.ssafy.hifes.ui.iconpack.myiconpack.Imagenotfound
@@ -68,10 +81,12 @@ import com.ssafy.hifes.ui.theme.pretendardFamily
 import com.ssafy.hifes.util.CommonUtils.formatSqlDateToString
 
 
+private const val TAG = "FestivalDetail_하이페스"
 @OptIn(ExperimentalNaverMapApi::class)
 @Composable
 fun FestivalDetail(navController: NavHostController, viewModel: MainViewModel) {
     val selectedFestival = viewModel.selectedFestival.observeAsState()
+    val context = LocalContext.current
     if (selectedFestival.value != null) {
         val festivalData = selectedFestival.value
         Column(
@@ -108,7 +123,9 @@ fun FestivalDetail(navController: NavHostController, viewModel: MainViewModel) {
                                 HifesDestinations.BOARD_ROUTE
                             )
                         }
-                        DetailIcons(painterResource(R.drawable.icon_share)) {}
+                        DetailIcons(painterResource(R.drawable.icon_share)) {
+                            kakaoShare(festivalData, context)
+                        }
                     }
                 }
                 Column {
@@ -179,6 +196,79 @@ fun FestivalDetail(navController: NavHostController, viewModel: MainViewModel) {
 @Composable
 fun FestivalDetailPrev() {
     FestivalDetail(navController = rememberNavController(), MainViewModel())
+}
+
+fun kakaoShare(festival: OrganizedFestivalDto, context: Context) {
+    val apiKey = BuildConfig.API_KEY
+    val defaultFeed = FeedTemplate(
+        content = Content(
+            title = festival.fesTitle,
+            description = festival.fesOutline,
+            imageUrl = festival.fesPosterPath,
+            link = Link(
+                webUrl ="kakao$apiKey://kakaolink",
+                mobileWebUrl = "kakao$apiKey://kakaolink"
+            )
+        ),
+        buttons = listOf(
+            Button(
+                "웹으로 보기",
+                Link(
+                    webUrl = "kakao$apiKey://kakaolink",
+                    mobileWebUrl = "kakao$apiKey://kakaolink"
+                )
+            ),
+            Button(
+                "앱으로 보기",
+                Link(
+                    webUrl = "kakao$apiKey://kakaolink",
+                    mobileWebUrl = "kakao$apiKey://kakaolink",
+                    androidExecutionParams = mapOf("key1" to "value1", "key2" to "value2"),
+                    iosExecutionParams = mapOf("key1" to "value1", "key2" to "value2")
+                )
+            )
+        )
+    )
+
+    // 카카오톡 설치여부 확인
+    if (ShareClient.instance.isKakaoTalkSharingAvailable(context)) {
+        // 카카오톡으로 카카오톡 공유 가능
+        ShareClient.instance.shareDefault(context, defaultFeed) { sharingResult, error ->
+            if (error != null) {
+                Log.e(TAG, "카카오톡 공유 실패", error)
+            }
+            else if (sharingResult != null) {
+                Log.d(TAG, "카카오톡 공유 성공 ${sharingResult.intent}")
+                context.startActivity(sharingResult.intent)
+
+                // 카카오톡 공유에 성공했지만 아래 경고 메시지가 존재할 경우 일부 컨텐츠가 정상 동작하지 않을 수 있습니다.
+                Log.w(TAG, "Warning Msg: ${sharingResult.warningMsg}")
+                Log.w(TAG, "Argument Msg: ${sharingResult.argumentMsg}")
+            }
+        }
+    } else {
+        // 카카오톡 미설치: 웹 공유 사용 권장
+        // 웹 공유 예시 코드
+        val sharerUrl = WebSharerClient.instance.makeDefaultUrl(defaultFeed)
+
+        // CustomTabs으로 웹 브라우저 열기
+
+        // 1. CustomTabsServiceConnection 지원 브라우저 열기
+        // ex) Chrome, 삼성 인터넷, FireFox, 웨일 등
+        try {
+            KakaoCustomTabsClient.openWithDefault(context, sharerUrl)
+        } catch(e: UnsupportedOperationException) {
+            // CustomTabsServiceConnection 지원 브라우저가 없을 때 예외처리
+        }
+
+        // 2. CustomTabsServiceConnection 미지원 브라우저 열기
+        // ex) 다음, 네이버 등
+        try {
+            KakaoCustomTabsClient.open(context, sharerUrl)
+        } catch (e: ActivityNotFoundException) {
+            // 디바이스에 설치된 인터넷 브라우저가 없을 때 예외처리
+        }
+    }
 }
 
 @OptIn(ExperimentalNaverMapApi::class)
