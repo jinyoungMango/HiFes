@@ -22,6 +22,7 @@ import com.ssafy.hifes.ui.group.main.GroupMainScreen
 import com.ssafy.hifes.ui.home.HomeScreen
 import com.ssafy.hifes.ui.login.LoginDetailScreen
 import com.ssafy.hifes.ui.login.LoginScreen
+import com.ssafy.hifes.ui.login.LoginViewModel
 import com.ssafy.hifes.ui.main.MainViewModel
 import com.ssafy.hifes.ui.map.MapScreen
 import com.ssafy.hifes.ui.mypage.MyPageScreen
@@ -40,6 +41,7 @@ fun HifesNavGraph(
     val boardViewModel: BoardViewModel = viewModel()
     val groupViewModel: GroupViewModel = viewModel()
     val detailViewModel: DetailViewModel = viewModel()
+    val loginViewModel: LoginViewModel = viewModel()
 
     NavHost(
         navController = navController,
@@ -58,7 +60,7 @@ fun HifesNavGraph(
         composable(
             route = HifesDestinations.LOGIN_ROUTE
         ) {
-            LoginScreen(navController = navController)
+            LoginScreen(navController = navController, loginViewModel)
         }
         composable(
             route = HifesDestinations.LOGIN_DETAIL_ROUTE
