@@ -41,6 +41,7 @@ public class NormalUserController {
 
     @CrossOrigin(origins = "*")
     @PostMapping("normal/login")
+    @ResponseBody
     public Object login(String accessToken){
         Map<String, Object> context =  normalUserService.searchKakaoUser(accessToken);
         if (normalUserRepository.findByEmail((String) context.get("email")).isPresent()) {
