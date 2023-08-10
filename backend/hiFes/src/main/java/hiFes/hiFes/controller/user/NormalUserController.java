@@ -41,11 +41,17 @@ public class NormalUserController {
     public Object login(String accessToken){
         Map<String, Object> context =  normalUserService.searchKakaoUser(accessToken);
         if (normalUserRepository.findByEmail((String) context.get("email")).isPresent()) {
+            JsonObject loginSuccess = normalUserService.login((String) context.get("email"));
+            loginSuccess.addProperty("result", true);
 
-            return normalUserService.login((String) context.get("email"));
+            return loginSuccess;
         }
 
-        return false;
+        JsonObject loginFail = new JsonObject();
+        loginFail.addProperty("accessToken", "");
+        loginFail.addProperty("refreshToken", "");
+        loginFail.addProperty("result", false);
+        return loginFail;
 
     }
 
