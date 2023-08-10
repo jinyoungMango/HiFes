@@ -1,13 +1,22 @@
 package com.ssafy.hifes.ui
 
 import NavigationItem
+import android.content.Intent
+import android.provider.SyncStateContract.Columns
+import android.util.Log
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navDeepLink
 import com.ssafy.hifes.data.AppContainer
 import com.ssafy.hifes.ui.board.BoardScreen
 import com.ssafy.hifes.ui.board.BoardViewModel
@@ -26,7 +35,12 @@ import com.ssafy.hifes.ui.main.MainViewModel
 import com.ssafy.hifes.ui.map.MapScreen
 import com.ssafy.hifes.ui.mypage.MyPageScreen
 import com.ssafy.hifes.ui.participatedfest.ParticipatedFestScreen
+import com.ssafy.hifes.ui.proof.ProofViewModel
+import com.ssafy.hifes.ui.proof.ProofScreen
+import org.w3c.dom.Text
+import java.lang.Exception
 
+private const val TAG = "HifesNavGraph"
 @Composable
 fun HifesNavGraph(
     appContainer: AppContainer,
@@ -36,10 +50,12 @@ fun HifesNavGraph(
 //    startDestination: String = HifesDestinations.LOGIN_ROUTE
     startDestination: String = NavigationItem.Home.screenRoute
 ) {
+    val uri = "hifes://main"
 
     val boardViewModel: BoardViewModel = viewModel()
     val groupViewModel: GroupViewModel = viewModel()
     val detailViewModel: DetailViewModel = viewModel()
+    val proofViewModel : ProofViewModel = viewModel()
 
     NavHost(
         navController = navController,
@@ -105,6 +121,24 @@ fun HifesNavGraph(
             route = HifesDestinations.GROUP_DETAIL
         ) {
             GroupInfoScreen(navController = navController, viewModel = groupViewModel)
+        }
+        composable(
+            route = HifesDestinations.STAMP_PROOF,
+            deepLinks = listOf(navDeepLink {
+                uriPattern = "hifes://main?type={type}&id={id}"
+                action = Intent.ACTION_VIEW
+            })
+        ){
+            val type = it.arguments?.getString("type")
+            val id = it.arguments?.getString("id")
+            Log.d(TAG, "HifesNavGraph: id ${id}")
+            if(type != null && id != null && (type == "festival" || type == "stamp"))
+                ProofScreen(navController = navController, viewModel = proofViewModel, type = type, id = id)
+            else
+                Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+                    Text(text = "잘못된 QR입니다")
+                }
+
         }
     }
 }
