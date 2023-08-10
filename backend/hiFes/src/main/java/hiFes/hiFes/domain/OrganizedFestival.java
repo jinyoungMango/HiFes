@@ -5,6 +5,7 @@ package hiFes.hiFes.domain;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import hiFes.hiFes.domain.user.HostUser;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -37,18 +38,23 @@ public class OrganizedFestival {
     @Column(name="fesAddress", nullable = false, columnDefinition = "TINYTEXT")
     private String fesAddress;
 
+    @Schema(description = "이미지 url, 업로드하면 자동 저장", example = "image/이미지.jpg")
     @Column(name="fesPosterPath", nullable = false)
     private String fesPosterPath;
 
+    @Schema(description = "gson 사용으로 넘겨줄 때 string이 아니라 Object로 넘겨야 함", example = "{\"year\":\"2023\", \"month\":\"03\", \"day\":\"01\"}")
     @Column(name="fesStartDate", nullable = false)
     private LocalDate fesStartDate;
 
+    @Schema(description = "gson 사용으로 넘겨줄 때 string이 아니라 Object로 넘겨야 함", example = "{\"year\":\"2023\", \"month\":\"03\", \"day\":\"01\"}")
     @Column(name="fesEndDate", nullable = false)
     private LocalDate fesEndDate;
 
+    @Schema(description = "주소만 입력하면 자동 저장")
     @Column(name = "fesLatitude", nullable = false)
     private BigDecimal fesLatitude;
 
+    @Schema(description = "주소만 입력하면 자동 저장")
     @Column(name="fesLongitude", nullable = false)
     private BigDecimal fesLongitude;
 
@@ -69,7 +75,7 @@ public class OrganizedFestival {
     private final List<Marker> markers = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "hostUser_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonBackReference
     private HostUser hostUser;

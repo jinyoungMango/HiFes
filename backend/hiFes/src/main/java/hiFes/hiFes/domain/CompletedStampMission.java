@@ -30,7 +30,7 @@ public class CompletedStampMission {
     private StampMission stampMission;
 
     @ManyToOne
-    @JoinColumn(name="normalUserId")
+    @JoinColumn(name="normalUser_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonBackReference
     private NormalUser normalUser;
