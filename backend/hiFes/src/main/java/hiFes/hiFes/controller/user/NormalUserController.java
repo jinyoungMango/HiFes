@@ -8,8 +8,10 @@ import hiFes.hiFes.service.user.JwtService;
 import hiFes.hiFes.service.user.NormalUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -22,14 +24,12 @@ public class NormalUserController {
 
     @CrossOrigin(origins = "*")
     @PostMapping("normal/signUp")
-    public JsonObject signUp(@RequestBody NormalUserSignUpDto normalUserSignUpDto) throws Exception{
+    public JsonObject signUp(@RequestBody NormalUserSignUpDto normalUserSignUpDto,  @RequestPart("image") MultipartFile image) throws Exception{
         String accessToken = normalUserSignUpDto.getAccessToken();
-        String test = normalUserSignUpDto.getNickname();
-        System.out.println(accessToken + "***********************************************************" + test);
 
         Map<String, Object> context =  normalUserService.searchKakaoUser(accessToken);
 
-        normalUserService.signUp(normalUserSignUpDto, context);
+        normalUserService.signUp(normalUserSignUpDto, context, image);
 
         // 로그인
         JsonObject loginSuccess = normalUserService.login((String) context.get("email"));
@@ -39,6 +39,11 @@ public class NormalUserController {
 
     }
 
+
+
+
+
+
     @CrossOrigin(origins = "*")
     @PostMapping("normal/login")
     @ResponseBody
@@ -46,7 +51,7 @@ public class NormalUserController {
         Map<String, Object> context =  normalUserService.searchKakaoUser(accessToken);
         if (normalUserRepository.findByEmail((String) context.get("email")).isPresent()) {
             JsonObject loginSuccess = normalUserService.login((String) context.get("email"));
-            loginSuccess.addProperty("id",  normalUserService.getByEmail((String) context.get("email")).getId());
+            loginSuccess.addProperty("id",  String.valueOf(normalUserService.getByEmail((String) context.get("email")).getId()));
             loginSuccess.addProperty("result", true);
 
             return loginSuccess;
@@ -56,6 +61,7 @@ public class NormalUserController {
         loginFail.addProperty("accessToken", "");
         loginFail.addProperty("refreshToken", "");
         loginFail.addProperty("result", false);
+        loginFail.addProperty("id", "");
         return loginFail;
 
     }
@@ -96,5 +102,7 @@ public class NormalUserController {
 
 
     }
+
+
 
 }

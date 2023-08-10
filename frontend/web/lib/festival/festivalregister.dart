@@ -3,11 +3,16 @@ import 'dart:typed_data';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:web/common.dart';
 import 'dart:html' as html;
 import 'dart:ui' as ui;
 
-import 'package:web/festival/MarkerDto.dart';
+
+import 'package:web/festival/RegisterController.dart';
+
+import 'MarkerDto.dart';
 
 class FileData {
   String fileName;
@@ -33,8 +38,10 @@ class _FestivalRegisterState extends State<FestivalRegister> {
     anchorElement.click();
   }
 
+
   // 마커 리스트
   List<MarkerDto>? markers;
+  List<MarkerDto>? stampMarkers;
 
   // 포스터 이미지
   FilePickerResult? poster;
@@ -45,8 +52,9 @@ class _FestivalRegisterState extends State<FestivalRegister> {
   // 데이트 피커
   // 날짜를 선택하는 걸로 변경
   DateTime startDate = DateTime.now();
+  DateTime endDate = DateTime.now();
 
-  Future<void> _selectDate(BuildContext context) async {
+  Future<void> _selectStartDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: startDate,
@@ -54,8 +62,31 @@ class _FestivalRegisterState extends State<FestivalRegister> {
       lastDate: DateTime(2100), // 선택 가능한 가장 늦은 날짜
     );
     if (picked != null && picked != startDate) {
+
       setState(() {
         startDate = picked;
+
+        if (startDate.isAfter(endDate)) {
+          endDate = startDate;
+        }
+      });
+    }
+  }
+
+  Future<void> _selectEndDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: startDate,
+      firstDate: DateTime(2000), // 선택 가능한 가장 이른 날짜
+      lastDate: DateTime(2100), // 선택 가능한 가장 늦은 날짜
+    );
+    if (picked != null && picked != endDate) {
+      setState(() {
+        endDate = picked;
+
+        if (startDate.isAfter(endDate)) {
+          startDate = endDate;
+        }
       });
     }
   }
@@ -66,6 +97,7 @@ class _FestivalRegisterState extends State<FestivalRegister> {
     timetable = null;
     poster = null;
     markers = [];
+    stampMarkers = [];
     _iFrameElement.src = dotenv.env['YOUR_NAVER_MAP_URL'];
     _iFrameElement.style.border = 'none';
 
@@ -79,21 +111,36 @@ class _FestivalRegisterState extends State<FestivalRegister> {
     html.window.addEventListener("message", (event) {
       // 마커 정보 초기화
       markers?.clear();
+      stampMarkers?.clear();
 
       // 마커 배열 추가
       List<dynamic> data = (event as html.MessageEvent).data ?? '-';
       for (var item in data) {
-        markers?.add(MarkerDto(
-            boothLatitude: item['boothLatitude'],
-            boothLongitude: item['boothLongitude'],
-            markerType: item['markerType'],
-            markerId: item['markerId'],
-            markerTitle: item['markerTitle'],
-            markerDescription: item['markerDescription']));
+        if(item['markerType']=="stamp"){
+          stampMarkers?.add(MarkerDto(
+              boothLatitude: item['boothLatitude'],
+              boothLongitude: item['boothLongitude'],
+              markerType: item['markerType'],
+              markerId: item['markerId'],
+              markerTitle: item['markerTitle'],
+              markerDescription: item['markerDescription']));
+        }else{
+          markers?.add(MarkerDto(
+              boothLatitude: item['boothLatitude'],
+              boothLongitude: item['boothLongitude'],
+              markerType: item['markerType'],
+              markerId: item['markerId'],
+              markerTitle: item['markerTitle'],
+              markerDescription: item['markerDescription']));
+        }
       }
 
       // 마커아이템 확인
       for (var item in markers!) {
+        print(item);
+      }
+      print("------스탬프-------");
+      for (var item in stampMarkers!){
         print(item);
       }
     });
@@ -115,9 +162,11 @@ class _FestivalRegisterState extends State<FestivalRegister> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+
+
                 Text(
                   "축제 정보 입력",
-                  style: TextStyle(fontSize: 48),
+                  style: TextStyle(fontSize: 40),
                 ),
                 SizedBox(
                   height: 40,
@@ -138,7 +187,8 @@ class _FestivalRegisterState extends State<FestivalRegister> {
                         child: poster != null
                             ? Image.memory(
                                 Uint8List.fromList(poster!.files.first.bytes!))
-                            : Text('업로드할 포스터를 선택해주세요.'),
+                            : Text('업로드할 포스터를 선택해주세요.',
+                                style: TextStyle(fontSize: 20)),
                       ),
                       width: 800,
                       height: 400,
@@ -219,7 +269,7 @@ class _FestivalRegisterState extends State<FestivalRegister> {
                   children: [
                     InkWell(
                         onTap: () {
-                          _selectDate(context);
+                          _selectStartDate(context);
                         },
                         child: Container(
                           decoration: BoxDecoration(
@@ -250,7 +300,7 @@ class _FestivalRegisterState extends State<FestivalRegister> {
                     ),
                     InkWell(
                       onTap: () {
-                        _selectDate(context);
+                        _selectEndDate(context);
                       },
                       child: Container(
                         decoration: BoxDecoration(
@@ -263,7 +313,7 @@ class _FestivalRegisterState extends State<FestivalRegister> {
                         ),
                         child: Center(
                           child: Text(
-                            '${startDate.year} ${startDate.month} . ${startDate.day}',
+                            '${endDate.year} ${endDate.month} . ${endDate.day}',
                             style: TextStyle(fontSize: 20),
                           ),
                         ),
@@ -282,14 +332,15 @@ class _FestivalRegisterState extends State<FestivalRegister> {
                     Container(
                       child: Column(
                         children: [
-                          Text('일정 양식'),
+                          Text('일정 양식', style: TextStyle(fontSize: 20)),
                           SizedBox(
                             height: 10,
                           ),
                           InkWell(
                             onTap: () async {
-                              String fileName = 'demo.txt'; // 예시 파일명
-                              String fileUrl = '/assets/demo.txt'; // 예시 파일의 경로
+                              String fileName = 'timetable.xlsx'; // 예시 파일명
+                              String fileUrl =
+                                  '/assets/hifes_timetable.xlsx'; // 예시 파일의 경로
                               downloadFile(FileData(fileName, fileUrl));
                             },
                             child: Container(
@@ -321,7 +372,11 @@ class _FestivalRegisterState extends State<FestivalRegister> {
                     Container(
                       child: Column(
                         children: [
-                          Text('일정 업로드'),
+
+                          Text(
+                            '일정 업로드',
+                            style: TextStyle(fontSize: 20),
+                          ),
                           SizedBox(
                             height: 10,
                           ),
@@ -374,7 +429,9 @@ class _FestivalRegisterState extends State<FestivalRegister> {
                 ),
                 Text(
                   "마커 등록",
-                  style: TextStyle(fontSize: 48),
+
+                  style: TextStyle(fontSize: 40),
+
                 ),
                 SizedBox(
                   height: 20,
@@ -387,9 +444,10 @@ class _FestivalRegisterState extends State<FestivalRegister> {
                 TextButton(
                     onPressed: () async {
                       _iFrameElement.contentWindow?.postMessage(
-                          "getMarkerData", "http://localhost:8080");
-                    },
+                          "getMarkerData", "http://i9d104.p.ssafy.io:8081");
+                      },
                     child: Text("getData"))
+
               ],
             ),
           ),

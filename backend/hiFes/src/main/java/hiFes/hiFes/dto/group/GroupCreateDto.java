@@ -14,11 +14,9 @@ import java.util.Date;
 @Getter
 public class GroupCreateDto {
     private String groupName;
-    private String groupPic;
     private LocalDateTime createdAt;
     private Integer maxPop;
     private String content;
-    private Integer groupPassword;
-
     private String[] hashtags;
+    private Long festivalId;
 }
