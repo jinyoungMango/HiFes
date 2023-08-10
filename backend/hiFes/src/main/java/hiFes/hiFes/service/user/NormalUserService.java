@@ -9,9 +9,11 @@ import hiFes.hiFes.repository.user.NormalUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -27,14 +29,20 @@ public class NormalUserService {
     private final JwtService jwtService;
 
 
-    public void signUp(NormalUserSignUpDto normalUserSignUpDto, Map<String, Object> context) throws Exception {
+    public void signUp(NormalUserSignUpDto normalUserSignUpDto, Map<String, Object> context, MultipartFile image) throws Exception {
+
+        String projectPath = System.getProperty("user.dir") +"\\hiFes\\src\\main\\resources\\static\\images";
+        String imageName = image.getOriginalFilename();
+        File saveImage = new File(projectPath, imageName);
+        image.transferTo(saveImage);
+
 
         // 데이터 베이스에 없는 이메일이라면
         // 닉네임 빼고 전부 가져와서 넣어야 함
         NormalUser normalUser = NormalUser.builder()
                 .email((String) context.get("email"))
                 .name((String) context.get("name"))
-                .profilePic(normalUserSignUpDto.getProfilePic())
+                .profilePic("/images/"+  imageName)
                 .phoneNo(normalUserSignUpDto.getPhoneNo()) // 필요한 정보인지 고민 좀
                 .nickname(normalUserSignUpDto.getNickname())
                 .build();
