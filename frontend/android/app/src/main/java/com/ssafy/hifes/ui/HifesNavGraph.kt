@@ -47,8 +47,8 @@ fun HifesNavGraph(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
     mainViewModel: MainViewModel,
-//    startDestination: String = HifesDestinations.LOGIN_ROUTE
-    startDestination: String = NavigationItem.Home.screenRoute
+    startDestination: String = HifesDestinations.LOGIN_ROUTE
+//    startDestination: String = NavigationItem.Map.screenRoute
 ) {
     val uri = "hifes://main"
 
