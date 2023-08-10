@@ -17,6 +17,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,13 +38,6 @@ public class OrganizedFestivalApiController {
         return ResponseEntity.status(HttpStatus.CREATED).body("OK");
     }
 
-    @Operation(summary = "특정 행사 조회", description = "특정 행사의 id를 통해 상세 정보 조회")
-    @GetMapping("api/festival/{festivalId}")
-    public ResponseEntity<OrganizedFestivalResponse> findOrganizedFestival(@PathVariable long festivalId){
-        OrganizedFestival organizedFestival = organizedFestivalService.findById(festivalId);
-        return ResponseEntity.ok()
-                .body(new OrganizedFestivalResponse(organizedFestival));
-    }
 
     @Operation(summary = "행사 수정", description = "특정 행사의 id를 받아서 그 행사 정보, aritem, stampMission, 일정(엑셀), 부스 마커 수정." +
             "Formdata를 사용해서 엑셀은 file, 이미지는 image, 나머지는 data로 받음.")
@@ -133,6 +127,26 @@ public class OrganizedFestivalApiController {
         return ResponseEntity.ok()
                 .body(festivalTableResponses);
     }
+    @Operation(summary = "주변 10km내에 있는 행사 목록 조회")
+    @GetMapping("api/nearby-festivals/{userLatitude}/{userLongitude}")
+    public ResponseEntity<List<OrganizedFestivalResponse>> findNearByFestival(@PathVariable BigDecimal userLatitude, @PathVariable BigDecimal userLongitude){
+        List<OrganizedFestival> organizedFestivals = organizedFestivalService.getFestivalsByLocationWithin10Km(userLatitude,userLongitude);
+        List<OrganizedFestivalResponse> organizedFestivalResponses = organizedFestivals.stream()
+                .map(OrganizedFestivalResponse::new)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok()
+                .body(organizedFestivalResponses);
+    }
+
+    @Operation(summary = "특정 행사 조회", description = "특정 행사의 id를 통해 상세 정보 조회")
+    @GetMapping("api/festival/{festivalId}")
+    public ResponseEntity<OrganizedFestivalResponse> findOrganizedFestival(@PathVariable long festivalId){
+        OrganizedFestival organizedFestival = organizedFestivalService.findById(festivalId);
+        return ResponseEntity.ok()
+                .body(new OrganizedFestivalResponse(organizedFestival));
+    }
+
 
     //행사 리스트에서 랜덤으로 3개 뽑기
     @Operation(summary = "랜덤 행사 목록")

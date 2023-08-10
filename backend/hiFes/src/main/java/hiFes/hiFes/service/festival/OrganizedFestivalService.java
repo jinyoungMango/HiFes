@@ -144,6 +144,12 @@ public class OrganizedFestivalService {
         return organizedFestivalRepository.findAll();
     }
 
+    //반경 10km내 조회
+    public List<OrganizedFestival> getFestivalsByLocationWithin10Km(BigDecimal latitude, BigDecimal longitude) {
+        return organizedFestivalRepository.findOrganizedFestivalsByLocationWithin10Km(latitude.doubleValue(), longitude.doubleValue());
+    }
+
+
     @org.springframework.transaction.annotation.Transactional
     public OrganizedFestival update(long id, UpdateOrganizedFestivalRequest request, MultipartFile file, MultipartFile image)throws Exception {
 
