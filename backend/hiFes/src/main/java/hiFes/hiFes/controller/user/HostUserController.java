@@ -30,7 +30,10 @@ public class HostUserController {
 
         hostUserService.signUp(hostUserSignUpDto, context);
         // 로그인
-        return hostUserService.login((String) context.get("email"));
+        JsonObject loginSuccess = hostUserService.login((String) context.get("email"));
+        loginSuccess.addProperty("result", true);
+        loginSuccess.addProperty("id",  hostUserService.getByEmail((String) context.get("email")).getId());
+        return loginSuccess;
     }
 
     @CrossOrigin(origins = "*")

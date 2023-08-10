@@ -32,7 +32,10 @@ public class NormalUserController {
         normalUserService.signUp(normalUserSignUpDto, context);
 
         // 로그인
-        return normalUserService.login((String) context.get("email"));
+        JsonObject loginSuccess = normalUserService.login((String) context.get("email"));
+        loginSuccess.addProperty("result", true);
+        loginSuccess.addProperty("id",  normalUserService.getByEmail((String) context.get("email")).getId());
+        return loginSuccess;
 
     }
 
@@ -42,6 +45,7 @@ public class NormalUserController {
         Map<String, Object> context =  normalUserService.searchKakaoUser(accessToken);
         if (normalUserRepository.findByEmail((String) context.get("email")).isPresent()) {
             JsonObject loginSuccess = normalUserService.login((String) context.get("email"));
+            loginSuccess.addProperty("id",  normalUserService.getByEmail((String) context.get("email")).getId());
             loginSuccess.addProperty("result", true);
 
             return loginSuccess;
