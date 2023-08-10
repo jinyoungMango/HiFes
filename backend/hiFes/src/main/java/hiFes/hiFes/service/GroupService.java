@@ -75,10 +75,9 @@ public class GroupService {
         LocalDateTime now = LocalDateTime.of(2020,9,16,0,0,0);
         Group group = Group.builder()
                 .groupName(groupCreateDto.getGroupName())
-                .groupPic(groupCreateDto.getGroupPic())
+//                .groupPic(groupCreateDto.getGroupPic())
                 .maxPop(groupCreateDto.getMaxPop())
                 .content(groupCreateDto.getContent())
-                .groupPassword(groupCreateDto.getGroupPassword())
                 .build();
 
 
