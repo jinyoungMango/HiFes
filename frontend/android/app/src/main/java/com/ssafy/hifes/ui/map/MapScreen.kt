@@ -6,6 +6,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.ExperimentalMaterialApi
@@ -29,9 +30,16 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.LayoutCoordinates
+import androidx.compose.ui.layout.layout
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInParent
+import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -53,13 +61,16 @@ import com.ssafy.hifes.data.model.CustomMarker
 import com.ssafy.hifes.data.model.MarkerDto
 import com.ssafy.hifes.data.model.OrganizedFestivalDto
 import com.ssafy.hifes.ui.HifesDestinations
+import com.ssafy.hifes.ui.animations.WavesAnimation
 import com.ssafy.hifes.ui.common.ChipsSelectable
 import com.ssafy.hifes.ui.detail.DetailViewModel
 import com.ssafy.hifes.ui.detail.map.MarkerDetailDialog
 import com.ssafy.hifes.ui.main.MainViewModel
 import com.ssafy.hifes.ui.theme.PrimaryPink
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
 
 
 private const val TAG = "MapScreen_하이페스"
@@ -88,6 +99,9 @@ fun MapScreen(
     BackHandler(sheetState.isVisible) {
         coroutineScope.launch { sheetState.hide() }
     }
+
+    var showWavesAnimation by remember { mutableStateOf(false) }
+    var fabVisible by remember { mutableStateOf(true) }
 
     Scaffold(
         content = {
@@ -153,21 +167,49 @@ fun MapScreen(
         floatingActionButton = {
             // 현재 사용자가 그룹이 있는지 없는지 판단하에 보여주기
             if (mapType.value == MapType.FESTIVAL) {
-                FloatingActionButton(
-                    onClick = { /* 모임콜 기능 */ },
-                    containerColor = PrimaryPink,
-                    contentColor = Color.White,
-                    shape = MaterialTheme.shapes.small.copy(CornerSize(percent = 50)),
-                ) {
-                    Icon(
-                        Icons.Filled.Notifications,
-                        contentDescription = "Group Call",
-                        modifier = Modifier.size(28.dp)
-                    )
+                if (fabVisible) {
+                    FloatingActionButton(
+                        onClick = { /* 모임콜 기능 */
+                            showWavesAnimation = true
+                            fabVisible = false  // FAB를 숨깁니다.
+                            coroutineScope.launch {
+                                delay(2100L)
+                                fabVisible = true  // FAB를 다시 보이게 합니다.
+                            }
+                        },
+                        containerColor = PrimaryPink,
+                        contentColor = Color.White,
+                        shape = MaterialTheme.shapes.small.copy(CornerSize(percent = 50))
+                    ) {
+                        Icon(
+                            Icons.Filled.Notifications,
+                            contentDescription = "Group Call",
+                            modifier = Modifier.size(28.dp)
+                        )
+                    }
+                }
+
+
+                //
+                if (showWavesAnimation) {
+                    WavesAnimationCentered { showWavesAnimation = false }
                 }
             }
         }
+
     )
+}
+
+@Composable
+fun WavesAnimationCentered(onAnimationEnd: () -> Unit) {
+
+    WavesAnimation()
+
+    LaunchedEffect(key1 = true) {
+        delay(2000L) // 2 seconds
+        onAnimationEnd()
+    }
+
 }
 
 

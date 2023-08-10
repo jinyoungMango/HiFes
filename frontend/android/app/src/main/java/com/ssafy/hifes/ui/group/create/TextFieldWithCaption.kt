@@ -27,7 +27,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.ssafy.hifes.ui.theme.Purple40
+import com.ssafy.hifes.ui.theme.PrimaryPink
+import com.ssafy.hifes.ui.theme.pretendardFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,14 +37,13 @@ fun TextFieldWithCaption(caption: String) {
     var isFocused by remember { mutableStateOf(false) }
 
     val borderStroke = if (isFocused) {
-        BorderStroke(2.dp, Purple40)    // 선택된 보더의 색 변경해야함
+        BorderStroke(1.dp, PrimaryPink)    // 선택된 보더의 색 변경해야함
     } else {
-        BorderStroke(1.dp, Color.Black)
+        BorderStroke(0.5.dp, Color.Gray)
     }
 
-    Column() {
-
-        Text(text = caption, fontWeight = FontWeight.Bold)
+    Column {
+        Text(text = caption, fontFamily = pretendardFamily, fontWeight = FontWeight.SemiBold)
         Spacer(modifier = Modifier.height(8.dp))
         TextField(
             value = text,
@@ -79,14 +79,14 @@ fun DropdownWithCaption(caption: String) {
     var isFocused by remember { mutableStateOf(false) }
 
     val borderStroke = if (isFocused) {
-        BorderStroke(2.dp, Purple40)    // 선택된 보더의 색 변경해야함
+        BorderStroke(1.dp, PrimaryPink)    // 선택된 보더의 색 변경해야함
     } else {
-        BorderStroke(1.dp, Color.Black)
+        BorderStroke(0.5.dp, Color.Gray)
     }
 
     Column() {
 
-        Text(text = caption, fontWeight = FontWeight.Bold)
+        Text(text = caption, fontWeight = FontWeight.SemiBold)
         Spacer(modifier = Modifier.height(8.dp))
         // We want to react on tap/press on TextField to show menu
         ExposedDropdownMenuBox(
@@ -114,7 +114,10 @@ fun DropdownWithCaption(caption: String) {
                     unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent
                 ),
-                textStyle = LocalTextStyle.current.copy(fontSize = 16.sp),
+                textStyle = LocalTextStyle.current.copy(
+                    fontFamily = pretendardFamily,
+                    fontSize = 16.sp
+                ),
             )
             ExposedDropdownMenu(
                 expanded = expanded,
