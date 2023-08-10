@@ -6,12 +6,18 @@ plugins {
     id 'com.google.dagger.hilt.android'
 }
 
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+def api_key = properties.getProperty('api_key')
+def client_id = properties.getProperty('client_id')
+
+
 android {
-    namespace 'com.example.hifes'
+    namespace 'com.ssafy.hifes'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.hifes"
+        applicationId "com.ssafy.hifes"
         minSdk 24
         targetSdk 33
         versionCode 1
@@ -21,6 +27,11 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+
+        manifestPlaceholders = [client_id: client_id, API_KEY: api_key]
+        resValue "string", "client_id", client_id
+        // api key 변수 지정
+        buildConfigField "String", "API_KEY", "\"" + api_key + "\""
     }
 
     buildTypes {
@@ -53,6 +64,9 @@ android {
     dataBinding {
         enabled = true
     }
+    buildFeatures {
+        buildConfig true
+    }
 }
 
 dependencies {
@@ -66,6 +80,7 @@ dependencies {
     implementation 'androidx.compose.ui:ui-graphics'
     implementation 'androidx.compose.ui:ui-tooling-preview'
     implementation 'androidx.compose.material3:material3'
+    implementation 'androidx.compose.material3:material3:1.2.0-alpha02'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
@@ -73,6 +88,13 @@ dependencies {
     androidTestImplementation 'androidx.compose.ui:ui-test-junit4'
     debugImplementation 'androidx.compose.ui:ui-tooling'
     debugImplementation 'androidx.compose.ui:ui-test-manifest'
+
+    // ViewPager
+    implementation "com.google.accompanist:accompanist-pager:0.20.1"
+    implementation "com.google.accompanist:accompanist-pager-indicators:0.20.1"
+
+    // 애니메이션
+    implementation "androidx.compose.animation:animation:1.4.3"
 
     //서버와 이미지 처리를 위한 gilde
     implementation 'com.github.bumptech.glide:glide:4.12.0'
@@ -112,4 +134,29 @@ dependencies {
 
     //coil
     implementation("io.coil-kt:coil-compose:2.4.0")
+
+    //compose nav controller
+    implementation("androidx.navigation:navigation-compose:2.5.3")
+
+    // naver map
+    implementation("com.naver.maps:map-sdk:3.17.0")
+    implementation 'io.github.fornewid:naver-map-compose:1.3.3'
+
+    //liveData for compose
+    implementation("androidx.compose.runtime:runtime-livedata:1.3.2")
+
+    //rating bar for compose
+    implementation 'com.github.a914-gowtham:compose-ratingbar:1.3.4'
+
+    // lottie
+    implementation "com.airbnb.android:lottie-compose:6.1.0"
+
+    //permission for compose
+    implementation "com.google.accompanist:accompanist-permissions:<version>"
+
+    // kakao login
+    implementation "com.kakao.sdk:v2-user:2.15.0"
+
+    // kakao link
+    implementation "com.kakao.sdk:v2-share:2.11.2"
 }
