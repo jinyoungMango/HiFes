@@ -96,7 +96,7 @@ public class NormalUserController {
         info.addProperty("email", email);
         info.addProperty("name", user.getName());
         info.addProperty("nickname", user.getNickname());
-        info.addProperty("orgCode", user.getProfilePic());
+        info.addProperty("ProfilePic", user.getProfilePic());
 
         return info;
 

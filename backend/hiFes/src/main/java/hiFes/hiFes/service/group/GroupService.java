@@ -75,7 +75,7 @@ public class GroupService {
 //    }
 
     public void groupCreate(GroupCreateDto groupCreateDto, NormalUser normalUser, MultipartFile image) throws Exception {
-        String projectPath = System.getProperty("user.dir") +"\\hiFes\\src\\main\\resources\\static\\images";
+        String projectPath = System.getProperty("user.dir") +"\\src\\main\\resources\\static\\images";
         String imageName = image.getOriginalFilename();
         File saveImage = new File(projectPath, imageName);
         image.transferTo(saveImage);
