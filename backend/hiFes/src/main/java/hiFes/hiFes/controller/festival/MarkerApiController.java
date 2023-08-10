@@ -1,4 +1,4 @@
-package hiFes.hiFes.controller;
+package hiFes.hiFes.controller.festival;
 
 
 import hiFes.hiFes.domain.Marker;

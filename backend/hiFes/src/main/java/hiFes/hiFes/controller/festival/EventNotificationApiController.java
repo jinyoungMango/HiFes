@@ -1,4 +1,5 @@
-package hiFes.hiFes.controller;
+package hiFes.hiFes.controller.festival;
+
 import hiFes.hiFes.service.EventNotificationService;
 import hiFes.hiFes.domain.EventNotification;
 import hiFes.hiFes.repository.EventNotificationRepository;

@@ -1,4 +1,5 @@
-package hiFes.hiFes.controller;
+package hiFes.hiFes.controller.festival;
+
 import hiFes.hiFes.service.GetGiftService;
 import hiFes.hiFes.domain.*;
 import io.swagger.v3.oas.annotations.Operation;

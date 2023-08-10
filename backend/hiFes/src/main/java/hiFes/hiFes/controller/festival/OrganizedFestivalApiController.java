@@ -1,4 +1,4 @@
-package hiFes.hiFes.controller;
+package hiFes.hiFes.controller.festival;
 
 
 import hiFes.hiFes.domain.*;
@@ -26,7 +26,7 @@ public class OrganizedFestivalApiController {
     @PostMapping("/api/create-festival")
 
     public ResponseEntity<String> addOrganizedFestival(@RequestPart("data") AddOrganizedFestivalRequest request, @RequestPart("file") MultipartFile file, @RequestPart("image") MultipartFile image)
-            throws Exception{
+    throws Exception{
         OrganizedFestival savedOrganizedFestival = organizedFestivalService.save(request,file,image);
         return ResponseEntity.status(HttpStatus.CREATED).body("OK");
     }
@@ -44,7 +44,7 @@ public class OrganizedFestivalApiController {
     @PutMapping("api/update-festival/{festivalId}")
     public ResponseEntity<OrganizedFestival> updateOrganizedFestival(@PathVariable long festivalId, @RequestPart("data") UpdateOrganizedFestivalRequest request,
                                                                      @RequestPart("file") MultipartFile file, @RequestPart("image") MultipartFile image)
-            throws Exception{
+    throws Exception{
 
         OrganizedFestival updateOrganizedFestival = organizedFestivalService.update(festivalId, request, file, image);
         return ResponseEntity.ok()
