@@ -12,7 +12,6 @@ import dagger.hilt.android.HiltAndroidApp
 class App : Application() {
     companion object {
         lateinit var prefs: SharedPreferences
-        lateinit var shuttleBusPrefs: SharedPreferences
     }
 
     lateinit var container: AppContainer

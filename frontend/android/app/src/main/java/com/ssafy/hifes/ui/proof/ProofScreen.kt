@@ -25,7 +25,7 @@ fun ProofScreen(navController: NavController, viewModel: ProofViewModel, type: S
     Log.d(TAG, "ProofScreen: type ${type}")
 
     if (type == "stamp") {
-        LaunchedEffect(Unit, {viewModel.requestStampProof(id)})
+        LaunchedEffect(Unit, { viewModel.requestStampProof(id) })
 
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -51,7 +51,7 @@ fun ProofScreen(navController: NavController, viewModel: ProofViewModel, type: S
 
         }
     } else {
-        LaunchedEffect(Unit, {viewModel.requestFestivalProof(id)})
+        LaunchedEffect(Unit, { viewModel.requestFestivalProof(id) })
 
         Column(
             modifier = Modifier.fillMaxSize(),
