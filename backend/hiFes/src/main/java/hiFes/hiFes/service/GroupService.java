@@ -28,57 +28,13 @@ public class GroupService {
     private final RegisteredHashtagRepository registeredHashtagRepository;
     private final HashtagRepository hashtagRepository;
 
-    public void groupCreate(/*이메일*/GroupCreateDto groupCreateDto){
-        LocalDateTime now = LocalDateTime.of(2020,9,16,0,0,0);
-        Group group = Group.builder()
-                .groupName(groupCreateDto.getGroupName())
-                .groupPic(groupCreateDto.getGroupPic())
-                .maxPop(groupCreateDto.getMaxPop())
-                .content(groupCreateDto.getContent())
-                .build();
-
-
-        groupRepository.save(group);
-
-        String[] hashtags = groupCreateDto.getHashtags();
-        int hashLen = hashtags.length;
-        for (int i = 0; i < hashLen; i++) {
-            RegisteredHashtag registeredHashtag = new RegisteredHashtag();
-            registeredHashtag.setGroup(group);
-            if (hashtagRepository.existsByTitle(hashtags[i])) {
-                Hashtag tag = hashtagRepository.findByTitle(hashtags[i]);
-                registeredHashtag.setHashtag(tag);
-            } else {
-                Hashtag hashtag = Hashtag.builder()
-                        .title(hashtags[i])
-                        .build();
-                hashtagRepository.save(hashtag);
-
-                registeredHashtag.setHashtag(hashtag);
-            }
-            registeredHashtagRepository.save(registeredHashtag);
-        }
-
-
-
-
-        RegisteredHashtag registeredHashtag = new RegisteredHashtag();
-        registeredHashtag.setGroup(group);
-
-        registeredHashtagRepository.save(registeredHashtag);
-
-
-
-    }
-
-//    public void groupCreate(/*이메일*/GroupCreateDto groupCreateDto, NormalUser normalUser){
+//    public void groupCreate(/*이메일*/GroupCreateDto groupCreateDto){
 //        LocalDateTime now = LocalDateTime.of(2020,9,16,0,0,0);
 //        Group group = Group.builder()
 //                .groupName(groupCreateDto.getGroupName())
 //                .groupPic(groupCreateDto.getGroupPic())
 //                .maxPop(groupCreateDto.getMaxPop())
 //                .content(groupCreateDto.getContent())
-//                .groupPassword(groupCreateDto.getGroupPassword())
 //                .build();
 //
 //
@@ -86,7 +42,7 @@ public class GroupService {
 //
 //        String[] hashtags = groupCreateDto.getHashtags();
 //        int hashLen = hashtags.length;
-//        for (int i = 0; i <= hashLen; i++) {
+//        for (int i = 0; i < hashLen; i++) {
 //            RegisteredHashtag registeredHashtag = new RegisteredHashtag();
 //            registeredHashtag.setGroup(group);
 //            if (hashtagRepository.existsByTitle(hashtags[i])) {
@@ -106,16 +62,6 @@ public class GroupService {
 //
 //
 //
-//        JoinedGroup joinedGroup = new JoinedGroup();
-//        // 이메일로 노말유저 아이디를 찾아서 저장
-//        joinedGroup.setNormalUser(normalUser);
-//        joinedGroup.setGroup(group);
-//        // 그룹을 생성한 사람이 모임장이 된다.
-//        joinedGroup.setIsLeader(true);
-//
-//        joinedGroupRepository.save(joinedGroup);
-//
-//
 //        RegisteredHashtag registeredHashtag = new RegisteredHashtag();
 //        registeredHashtag.setGroup(group);
 //
@@ -124,6 +70,60 @@ public class GroupService {
 //
 //
 //    }
+
+    public void groupCreate(/*이메일*/GroupCreateDto groupCreateDto, NormalUser normalUser){
+        LocalDateTime now = LocalDateTime.of(2020,9,16,0,0,0);
+        Group group = Group.builder()
+                .groupName(groupCreateDto.getGroupName())
+                .groupPic(groupCreateDto.getGroupPic())
+                .maxPop(groupCreateDto.getMaxPop())
+                .content(groupCreateDto.getContent())
+                .groupPassword(groupCreateDto.getGroupPassword())
+                .build();
+
+
+        groupRepository.save(group);
+
+        String[] hashtags = groupCreateDto.getHashtags();
+        int hashLen = hashtags.length;
+        for (int i = 0; i <= hashLen; i++) {
+            RegisteredHashtag registeredHashtag = new RegisteredHashtag();
+            registeredHashtag.setGroup(group);
+            if (hashtagRepository.existsByTitle(hashtags[i])) {
+                Hashtag tag = hashtagRepository.findByTitle(hashtags[i]);
+                registeredHashtag.setHashtag(tag);
+            } else {
+                Hashtag hashtag = Hashtag.builder()
+                        .title(hashtags[i])
+                        .build();
+                hashtagRepository.save(hashtag);
+
+                registeredHashtag.setHashtag(hashtag);
+            }
+            registeredHashtagRepository.save(registeredHashtag);
+        }
+
+
+
+
+        JoinedGroup joinedGroup = new JoinedGroup();
+        // 이메일로 노말유저 아이디를 찾아서 저장
+        joinedGroup.setNormalUser(normalUser);
+        joinedGroup.setGroup(group);
+        // 그룹을 생성한 사람이 모임장이 된다.
+        joinedGroup.setIsLeader(true);
+
+        joinedGroupRepository.save(joinedGroup);
+
+
+        RegisteredHashtag registeredHashtag = new RegisteredHashtag();
+        registeredHashtag.setGroup(group);
+
+        registeredHashtagRepository.save(registeredHashtag);
+
+
+
+    }
 
     public void groupJoin(NormalUser normalUser, Group group){
         JoinedGroup joinedGroup = new JoinedGroup();
@@ -148,6 +148,10 @@ public class GroupService {
 
     public List<Group> getGroupSearch(String searchWord){
         return groupRepository.findBygroupNameContainingOrContentContaining(searchWord, searchWord);
+    }
+
+    public Group getById(Long id) {
+        return groupRepository.findById(id).orElse(null);
     }
 
     public List<Group> getGroupHashtagSearch(String searchTag){
