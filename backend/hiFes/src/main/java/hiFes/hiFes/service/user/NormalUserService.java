@@ -31,7 +31,7 @@ public class NormalUserService {
 
     public void signUp(NormalUserSignUpDto normalUserSignUpDto, Map<String, Object> context, MultipartFile image) throws Exception {
 
-        String projectPath = System.getProperty("user.dir") +"\\hiFes\\src\\main\\resources\\static\\images";
+        String projectPath = System.getProperty("user.dir") +"\\src\\main\\resources\\static\\images";
         String imageName = image.getOriginalFilename();
         File saveImage = new File(projectPath, imageName);
         image.transferTo(saveImage);
