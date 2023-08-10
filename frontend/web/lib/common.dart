@@ -12,7 +12,7 @@ AppBar TopBar() {
       height: 160,
     ), // 로고 아이콘 또는 이미지를 넣어주면 됩니다.
     title: Text(
-      'HI-FES',
+      'HIFES',
       style: TextStyle(
           color: AppColor.PrimaryPink,
           fontWeight: FontWeight.bold,
