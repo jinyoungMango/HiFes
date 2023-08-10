@@ -2,9 +2,8 @@ package hiFes.hiFes.service;
 
 import hiFes.hiFes.domain.Comment;
 import hiFes.hiFes.domain.Post;
-import hiFes.hiFes.dto.CommentCreateDto;
-import hiFes.hiFes.dto.CommentListDto;
-import hiFes.hiFes.dto.CommentUpdateDto;
+import hiFes.hiFes.dto.commentDto.CommentCreateDto;
+import hiFes.hiFes.dto.commentDto.CommentUpdateDto;
 import hiFes.hiFes.repository.CommentRepository;
 import hiFes.hiFes.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -54,12 +52,12 @@ public class CommentService {
         return id;
     }
 
-    @Transactional(readOnly = true)
-    public List<CommentListDto> searchAllComments() {
-        return commentRepository.findAllByOrderByIdDesc().stream()
-                .map(CommentListDto::new)
-                .collect(Collectors.toList());
-    }
+//    @Transactional(readOnly = true)
+//    public List<CommentListDto> searchAllComments() {
+//        return commentRepository.findAllByOrderByIdDesc().stream()
+//                .map(CommentListDto::new)
+//                .collect(Collectors.toList());
+//    }
 
     @Transactional
     public void delete(Long id) {
@@ -68,4 +66,5 @@ public class CommentService {
 
         commentRepository.delete(comment);
     }
+
 }

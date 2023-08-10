@@ -1,7 +1,7 @@
 package hiFes.hiFes.service;
 
 import hiFes.hiFes.domain.Post;
-import hiFes.hiFes.dto.*;
+import hiFes.hiFes.dto.postDto.*;
 import hiFes.hiFes.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,18 +16,36 @@ public class PostService {
 
     private final PostRepository postRepository;
 
+    public List<PostListDto> getPostsByType(String postType) {
+        List<PostListDto> allPosts = searchAllPosts();
+        return allPosts.stream()
+                .filter(postListDto -> postListDto.getPostType().equals(postType))
+                .collect(Collectors.toList());
+    }
+
 
     @Transactional
     public Long create(PostCreateDto requestDto) {
         return postRepository.save(requestDto.toEntity()).getId();
     }
 
-    @Transactional
-    public Long update(Long id, PostUpdateDto requestDto) {
+//    @Transactional
+//    public Long update(Long id, PostUpdateDto requestDto) {
+//        Post post = postRepository.findById(id)
+//                .orElseThrow(() -> new IllegalArgumentException("No Such Post"));
+//        post.update(requestDto.getTitle(), requestDto.getContent(), requestDto.getPostType());
+//        return id;
+//    }
+
+    public PostUpdateResponseDto update(Long id, PostUpdateRequestDto requestDto) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("No Such Post"));
-        post.update(requestDto.getTitle(), requestDto.getContent());
-        return id;
+
+        post.update(requestDto.getTitle(), requestDto.getContent(), requestDto.getPostType());
+
+        Post updatedPost = postRepository.save(post);
+
+        return new PostUpdateResponseDto(updatedPost);
     }
 
 
@@ -56,13 +74,10 @@ public class PostService {
         postRepository.delete(post);
     }
 
-
-
 //    private final PictureRepository pictureRepository;
 //    private final FileHandler fileHandler;
 
     // 게시글 등록
-
 
 //    @Transactional
 //    public Long create(

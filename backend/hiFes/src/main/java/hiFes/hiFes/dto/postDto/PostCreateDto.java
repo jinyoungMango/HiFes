@@ -1,4 +1,4 @@
-package hiFes.hiFes.dto;
+package hiFes.hiFes.dto.postDto;
 
 
 import hiFes.hiFes.domain.Post;

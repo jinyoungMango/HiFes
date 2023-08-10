@@ -1,6 +1,7 @@
-package hiFes.hiFes.dto;
+package hiFes.hiFes.dto.postDto;
 
 import hiFes.hiFes.domain.Post;
+import hiFes.hiFes.dto.commentDto.CommentDto;
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -27,7 +28,7 @@ public class PostDto {
 
     private int views;
 
-    private List<CommentListDto> comments;
+    private List<CommentDto> topLevelComments;
 
     public PostDto(Post post) {
         this.id = post.getId();
@@ -38,8 +39,8 @@ public class PostDto {
         this.hideReason = post.getHideReason();
         this.createdAt = post.getCreatedAt();
         this.updatedAt = post.getUpdatedAt();
-        this.comments = post.getComments().stream()
-                .map(CommentListDto::new)
+        this.topLevelComments = post.getTopLevelComments().stream()
+                .map(CommentDto::new)
                 .collect(Collectors.toList());
 
     }

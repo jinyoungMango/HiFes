@@ -8,11 +8,12 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Post extends BaseTimeEntity {
+public class Post extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id", nullable = false)
@@ -43,7 +44,13 @@ public class Post extends BaseTimeEntity {
     private float rating;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.MERGE, orphanRemoval = true)
-    private List<Comment> comments = new ArrayList<>();
+    private List<Comment> comments;
+
+    public List<Comment> getTopLevelComments() {
+        return comments.stream()
+                .filter(comment -> comment.getParent() == null)
+                .collect(Collectors.toList());
+    }
 
     @Builder
     public Post(Long id, String title, String content, String postType, boolean isHidden,
@@ -71,9 +78,10 @@ public class Post extends BaseTimeEntity {
 //    private Member createdBy;
     // == 메서드 == //
 
-    public void update(String title, String content) {
+    public void update(String title, String content, String postType) {
         this.title = title;
         this.content = content;
+        this.postType = postType;
     }
 //    public void addPicture(Picture picture) {
 //        this.picture.add(picture);

@@ -1,11 +1,16 @@
 package hiFes.hiFes.controller;
 
-import hiFes.hiFes.dto.*;
+import hiFes.hiFes.domain.Post;
+import hiFes.hiFes.dto.commentDto.CommentUpdateDto;
+import hiFes.hiFes.dto.postDto.*;
 import hiFes.hiFes.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -28,14 +33,20 @@ public class PostController {
         return postService.searchAllPosts();
     }
 
-    @GetMapping(value = "/{id}")
+    @GetMapping(value = "/get/{id}")
     public ResponseEntity<PostDto> findById(@PathVariable Long id) {
         PostDto postDto = postService.findById(id);
         return ResponseEntity.ok(postDto);
     }
 
+//    @PutMapping("/update/{id}")
+//    public Long updatePost(@PathVariable Long id, @RequestBody PostUpdateDto postUpdateDto) {
+//        return postService.update(id, postUpdateDto);
+//    }
+
     @PutMapping("/update/{id}")
-    public Long updatePost(@PathVariable Long id, @RequestBody PostUpdateDto requestDto) {
+    public PostUpdateResponseDto updatePost(@PathVariable Long id,
+                                            @RequestBody @Valid PostUpdateRequestDto requestDto) {
         return postService.update(id, requestDto);
     }
 
@@ -44,6 +55,13 @@ public class PostController {
     public void delete(@PathVariable Long id) {
         postService.delete(id);
     }
+
+    @GetMapping("/{postType}")
+    public List<PostListDto> getPosts(@PathVariable String postType) {
+        return postService.getPostsByType(postType);
+    }
+
+
 
 //    private final PictureService fileService;
 
