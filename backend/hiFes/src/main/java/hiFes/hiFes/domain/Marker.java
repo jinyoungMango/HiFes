@@ -3,6 +3,7 @@ package hiFes.hiFes.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import hiFes.hiFes.dto.UpdateMarkerRequest;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -30,10 +31,17 @@ public class Marker {
     @Column(name="boothLongitude", nullable = false)
     private BigDecimal boothLongitude;
 
-
     @Column(name="description")
     private String description;
 
+    @Schema(description = "0 : 혹시 모르니까 쓰지 않기\n" +
+            "1 : 판매 부스\n" +
+            "2 : 먹거리 부스\n" +
+            "3 : 식당 부스\n" +
+            "4 : 스태프 위치\n" +
+            "5 : 안전 요원 위치\n" +
+            "6 : 화장실\n" +
+            "7 : 출입구")
     @Column(name="boothNo", nullable = false)
     private Integer boothNo;
 

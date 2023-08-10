@@ -18,7 +18,10 @@ public class GroupCreateDto {
     private LocalDateTime createdAt;
     private Integer maxPop;
     private String content;
+    private BigDecimal getterLatitude;
+    private BigDecimal getterLongitude;
+    private String getterOutline;
     private Integer groupPassword;
 
-    private String[] hashtags;
+    private ArrayList hashtags;
 }

@@ -6,6 +6,7 @@ import hiFes.hiFes.ExcelUtils;
 import hiFes.hiFes.domain.*;
 import hiFes.hiFes.dto.*;
 import hiFes.hiFes.repository.*;
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -133,6 +134,10 @@ public class OrganizedFestivalService {
         return festivalTableRepository.findByOrganizedFestival_festivalId(festivalId);
     }
 
+    public List<OrganizedFestival> findRandomOrganizedFestival(){
+        return organizedFestivalRepository.findAll();
+    }
+
     @Transactional
     public OrganizedFestival update(long id, UpdateOrganizedFestivalRequest request, MultipartFile file, MultipartFile image)throws Exception {
 
@@ -150,17 +155,16 @@ public class OrganizedFestivalService {
         String projectPath = System.getProperty("user.dir") +"\\hiFes\\src\\main\\resources\\static\\images";
         // 이 행사의 포스터 주소 삭제
         // Db에 저장된 포스터 삭제
-        String imagePath = projectPath + organizedFestival.getFesPosterPath();
-        String imageName = image.getOriginalFilename();
-        File saveImage = new File(projectPath, imageName);
-        if(saveImage.exists()){
-            saveImage.delete();
+        if(!image.isEmpty()){
+            String imagePath = projectPath + organizedFestival.getFesPosterPath();
+            String imageName = image.getOriginalFilename();
+            File saveImage = new File(projectPath, imageName);
+            if(saveImage.exists()){
+                saveImage.delete();
+            }
+            image.transferTo(saveImage);
+            request.setFesPosterPath("/images/"+  imageName);
         }
-
-        image.transferTo(saveImage);
-        request.setFesPosterPath("/images/"+  imageName);
-
-
 
         // Update 주최 행사
         organizedFestival.OrganizedFestivalupdate(request.getFesTitle(), request.getFesOutline(),
@@ -187,16 +191,25 @@ public class OrganizedFestivalService {
             }
         }
 
-//        System.out.println("ar 저장 전 아이디 = " + request.getArItems());
+//        System.out.println("ar 저장 전 아이디 = " + request.getItems());
 //        // Update AR 아이템
-//        for (UpdateARItemRequest arItemReq : request.getArItems()) {
+//        for (UpdateARItemRequest arItemReq : request.getItems()) {
 //
-//            ARItem arItem = arItemRepository.findById(arItemReq.getItemId())
-//                    .orElseThrow(() -> new IllegalArgumentException("AR item not found: " + arItemReq.getItemId()));
-//            arItem.update(arItemReq);
+//            if (arItemReq.getItemId() == null || arItemReq.getItemId() == 0) {
+//                // 새로운 미션 추가
+//                ARItem newArItem = new ARItem();
+//                newArItem.update(arItemReq);
+//                newArItem.setOrganizedFestival(organizedFestival);
+//                // 새 미션 저장
+//                arItemRepository.save(newArItem);
+//            } else {
+//                ARItem arItem = arItemRepository.findById(arItemReq.getItemId())
+//                        .orElseThrow(()-> new IllegalArgumentException("arItem not found" + arItemReq.getItemId()));
+//            }
 //        }
 
     //업데이트 일정
+
         try {
             List<FestivalTable> newFestivalTableData = ExcelUtils.readFestivalTable(file.getInputStream());
             festivalTableRepository.deleteByOrganizedFestival_festivalId(id);
@@ -207,6 +220,7 @@ public class OrganizedFestivalService {
         } catch (IOException e) {
             throw new RuntimeException("Failed to read festival table Excel file.", e);
         }
+
 
 
         for (UpdateMarkerRequest markerReq : request.getMarkers()) {

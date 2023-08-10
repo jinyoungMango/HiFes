@@ -12,7 +12,6 @@ import java.util.Date;
 @Builder
 @Table(name = "groups")
 @AllArgsConstructor
-@NoArgsConstructor
 public class Group {
 
     @Id

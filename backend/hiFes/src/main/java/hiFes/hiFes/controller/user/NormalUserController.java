@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
-import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,7 +21,7 @@ public class NormalUserController {
 
     @CrossOrigin(origins = "*")
     @PostMapping("normal/signUp")
-    public JsonObject signUp(@RequestBody NormalUserSignUpDto normalUserSignUpDto) throws Exception{
+    public String signUp(@RequestBody NormalUserSignUpDto normalUserSignUpDto) throws Exception{
         String accessToken = normalUserSignUpDto.getAccessToken();
         String test = normalUserSignUpDto.getNickname();
         System.out.println(accessToken + "***********************************************************" + test);
@@ -32,49 +31,25 @@ public class NormalUserController {
         normalUserService.signUp(normalUserSignUpDto, context);
 
         // 로그인
-        JsonObject loginSuccess = normalUserService.login((String) context.get("email"));
-        loginSuccess.addProperty("result", true);
-        loginSuccess.addProperty("id",  normalUserService.getByEmail((String) context.get("email")).getId());
-        return loginSuccess;
-
+        normalUserService.login((String) context.get("email"));
+        return "signup success";
     }
 
     @CrossOrigin(origins = "*")
     @PostMapping("normal/login")
-    @ResponseBody
-    public Object login(String accessToken){
+    public Boolean login(String accessToken){
+        System.out.println(accessToken + "++++++++++++++++++++++++++++++++++++++++++++");
         Map<String, Object> context =  normalUserService.searchKakaoUser(accessToken);
+
+        // 만약 받아온 값의 이메일과 추가 정보가 데이터베이스에 있다면 로그인 진행
         if (normalUserRepository.findByEmail((String) context.get("email")).isPresent()) {
-            JsonObject loginSuccess = normalUserService.login((String) context.get("email"));
-            loginSuccess.addProperty("id",  normalUserService.getByEmail((String) context.get("email")).getId());
-            loginSuccess.addProperty("result", true);
 
-            return loginSuccess;
-        }
-
-        JsonObject loginFail = new JsonObject();
-        loginFail.addProperty("accessToken", "");
-        loginFail.addProperty("refreshToken", "");
-        loginFail.addProperty("result", false);
-        return loginFail;
-
-    }
-
-    @CrossOrigin(origins = "*")
-    @PostMapping("normal/fcmSave")
-    public Boolean fcmSave(HttpServletRequest request, String fcmToken){
-        try{
-            String accessToken = jwtService.extractAccessToken(request).orElse("");
-            String email = jwtService.extractEmail(accessToken).orElse("");
-            NormalUser user = normalUserService.getByEmail(email);
-
-            user.updateFCMToken(fcmToken);
-
+            normalUserService.login((String) context.get("email"));
             return true;
+
         }
-        catch (Exception e) {
-            return false;
-        }
+
+        return false;
 
     }
 

@@ -12,7 +12,7 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @Getter
 @Setter
 @Table(name="ARItem")
