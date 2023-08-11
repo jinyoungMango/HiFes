@@ -52,6 +52,7 @@ class _MyPageState extends State<MyPage> with SingleTickerProviderStateMixin {
         // 사용자 정보 json을 파싱해서 토큰 저장
         organization = response.data['organization'];
         email = response.data['email'];
+        phoneNo = response.data['phoneNo'];
         // phoneNo = response.data['phoneNo'];
         setState(() {
           
