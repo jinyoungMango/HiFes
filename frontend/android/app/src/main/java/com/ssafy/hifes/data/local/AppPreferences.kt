@@ -10,7 +10,6 @@ object AppPreferences {
     private val gson = GsonBuilder().create()
 
     private const val LOGIN_SESSION = "login.session"
-    private const val USER_ID = "user_id"
 
     private const val ACCESS_TOKEN = "access_token"
     private const val REFRESH_TOKEN = "refresh_token"
@@ -39,15 +38,6 @@ object AppPreferences {
 
     fun getUserId(): String? {
         return preferences.getString(USER_ID, "")
-    }
-
-    fun getUserId(): Int {
-        return preferences.getInt(USER_ID, -1)
-    }
-
-    fun saveUserId(userId: Int) {
-        //preferences.edit().putInt(USER_ID, userId).apply()
-        preferences.edit().putInt(USER_ID, 300).apply() //로그인 기능 완료 후 수정 필요
     }
 
 }
