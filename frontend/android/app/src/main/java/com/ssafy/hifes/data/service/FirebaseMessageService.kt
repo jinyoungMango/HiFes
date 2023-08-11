@@ -1,8 +1,11 @@
 package com.ssafy.hifes.data.service
 
+import android.Manifest
 import android.app.PendingIntent
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.util.Log
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -55,6 +58,13 @@ class FirebaseMessageService: FirebaseMessagingService() {
             .setContentIntent(mainPendingIntent)
 
         NotificationManagerCompat.from(this).apply {
+            if (ActivityCompat.checkSelfPermission(
+                    this@FirebaseMessageService,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                return
+            }
             notify(101, builder1.build())
         }
     }
