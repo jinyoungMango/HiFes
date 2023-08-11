@@ -25,6 +25,7 @@ public class PostDto {
     private LocalDateTime updatedAt;
 
     private int views;
+    private float rating;
 
     private List<CommentDto> topLevelComments;
 
@@ -35,6 +36,8 @@ public class PostDto {
         this.title = post.getTitle();
         this.content = post.getContent();
         this.postType = post.getPostType();
+        this.views = post.getViews();
+        this.rating = post.getRating();
         this.isHidden = post.isHidden();
         this.hideReason = post.getHideReason();
         this.topLevelComments = post.getTopLevelComments().stream()

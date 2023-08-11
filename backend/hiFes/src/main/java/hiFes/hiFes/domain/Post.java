@@ -87,6 +87,11 @@ public class Post extends BaseEntity {
         this.content = content;
         this.postType = postType;
     }
+
+    public void increaseView() {
+        this.views += 1;
+    }
+
 //    public void addPicture(Picture picture) {
 //        this.picture.add(picture);
 //

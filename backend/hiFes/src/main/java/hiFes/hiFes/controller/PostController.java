@@ -23,16 +23,10 @@ public class PostController {
 
     private final PostService postService;
 
-
-<<<<<<< HEAD
-
-    @PostMapping("/post/create")
-    @Operation(summary = "게시글 생성, 필요 값 userId(Long), title(String), content(String), postType(String)")
-=======
     @PostMapping("/post/create")
     @Operation(summary = "게시글 생성, 필요 값 userId(Long), title(String), content(String), postType(String)" +
             " 전부 JSON 형식으로 주시면 됩니다.")
->>>>>>> develop
+
     public ResponseEntity<?> create(@RequestBody PostCreateDto createDto) {
         postService.create(createDto);
         return ResponseEntity.status(HttpStatus.CREATED).body("CREATE");
@@ -40,26 +34,15 @@ public class PostController {
     }
 
 
-<<<<<<< HEAD
-
-    @GetMapping("/post/all")
-
-=======
     @GetMapping("/post/list")
     @Operation(summary = "전체 게시글 조회, 필요 값 X")
->>>>>>> develop
     public List<PostListDto> searchAllPosts() {
         return postService.searchAllPosts();
     }
 
-<<<<<<< HEAD
 
-    @GetMapping(value = "/get/{id}")
-    @Operation(summary = "게시글 단일조회, 필요 값 postId(Long)")
-=======
     @GetMapping(value = "/post/get/{id}")
     @Operation(summary = "게시글 단일조회, 필요 값 postId(Long), 조회하려는 게시글의 postId 를 주시면 됩니다.")
->>>>>>> develop
     public ResponseEntity<PostDto> findById(@PathVariable Long id) {
         PostDto postDto = postService.findById(id);
         return ResponseEntity.ok(postDto);
@@ -70,15 +53,10 @@ public class PostController {
 //        return postService.update(id, postUpdateDto);
 //    }
 
-<<<<<<< HEAD
 
-    @PutMapping("/post/update/{id}")
-    @Operation(summary = "게시글 수정, 필요 값 postId(Long), title(String), content(String), postType(String)")
-=======
     @PutMapping("/post/update/{id}")
     @Operation(summary = "게시글 수정, 필요 값 postId(Long), title(String), content(String), postType(String)" +
             " 수정할 대상의 postId 는 url 에 같이 넣고 나머지는 JSON 형식으로 주시면 됩니다.")
->>>>>>> develop
     public PostUpdateResponseDto updatePost(@PathVariable Long id,
                                             @RequestBody @Valid PostUpdateRequestDto requestDto) {
         ResponseEntity.status(HttpStatus.OK).body("OK");
@@ -87,21 +65,13 @@ public class PostController {
 
 
     @DeleteMapping("/post/delete/{id}")
-<<<<<<< HEAD
-    @Operation(summary = "게시글 삭제, 필요 값 postId(Long)")
-=======
     @Operation(summary = "게시글 삭제, 필요 값 postId(Long), 삭제할 대상의 postId 는 url 에 같이 넣어주시면 됩니다.")
->>>>>>> develop
     public void delete(@PathVariable Long id) {
         postService.delete(id);
     }
 
     @GetMapping("/post/{postType}")
-<<<<<<< HEAD
-    @Operation(summary = "게시글 종류 별로 조회, 필요 값 postType(String)")
-=======
     @Operation(summary = "게시글 종류 별로 조회, 필요 값 postType(String), 검색하려는 글 종류를 url 에 같이 주시면 됩니다.")
->>>>>>> develop
     public List<PostListDto> getPosts(@PathVariable String postType) {
         return postService.getPostsByType(postType);
     }
