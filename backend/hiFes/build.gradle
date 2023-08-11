@@ -31,7 +31,6 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 
-	implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
 	implementation 'commons-io:commons-io:2.11.0'
 
 	implementation 'org.projectlombok:lombok'
