@@ -1,9 +1,8 @@
 package hiFes.hiFes.controller;
 
+import hiFes.hiFes.dto.commentDto.CommentCreateDto;
+import hiFes.hiFes.dto.commentDto.CommentUpdateDto;
 import hiFes.hiFes.dto.reponse.CommentResponseDto;
-import hiFes.hiFes.dto.request.CommentCreateDto;
-import hiFes.hiFes.dto.reponse.CommentListDto;
-import hiFes.hiFes.dto.request.CommentUpdateDto;
 import hiFes.hiFes.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

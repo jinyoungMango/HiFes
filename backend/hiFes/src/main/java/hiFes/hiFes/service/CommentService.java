@@ -2,15 +2,11 @@ package hiFes.hiFes.service;
 
 import hiFes.hiFes.domain.Comment;
 import hiFes.hiFes.domain.Post;
-<<<<<<< HEAD
-import hiFes.hiFes.dto.reponse.CommentResponseDto;
-import hiFes.hiFes.dto.request.CommentCreateDto;
-import hiFes.hiFes.dto.reponse.CommentListDto;
-import hiFes.hiFes.dto.request.CommentUpdateDto;
-=======
+
 import hiFes.hiFes.dto.commentDto.CommentCreateDto;
+import hiFes.hiFes.dto.commentDto.CommentListDto;
 import hiFes.hiFes.dto.commentDto.CommentUpdateDto;
->>>>>>> 90bac5b3010f0f969136fd409e9f527151aaf6e5
+import hiFes.hiFes.dto.reponse.CommentResponseDto;
 import hiFes.hiFes.repository.CommentRepository;
 import hiFes.hiFes.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -84,21 +81,21 @@ public class CommentService {
         return id;
     }
 
-<<<<<<< HEAD
+
     @Transactional(readOnly = true)
     public List<CommentListDto> getComments(Long postId) {
         return commentRepository.findByIdOrderByIdDesc().stream()
                 .map(CommentListDto::new)
                 .collect(Collectors.toList());
     }
-=======
+
 //    @Transactional(readOnly = true)
 //    public List<CommentListDto> searchAllComments() {
 //        return commentRepository.findAllByOrderByIdDesc().stream()
 //                .map(CommentListDto::new)
 //                .collect(Collectors.toList());
 //    }
->>>>>>> 90bac5b3010f0f969136fd409e9f527151aaf6e5
+
 
     @Transactional
     public void delete(Long id) {

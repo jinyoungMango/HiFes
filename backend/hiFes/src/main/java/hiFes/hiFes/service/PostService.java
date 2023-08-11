@@ -2,18 +2,12 @@ package hiFes.hiFes.service;
 
 import hiFes.hiFes.domain.Comment;
 import hiFes.hiFes.domain.Post;
-<<<<<<< HEAD
-import hiFes.hiFes.dto.reponse.PostDto;
-import hiFes.hiFes.dto.reponse.PostListDto;
-import hiFes.hiFes.dto.request.PostCreateDto;
-import hiFes.hiFes.dto.request.PostUpdateDto;
-=======
 import hiFes.hiFes.domain.user.HostUser;
 import hiFes.hiFes.domain.user.NormalUser;
 import hiFes.hiFes.dto.commentDto.CommentDto;
 import hiFes.hiFes.dto.postDto.*;
 import hiFes.hiFes.repository.CommentRepository;
->>>>>>> 90bac5b3010f0f969136fd409e9f527151aaf6e5
+
 import hiFes.hiFes.repository.PostRepository;
 import hiFes.hiFes.repository.user.HostUserRepository;
 import hiFes.hiFes.repository.user.NormalUserRepository;
