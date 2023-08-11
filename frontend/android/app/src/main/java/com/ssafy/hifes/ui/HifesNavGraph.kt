@@ -65,7 +65,7 @@ fun HifesNavGraph(
         composable(
             route = HifesDestinations.LOGIN_DETAIL_ROUTE
         ) {
-            LoginDetailScreen(navController = navController)
+            LoginDetailScreen(navController = navController, loginViewModel)
         }
         composable(
             route = HifesDestinations.FESTIVAL_DETAIL
