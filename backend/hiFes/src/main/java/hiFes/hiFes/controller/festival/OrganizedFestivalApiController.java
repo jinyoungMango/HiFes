@@ -10,6 +10,8 @@ import hiFes.hiFes.service.festival.OrganizedFestivalService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -26,15 +28,21 @@ import java.util.stream.Collectors;
 @Tag(name="행사 관련 컨트롤러", description = "행사, aritem, 행사일정, 스탬프 미션 관련 CRUD")
 public class OrganizedFestivalApiController {
     private final OrganizedFestivalService organizedFestivalService;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Operation(summary = "행사 등록", description = "행사, aritem, stampMission, 행사일정(엑셀), 부스 마커를 한번에 등록." +
             "RequestPart를 써서 이미지는 image, 엑셀은 file, 나머지는 data라는 이름을 FormData로 보내야 함.")
     @PostMapping("/api/create-festival")
-
-    public ResponseEntity<String> addOrganizedFestival(@RequestPart("data") AddOrganizedFestivalRequest request, @RequestPart("file") MultipartFile file, @RequestPart("image") MultipartFile image, @AuthenticationPrincipal User user)
+    @CrossOrigin("*")
+    public ResponseEntity<String> addOrganizedFestival(@RequestPart("data") AddOrganizedFestivalRequest request, @RequestPart("file") MultipartFile file, @RequestPart("image") MultipartFile image)
             throws Exception{
-        Long HostUserId = Long.valueOf(user.getUsername());
-        OrganizedFestival savedOrganizedFestival = organizedFestivalService.save(request,file,image, HostUserId);
+        logger.error("trace log ={}", request);
+        logger.trace("trace log={}", file);
+        logger.trace("trace log={}", image);
+//        logger.trace("trace log={}", user);
+//
+//        Long HostUserId = Long.valueOf(user.getUsername());
+        OrganizedFestival savedOrganizedFestival = organizedFestivalService.save(request,file,image);
         return ResponseEntity.status(HttpStatus.CREATED).body("OK");
     }
 

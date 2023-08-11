@@ -20,6 +20,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+//@RequestMapping("/api")
 public class GroupPictureController {
     private final JwtService jwtService;
     private final NormalUserService normalUserService;
@@ -32,7 +33,7 @@ public class GroupPictureController {
     public String groupPictureUpload(HttpServletRequest request,@RequestParam("groupId") Long groupId, @RequestPart("image") MultipartFile image) throws Exception {
         String accessToken = jwtService.extractAccessToken(request).orElse("");
         String email = jwtService.extractEmail(accessToken).orElse("");
-        NormalUser user = normalUserService.getByEmail(email);
+        NormalUser user = normalUserService.getByEmail("test1@test.com");
         Group group = groupRepository.findById(groupId).orElse(null);
 
 
@@ -48,11 +49,10 @@ public class GroupPictureController {
         return groupPictureService.GroupPicCollect(groupId);
     }
 
-    @Operation(summary = "그룹에 공유된 사진 ID로 사진 올린 이용자 조회")
+    @Operation(summary = "그룹에 공유된 사진 ID로 사진 올린 이용자 조회", description = "사진의 id를 올려주셔야 해요 모임아이디 X")
     @CrossOrigin(origins = "*")
     @GetMapping("group/picture/{sharedPicId}")
     public Long getNormalUserIdsForSharedPic(HttpServletRequest request, @PathVariable Long sharedPicId) throws Exception {
-
         return groupPictureService.getNormalUserIdsForSharedPic(sharedPicId);
     }
 }
