@@ -15,7 +15,7 @@ class Board extends StatefulWidget {
 }
 
 class _BoardState extends State<Board> {
-  String selectedValue = '질문';
+  String selectedValue = '공지';
 
   @override
   Widget build(BuildContext context) {
@@ -111,7 +111,7 @@ Expanded NoticeBoardList(BuildContext context) {
                   },
                   child: Text(
                     "등록하기",
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(color: Colors.white, fontSize: 16),
                   )),
             ],
           ),
@@ -234,7 +234,7 @@ InkWell NoticePostItem() {
           SizedBox(height: 10),
           Row(
             children: [
-              Text('심심한 10기를 위한 9기의 꿀팁'),
+              Text('10번 부스 어디있어요'),
             ],
           ),
           SizedBox(
@@ -250,14 +250,14 @@ InkWell NoticePostItem() {
                     SizedBox(
                       width: 10,
                     ),
-                    Text('일시')
+                    Text('2023-08-08      23:50')
                   ],
                 ),
               ),
               Container(
                 child: Row(
                   children: [
-                    Text('조회수'),
+                    Text('조회수  10'),
                   ],
                 ),
               )

@@ -8,9 +8,12 @@ import hiFes.hiFes.service.user.JwtService;
 import hiFes.hiFes.service.user.NormalUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,35 +24,63 @@ public class NormalUserController {
 
     @CrossOrigin(origins = "*")
     @PostMapping("normal/signUp")
-    public String signUp(@RequestBody NormalUserSignUpDto normalUserSignUpDto) throws Exception{
+    public JsonObject signUp(@RequestPart(value = "normalUserSignUpDto") NormalUserSignUpDto normalUserSignUpDto, @RequestPart(value = "image")  MultipartFile image) throws Exception{
         String accessToken = normalUserSignUpDto.getAccessToken();
-        String test = normalUserSignUpDto.getNickname();
-        System.out.println(accessToken + "***********************************************************" + test);
 
         Map<String, Object> context =  normalUserService.searchKakaoUser(accessToken);
 
-        normalUserService.signUp(normalUserSignUpDto, context);
+        normalUserService.signUp(normalUserSignUpDto, context, image);
 
         // 로그인
-        normalUserService.login((String) context.get("email"));
-        return "signup success";
+        JsonObject loginSuccess = normalUserService.login((String) context.get("email"));
+        loginSuccess.addProperty("result", true);
+        loginSuccess.addProperty("id",  normalUserService.getByEmail((String) context.get("email")).getId());
+        return loginSuccess;
+
     }
+
+
+
+
+
 
     @CrossOrigin(origins = "*")
     @PostMapping("normal/login")
-    public Boolean login(String accessToken){
-        System.out.println(accessToken + "++++++++++++++++++++++++++++++++++++++++++++");
+    @ResponseBody
+    public Object login(String accessToken){
         Map<String, Object> context =  normalUserService.searchKakaoUser(accessToken);
-
-        // 만약 받아온 값의 이메일과 추가 정보가 데이터베이스에 있다면 로그인 진행
         if (normalUserRepository.findByEmail((String) context.get("email")).isPresent()) {
+            JsonObject loginSuccess = normalUserService.login((String) context.get("email"));
+            loginSuccess.addProperty("id",  String.valueOf(normalUserService.getByEmail((String) context.get("email")).getId()));
+            loginSuccess.addProperty("result", true);
 
-            normalUserService.login((String) context.get("email"));
-            return true;
-
+            return loginSuccess;
         }
 
-        return false;
+        JsonObject loginFail = new JsonObject();
+        loginFail.addProperty("accessToken", "");
+        loginFail.addProperty("refreshToken", "");
+        loginFail.addProperty("result", false);
+        loginFail.addProperty("id", "");
+        return loginFail;
+
+    }
+
+    @CrossOrigin(origins = "*")
+    @PostMapping("normal/fcmSave")
+    public Boolean fcmSave(HttpServletRequest request, String fcmToken){
+        try{
+            String accessToken = jwtService.extractAccessToken(request).orElse("");
+            String email = jwtService.extractEmail(accessToken).orElse("");
+            NormalUser user = normalUserService.getByEmail(email);
+
+            user.updateFCMToken(fcmToken);
+
+            return true;
+        }
+        catch (Exception e) {
+            return false;
+        }
 
     }
 
@@ -65,11 +96,13 @@ public class NormalUserController {
         info.addProperty("email", email);
         info.addProperty("name", user.getName());
         info.addProperty("nickname", user.getNickname());
-        info.addProperty("orgCode", user.getProfilePic());
+        info.addProperty("ProfilePic", user.getProfilePic());
 
         return info;
 
 
     }
+
+
 
 }

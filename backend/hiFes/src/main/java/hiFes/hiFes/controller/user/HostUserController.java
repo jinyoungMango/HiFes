@@ -22,31 +22,18 @@ public class HostUserController {
     private final JwtService jwtService;
 
 
-//    @CrossOrigin(origins = "*")
-//    @PostMapping("host/sign-up")
-//    public String signUp(@RequestBody HostUserSignUpDto hostUserSignUpDto/*, String accessToken*/) throws Exception{
-//        /*Map<String, Object> context =  hostUserService.searchKakaoUser(accessToken);*/
-//        System.out.println("aaaaaaaaaaaaaaaaaaa");
-//        hostUserService.signUp(hostUserSignUpDto);
-////        hostUserService.signUp(hostUserSignUpDto, context)
-//        // 로그인
-////        hostUserService.loadUserByUsername((String) context.get("email"));
-//        hostUserService.login("emailtest1023@test.com");
-//        return "signup success";
-//    }
-
-
     @CrossOrigin(origins = "*")
     @PostMapping("host/sign-up")
     public JsonObject  signUp(@RequestBody HostUserSignUpDto hostUserSignUpDto) throws Exception{
         String accessToken = hostUserSignUpDto.getAccessToken();
-        String test = hostUserSignUpDto.getOrganization();
-        System.out.println(accessToken + "***********************************************************" + test);
         Map<String, Object> context =  hostUserService.searchKakaoUser(accessToken);
 
         hostUserService.signUp(hostUserSignUpDto, context);
         // 로그인
-        return hostUserService.login((String) context.get("email"));
+        JsonObject loginSuccess = hostUserService.login((String) context.get("email"));
+        loginSuccess.addProperty("result", true);
+        loginSuccess.addProperty("id",  hostUserService.getByEmail((String) context.get("email")).getId());
+        return loginSuccess;
     }
 
     @CrossOrigin(origins = "*")
@@ -60,15 +47,12 @@ public class HostUserController {
 
         // 만약 받아온 값의 이메일과 추가 정보가 데이터베이스에 있다면 로그인 진행
         if (hostUserRepository.findByEmail((String) context.get("email")).isPresent()) {
-            HostUser user = hostUserService.getByEmail((String) context.get("email"));
+            JsonObject loginSuccess = hostUserService.login((String) context.get("email"));
+            loginSuccess.addProperty("result", true);
+            loginSuccess.addProperty("id",  hostUserService.getByEmail((String) context.get("email")).getId());
 
-            System.out.println("????????????????????????????????????????????????????????????" + user.getOrgNo());
-            // 기업 정보까지 저장되어 있다면 로그인 진행
 
-//            tokens.put("userId", user.getId().toString());
-
-            return hostUserService.login((String) context.get("email"));
-
+            return loginSuccess;
 
 
         }
@@ -102,9 +86,10 @@ public class HostUserController {
 
         info.addProperty("email", user.getEmail());
         info.addProperty("name", user.getName());
-        info.addProperty("orgNo", user.getOrgNo());
-        info.addProperty("orgCode", user.getOrgCode());
+        info.addProperty("orgNo", user.getOrg_no());
+        info.addProperty("orgCode", user.getOrg_code());
         info.addProperty("organization", user.getOrganization());
+        info.addProperty("phoneNo2", user.getPhone_no());
         info.addProperty("phoneNo", user.getPhoneNo());
 
         return info;

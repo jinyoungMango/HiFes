@@ -12,6 +12,7 @@ import java.util.Date;
 @Builder
 @Table(name = "groups")
 @AllArgsConstructor
+@NoArgsConstructor
 public class Group {
 
     @Id
@@ -34,5 +35,5 @@ public class Group {
     private BigDecimal getterLatitude;
     private BigDecimal getterLongitude;
     private String getterOutline;
-    private Integer groupPassword;
+    private Long festivalId;
 }
