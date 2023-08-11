@@ -162,10 +162,8 @@ public class OrganizedFestivalService {
         BigDecimal fesLongitude = new BigDecimal(LatLong[1]);
         request.setFesLatitude(fesLatitude);
         request.setFesLongitude(fesLongitude);
-
-
         //update하기 전에 사진 다 삭제하고 다시 넣기
-        String projectPath = System.getProperty("user.dir") +"\\hiFes\\src\\main\\resources\\static\\images";
+        String projectPath = System.getProperty("user.dir") +"\\src\\main\\resources\\static\\images";
         // 이 행사의 포스터 주소 삭제
         // Db에 저장된 포스터 삭제
         if(!image.isEmpty()){

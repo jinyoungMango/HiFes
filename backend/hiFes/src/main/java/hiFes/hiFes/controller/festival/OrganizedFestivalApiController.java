@@ -53,11 +53,10 @@ public class OrganizedFestivalApiController {
             "Formdata를 사용해서 엑셀은 file, 이미지는 image, 나머지는 data로 받음.")
     @PutMapping("/update-festival/{festivalId}")
     public ResponseEntity<OrganizedFestival> updateOrganizedFestival(@PathVariable long festivalId, @RequestPart("data") UpdateOrganizedFestivalRequest request,
-                                                                     @RequestPart("file") MultipartFile file, @RequestPart("image") MultipartFile image,
-                                                                     @AuthenticationPrincipal User user)
+                                                                     @RequestPart("file") MultipartFile file, @RequestPart("image") MultipartFile image
+                                                                     )
             throws Exception{
-        Long HostUserId = Long.valueOf(user.getUsername());
-        OrganizedFestival savedOrganizedFestival = organizedFestivalService.save(request,file,image, HostUserId);
+
         OrganizedFestival updateOrganizedFestival = organizedFestivalService.update(festivalId, request, file, image);
         return ResponseEntity.ok()
                 .body(updateOrganizedFestival);
