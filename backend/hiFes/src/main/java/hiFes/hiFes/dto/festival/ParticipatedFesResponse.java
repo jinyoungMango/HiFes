@@ -4,6 +4,8 @@ import hiFes.hiFes.domain.festival.ParticipatedFes;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 public class ParticipatedFesResponse {
@@ -12,6 +14,7 @@ public class ParticipatedFesResponse {
     private final Boolean isCompleted;
     private final String fesTitle;
     private final Integer countMission;
+    private final LocalDateTime participateTime;
 
 
     public ParticipatedFesResponse(ParticipatedFes participatedFes){
@@ -20,6 +23,7 @@ public class ParticipatedFesResponse {
         this.normalUserId = participatedFes.getNormalUser().getId();
         this.isCompleted = participatedFes.getIsCompleted();
         this.countMission = participatedFes.getOrganizedFestival().getStampMissions().size();
+        this.participateTime = participatedFes.getParticipateTime();
     }
 
 }

@@ -13,4 +13,10 @@ public interface CompletedStampMissionRepository extends JpaRepository<Completed
             "FROM CompletedStampMission csm, StampMission sm " +
             "WHERE csm.stampMission = sm AND csm.normalUser.id = :userId AND sm.organizedFestival.id = :festivalId")
     List<Long> findCompletedStampMission_idByNormalUser_idAndOrganizedFestival_FestivalId(@Param("userId") Long userId, @Param("festivalId") Long festivalId);
+
+    @Query("SELECT COUNT(sm.missionId) " +
+            "FROM CompletedStampMission csm, StampMission sm " +
+            "WHERE csm.stampMission = sm AND csm.normalUser.id = :userId AND sm.organizedFestival.id = :festivalId")
+    Long countCompletedStampMissionByNormalUser_idAndOrganizedFestival_FestivalId(@Param("userId") Long userId, @Param("festivalId") Long festivalId);
+
 }

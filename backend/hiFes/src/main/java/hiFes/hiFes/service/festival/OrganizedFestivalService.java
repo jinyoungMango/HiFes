@@ -9,6 +9,7 @@ import hiFes.hiFes.dto.festival.*;
 import hiFes.hiFes.repository.festival.*;
 import hiFes.hiFes.repository.user.HostUserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -55,7 +56,7 @@ public class OrganizedFestivalService {
 
 
         //이미지 처리
-        String projectPath = System.getProperty("user.dir") +"\\hiFes\\src\\main\\resources\\static\\images";
+        String projectPath = System.getProperty("user.dir") +"\\src\\main\\resources\\static\\images";
 //        UUID uuid = UUID.randomUUID();
 //        String imageName = uuid + "_" + image.getOriginalFilename();
         String imageName = image.getOriginalFilename();
@@ -272,7 +273,7 @@ public class OrganizedFestivalService {
         stampMissionRepository.deleteById(id);
     }
 
-
+    @Transactional
     public String[] getLatLonFromGoogleApi(String fesAddress) {
         String apiKey = "AIzaSyBe3i_41gwVR9efodpGJQuxCx1Qyr1ZDtE";
         String apiUrl = "https://maps.googleapis.com/maps/api/geocode/json";

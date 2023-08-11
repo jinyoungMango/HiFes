@@ -23,13 +23,13 @@ public class EventNotification {
     @Column(name="eventNotificationId")
     private Long eventNotificationId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="programId")
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonBackReference
     private FestivalTable festivalTable;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="normal_user_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonBackReference
