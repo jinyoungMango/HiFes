@@ -1,6 +1,7 @@
 package com.ssafy.hifes.ui.home
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -25,6 +26,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,6 +47,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.ssafy.hifes.R
+import com.ssafy.hifes.data.model.FestivalDate
 import com.ssafy.hifes.data.model.OrganizedFestivalDto
 import com.ssafy.hifes.ui.HifesDestinations
 import com.ssafy.hifes.ui.iconpack.MyIconPack
@@ -52,11 +55,25 @@ import com.ssafy.hifes.ui.iconpack.myiconpack.Imagenotfound
 import com.ssafy.hifes.ui.main.MainViewModel
 import com.ssafy.hifes.ui.theme.pretendardFamily
 
+private const val TAG = "HomeScreen_하이페스"
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HomeScreen(navController: NavController, viewModel: MainViewModel) {
     val festivalList = viewModel.festivalList.observeAsState()
+    val randomFestivalList = viewModel.randomFestivalList.observeAsState()
+    val context = LocalContext.current
+    LaunchedEffect(Unit) {
+        val location = viewModel.fetchCurrentLocation(context)
+        location?.let {
+            val curLat = location.latitude
+            val curLon = location.longitude
+            Log.d(TAG, "HomeScreen: $curLat, $curLon")
+
+            viewModel.getNearFestivalList(curLat, curLon)
+            viewModel.getRandomFestivalList()
+        }
+    }
 
     val nearestFestival: OrganizedFestivalDto?
     val nearFestivalList: List<OrganizedFestivalDto>
@@ -64,7 +81,17 @@ fun HomeScreen(navController: NavController, viewModel: MainViewModel) {
         nearestFestival = festivalList.value!!.first()
         nearFestivalList = festivalList.value!!.drop(1)
     } else {
-        nearestFestival = OrganizedFestivalDto()
+        nearestFestival = OrganizedFestivalDto(
+            "",
+            "",
+            "",
+            "",
+            FestivalDate(0, 0, 0),
+            FestivalDate(0, 0, 0),
+            0.0,
+            0.0,
+            0
+        )
         nearFestivalList = emptyList()
     }
 
@@ -214,7 +241,7 @@ fun RoundedImageWithText(
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
 fun HomeCardPrev() {
-    HomeScreen(navController = rememberNavController(), viewModel = MainViewModel())
+//    HomeScreen(navController = rememberNavController(), viewModel = MainViewModel())
 }
 
 @Composable

@@ -27,7 +27,7 @@ fun MapPrev() {
 @Composable
 fun ViewPager(
     navController: NavController,
-    festivalList: MutableList<OrganizedFestivalDto>,
+    festivalList: List<OrganizedFestivalDto>,
     modifier: Modifier = Modifier,
     viewModel: MainViewModel
 ) {

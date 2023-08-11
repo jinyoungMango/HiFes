@@ -216,7 +216,7 @@ fun WavesAnimationCentered(onAnimationEnd: () -> Unit) {
 @OptIn(ExperimentalNaverMapApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun AroundMyLocationFestivalMap(
-    festivalList: MutableList<OrganizedFestivalDto>?,
+    festivalList: List<OrganizedFestivalDto>?,
     sheetState: ModalBottomSheetState,
     coroutineScope: CoroutineScope,
     onFestivalSelected: (OrganizedFestivalDto) -> Unit
@@ -373,5 +373,5 @@ fun setMarkerIcon(boothNo: Int): Int {
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
 fun MapScreenPriview() {
-    MapScreen(rememberNavController(), MainViewModel(), DetailViewModel())
+//    MapScreen(rememberNavController(), MainViewModel(), DetailViewModel())
 }

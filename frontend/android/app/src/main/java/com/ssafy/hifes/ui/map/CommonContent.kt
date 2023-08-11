@@ -129,10 +129,8 @@ fun MapCommonContent(festival: OrganizedFestivalDto, score: Double, isViewPager:
             )
             if (!isViewPager) {
                 val date = "${
-                    CommonUtils.formatSqlDateToString(
-                        festival.fesStartDate
-                    )
-                } ~ ${CommonUtils.formatSqlDateToString(festival.fesEndDate)}"
+                    CommonUtils.formatFestivalDateToString(festival.fesStartDate)
+                } ~ ${CommonUtils.formatFestivalDateToString(festival.fesEndDate)}"
                 TextTitleWithContent(
                     title = "일정",
                     content = date

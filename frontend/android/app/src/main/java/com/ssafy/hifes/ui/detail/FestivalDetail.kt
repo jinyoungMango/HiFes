@@ -78,6 +78,7 @@ import com.ssafy.hifes.ui.iconpack.myiconpack.Imagenotfound
 import com.ssafy.hifes.ui.main.MainViewModel
 import com.ssafy.hifes.ui.map.StarScore
 import com.ssafy.hifes.ui.theme.pretendardFamily
+import com.ssafy.hifes.util.CommonUtils
 import com.ssafy.hifes.util.CommonUtils.formatSqlDateToString
 
 
@@ -163,8 +164,8 @@ fun FestivalDetail(navController: NavHostController, viewModel: MainViewModel) {
                         Spacer(modifier = Modifier.size(12.dp))
                         DetailCommonContent(
                             title = "일정",
-                            content1 = formatSqlDateToString(festivalData.fesStartDate),
-                            content2 = formatSqlDateToString(festivalData.fesEndDate)
+                            content1 = CommonUtils.formatFestivalDateToString(festivalData.fesStartDate),
+                            content2 = CommonUtils.formatFestivalDateToString(festivalData.fesEndDate)
                         )
                         Spacer(modifier = Modifier.size(12.dp))
                         DetailCommonContent(title = "장소", address = "주소")
@@ -195,7 +196,7 @@ fun FestivalDetail(navController: NavHostController, viewModel: MainViewModel) {
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
 fun FestivalDetailPrev() {
-    FestivalDetail(navController = rememberNavController(), MainViewModel())
+//    FestivalDetail(navController = rememberNavController(), MainViewModel())
 }
 
 fun kakaoShare(festival: OrganizedFestivalDto, context: Context) {
