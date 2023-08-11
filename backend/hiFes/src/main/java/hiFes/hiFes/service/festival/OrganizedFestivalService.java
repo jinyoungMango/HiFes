@@ -46,7 +46,7 @@ public class OrganizedFestivalService {
 
 
     @org.springframework.transaction.annotation.Transactional
-    public OrganizedFestival save(AddOrganizedFestivalRequest request, MultipartFile file, MultipartFile image) throws Exception {
+    public OrganizedFestival save(AddOrganizedFestivalRequest request, MultipartFile file, MultipartFile image, Long HostUserId) throws Exception {
 
         String[] LatLong =  getLatLonFromGoogleApi(request.getFesAddress());
         BigDecimal fesLatitude = new BigDecimal(LatLong[0]);
@@ -65,8 +65,8 @@ public class OrganizedFestivalService {
 
         request.setFesPosterPath("/images/"+  imageName);
 
-//        HostUser hostUser = hostUserRepository.findById(HostUserId).orElseThrow(null);
-//        request.setHostUser(hostUser);
+        HostUser hostUser = hostUserRepository.findById(HostUserId).orElseThrow(null);
+        request.setHostUser(hostUser);
         OrganizedFestival savedOrganizedFestival = request.toEntity();
 
 
@@ -162,10 +162,8 @@ public class OrganizedFestivalService {
         BigDecimal fesLongitude = new BigDecimal(LatLong[1]);
         request.setFesLatitude(fesLatitude);
         request.setFesLongitude(fesLongitude);
-
-
         //update하기 전에 사진 다 삭제하고 다시 넣기
-        String projectPath = System.getProperty("user.dir") +"\\hiFes\\src\\main\\resources\\static\\images";
+        String projectPath = System.getProperty("user.dir") +"\\src\\main\\resources\\static\\images";
         // 이 행사의 포스터 주소 삭제
         // Db에 저장된 포스터 삭제
         if(!image.isEmpty()){
