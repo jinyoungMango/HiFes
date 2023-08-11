@@ -1,5 +1,6 @@
 package hiFes.hiFes.controller.group;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import hiFes.hiFes.domain.BaseTimeEntity;
@@ -19,9 +20,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
+//@RequestMapping("/api")
 public class GroupController extends BaseTimeEntity {
     private final NormalUserService normalUserService;
     private final GroupService groupService;
@@ -29,19 +32,6 @@ public class GroupController extends BaseTimeEntity {
     private final JwtService jwtService;
 
     // 주석한 부분은 유저 관련 기능이다.
-
-//    @CrossOrigin(origins = "*")
-//    @PostMapping("group/create")
-//    public ResponseEntity<String> groupCreate(HttpServletRequest request, GroupCreateDto groupCreateDto,  @RequestPart("image") MultipartFile image) throws Exception {
-////        String accessToken = jwtService.extractAccessToken(request).orElse("");
-////        String email = jwtService.extractEmail(accessToken).orElse("");
-//        NormalUser user = normalUserService.getByEmail("test00000@test.com");
-//
-//        groupService.groupCreate(groupCreateDto, user, image);
-//
-//
-//        return ResponseEntity.ok("group create success");
-//    }
 
     @CrossOrigin(origins = "*")
     @PostMapping("group/create")
@@ -64,8 +54,8 @@ public class GroupController extends BaseTimeEntity {
     }
 
     @CrossOrigin(origins = "*")
-    @PostMapping("group/join")
-    public String groupJoin(HttpServletRequest request, @RequestBody Long groupId){
+    @GetMapping("group/join/{groupId}")
+    public String groupJoin(HttpServletRequest request, @PathVariable Long groupId){
         String accessToken = jwtService.extractAccessToken(request).orElse("");
         String email = jwtService.extractEmail(accessToken).orElse("");
         NormalUser user = normalUserService.getByEmail(email);
@@ -84,6 +74,8 @@ public class GroupController extends BaseTimeEntity {
         NormalUser user = normalUserService.getByEmail(email);
 
         Group group = groupService.groupDetail(id.longValue());
+        List<NormalUser> joinedPeople = groupService.getJoinedPeople(id);
+
 
 
         JsonObject groupInfo =groupService.isJoined(id, user);
@@ -91,6 +83,30 @@ public class GroupController extends BaseTimeEntity {
         groupInfo.addProperty("groupContent", group.getContent());
         groupInfo.addProperty("groupMaxPop", group.getMaxPop());
         groupInfo.addProperty("groupCreatedAt", String.valueOf(group.getCreatedAt()));
+        groupInfo.addProperty("numOfJoinedPeople", joinedPeople.size());
+
+        JsonArray joinedPeopleArray = new JsonArray();
+
+        int i = 0;
+
+        for (NormalUser normalUser : joinedPeople) {
+            JsonObject userObject = new JsonObject();
+            userObject.addProperty("userId", normalUser.getId());
+            userObject.addProperty("userNickname", normalUser.getNickname());
+            userObject.addProperty("userProfilePic", normalUser.getProfilePic());
+
+            if (i == joinedPeople.size() - 1) {
+                userObject.addProperty("isLeader", true);
+            }
+            else{
+                userObject.addProperty("isLeader", false);
+            }
+
+            joinedPeopleArray.add(userObject);
+            i++;
+        }
+
+        groupInfo.add("joinedPeople", joinedPeopleArray);
 
 
         return groupInfo;
