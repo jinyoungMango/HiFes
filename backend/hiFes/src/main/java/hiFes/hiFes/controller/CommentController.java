@@ -15,7 +15,7 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/comment")
+@RequestMapping("/api")
 public class CommentController {
 
     private final CommentService commentService;
@@ -24,14 +24,14 @@ public class CommentController {
 //        this.commentService  = commentService;
 //    }
 
-    @PostMapping("/create")
+    @PostMapping("/comment/create")
     @Operation(summary = "댓글 생성, 필요 값 postId(Long), content(Long), parentId(Long)")
     public ResponseEntity<?> createComment(@RequestBody CommentCreateDto requestDto) {
         commentService.create(requestDto);
         return ResponseEntity.ok(requestDto);
     }
 
-    @PostMapping("/create/re")
+    @PostMapping("/comment/create/re")
     @Operation(summary = "대댓글 생성, 필요 값 postId(Long), content(Long), parentId(Long)")
     public ResponseEntity<?> createReComment(@RequestBody CommentCreateDto requestDto) {
         commentService.create(requestDto);
@@ -43,13 +43,13 @@ public class CommentController {
 //        return commentService.searchAllComments();
 //    }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/comment/update/{id}")
     @Operation(summary = "댓글 수정, 필요 값 commentId(Long), content(Long)")
     public Long update(@PathVariable Long id, @RequestBody CommentUpdateDto requestDto) {
         return commentService.update(id, requestDto);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/comment/delete/{id}")
     @Operation(summary = "댓글 삭제, 필요 값 commentId(Long)")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         commentService.delete(id);

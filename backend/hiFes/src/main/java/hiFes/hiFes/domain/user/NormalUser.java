@@ -7,16 +7,16 @@ import javax.persistence.GenerationType;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Entity(name="normal_user")
+@Entity(name="normalUser")
 @Builder
 @AllArgsConstructor
 
 public class NormalUser {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "normal_sequnce")
-    @SequenceGenerator(name = "normal_sequnce", sequenceName = "normal_sequnce_name", initialValue = 300)
-    @Column
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "normalSequence")
+    @SequenceGenerator(name = "normalSequence", sequenceName = "normalSequenceName", initialValue = 300)
+    @Column(name = "nomalUserId")
     private Long id;
 
 

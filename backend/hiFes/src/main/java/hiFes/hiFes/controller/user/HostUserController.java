@@ -15,6 +15,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api")
 public class HostUserController {
     private final HostUserService hostUserService;
     private final HostUserRepository hostUserRepository;

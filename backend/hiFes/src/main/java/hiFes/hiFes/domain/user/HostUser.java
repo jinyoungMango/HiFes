@@ -10,12 +10,12 @@ import javax.persistence.GenerationType;
 @Entity
 @Builder
 @AllArgsConstructor
-@Table(name = "host_user")
+@Table(name = "hostUser")
 public class HostUser {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
+    @Column(name = "hostUserId")
     private Long id;
 
     private String name;

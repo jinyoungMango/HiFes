@@ -21,7 +21,7 @@ import static javax.persistence.FetchType.LAZY;
 public class Post extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "post_id", nullable = false)
+    @Column(name = "postId", nullable = false)
     private Long id;
 
     @Column(length = 31, nullable = false)
@@ -30,7 +30,7 @@ public class Post extends BaseEntity {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
-    @Column(name = "post_type", nullable = false)
+    @Column(name = "postType", nullable = false)
     private String postType;
 
     private boolean isHidden;

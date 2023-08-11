@@ -20,6 +20,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api")
 public class GroupPictureController {
     private final JwtService jwtService;
     private final NormalUserService normalUserService;

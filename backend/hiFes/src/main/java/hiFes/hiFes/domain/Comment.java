@@ -14,18 +14,18 @@ import static javax.persistence.FetchType.LAZY;
 @Entity
 @Getter
 @NoArgsConstructor
-@Table(name = "comment")
+@Table(name = "Comment")
 public class Comment extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "comment_id")
+    @Column(name = "commentId")
     private Long id;
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
     @ManyToOne(fetch = LAZY, cascade = CascadeType.MERGE, targetEntity = Post.class)
-    @JoinColumn(name = "post_id")
+    @JoinColumn(name = "postId")
     private Post post;
 
     @Column(columnDefinition = "TEXT")
@@ -33,7 +33,7 @@ public class Comment extends BaseEntity {
 
 
     @ManyToOne(fetch = LAZY)
-    @JoinColumn(name = "parent_id")
+    @JoinColumn(name = "parentId")
     @Setter
     private Comment parent;
 

@@ -17,6 +17,7 @@ import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api")
 public class NormalUserController {
     private final NormalUserService normalUserService;
     private final NormalUserRepository normalUserRepository;

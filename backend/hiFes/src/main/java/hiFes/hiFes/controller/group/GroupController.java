@@ -22,6 +22,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api")
 public class GroupController extends BaseTimeEntity {
     private final NormalUserService normalUserService;
     private final GroupService groupService;
