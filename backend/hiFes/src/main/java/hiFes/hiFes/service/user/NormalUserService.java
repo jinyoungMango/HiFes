@@ -1,16 +1,20 @@
 package hiFes.hiFes.service.user;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import hiFes.hiFes.domain.user.NormalUser;
 import hiFes.hiFes.dto.user.NormalUserSignUpDto;
 import hiFes.hiFes.repository.user.NormalUserRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.xmlbeans.impl.xb.xsdschema.Public;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -26,14 +30,20 @@ public class NormalUserService {
     private final JwtService jwtService;
 
 
-    public void signUp(NormalUserSignUpDto normalUserSignUpDto, Map<String, Object> context) throws Exception {
+    public void signUp(NormalUserSignUpDto normalUserSignUpDto, Map<String, Object> context, MultipartFile image) throws Exception {
+
+        String projectPath = System.getProperty("user.dir") +"\\src\\main\\resources\\static\\images";
+        String imageName = image.getOriginalFilename();
+        File saveImage = new File(projectPath, imageName);
+        image.transferTo(saveImage);
+
 
         // 데이터 베이스에 없는 이메일이라면
         // 닉네임 빼고 전부 가져와서 넣어야 함
         NormalUser normalUser = NormalUser.builder()
                 .email((String) context.get("email"))
                 .name((String) context.get("name"))
-                .profilePic(normalUserSignUpDto.getProfilePic())
+                .profilePic("/images/"+  imageName)
                 .phoneNo(normalUserSignUpDto.getPhoneNo()) // 필요한 정보인지 고민 좀
                 .nickname(normalUserSignUpDto.getNickname())
                 .build();
@@ -46,7 +56,7 @@ public class NormalUserService {
     }
 
 
-    public Boolean login(String email) throws UsernameNotFoundException {
+    public JsonObject login(String email) throws UsernameNotFoundException {
 
         String accessToken = jwtService.createAccessToken(email); // JwtService의 createAccessToken을 사용하여 AccessToken 발급
         String refreshToken = jwtService.createRefreshToken();
@@ -56,7 +66,13 @@ public class NormalUserService {
                     user.updateRefreshToken(refreshToken);
                     normalUserRepository.saveAndFlush(user);});
 
-        return true;
+        JsonObject tokens =new JsonObject();
+
+
+        tokens.addProperty("accessToken", accessToken);
+        tokens.addProperty("refreshToken", refreshToken);
+
+        return tokens;
     }
     public Map<String, Object> searchKakaoUser(String token) {
 
@@ -115,4 +131,11 @@ public class NormalUserService {
         }
         return null;
     }
+
+//    public String getNickNameById(Long userId) {
+//        NormalUser normalUser = normalUserRepository.findById(userId)
+//                .orElseThrow(() -> new IllegalArgumentException("No User Found"));
+//
+//        return normalUser.getNickname();
+//    }
 }
