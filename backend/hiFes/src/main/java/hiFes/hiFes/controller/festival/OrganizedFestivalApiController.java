@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,17 +34,17 @@ public class OrganizedFestivalApiController {
 
     @Operation(summary = "행사 등록", description = "행사, aritem, stampMission, 행사일정(엑셀), 부스 마커를 한번에 등록." +
             "RequestPart를 써서 이미지는 image, 엑셀은 file, 나머지는 data라는 이름을 FormData로 보내야 함.")
-    @PostMapping("/create-festival")
+    @PostMapping("/{hostUserId}/create-festival")
     @CrossOrigin("*")
-    public ResponseEntity<String> addOrganizedFestival(@RequestPart("data") AddOrganizedFestivalRequest request, @RequestPart("file") MultipartFile file, @RequestPart("image") MultipartFile image)
+    public ResponseEntity<String> addOrganizedFestival(@RequestPart("data") AddOrganizedFestivalRequest request, @RequestPart("file") MultipartFile file, @RequestPart("image") MultipartFile image,
+                                                       @PathVariable Long hostUserId)
             throws Exception{
         logger.error("trace log ={}", request);
         logger.trace("trace log={}", file);
         logger.trace("trace log={}", image);
-//        logger.trace("trace log={}", user);
-//
-//        Long HostUserId = Long.valueOf(user.getUsername());
-        OrganizedFestival savedOrganizedFestival = organizedFestivalService.save(request,file,image);
+        logger.trace("trace log={}", hostUserId);
+
+        OrganizedFestival savedOrganizedFestival = organizedFestivalService.save(request,file,image, hostUserId);
         return ResponseEntity.status(HttpStatus.CREATED).body("OK");
     }
 
@@ -52,9 +53,11 @@ public class OrganizedFestivalApiController {
             "Formdata를 사용해서 엑셀은 file, 이미지는 image, 나머지는 data로 받음.")
     @PutMapping("/update-festival/{festivalId}")
     public ResponseEntity<OrganizedFestival> updateOrganizedFestival(@PathVariable long festivalId, @RequestPart("data") UpdateOrganizedFestivalRequest request,
-                                                                     @RequestPart("file") MultipartFile file, @RequestPart("image") MultipartFile image)
+                                                                     @RequestPart("file") MultipartFile file, @RequestPart("image") MultipartFile image,
+                                                                     @AuthenticationPrincipal User user)
             throws Exception{
-
+        Long HostUserId = Long.valueOf(user.getUsername());
+        OrganizedFestival savedOrganizedFestival = organizedFestivalService.save(request,file,image, HostUserId);
         OrganizedFestival updateOrganizedFestival = organizedFestivalService.update(festivalId, request, file, image);
         return ResponseEntity.ok()
                 .body(updateOrganizedFestival);
