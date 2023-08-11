@@ -22,13 +22,13 @@ public class CompletedStampMission {
     @Column(name="id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="missionId")
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonBackReference
     private StampMission stampMission;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="normal_user_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonBackReference
