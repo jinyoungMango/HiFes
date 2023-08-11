@@ -8,12 +8,15 @@ import hiFes.hiFes.repository.festival.EventNotificationRepository;
 import hiFes.hiFes.repository.festival.FestivalTableRepository;
 import hiFes.hiFes.repository.user.NormalUserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class EventNotificationService {
     @Autowired
     private final EventNotificationRepository eventNotificationRepository;
@@ -29,7 +32,7 @@ public class EventNotificationService {
         this.eventNotificationRepository = eventNotificationRepository;
     }
 
-    public EventNotification saveEventNotification(Long normalUserId, Long programId){
+    public Boolean saveEventNotification(Long normalUserId, Long programId){
         NormalUser normalUser = normalUserRepository.findById(normalUserId).orElseThrow(IllegalArgumentException::new);
         FestivalTable festivalTable = festivalTableRepository.findById(programId).orElseThrow(IllegalArgumentException::new);
 
@@ -37,7 +40,18 @@ public class EventNotificationService {
         eventNotification.setNormalUser(normalUser);
         eventNotification.setFestivalTable(festivalTable);
 
-        return eventNotificationRepository.save(eventNotification);
+
+        boolean flag = true;
+
+        try {
+            eventNotificationRepository.save(eventNotification);
+        } catch (IllegalArgumentException | OptimisticLockingFailureException e) {
+            log.error(" 저장 실패");
+            e.printStackTrace();
+            flag = false;
+        }
+
+        return flag;
     }
     @Transactional
     public void deleteByNormalUser_normalUserIdAndFestivalTable_programId(Long normalUserId, Long programId) {
