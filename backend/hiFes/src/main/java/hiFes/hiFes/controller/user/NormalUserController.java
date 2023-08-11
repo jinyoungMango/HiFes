@@ -25,10 +25,12 @@ public class NormalUserController {
     @CrossOrigin(origins = "*")
     @PostMapping("normal/signUp")
     public JsonObject signUp( @RequestPart(value = "normalUserSignUpDto") NormalUserSignUpDto normalUserSignUpDto, @RequestPart(value = "image")  MultipartFile image) throws Exception{
-        String accessToken = normalUserSignUpDto.getAccessToken();
-
-        Map<String, Object> context =  normalUserService.searchKakaoUser(accessToken);
-
+//        String accessToken = normalUserSignUpDto.getAccessToken();
+//
+//        Map<String, Object> context =  normalUserService.searchKakaoUser(accessToken);
+        Map<String, Object> context = new HashMap<>();
+        context.put("email", "test1@test.com");
+        context.put("name", "testman1");
 
         normalUserService.signUp(normalUserSignUpDto, context, image);
 
