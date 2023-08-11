@@ -4,7 +4,9 @@ import hiFes.hiFes.domain.Post;
 import hiFes.hiFes.dto.commentDto.CommentUpdateDto;
 import hiFes.hiFes.dto.postDto.*;
 import hiFes.hiFes.service.PostService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -22,18 +24,22 @@ public class PostController {
 
 
     @PostMapping("/create")
+    @Operation(summary = "게시글 생성, 필요 값 userId(Long), title(String), content(String), postType(String)")
     public ResponseEntity<?> create(@RequestBody PostCreateDto createDto) {
         postService.create(createDto);
-        return ResponseEntity.ok(createDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body("CREATE");
+//        status(HttpStatus.CREATED).body("OK")
     }
 
 
     @GetMapping("/list")
+    @Operation(summary = "전체 게시글 조회, 필요 값 X")
     public List<PostListDto> searchAllPosts() {
         return postService.searchAllPosts();
     }
 
     @GetMapping(value = "/get/{id}")
+    @Operation(summary = "게시글 단일조회, 필요 값 postId(Long)")
     public ResponseEntity<PostDto> findById(@PathVariable Long id) {
         PostDto postDto = postService.findById(id);
         return ResponseEntity.ok(postDto);
@@ -45,18 +51,22 @@ public class PostController {
 //    }
 
     @PutMapping("/update/{id}")
+    @Operation(summary = "게시글 수정, 필요 값 postId(Long), title(String), content(String), postType(String)")
     public PostUpdateResponseDto updatePost(@PathVariable Long id,
                                             @RequestBody @Valid PostUpdateRequestDto requestDto) {
+        ResponseEntity.status(HttpStatus.OK).body("OK");
         return postService.update(id, requestDto);
     }
 
 
     @DeleteMapping("/delete/{id}")
+    @Operation(summary = "게시글 삭제, 필요 값 postId(Long)")
     public void delete(@PathVariable Long id) {
         postService.delete(id);
     }
 
     @GetMapping("/{postType}")
+    @Operation(summary = "게시글 종류 별로 조회, 필요 값 postType(String)")
     public List<PostListDto> getPosts(@PathVariable String postType) {
         return postService.getPostsByType(postType);
     }
