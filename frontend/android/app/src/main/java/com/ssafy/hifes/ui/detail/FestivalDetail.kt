@@ -86,10 +86,10 @@ private const val TAG = "FestivalDetail_하이페스"
 @OptIn(ExperimentalNaverMapApi::class)
 @Composable
 fun FestivalDetail(navController: NavHostController, viewModel: MainViewModel) {
-    val selectedFestival = viewModel.selectedFestival.observeAsState()
+    val festivalInfo = viewModel.festivalInfo.observeAsState()
     val context = LocalContext.current
-    if (selectedFestival.value != null) {
-        val festivalData = selectedFestival.value
+    if (festivalInfo.value != null) {
+        val festivalData = festivalInfo.value
         Column(
             Modifier
                 .verticalScroll(rememberScrollState())
@@ -277,7 +277,7 @@ fun kakaoShare(festival: OrganizedFestivalDto, context: Context) {
 fun FestivalLocation(lat: Double, lng: Double, title: String) {
     val festivalLatLng = LatLng(lat, lng)
     val cameraPositionState: CameraPositionState = rememberCameraPositionState {
-        position = CameraPosition(festivalLatLng, 14.0)
+        position = CameraPosition(festivalLatLng, 13.0)
     }
     NaverMap(
         modifier = Modifier

@@ -43,7 +43,7 @@ fun ViewPager(
             contentPadding = PaddingValues(end = 30.dp),
         ) { index ->
             MapCard(festivalList[index]) { festival ->
-                viewModel.getFestivalDetail(festival)
+                viewModel.getFestivalInfo(festival.festivalId)
                 navController.navigate(HifesDestinations.FESTIVAL_DETAIL)
             }
         }

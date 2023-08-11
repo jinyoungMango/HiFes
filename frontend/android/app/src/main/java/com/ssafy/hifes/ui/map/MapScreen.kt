@@ -111,7 +111,7 @@ fun MapScreen(
                     selectedFestival?.let { festival ->
                         // 추후 서버에서 가져온 score로 변경
                         DialogContent(festival, 4.0) {
-                            viewModel.getFestivalDetail(festival)
+                            viewModel.getFestivalInfo(festival.festivalId)
                             navController.navigate(HifesDestinations.FESTIVAL_DETAIL)
                         }
                     }

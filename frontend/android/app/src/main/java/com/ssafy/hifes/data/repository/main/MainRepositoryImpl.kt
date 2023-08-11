@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 class MainRepositoryImpl @Inject constructor(
     private val apiService: ApiService
-) : MainRepository{
+) : MainRepository {
 
     override suspend fun randomFestivals(): NetworkResponse<List<OrganizedFestivalDto>, ErrorResponse> {
         return apiService.randomFestivals()
@@ -19,6 +19,10 @@ class MainRepositoryImpl @Inject constructor(
         userLongitude: Double
     ): NetworkResponse<List<OrganizedFestivalDto>, ErrorResponse> {
         return apiService.nearbyFestivals(userLatitude, userLongitude)
+    }
+
+    override suspend fun getFestivalInfo(festivalId: Int): NetworkResponse<OrganizedFestivalDto, ErrorResponse> {
+        return apiService.getFestivalInfo(festivalId)
     }
 
 }

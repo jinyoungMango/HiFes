@@ -33,4 +33,7 @@ interface ApiService {
         @Path("userLatitude") userLatitude: Double,
         @Path("userLongitude") userLongitude: Double,
     ): NetworkResponse<List<OrganizedFestivalDto>, ErrorResponse>
+
+    @GET("/api/festival/{festivalId}")
+    suspend fun getFestivalInfo(@Path("festivalId") festivalId: Int): NetworkResponse<OrganizedFestivalDto, ErrorResponse>
 }

@@ -40,8 +40,8 @@ class MainViewModel @Inject constructor(
         MutableLiveData()
     val randomFestivalList: LiveData<List<OrganizedFestivalDto>> = _randomFestivalList
 
-    private var _selectedFestival: MutableLiveData<OrganizedFestivalDto> = MutableLiveData()
-    val selectedFestival: LiveData<OrganizedFestivalDto> = _selectedFestival
+    private var _festivalInfo: MutableLiveData<OrganizedFestivalDto> = MutableLiveData()
+    val festivalInfo: LiveData<OrganizedFestivalDto> = _festivalInfo
 
     private var _mapType: MutableLiveData<MapType> = MutableLiveData()
     val mapType: LiveData<MapType> = _mapType
@@ -115,8 +115,29 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun getFestivalDetail(festival: OrganizedFestivalDto) {
-        _selectedFestival.postValue(festival)
+    fun getFestivalInfo(festivalId: Int) {
+        viewModelScope.launch {
+            val response = repository.getFestivalInfo(festivalId)
+            val type = "token 정보 조회에"
+            when (response) {
+                is NetworkResponse.Success -> {
+                    Log.d(TAG, "getNearFestivalList: $response")
+                    _festivalInfo.postValue(response.body)
+                }
+
+                is NetworkResponse.ApiError -> {
+                    postValueEvent(0, type)
+                }
+
+                is NetworkResponse.NetworkError -> {
+                    postValueEvent(1, type)
+                }
+
+                is NetworkResponse.UnknownError -> {
+                    postValueEvent(2, type)
+                }
+            }
+        }
     }
 
     fun updateMapTypeFestival() {

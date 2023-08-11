@@ -7,10 +7,12 @@ import retrofit2.http.Path
 
 interface MainRepository {
 
-    suspend fun randomFestivals() : NetworkResponse<List<OrganizedFestivalDto>, ErrorResponse>
+    suspend fun randomFestivals(): NetworkResponse<List<OrganizedFestivalDto>, ErrorResponse>
 
     suspend fun nearbyFestivals(
         @Path("userLatitude") userLatitude: Double,
         @Path("userLongitude") userLongitude: Double,
     ): NetworkResponse<List<OrganizedFestivalDto>, ErrorResponse>
+
+    suspend fun getFestivalInfo(@Path("festivalId") festivalId: Int): NetworkResponse<OrganizedFestivalDto, ErrorResponse>
 }
