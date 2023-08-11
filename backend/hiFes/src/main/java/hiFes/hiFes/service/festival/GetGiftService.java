@@ -8,13 +8,16 @@ import hiFes.hiFes.repository.festival.ARItemRepository;
 import hiFes.hiFes.repository.festival.GetGiftRepository;
 import hiFes.hiFes.repository.user.NormalUserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 import java.util.NoSuchElementException;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class GetGiftService {
     @Autowired
     private final GetGiftRepository getGiftRepository;
@@ -30,7 +33,7 @@ public class GetGiftService {
         this.arItemRepository = arItemRepository;
     }
 
-    public GetGift saveGetGift(Long normalUserId, Long itemId){
+    public Boolean saveGetGift(Long normalUserId, Long itemId){
         NormalUser normalUser = normalUserRepository.findById(normalUserId).orElseThrow(NoSuchElementException::new);
         ARItem arItem = arItemRepository.findById(itemId).orElseThrow(NoSuchElementException::new);
 
@@ -38,7 +41,18 @@ public class GetGiftService {
         getGift.setArItem(arItem);
         getGift.setNormalUser(normalUser);
 
-        return getGiftRepository.save(getGift);
+
+        boolean flag = true;
+
+        try {
+            getGiftRepository.save(getGift);
+        } catch (IllegalArgumentException | OptimisticLockingFailureException e) {
+            log.error(" 저장 실패");
+            e.printStackTrace();
+            flag = false;
+        }
+
+        return flag;
 
     }
 }
