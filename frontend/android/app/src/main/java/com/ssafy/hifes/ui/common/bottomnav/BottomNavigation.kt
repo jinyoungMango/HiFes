@@ -79,7 +79,7 @@ fun BottomNavigation(navController: NavHostController, viewModel: MainViewModel)
                         if (item.screenRoute == MAP) {
                             viewModel.updateMapTypeGeneral()
                         }
-                        navController.graph.startDestinationRoute?.let {
+                        NavigationItem.Home.screenRoute.let {
                             popUpTo(it) { saveState = true }
                         }
                         launchSingleTop = true
