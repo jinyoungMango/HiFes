@@ -17,13 +17,13 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/post")
+@RequestMapping("/api")
 public class PostController {
 
     private final PostService postService;
 
 
-    @PostMapping("/create")
+    @PostMapping("/post/create")
     @Operation(summary = "게시글 생성, 필요 값 userId(Long), title(String), content(String), postType(String)")
     public ResponseEntity<?> create(@RequestBody PostCreateDto createDto) {
         postService.create(createDto);
@@ -32,13 +32,13 @@ public class PostController {
     }
 
 
-    @GetMapping("/list")
+    @GetMapping("/post/list")
     @Operation(summary = "전체 게시글 조회, 필요 값 X")
     public List<PostListDto> searchAllPosts() {
         return postService.searchAllPosts();
     }
 
-    @GetMapping(value = "/get/{id}")
+    @GetMapping(value = "/post/get/{id}")
     @Operation(summary = "게시글 단일조회, 필요 값 postId(Long)")
     public ResponseEntity<PostDto> findById(@PathVariable Long id) {
         PostDto postDto = postService.findById(id);
@@ -50,7 +50,7 @@ public class PostController {
 //        return postService.update(id, postUpdateDto);
 //    }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/post/update/{id}")
     @Operation(summary = "게시글 수정, 필요 값 postId(Long), title(String), content(String), postType(String)")
     public PostUpdateResponseDto updatePost(@PathVariable Long id,
                                             @RequestBody @Valid PostUpdateRequestDto requestDto) {
@@ -59,13 +59,13 @@ public class PostController {
     }
 
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/post/delete/{id}")
     @Operation(summary = "게시글 삭제, 필요 값 postId(Long)")
     public void delete(@PathVariable Long id) {
         postService.delete(id);
     }
 
-    @GetMapping("/{postType}")
+    @GetMapping("/post/{postType}")
     @Operation(summary = "게시글 종류 별로 조회, 필요 값 postType(String)")
     public List<PostListDto> getPosts(@PathVariable String postType) {
         return postService.getPostsByType(postType);
