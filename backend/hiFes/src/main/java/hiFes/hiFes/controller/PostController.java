@@ -1,15 +1,9 @@
 package hiFes.hiFes.controller;
 
-<<<<<<< HEAD
-import hiFes.hiFes.dto.reponse.PostDto;
-import hiFes.hiFes.dto.reponse.PostListDto;
-import hiFes.hiFes.dto.request.PostCreateDto;
-import hiFes.hiFes.dto.request.PostUpdateDto;
-=======
+
 import hiFes.hiFes.domain.Post;
 import hiFes.hiFes.dto.commentDto.CommentUpdateDto;
 import hiFes.hiFes.dto.postDto.*;
->>>>>>> 90bac5b3010f0f969136fd409e9f527151aaf6e5
 import hiFes.hiFes.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,25 +16,25 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/post")
+@RequestMapping("/api")
 public class PostController {
 
     private final PostService postService;
 
 
-    @PostMapping("/create")
+    @PostMapping("/post/create")
     public ResponseEntity<?> create(@RequestBody PostCreateDto createDto) {
         postService.create(createDto);
         return ResponseEntity.ok(createDto);
     }
 
 
-    @GetMapping("/list")
+    @GetMapping("/post/list")
     public List<PostListDto> searchAllPosts() {
         return postService.searchAllPosts();
     }
 
-    @GetMapping(value = "/get/{id}")
+    @GetMapping(value = "/post/get/{id}")
     public ResponseEntity<PostDto> findById(@PathVariable Long id) {
         PostDto postDto = postService.findById(id);
         return ResponseEntity.ok(postDto);
@@ -51,19 +45,19 @@ public class PostController {
 //        return postService.update(id, postUpdateDto);
 //    }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/post/update/{id}")
     public PostUpdateResponseDto updatePost(@PathVariable Long id,
                                             @RequestBody @Valid PostUpdateRequestDto requestDto) {
         return postService.update(id, requestDto);
     }
 
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/post/delete/{id}")
     public void delete(@PathVariable Long id) {
         postService.delete(id);
     }
 
-    @GetMapping("/{postType}")
+    @GetMapping("/post/{postType}")
     public List<PostListDto> getPosts(@PathVariable String postType) {
         return postService.getPostsByType(postType);
     }
