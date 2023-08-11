@@ -25,6 +25,8 @@ public interface OrganizedFestivalRepository extends JpaRepository<OrganizedFest
             @Param("longitude") double longitude
     );
 
+    List<OrganizedFestival> findByFesTitleContaining(String word);
+
 
 }
 
