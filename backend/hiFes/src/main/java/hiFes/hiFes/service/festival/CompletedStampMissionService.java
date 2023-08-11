@@ -9,6 +9,7 @@ import hiFes.hiFes.repository.festival.StampMissionRepository;
 import hiFes.hiFes.repository.user.NormalUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -32,6 +33,7 @@ public class CompletedStampMissionService {
         this.stampMissionRepository = stampMissionRepository;
     }
 
+    @Transactional
     public CompletedStampMission saveCompletedStampMission(Long normalUserId, Long missionId){
         NormalUser normalUser = normalUserRepository.findById(normalUserId).orElseThrow(NoSuchElementException::new);
         StampMission stampMission = stampMissionRepository.findById(missionId).orElseThrow(NoSuchElementException::new);

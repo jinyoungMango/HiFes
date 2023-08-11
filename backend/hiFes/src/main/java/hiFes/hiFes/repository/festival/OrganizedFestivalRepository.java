@@ -15,6 +15,7 @@ public interface OrganizedFestivalRepository extends JpaRepository<OrganizedFest
     @Query(value = "SELECT * FROM OrganizedFestival order by RAND() limit 3",nativeQuery = true)
     List<OrganizedFestival> findAll();
 
+    // 주변 반경 10km 내 계산
     @Query("SELECT f FROM OrganizedFestival f WHERE " +
             "(6371 * ACOS(" +
             "COS( :latitude * 3.14159 / 180) * COS(f.fesLatitude * 3.14159 / 180) * COS((f.fesLongitude * 3.14159 / 180) - (:longitude * 3.14159 / 180)) + " +
@@ -23,5 +24,7 @@ public interface OrganizedFestivalRepository extends JpaRepository<OrganizedFest
             @Param("latitude") double latitude,
             @Param("longitude") double longitude
     );
+
+
 }
 

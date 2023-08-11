@@ -18,9 +18,11 @@ public class OrganizedFestivalResponse {
     private final LocalDate fesEndDate;
     private final BigDecimal fesLatitude;
     private final BigDecimal fesLongitude;
+    private final Long festivalId;
 
 
     public OrganizedFestivalResponse(OrganizedFestival organizedFestival){
+        this.festivalId = organizedFestival.getFestivalId();
         this.fesTitle = organizedFestival.getFesTitle();
         this.fesAddress = organizedFestival.getFesAddress();
         this.fesEndDate = organizedFestival.getFesEndDate();
