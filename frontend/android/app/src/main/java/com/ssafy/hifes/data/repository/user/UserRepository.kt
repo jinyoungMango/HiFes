@@ -1,4 +1,4 @@
-package com.ssafy.hifes.data.remote
+package com.ssafy.hifes.data.repository.user
 
 import com.ssafy.hifes.data.model.ErrorResponse
 import com.ssafy.hifes.data.model.LoginResponse
@@ -9,16 +9,13 @@ import okhttp3.RequestBody
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
+import retrofit2.http.PartMap
 import retrofit2.http.Query
 
-interface ApiService {
-    @POST("/normal/login")
-    suspend fun login(@Query("accessToken") accessToken: String): NetworkResponse<LoginResponse, ErrorResponse>
+interface UserRepository {
 
+    suspend fun login(@Query("accessToken") accessToken: String) : NetworkResponse<LoginResponse, ErrorResponse>
 
-
-    @Multipart
-    @POST("/normal/signUp")
     suspend fun signUp(
         @Part("normalUserSignUpDto") normalUserSignUpDto: RequestBody,
         @Part image: MultipartBody.Part
