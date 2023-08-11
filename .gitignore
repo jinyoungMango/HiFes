@@ -6,6 +6,9 @@
 .gradle/
 build/
 
+### oauth ###
+/src/main/resources/application-oauth.properties
+
 # Local configuration file (sdk path, etc)
 local.properties
 

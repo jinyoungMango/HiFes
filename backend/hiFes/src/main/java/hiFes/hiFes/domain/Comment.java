@@ -15,7 +15,7 @@ import static javax.persistence.FetchType.LAZY;
 @Getter
 @NoArgsConstructor
 @Table(name = "comment")
-public class Comment extends BaseTimeEntity {
+public class Comment extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id")
@@ -28,7 +28,8 @@ public class Comment extends BaseTimeEntity {
     @JoinColumn(name = "post_id")
     private Post post;
 
-//    private Member createdBy;
+    @Column(columnDefinition = "TEXT")
+    private Long createdBy;
 
 
     @ManyToOne(fetch = LAZY)
@@ -45,12 +46,21 @@ public class Comment extends BaseTimeEntity {
         child.setParent(this);
     }
 
+//    @OneToMany(mappedBy = "parent")
+//    private List<Comment> child;
+
+    public List<Comment> getChildComments() {
+        return child;
+    }
+
+
     // 빌더
     @Builder
-    public Comment(Post post, String content, Comment parent) {
+    public Comment(Post post, String content, Comment parent, Long createdBy) {
         this.post = post;
         this.content = content;
         this.parent = parent;
+        this.createdBy = createdBy;
     }
 
     // 메서드

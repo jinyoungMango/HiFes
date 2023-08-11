@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 @Table(name = "picture")
-public class Picture extends BaseTimeEntity {
+public class Picture extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "picture_id")

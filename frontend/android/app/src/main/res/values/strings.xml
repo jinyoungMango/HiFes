@@ -1,3 +1,75 @@
 <resources>
-    <string name="app_name">Hifes</string>
+    <string name="app_name">하이페스</string>
+
+    <!-- bottom navigation item -->
+    <string name="nav_home">홈</string>
+    <string name="nav_map">지도</string>
+    <string name="nav_group">모임</string>
+
+    <!-- login-->
+    <string name="login_title">HIFES</string>
+    <string name="login_sub_title">축제를 즐겨요</string>
+    <string name="kakao_login">카카오 로그인</string>
+    <string name="naver_login">네이버 로그인</string>
+    <string name="login_maintain">로그인 유지</string>
+
+    <!-- Home -->
+    <string name="home_greeting">혹시 이 행사에 참여 중이신가요?</string>
+    <string name="home_middle_ment">이 근처에서 축제 열리는 중!</string>
+    <string name="home_app_bar">이벤트를 검색해보세요</string>
+    <string name="home_bottom_ment">이런 축제는 어떤가요?</string>
+
+    <!-- more info-->
+    <string name="more_info_appbar_title">추가정보 입력</string>
+    <string name="more_info_edittext_hint">닉네임</string>
+    <string name="more_info_finish_button">완료</string>
+
+    <!-- participated fest-->
+    <string name="participated_fest_appbar_title">참여 행사 목록</string>
+    <string name="participated_fest_stamp_list_title">스탬프 목록</string>
+
+    <!-- my page -->
+    <string name="mypage_appbar_title">마이페이지</string>
+    <string name="mypage_account">계정</string>
+    <string name="mypage_change_nickname">닉네임 변경</string>
+    <string name="mypage_change_profile_image">프로필 이미지 변경</string>
+    <string name="mypage_logout">로그아웃</string>
+    <string name="mypage_withdraw">회원 탈퇴</string>
+    <string name="mypage_info">정보</string>
+    <string name="mypage_terms">서비스 이용약관</string>
+    <string name="mypage_privacy_policy">개인정보처리방침</string>
+    <string name="mypage_used_library">사용한 라이브러리</string>
+    <string name="mypage_event">행사</string>
+    <string name="mypage_participated_event">참여한 행사</string>
+
+    <!-- board -->
+    <string name="board_appbar_title">게시판</string>
+    <string name="board_chip_notification">공지</string>
+    <string name="board_chip_ask">문의</string>
+    <string name="board_chip_free">자유</string>
+    <string name="board_chip_review">후기</string>
+    <string name="board_hidden_post_title">비밀 문의 글 입니다.</string>
+    <string name="board_detail_regist">등록</string>
+    <string name="board_detail_modify">수정</string>
+    <string name="board_detail_seen_time">조회수</string>
+    <string name="board_detail_delete">삭제</string>
+    <string name="board_detail_write_comment_hint">댓글을 입력하세요.</string>
+    <string name="board_write_finish">완료</string>
+    <string name="board_write_appbar_title">작성</string>
+    <string name="board_write_text_field_title_hint">제목을 입력하세요</string>
+    <string name="board_write_text_field_content_hint">내용을 입력하세요</string>
+
+    <!-- Map -->
+    <string name="map_chip_total">전체</string>
+    <string name="map_chip_sale_booth">판매 부스</string>
+    <string name="map_chip_food_booth">먹거리 부스</string>
+    <string name="map_chip_restaurant_booth">식당 부스</string>
+    <string name="map_chip_staff">스태프</string>
+    <string name="map_chip_safety_staff">안전 요원</string>
+    <string name="map_chip_toilet">화장실</string>
+    <string name="map_chip_enterance">출입구</string>
+
+    <!-- Group -->
+    <string name="group_app_bar">제목 · 해시태그로 검색</string>
+
 </resources>
