@@ -31,8 +31,10 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -48,11 +50,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.accompanist.permissions.rememberPermissionState
 import com.ssafy.hifes.R
+import com.ssafy.hifes.ui.HifesDestinations
 import com.ssafy.hifes.ui.common.PermissionDeniedScreen
 import com.ssafy.hifes.ui.common.ProfileImg
 import com.ssafy.hifes.ui.common.top.TopWithBack
@@ -60,13 +64,28 @@ import com.ssafy.hifes.ui.theme.Grey
 import com.ssafy.hifes.ui.theme.PrimaryPink
 import com.ssafy.hifes.ui.theme.SecondApricot
 
+private const val TAG = "LoginDetailScreen_하이페스"
+
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun LoginDetailScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: LoginViewModel
 ) {
     val context = LocalContext.current
     var imageUri by remember { mutableStateOf<Uri?>(null) }
+    var text by remember { mutableStateOf("") }
+    val loginResponse by viewModel.loginResponse.observeAsState()
+
+    LaunchedEffect(loginResponse?.result) {
+        if (loginResponse?.result == true) {
+            navController.navigate(NavigationItem.Home.screenRoute) {
+                popUpTo(navController.graph.findStartDestination().id) {
+                    inclusive = true
+                }
+            }
+        }
+    }
 
     val permissionList: List<String> =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -83,9 +102,9 @@ fun LoginDetailScreen(
                 Manifest.permission.READ_EXTERNAL_STORAGE
             )
         }
-    val permissionState = rememberMultiplePermissionsState(permissions = permissionList )
+    val permissionState = rememberMultiplePermissionsState(permissions = permissionList)
 
-    if(permissionState.allPermissionsGranted){ //모든 권한 허용
+    if (permissionState.allPermissionsGranted) { //모든 권한 허용
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -96,18 +115,21 @@ fun LoginDetailScreen(
             Spacer(modifier = Modifier.size(20.dp))
             ProfileImg(imageUri = imageUri, onImageChange = { uri -> imageUri = uri })
             Spacer(modifier = Modifier.size(40.dp))
-            TextFieldNickName()
+            TextFieldNickName(text) { updatedText ->
+                text = updatedText
+            }
             Spacer(modifier = Modifier.weight(1f))
-            FinishButton(
-                { Toast.makeText(it, "test", Toast.LENGTH_LONG).show() }
-            )
+            FinishButton {
+                Toast.makeText(it, "test", Toast.LENGTH_LONG).show()
+                viewModel.signUp(context, imageUri, text)
+            }
         }
-    }else if(permissionState.shouldShowRationale){//한번 거절했을때
+    } else if (permissionState.shouldShowRationale) {//한번 거절했을때
         Toast.makeText(context, "사용을 위해서 허가가 필요합니다!", Toast.LENGTH_LONG).show()
         SideEffect {
             permissionState.launchMultiplePermissionRequest()
         }
-    } else{ //최초
+    } else { //최초
         Log.d("권한", "LoginDetailScreen: 최초")
         SideEffect {
             permissionState.launchMultiplePermissionRequest()
@@ -121,11 +143,11 @@ fun LoginDetailScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TextFieldNickName() {
-    var text by remember { mutableStateOf("") }
+fun TextFieldNickName(text: String, onTextChange: (String) -> Unit) {
+
     OutlinedTextField(
-        value = text, onValueChange = {
-            text = it
+        value = text, onValueChange = { newText ->
+            onTextChange(newText)
         },
         colors = TextFieldDefaults.outlinedTextFieldColors(focusedBorderColor = PrimaryPink),
         label = { Text(text = stringResource(id = R.string.more_info_edittext_hint)) }
@@ -163,5 +185,5 @@ fun FinishButton(onClick: (context: Context) -> Unit) {
 @Preview
 @Composable
 fun LoginDetailScreenPrev() {
-    LoginDetailScreen(navController = rememberNavController())
+//    LoginDetailScreen(navController = rememberNavController())
 }

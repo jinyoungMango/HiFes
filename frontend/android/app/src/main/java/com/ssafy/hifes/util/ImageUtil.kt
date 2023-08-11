@@ -57,6 +57,6 @@ object UriUtil {
 object MultipartUtil {
     fun getImageBody(file: File): MultipartBody.Part {
         val requestFile = RequestBody.create("multipart/form-data".toMediaTypeOrNull(), file)
-        return MultipartBody.Part.createFormData("files", file.name, requestFile)
+        return MultipartBody.Part.createFormData("image", file.name, requestFile)
     }
 }
