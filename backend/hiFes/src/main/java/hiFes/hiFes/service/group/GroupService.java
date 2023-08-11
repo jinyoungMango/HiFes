@@ -79,22 +79,23 @@ public class GroupService {
         String imageName = image.getOriginalFilename();
         File saveImage = new File(projectPath, imageName);
         image.transferTo(saveImage);
+        System.out.println(groupCreateDto.getGroupName() + groupCreateDto.getMaxPop() + groupCreateDto.getContent() + groupCreateDto.getFestivalId() + "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 
         LocalDateTime now = LocalDateTime.of(2020,9,16,0,0,0);
         Group group = Group.builder()
                 .groupName(groupCreateDto.getGroupName())
-                .groupPic("/images/"+  imageName)
+                .groupPic("/images/"+ imageName)
                 .maxPop(groupCreateDto.getMaxPop())
                 .content(groupCreateDto.getContent())
                 .festivalId(groupCreateDto.getFestivalId())
                 .build();
 
-
         groupRepository.save(group);
 
         String[] hashtags = groupCreateDto.getHashtags();
+
         int hashLen = hashtags.length;
-        for (int i = 0; i <= hashLen; i++) {
+        for (int i = 0; i < hashLen; i++) {
             RegisteredHashtag registeredHashtag = new RegisteredHashtag();
             registeredHashtag.setGroup(group);
             if (hashtagRepository.existsByTitle(hashtags[i])) {
@@ -111,17 +112,16 @@ public class GroupService {
             registeredHashtagRepository.save(registeredHashtag);
         }
 
-
-
-
         JoinedGroup joinedGroup = new JoinedGroup();
         // 이메일로 노말유저 아이디를 찾아서 저장
         joinedGroup.setNormalUser(normalUser);
         joinedGroup.setGroup(group);
         // 그룹을 생성한 사람이 모임장이 된다.
         joinedGroup.setIsLeader(true);
+        System.out.println(normalUser.getNickname() + " ******************************************************************");
 
         joinedGroupRepository.save(joinedGroup);
+        System.out.println("(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((");
 
 
         RegisteredHashtag registeredHashtag = new RegisteredHashtag();
