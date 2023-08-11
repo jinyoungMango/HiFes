@@ -1,6 +1,9 @@
 package hiFes.hiFes.controller;
 
-import hiFes.hiFes.dto.*;
+import hiFes.hiFes.dto.reponse.PostDto;
+import hiFes.hiFes.dto.reponse.PostListDto;
+import hiFes.hiFes.dto.request.PostCreateDto;
+import hiFes.hiFes.dto.request.PostUpdateDto;
 import hiFes.hiFes.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

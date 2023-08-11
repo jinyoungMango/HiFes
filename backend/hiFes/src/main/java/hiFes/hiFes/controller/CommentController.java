@@ -1,8 +1,9 @@
 package hiFes.hiFes.controller;
 
-import hiFes.hiFes.dto.CommentCreateDto;
-import hiFes.hiFes.dto.CommentListDto;
-import hiFes.hiFes.dto.CommentUpdateDto;
+import hiFes.hiFes.dto.reponse.CommentResponseDto;
+import hiFes.hiFes.dto.request.CommentCreateDto;
+import hiFes.hiFes.dto.reponse.CommentListDto;
+import hiFes.hiFes.dto.request.CommentUpdateDto;
 import hiFes.hiFes.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,14 +24,14 @@ public class CommentController {
 
     @PostMapping("/create")
     public ResponseEntity<?> createComment(@RequestBody CommentCreateDto requestDto) {
-        commentService.create(requestDto);
-        return ResponseEntity.ok(requestDto);
+        CommentResponseDto responseDto = commentService.create(requestDto);
+        return ResponseEntity.ok(responseDto);
     }
 
-    @GetMapping("/list")
-    public List<CommentListDto> searchAllComments() {
-        return commentService.searchAllComments();
-    }
+//    @GetMapping("/list")
+//    public List<CommentListDto> searchAllComments() {
+//        return commentService.searchAllComments();
+//    }
 
     @PutMapping("/update/{id}")
     public Long update(@PathVariable Long id, @RequestBody CommentUpdateDto requestDto) {

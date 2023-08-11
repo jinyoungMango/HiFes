@@ -1,7 +1,10 @@
 package hiFes.hiFes.service;
 
 import hiFes.hiFes.domain.Post;
-import hiFes.hiFes.dto.*;
+import hiFes.hiFes.dto.reponse.PostDto;
+import hiFes.hiFes.dto.reponse.PostListDto;
+import hiFes.hiFes.dto.request.PostCreateDto;
+import hiFes.hiFes.dto.request.PostUpdateDto;
 import hiFes.hiFes.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

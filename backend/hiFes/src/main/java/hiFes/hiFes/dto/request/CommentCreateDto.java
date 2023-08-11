@@ -1,4 +1,4 @@
-package hiFes.hiFes.dto;
+package hiFes.hiFes.dto.request;
 
 import lombok.Builder;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package hiFes.hiFes.dto;
+package hiFes.hiFes.dto.reponse;
 
 import hiFes.hiFes.domain.Post;
 import lombok.Data;

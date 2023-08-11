@@ -1,6 +1,7 @@
-package hiFes.hiFes.dto;
+package hiFes.hiFes.dto.reponse;
 
 import hiFes.hiFes.domain.Post;
+import hiFes.hiFes.dto.reponse.CommentListDto;
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
