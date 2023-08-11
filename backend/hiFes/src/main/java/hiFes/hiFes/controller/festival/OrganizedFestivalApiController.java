@@ -10,6 +10,8 @@ import hiFes.hiFes.service.festival.OrganizedFestivalService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -27,28 +29,27 @@ import java.util.stream.Collectors;
 @Tag(name="행사 관련 컨트롤러", description = "행사, aritem, 행사일정, 스탬프 미션 관련 CRUD")
 public class OrganizedFestivalApiController {
     private final OrganizedFestivalService organizedFestivalService;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Operation(summary = "행사 등록", description = "행사, aritem, stampMission, 행사일정(엑셀), 부스 마커를 한번에 등록." +
             "RequestPart를 써서 이미지는 image, 엑셀은 file, 나머지는 data라는 이름을 FormData로 보내야 함.")
     @PostMapping("/create-festival")
-
-    public ResponseEntity<String> addOrganizedFestival(@RequestPart("data") AddOrganizedFestivalRequest request,
-                                                       @RequestPart("file") MultipartFile file,
-                                                       @RequestPart("image") MultipartFile image,
-                                                       @AuthenticationPrincipal User user)
+    @CrossOrigin("*")
+    public ResponseEntity<String> addOrganizedFestival(@RequestPart("data") AddOrganizedFestivalRequest request, @RequestPart("file") MultipartFile file, @RequestPart("image") MultipartFile image)
             throws Exception{
-        if (user == null) {
-            // 인증되지 않은 사용자의 경우, 적절한 에러 메시지와 함께 응답을 반환합니다.
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("인증된 사용자 정보가 없습니다.");
-        }
-        Long HostUserId = Long.valueOf(user.getUsername());
-        OrganizedFestival savedOrganizedFestival = organizedFestivalService.save(request,file,image, HostUserId);
+        logger.error("trace log ={}", request);
+        logger.trace("trace log={}", file);
+        logger.trace("trace log={}", image);
+//        logger.trace("trace log={}", user);
+//
+//        Long HostUserId = Long.valueOf(user.getUsername());
+        OrganizedFestival savedOrganizedFestival = organizedFestivalService.save(request,file,image);
         return ResponseEntity.status(HttpStatus.CREATED).body("OK");
     }
 
 
     @Operation(summary = "행사 수정", description = "특정 행사의 id를 받아서 그 행사 정보, aritem, stampMission, 일정(엑셀), 부스 마커 수정." +
-            "Formdata를 사용해서 엑셀은 file, 이미지는 image, 나머지는 data로 받음. 행사 등록할 때 위경도, 포스터 패스 따로 입력해줄 필요 없음.")
+            "Formdata를 사용해서 엑셀은 file, 이미지는 image, 나머지는 data로 받음.")
     @PutMapping("/update-festival/{festivalId}")
     public ResponseEntity<OrganizedFestival> updateOrganizedFestival(@PathVariable long festivalId, @RequestPart("data") UpdateOrganizedFestivalRequest request,
                                                                      @RequestPart("file") MultipartFile file, @RequestPart("image") MultipartFile image)
@@ -122,6 +123,8 @@ public class OrganizedFestivalApiController {
                 .collect(Collectors.toList());
         return ResponseEntity.ok()
                 .body(stampMissionResponses);
+
+
     }
     @Operation(summary = "특정 행사의 모든 일정 조회")
     @GetMapping("/festival/{festivalId}/festivalTables")

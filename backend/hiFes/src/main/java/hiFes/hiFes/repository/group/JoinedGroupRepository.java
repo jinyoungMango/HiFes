@@ -12,4 +12,5 @@ public interface JoinedGroupRepository extends JpaRepository<JoinedGroup, Long> 
     JoinedGroup findByNormalUserAndGroup(NormalUser normalUser, Group group);
 
     List<JoinedGroup> findByNormalUserId(Long normalUserId);
+    List<JoinedGroup> findByGroupId(Long groupId);
 }

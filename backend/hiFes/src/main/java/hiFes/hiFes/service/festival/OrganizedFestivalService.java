@@ -46,7 +46,7 @@ public class OrganizedFestivalService {
 
 
     @org.springframework.transaction.annotation.Transactional
-    public OrganizedFestival save(AddOrganizedFestivalRequest request, MultipartFile file, MultipartFile image, Long HostUserId) throws Exception {
+    public OrganizedFestival save(AddOrganizedFestivalRequest request, MultipartFile file, MultipartFile image) throws Exception {
 
         String[] LatLong =  getLatLonFromGoogleApi(request.getFesAddress());
         BigDecimal fesLatitude = new BigDecimal(LatLong[0]);
@@ -65,8 +65,8 @@ public class OrganizedFestivalService {
 
         request.setFesPosterPath("/images/"+  imageName);
 
-        HostUser hostUser = hostUserRepository.findById(HostUserId).orElseThrow(null);
-        request.setHostUser(hostUser);
+//        HostUser hostUser = hostUserRepository.findById(HostUserId).orElseThrow(null);
+//        request.setHostUser(hostUser);
         OrganizedFestival savedOrganizedFestival = request.toEntity();
 
 
