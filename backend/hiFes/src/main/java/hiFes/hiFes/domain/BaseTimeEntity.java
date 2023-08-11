@@ -1,4 +1,4 @@
-package hiFes.hiFes.domain.festival;
+package hiFes.hiFes.domain;
 
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;

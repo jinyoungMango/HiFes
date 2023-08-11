@@ -1,5 +1,6 @@
 package hiFes.hiFes.domain;
 
+import hiFes.hiFes.domain.festival.OrganizedFestival;
 import hiFes.hiFes.domain.user.HostUser;
 import hiFes.hiFes.domain.user.NormalUser;
 import lombok.AccessLevel;

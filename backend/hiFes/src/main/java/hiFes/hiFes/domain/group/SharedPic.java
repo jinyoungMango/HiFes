@@ -27,6 +27,6 @@ public class SharedPic {
 
 
     @ManyToOne
-    @JoinColumn(name = "normal_user_id")
+    @JoinColumn(name = "normalUserId")
     private NormalUser normalUser;
 }
