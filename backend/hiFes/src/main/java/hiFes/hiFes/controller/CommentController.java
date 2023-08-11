@@ -24,25 +24,17 @@ public class CommentController {
 //        this.commentService  = commentService;
 //    }
 
-<<<<<<< HEAD
-    @PostMapping("/comment/create")
-=======
+
     @PostMapping("/create")
     @Operation(summary = "댓글 생성, 필요 값 postId(Long), content(Long), parentId(Long)")
->>>>>>> develop
     public ResponseEntity<?> createComment(@RequestBody CommentCreateDto requestDto) {
-        CommentResponseDto responseDto = commentService.create(requestDto);
-        return ResponseEntity.ok(responseDto);
+        commentService.create(requestDto);
+        return ResponseEntity.ok(requestDto);
     }
 
-<<<<<<< HEAD
-
-
-    @PostMapping("/comment/create/re")
-=======
     @PostMapping("/create/re")
     @Operation(summary = "대댓글 생성, 필요 값 postId(Long), content(Long), parentId(Long)")
->>>>>>> develop
+
     public ResponseEntity<?> createReComment(@RequestBody CommentCreateDto requestDto) {
         commentService.create(requestDto);
         return ResponseEntity.ok(requestDto);
@@ -54,22 +46,16 @@ public class CommentController {
 //        return commentService.searchAllComments();
 //    }
 
-<<<<<<< HEAD
-    @PutMapping("/comment/update/{id}")
-=======
+
     @PutMapping("/update/{id}")
     @Operation(summary = "댓글 수정, 필요 값 commentId(Long), content(Long)")
->>>>>>> develop
     public Long update(@PathVariable Long id, @RequestBody CommentUpdateDto requestDto) {
         return commentService.update(id, requestDto);
     }
 
-<<<<<<< HEAD
-    @DeleteMapping("/comment/delete/{id}")
-=======
+
     @DeleteMapping("/delete/{id}")
     @Operation(summary = "댓글 삭제, 필요 값 commentId(Long)")
->>>>>>> develop
     public ResponseEntity<?> delete(@PathVariable Long id) {
         commentService.delete(id);
         Map<String, String> response = new HashMap<>();

@@ -25,31 +25,8 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
 
-//    @Transactional
-//    public Comment create(CommentCreateDto createDto) {
-//        Post post = postRepository.findById(createDto.getPostId())
-//                .orElseThrow(() -> new EntityNotFoundException("No Post Found"));
-//        Comment parent = null;
-//        if (createDto.getParentId() != null) {
-//            parent = commentRepository.findById(createDto.getParentId())
-//                    .orElseThrow(() -> new EntityNotFoundException("대댓글이 아님"));
-//        }
-//
-//        Comment newComment = Comment.builder()
-//                .post(post)
-//                .content(createDto.getContent())
-//                .parent(parent)
-//                .build();
-//
-//        if (parent != null) {
-//            parent.addChildComment(newComment);
-//        }
-//
-//        return commentRepository.save(newComment);
-//    }
-
     @Transactional
-    public CommentResponseDto create(CommentCreateDto createDto) {
+    public Comment create(CommentCreateDto createDto) {
         Post post = postRepository.findById(createDto.getPostId())
                 .orElseThrow(() -> new EntityNotFoundException("No Post Found"));
         Comment parentId = null;
@@ -68,9 +45,34 @@ public class CommentService {
             parentId.addChildComment(newComment);
         }
 
-        commentRepository.save(newComment);
-        return CommentResponseDto(newComment);
+        return commentRepository.save(newComment);
     }
+
+//    Not In Develop
+//    @Transactional
+//    public CommentResponseDto create(CommentCreateDto createDto) {
+//        Post post = postRepository.findById(createDto.getPostId())
+//                .orElseThrow(() -> new EntityNotFoundException("No Post Found"));
+//        Comment parentId = null;
+//        if (createDto.getParentId() != null) {
+//            parentId = commentRepository.findById(createDto.getParentId())
+//                    .orElseThrow(() -> new EntityNotFoundException("대댓글이 아님"));
+//        }
+//
+//        Comment newComment = Comment.builder()
+//                .post(post)
+//                .content(createDto.getContent())
+//                .parent(parentId)
+//                .build();
+//
+//        if (parentId != null) {
+//            parentId.addChildComment(newComment);
+//        }
+//        CommentResponseDto result = new CommentResponseDto(newComment);
+//
+//        commentRepository.save(newComment);
+//        return result;
+//    }
 
     @Transactional
     public Long update(Long id, CommentUpdateDto requestDto) {
@@ -81,13 +83,13 @@ public class CommentService {
         return id;
     }
 
-
-    @Transactional(readOnly = true)
-    public List<CommentListDto> getComments(Long postId) {
-        return commentRepository.findByIdOrderByIdDesc().stream()
-                .map(CommentListDto::new)
-                .collect(Collectors.toList());
-    }
+//    Not In Develop
+//    @Transactional(readOnly = true)
+//    public List<CommentListDto> getComments(Long postId) {
+//        return commentRepository.findByIdOrderByIdDesc().stream()
+//                .map(CommentListDto::new)
+//                .collect(Collectors.toList());
+//    }
 
 //    @Transactional(readOnly = true)
 //    public List<CommentListDto> searchAllComments() {
