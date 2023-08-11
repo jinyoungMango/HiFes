@@ -39,24 +39,11 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .antMatchers("host/sign-up").permitAll()
                 .antMatchers("host/login").permitAll()
-                .antMatchers("group/delete").permitAll()
-                .antMatchers("group/create").permitAll()
                 .antMatchers("/","/css/**","/images/**","/js/**","/favicon.ico").permitAll();
 
 
         return http.build();
     }
-
-    @Bean
-    public LoginSuccessHandler loginSuccessHandler() {
-        return new LoginSuccessHandler(jwtService, hostUserRepository, normalUserRepository);
-    }
-
-    @Bean
-    public LoginFailureHandler loginFailureHandler() {
-        return new LoginFailureHandler();
-    }
-
 
 
 
