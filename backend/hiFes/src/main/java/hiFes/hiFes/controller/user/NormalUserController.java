@@ -24,7 +24,7 @@ public class NormalUserController {
 
     @CrossOrigin(origins = "*")
     @PostMapping("normal/signUp")
-    public JsonObject signUp(NormalUserSignUpDto normalUserSignUpDto,  @RequestPart("image") MultipartFile image) throws Exception{
+    public JsonObject signUp(@RequestPart(value = "normalUserSignUpDto") NormalUserSignUpDto normalUserSignUpDto, @RequestPart(value = "image")  MultipartFile image) throws Exception{
         String accessToken = normalUserSignUpDto.getAccessToken();
 
         Map<String, Object> context =  normalUserService.searchKakaoUser(accessToken);
@@ -41,6 +41,9 @@ public class NormalUserController {
 
 
 
+
+
+
     @CrossOrigin(origins = "*")
     @PostMapping("normal/login")
     @ResponseBody
@@ -48,7 +51,7 @@ public class NormalUserController {
         Map<String, Object> context =  normalUserService.searchKakaoUser(accessToken);
         if (normalUserRepository.findByEmail((String) context.get("email")).isPresent()) {
             JsonObject loginSuccess = normalUserService.login((String) context.get("email"));
-            loginSuccess.addProperty("id",  normalUserService.getByEmail((String) context.get("email")).getId());
+            loginSuccess.addProperty("id",  String.valueOf(normalUserService.getByEmail((String) context.get("email")).getId()));
             loginSuccess.addProperty("result", true);
 
             return loginSuccess;
@@ -93,7 +96,7 @@ public class NormalUserController {
         info.addProperty("email", email);
         info.addProperty("name", user.getName());
         info.addProperty("nickname", user.getNickname());
-        info.addProperty("orgCode", user.getProfilePic());
+        info.addProperty("ProfilePic", user.getProfilePic());
 
         return info;
 

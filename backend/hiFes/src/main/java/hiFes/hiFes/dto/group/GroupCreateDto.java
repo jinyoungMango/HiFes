@@ -18,4 +18,5 @@ public class GroupCreateDto {
     private Integer maxPop;
     private String content;
     private String[] hashtags;
+    private Long festivalId;
 }

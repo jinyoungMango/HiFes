@@ -35,5 +35,5 @@ public class Group {
     private BigDecimal getterLatitude;
     private BigDecimal getterLongitude;
     private String getterOutline;
-    private Integer groupPassword;
+    private Long festivalId;
 }

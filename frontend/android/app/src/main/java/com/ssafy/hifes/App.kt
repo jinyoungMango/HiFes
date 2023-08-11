@@ -10,14 +10,10 @@ import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
 class App : Application() {
-    companion object {
-        lateinit var prefs: SharedPreferences
-    }
-
     lateinit var container: AppContainer
 
     override fun onCreate() {
-        prefs = AppPreferences.openSharedPreferences(applicationContext)
+        AppPreferences.openSharedPreferences(applicationContext)
         container = AppContainerImpl(this)
         // Kakao SDK 초기화
         KakaoSdk.init(this, BuildConfig.API_KEY)
