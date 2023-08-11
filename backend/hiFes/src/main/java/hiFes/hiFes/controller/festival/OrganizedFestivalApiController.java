@@ -171,5 +171,16 @@ public class OrganizedFestivalApiController {
                 .body(organizedFestivalResponses);
     }
 
+    @Operation(summary = "행사 검색 결과", description = "param으로 key값이 keyword인 검색어를 넣어줘야 합니다.")
+    @GetMapping("/search-festival/")
+    public ResponseEntity<List<OrganizedFestivalResponse>> searchFestival(@RequestParam(value = "keyword") String word){
+        List<OrganizedFestival> organizedFestivals = organizedFestivalService.searchResultFestival(word);
+        List<OrganizedFestivalResponse> organizedFestivalResponses = organizedFestivals.stream()
+                .map(OrganizedFestivalResponse::new)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok()
+                .body(organizedFestivalResponses);
+
+    }
 
 }
