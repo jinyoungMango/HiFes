@@ -19,6 +19,7 @@ import hiFes.hiFes.service.user.NormalUserService;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -118,16 +119,21 @@ public class GroupController extends BaseTimeEntity {
     }
 
     @GetMapping("group/list/{searchWord}")
-    public List groupSearchList(@PathVariable String searchWord){
+    public Map<String, Object> groupSearchList(@PathVariable String searchWord){
         List<Group> groupList = groupService.getGroupSearch(searchWord);
+        Map<String, Object> searchResult = new HashMap<>();
+        searchResult.put("searchType", "title");
+        searchResult.put("groupList", groupList);
 
-        return groupList;
+        return searchResult;
     }
 
     @GetMapping("group/list/hashtag/{searchTag}")
-    public List groupHashtagSearchList(@PathVariable String searchTag){
+    public Map<String, Object> groupHashtagSearchList(@PathVariable String searchTag){
         List<Group> groupList = groupService.getGroupHashtagSearch(searchTag);
-
-        return groupList;
+        Map<String, Object> searchResult = new HashMap<>();
+        searchResult.put("searchType", "hashtag");
+        searchResult.put("groupList", groupList);
+        return searchResult;
     }
 }
