@@ -3,6 +3,7 @@ package hiFes.hiFes.service.user;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import hiFes.hiFes.domain.user.HostUser;
 import hiFes.hiFes.domain.user.NormalUser;
 import hiFes.hiFes.dto.user.NormalUserSignUpDto;
 import hiFes.hiFes.repository.user.NormalUserRepository;
@@ -54,6 +55,8 @@ public class NormalUserService {
     public NormalUser getByEmail(String email) {
         return normalUserRepository.findByEmail(email).orElse(null);
     }
+
+    public NormalUser getById(Long id) { return normalUserRepository.findById(id).orElse(null); }
 
 
     public JsonObject login(String email) throws UsernameNotFoundException {
