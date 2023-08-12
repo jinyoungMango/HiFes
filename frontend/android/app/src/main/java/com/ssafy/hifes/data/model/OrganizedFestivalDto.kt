@@ -5,15 +5,9 @@ data class OrganizedFestivalDto(
     var fesOutline: String,
     var fesAddress: String,
     var fesPosterPath: String,
-    var fesStartDate: FestivalDate,
-    var fesEndDate: FestivalDate,
+    var fesStartDate: DateDto,
+    var fesEndDate: DateDto,
     var fesLatitude: Double,
     var fesLongitude: Double,
     var festivalId: Int
-)
-
-data class FestivalDate(
-    val year : Int,
-    val month : Int,
-    val day : Int
 )
