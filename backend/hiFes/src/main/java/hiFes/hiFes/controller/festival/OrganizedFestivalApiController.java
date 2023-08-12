@@ -52,6 +52,7 @@ public class OrganizedFestivalApiController {
     @Operation(summary = "행사 수정", description = "특정 행사의 id를 받아서 그 행사 정보, aritem, stampMission, 일정(엑셀), 부스 마커 수정." +
             "Formdata를 사용해서 엑셀은 file, 이미지는 image, 나머지는 data로 받음.")
     @PutMapping("/update-festival/{festivalId}")
+    @CrossOrigin("*")
     public ResponseEntity<OrganizedFestival> updateOrganizedFestival(@PathVariable long festivalId, @RequestPart("data") UpdateOrganizedFestivalRequest request,
                                                                      @RequestPart("file") MultipartFile file, @RequestPart("image") MultipartFile image
                                                                      )
@@ -72,6 +73,7 @@ public class OrganizedFestivalApiController {
     }
     @Operation(summary ="특정 행사 삭제, 연관된 다른 정보 함께 삭제" )
     @DeleteMapping("/delete-festival/{festivalId}")
+    @CrossOrigin("*")
     public ResponseEntity<Void> deleteOrganizedFestival(@PathVariable long festivalId){
         organizedFestivalService.deleteOrganizedFestival(festivalId);
         return ResponseEntity.ok()
@@ -96,6 +98,7 @@ public class OrganizedFestivalApiController {
 
     @Operation(summary ="특정 주최자가 등록한 모든 행사 목록 조회" )
     @GetMapping("/{hostUserId}/festivals")
+    @CrossOrigin("*")
     public ResponseEntity<List<OrganizedFestivalResponse>> findFestivalByHost(@PathVariable long hostUserId){
         List<OrganizedFestival> organizedFestivals = organizedFestivalService.findByHost_hostId(hostUserId);
         List<OrganizedFestivalResponse> organizedFestivalResponses = organizedFestivals.stream()
@@ -130,6 +133,7 @@ public class OrganizedFestivalApiController {
     }
     @Operation(summary = "특정 행사의 모든 일정 조회")
     @GetMapping("/festival/{festivalId}/festivalTables")
+    @CrossOrigin("*")
     public ResponseEntity<List<FestivalTableResponse>> findFestivalTableByFestivalId(@PathVariable long festivalId) {
         List<FestivalTable> festivalTables = organizedFestivalService.findFestivalTableByFestivalId(festivalId);
         List<FestivalTableResponse> festivalTableResponses = festivalTables.stream()
@@ -152,6 +156,7 @@ public class OrganizedFestivalApiController {
 
     @Operation(summary = "특정 행사 조회", description = "특정 행사의 id를 통해 상세 정보 조회")
     @GetMapping("/festival/{festivalId}")
+    @CrossOrigin("*")
     public ResponseEntity<OrganizedFestivalResponse> findOrganizedFestival(@PathVariable long festivalId){
         OrganizedFestival organizedFestival = organizedFestivalService.findById(festivalId);
         return ResponseEntity.ok()
