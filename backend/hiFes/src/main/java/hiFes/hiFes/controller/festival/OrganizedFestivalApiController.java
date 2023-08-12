@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,17 +34,17 @@ public class OrganizedFestivalApiController {
 
     @Operation(summary = "행사 등록", description = "행사, aritem, stampMission, 행사일정(엑셀), 부스 마커를 한번에 등록." +
             "RequestPart를 써서 이미지는 image, 엑셀은 file, 나머지는 data라는 이름을 FormData로 보내야 함.")
-    @PostMapping("/create-festival")
+    @PostMapping("/{hostUserId}/create-festival")
     @CrossOrigin("*")
-    public ResponseEntity<String> addOrganizedFestival(@RequestPart("data") AddOrganizedFestivalRequest request, @RequestPart("file") MultipartFile file, @RequestPart("image") MultipartFile image)
+    public ResponseEntity<String> addOrganizedFestival(@RequestPart("data") AddOrganizedFestivalRequest request, @RequestPart("file") MultipartFile file, @RequestPart("image") MultipartFile image,
+                                                       @PathVariable Long hostUserId)
             throws Exception{
         logger.error("trace log ={}", request);
         logger.trace("trace log={}", file);
         logger.trace("trace log={}", image);
-//        logger.trace("trace log={}", user);
-//
-//        Long HostUserId = Long.valueOf(user.getUsername());
-        OrganizedFestival savedOrganizedFestival = organizedFestivalService.save(request,file,image);
+        logger.trace("trace log={}", hostUserId);
+
+        OrganizedFestival savedOrganizedFestival = organizedFestivalService.save(request,file,image, hostUserId);
         return ResponseEntity.status(HttpStatus.CREATED).body("OK");
     }
 
@@ -51,8 +52,10 @@ public class OrganizedFestivalApiController {
     @Operation(summary = "행사 수정", description = "특정 행사의 id를 받아서 그 행사 정보, aritem, stampMission, 일정(엑셀), 부스 마커 수정." +
             "Formdata를 사용해서 엑셀은 file, 이미지는 image, 나머지는 data로 받음.")
     @PutMapping("/update-festival/{festivalId}")
+    @CrossOrigin("*")
     public ResponseEntity<OrganizedFestival> updateOrganizedFestival(@PathVariable long festivalId, @RequestPart("data") UpdateOrganizedFestivalRequest request,
-                                                                     @RequestPart("file") MultipartFile file, @RequestPart("image") MultipartFile image)
+                                                                     @RequestPart("file") MultipartFile file, @RequestPart("image") MultipartFile image
+                                                                     )
             throws Exception{
 
         OrganizedFestival updateOrganizedFestival = organizedFestivalService.update(festivalId, request, file, image);
@@ -70,6 +73,7 @@ public class OrganizedFestivalApiController {
     }
     @Operation(summary ="특정 행사 삭제, 연관된 다른 정보 함께 삭제" )
     @DeleteMapping("/delete-festival/{festivalId}")
+    @CrossOrigin("*")
     public ResponseEntity<Void> deleteOrganizedFestival(@PathVariable long festivalId){
         organizedFestivalService.deleteOrganizedFestival(festivalId);
         return ResponseEntity.ok()
@@ -94,6 +98,7 @@ public class OrganizedFestivalApiController {
 
     @Operation(summary ="특정 주최자가 등록한 모든 행사 목록 조회" )
     @GetMapping("/{hostUserId}/festivals")
+    @CrossOrigin("*")
     public ResponseEntity<List<OrganizedFestivalResponse>> findFestivalByHost(@PathVariable long hostUserId){
         List<OrganizedFestival> organizedFestivals = organizedFestivalService.findByHost_hostId(hostUserId);
         List<OrganizedFestivalResponse> organizedFestivalResponses = organizedFestivals.stream()
@@ -128,6 +133,7 @@ public class OrganizedFestivalApiController {
     }
     @Operation(summary = "특정 행사의 모든 일정 조회")
     @GetMapping("/festival/{festivalId}/festivalTables")
+    @CrossOrigin("*")
     public ResponseEntity<List<FestivalTableResponse>> findFestivalTableByFestivalId(@PathVariable long festivalId) {
         List<FestivalTable> festivalTables = organizedFestivalService.findFestivalTableByFestivalId(festivalId);
         List<FestivalTableResponse> festivalTableResponses = festivalTables.stream()
@@ -150,6 +156,7 @@ public class OrganizedFestivalApiController {
 
     @Operation(summary = "특정 행사 조회", description = "특정 행사의 id를 통해 상세 정보 조회")
     @GetMapping("/festival/{festivalId}")
+    @CrossOrigin("*")
     public ResponseEntity<OrganizedFestivalResponse> findOrganizedFestival(@PathVariable long festivalId){
         OrganizedFestival organizedFestival = organizedFestivalService.findById(festivalId);
         return ResponseEntity.ok()
@@ -169,5 +176,16 @@ public class OrganizedFestivalApiController {
                 .body(organizedFestivalResponses);
     }
 
+    @Operation(summary = "행사 검색 결과", description = "param으로 key값이 keyword인 검색어를 넣어줘야 합니다.")
+    @GetMapping("/search-festival/")
+    public ResponseEntity<List<OrganizedFestivalResponse>> searchFestival(@RequestParam(value = "keyword") String word){
+        List<OrganizedFestival> organizedFestivals = organizedFestivalService.searchResultFestival(word);
+        List<OrganizedFestivalResponse> organizedFestivalResponses = organizedFestivals.stream()
+                .map(OrganizedFestivalResponse::new)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok()
+                .body(organizedFestivalResponses);
+
+    }
 
 }

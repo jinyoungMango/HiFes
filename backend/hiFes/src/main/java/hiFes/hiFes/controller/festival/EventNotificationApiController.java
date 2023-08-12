@@ -20,7 +20,7 @@ public class EventNotificationApiController {
 
     @Operation(summary = "특정 회원이 행사 일정 알림 등록")
     @PostMapping("/{normalUserId}/regist-eventNotifications/{programId}")
-    public EventNotification saveEventNotification(@PathVariable Long normalUserId, @PathVariable Long programId) {
+    public Boolean saveEventNotification(@PathVariable Long normalUserId, @PathVariable Long programId) {
         return eventNotificationService.saveEventNotification(normalUserId, programId);
     }
 

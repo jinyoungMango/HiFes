@@ -42,4 +42,7 @@ public class ParticipatedFesApiController {
                 .body(participatedFesResponses);
     }
 
+//    @Operation(summary = "행사 검색 결과")
+//    @GetMapping("/{}")
+
 }
