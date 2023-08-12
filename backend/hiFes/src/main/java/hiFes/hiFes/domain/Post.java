@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static javax.persistence.FetchType.EAGER;
 import static javax.persistence.FetchType.LAZY;
 
 @Entity
@@ -17,6 +18,7 @@ import static javax.persistence.FetchType.LAZY;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
+@Table(name = "Post")
 public class Post extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,8 +34,10 @@ public class Post extends BaseEntity {
     @Column(name = "postType", nullable = false)
     private String postType;
 
+    @Column(name = "isHidden")
     private Boolean isHidden;
 
+    @Column(name = "hideReason")
     private String hideReason;
 
     //    FK

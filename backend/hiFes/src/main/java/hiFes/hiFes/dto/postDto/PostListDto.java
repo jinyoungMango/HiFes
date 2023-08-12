@@ -2,6 +2,8 @@ package hiFes.hiFes.dto.postDto;
 
 import hiFes.hiFes.domain.Post;
 import hiFes.hiFes.dto.festival.OrganizedFestivalResponse;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

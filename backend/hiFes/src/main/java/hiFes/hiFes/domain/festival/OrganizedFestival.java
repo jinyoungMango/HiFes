@@ -82,7 +82,7 @@ public class OrganizedFestival {
     private HostUser hostUser;
 
     @OneToMany(mappedBy = "organizedFestival", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<Post> posts = new ArrayList<>();
+    private List<Post> posts = new ArrayList<>();
 
     @Builder
     public OrganizedFestival(HostUser hostUser, String fesTitle, String fesOutline, String fesAddress, String fesPosterPath, LocalDate fesStartDate, LocalDate fesEndDate, BigDecimal fesLatitude, BigDecimal fesLongitude){

@@ -9,11 +9,7 @@ import java.util.List;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findAllByOrderByIdDesc();
-    List<Post> findAllByFestivalId(Long festivalId);
-    @Query(
-            value = "SELECT p FROM Post p WHERE p.organizedFestival.festivalId=:festivalId" +
-                    " and p.postType=:postType"
-    )
-    List<Post> findAllByFestivalIdAndPostType(@Param("festivalId") Long festivalId, @Param("postType") String postType);
+    List<Post> findAllByOrganizedFestival_FestivalId(Long festivalId);
+    List<Post> findAllByOrganizedFestival_FestivalIdAndPostType(Long festivalId, String postType);
     List<Post> findByPostType(String postType);
 }

@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 public class PostDto {
     private Long id;
     private Long createdBy;
-//    private String writer;
     private String title;
     private String content;
     private String postType;
@@ -30,6 +29,7 @@ public class PostDto {
     private float rating;
 
     private List<CommentDto> topLevelComments;
+    private int commentsCount;
 
     public PostDto(Post post) {
         this.id = post.getId();
@@ -46,6 +46,7 @@ public class PostDto {
         this.topLevelComments = post.getTopLevelComments().stream()
                 .map(CommentDto::new)
                 .collect(Collectors.toList());
+//        this.commentsCount = topLevelComments != null ? topLevelComments.size() : 0;
 
     }
 }

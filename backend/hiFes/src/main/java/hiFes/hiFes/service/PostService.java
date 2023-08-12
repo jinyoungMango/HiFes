@@ -44,12 +44,12 @@ public class PostService {
 
     @Transactional
     public List<Post> allPostsByFestival(Long festivalId) {
-        return postRepository.findAllByFestivalId(festivalId);
+        return postRepository.findAllByOrganizedFestival_FestivalId(festivalId);
     }
 
     @Transactional
     public List<Post> postTypeInFestival(Long festivalId, String postType) {
-        return postRepository.findAllByFestivalIdAndPostType(festivalId, postType);
+        return postRepository.findAllByOrganizedFestival_FestivalIdAndPostType(festivalId, postType);
     }
 
 
