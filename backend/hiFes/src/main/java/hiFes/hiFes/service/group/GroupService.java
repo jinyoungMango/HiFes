@@ -7,18 +7,20 @@ import hiFes.hiFes.domain.group.JoinedGroup;
 import hiFes.hiFes.domain.group.RegisteredHashtag;
 import hiFes.hiFes.domain.user.NormalUser;
 import hiFes.hiFes.dto.group.GroupCreateDto;
+import hiFes.hiFes.dto.group.GroupListDto;
 import hiFes.hiFes.repository.group.GroupRepository;
 import hiFes.hiFes.repository.group.HashtagRepository;
 import hiFes.hiFes.repository.group.JoinedGroupRepository;
 import hiFes.hiFes.repository.group.RegisteredHashtagRepository;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 @Transactional
@@ -28,6 +30,7 @@ public class GroupService {
     private final JoinedGroupRepository joinedGroupRepository;
     private final RegisteredHashtagRepository registeredHashtagRepository;
     private final HashtagRepository hashtagRepository;
+
 
 
     public void groupCreate(GroupCreateDto groupCreateDto, NormalUser normalUser, MultipartFile image) throws Exception {
@@ -151,26 +154,42 @@ public class GroupService {
         return info;
     }
 
-    public List<Group> getGrouplist(){
-        return groupRepository.findAll();
+    public List<GroupListDto> getGrouplist(){
+        List<Group> groupList = groupRepository.findAll();
+        List<GroupListDto> groupListInfo= makeGroupList(groupList);
+
+        return groupListInfo;
     }
 
-    public List<Group> getGroupSearch(String searchWord){
-        return groupRepository.findByGroupNameContaining(searchWord);
+    public List<GroupListDto> getFesGroup(Long festivalId) {
+        List<Group> groupList = groupRepository.findByFestivalId(festivalId);
+
+        List<GroupListDto> groupListInfo= makeGroupList(groupList);
+
+        return groupListInfo;
+    }
+
+    public List<GroupListDto> getGroupSearch(String searchWord){
+        List<Group> groups = groupRepository.findByGroupNameContaining(searchWord);
+        List<GroupListDto> groupListInfo= makeGroupList(groups);
+        return groupListInfo;
     }
 
     public Group getById(Long id) {
         return groupRepository.findById(id).orElse(null);
     }
 
-    public List<Group> getGroupHashtagSearch(String searchTag){
+    public List<GroupListDto> getGroupHashtagSearch(String searchTag){
         List<RegisteredHashtag> registeredHashtags = registeredHashtagRepository.findByHashtagTitleContaining(searchTag);
         List<Group> groups = new ArrayList<>();
         for (RegisteredHashtag registeredHashtag : registeredHashtags) {
             Group group = registeredHashtag.getGroup();
             groups.add(group);
         }
-        return groups;
+
+        List<GroupListDto> groupListInfo= makeGroupList(groups);
+
+        return groupListInfo;
     }
 
     public List<NormalUser> getJoinedPeople(Long groupId){
@@ -189,5 +208,33 @@ public class GroupService {
         joinedPeople.add(leader);
 
         return joinedPeople;
+    }
+
+    public List<Hashtag> getGroupHashtags(Long groupId){
+        List<RegisteredHashtag> registeredHashtags = registeredHashtagRepository.findByGroupId(groupId);
+        List<Hashtag> hashtags = new ArrayList<>();
+        for (RegisteredHashtag registeredHashtag : registeredHashtags) {
+            Hashtag hashtag = registeredHashtag.getHashtag();
+            hashtags.add(hashtag);
+        }
+
+        return hashtags;
+
+    }
+
+    public List<GroupListDto> makeGroupList(List<Group> groupList){
+        List<GroupListDto> groupListInfo= new ArrayList<>();
+
+        for (int i = 0; i < groupList.size(); i++) {
+            Group group = groupList.get(i);
+            int numOfPeople = getJoinedPeople(group.getId()).size();
+            List<Hashtag> hashtags = getGroupHashtags(group.getId());
+            ModelMapper modelMapper = new ModelMapper();
+            GroupListDto groupInfo = new GroupListDto(group,numOfPeople, hashtags);
+            modelMapper.map(group, groupInfo);
+            groupListInfo.add(groupInfo);
+        }
+
+        return groupListInfo;
     }
 }
