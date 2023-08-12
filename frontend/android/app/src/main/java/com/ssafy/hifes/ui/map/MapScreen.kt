@@ -269,7 +269,7 @@ fun AroundMyLocationFestivalMap(
 @OptIn(ExperimentalNaverMapApi::class)
 @Composable
 fun BoothMap(
-    boothList: MutableList<MarkerDto>,
+    boothList: List<MarkerDto>,
     selectedBoothChip: Int,
 ) {
     var markers by remember {

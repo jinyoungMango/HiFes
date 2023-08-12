@@ -2,6 +2,7 @@ package com.ssafy.hifes.data.remote
 
 import com.ssafy.hifes.data.model.ErrorResponse
 import com.ssafy.hifes.data.model.LoginResponse
+import com.ssafy.hifes.data.model.MarkerDto
 import com.ssafy.hifes.data.model.NormalUserSignUpDto
 import com.ssafy.hifes.data.model.OrganizedFestivalDto
 import com.ssafy.hifes.util.network.NetworkResponse
@@ -36,4 +37,7 @@ interface ApiService {
 
     @GET("/api/festival/{festivalId}")
     suspend fun getFestivalInfo(@Path("festivalId") festivalId: Int): NetworkResponse<OrganizedFestivalDto, ErrorResponse>
+
+    @GET("/api/festival/{festivalId}/markers")
+    suspend fun getMarkerList(@Path("festivalId") festivalId: Int) : NetworkResponse<List<MarkerDto>, ErrorResponse>
 }

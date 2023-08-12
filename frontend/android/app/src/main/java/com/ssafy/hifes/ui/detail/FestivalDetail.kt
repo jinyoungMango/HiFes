@@ -85,7 +85,7 @@ import com.ssafy.hifes.util.CommonUtils.formatSqlDateToString
 private const val TAG = "FestivalDetail_하이페스"
 @OptIn(ExperimentalNaverMapApi::class)
 @Composable
-fun FestivalDetail(navController: NavHostController, viewModel: MainViewModel) {
+fun FestivalDetail(navController: NavHostController, viewModel: MainViewModel, detailViewModel: DetailViewModel) {
     val festivalInfo = viewModel.festivalInfo.observeAsState()
     val context = LocalContext.current
     if (festivalInfo.value != null) {
@@ -115,6 +115,7 @@ fun FestivalDetail(navController: NavHostController, viewModel: MainViewModel) {
                     ) {
                         DetailIcons(painterResource(R.drawable.icon_map)) {
                             viewModel.updateMapTypeFestival()
+                            detailViewModel.getMarkerList(festivalData.festivalId)
                             navController.navigate(
                                 NavigationItem.Map.screenRoute
                             )

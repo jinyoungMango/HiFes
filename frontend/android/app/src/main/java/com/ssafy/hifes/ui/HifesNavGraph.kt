@@ -70,7 +70,7 @@ fun HifesNavGraph(
         composable(
             route = HifesDestinations.FESTIVAL_DETAIL
         ) {
-            FestivalDetail(navController = navController, viewModel = mainViewModel)
+            FestivalDetail(navController = navController, viewModel = mainViewModel, detailViewModel = detailViewModel)
         }
         composable(
             route = HifesDestinations.PARTICIPATED_FEST_ROUTE

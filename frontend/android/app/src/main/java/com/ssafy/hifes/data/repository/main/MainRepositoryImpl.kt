@@ -1,6 +1,7 @@
 package com.ssafy.hifes.data.repository.main
 
 import com.ssafy.hifes.data.model.ErrorResponse
+import com.ssafy.hifes.data.model.MarkerDto
 import com.ssafy.hifes.data.model.OrganizedFestivalDto
 import com.ssafy.hifes.data.remote.ApiService
 import com.ssafy.hifes.util.network.NetworkResponse
