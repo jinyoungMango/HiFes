@@ -27,6 +27,7 @@ public class CommentController {
     @PostMapping("/comment/create")
     @Operation(summary = "댓글 생성, 필요 값 postId(Long), content(Long), parentId(Long)" +
             " 전부 JSON 형식으로 주시면 됩니다. 단 parentId 는 없으면 0이 아니라 null 로 주셔야 됩니다.")
+    @CrossOrigin("*")
     public ResponseEntity<?> createComment(@RequestBody CommentCreateDto requestDto) {
         commentService.create(requestDto);
         return ResponseEntity.ok(requestDto);
@@ -34,6 +35,7 @@ public class CommentController {
 
     @PostMapping("/comment/create/re")
     @Operation(summary = "대댓글 생성, 필요 값 postId(Long), content(Long), parentId(Long) 전부 JSON 형식으로 주시면 됩니다.")
+    @CrossOrigin("*")
     public ResponseEntity<?> createReComment(@RequestBody CommentCreateDto requestDto) {
         commentService.create(requestDto);
         return ResponseEntity.ok(requestDto);
@@ -53,6 +55,7 @@ public class CommentController {
 
     @DeleteMapping("/comment/delete/{id}")
     @Operation(summary = "댓글 삭제, 필요 값 commentId(Long), 삭제하려는 댓글의 commentId만 주시면 됩니다.")
+    @CrossOrigin("*")
     public ResponseEntity<?> delete(@PathVariable Long id) {
         commentService.delete(id);
         Map<String, String> response = new HashMap<>();
