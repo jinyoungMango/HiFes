@@ -14,6 +14,7 @@ import androidx.lifecycle.viewModelScope
 import com.ssafy.hifes.data.model.Event
 import com.ssafy.hifes.data.model.OrganizedFestivalDto
 import com.ssafy.hifes.data.repository.main.MainRepository
+import com.ssafy.hifes.ui.group.GroupScreenType
 import com.ssafy.hifes.ui.map.MapType
 import com.ssafy.hifes.util.network.NetworkResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -45,6 +46,9 @@ class MainViewModel @Inject constructor(
 
     private var _mapType: MutableLiveData<MapType> = MutableLiveData()
     val mapType: LiveData<MapType> = _mapType
+
+    private var _groupScreenType: MutableLiveData<GroupScreenType> = MutableLiveData()
+    val groupScreenType: LiveData<GroupScreenType> = _groupScreenType
 
 
     // 홈 화면, 일반 맵 화면에서 사용하는 축제 리스트
@@ -147,6 +151,14 @@ class MainViewModel @Inject constructor(
     fun updateMapTypeGeneral() {
         _mapType.postValue(MapType.GENERAL)
         Log.d(TAG, "updateMapTypeGeneral: ")
+    }
+
+    fun updateGroupScreenTypeFestival() {
+        _groupScreenType.postValue(GroupScreenType.FESTIVAL)
+    }
+
+    fun updateGroupScreenTypeAll() {
+        _groupScreenType.postValue(GroupScreenType.All)
     }
 
     private fun postValueEvent(value: Int, type: String) {

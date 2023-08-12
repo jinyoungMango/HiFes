@@ -76,5 +76,5 @@ fun GroupDetailScreen(navController: NavController, viewModel: GroupViewModel) {
 @Preview
 @Composable
 fun GroupDetailScreenPrev() {
-    GroupDetailScreen(rememberNavController(), GroupViewModel())
+    //GroupDetailScreen(rememberNavController(), GroupViewModel())
 }

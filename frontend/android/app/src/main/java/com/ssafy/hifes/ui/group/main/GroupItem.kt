@@ -12,12 +12,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.Bottom
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -30,8 +27,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.ssafy.hifes.data.model.Group
-import com.ssafy.hifes.ui.group.GroupViewModel
-import com.ssafy.hifes.ui.main.MainViewModel
 import com.ssafy.hifes.ui.theme.pretendardFamily
 
 @Composable
@@ -53,7 +48,7 @@ fun GroupItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
-                model = group.url,
+                model = group.groupPic,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 placeholder = ColorPainter(Color.Green),
@@ -65,7 +60,7 @@ fun GroupItem(
             Column(Modifier.fillMaxWidth()) {
                 Spacer(modifier = Modifier.size(18.dp))
                 Text(
-                    text = group.title,
+                    text = group.groupName,
                     fontFamily = pretendardFamily,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 16.sp
@@ -77,18 +72,20 @@ fun GroupItem(
                     fontWeight = FontWeight.Normal
                 )
                 Spacer(modifier = Modifier.height(4.dp))
-                LazyRow() {
-                    items(group.hashtag) { item ->
-                        Text(
-                            text = "#$item",
-                            fontFamily = pretendardFamily,
-                            fontWeight = FontWeight.Normal
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
+                if (group.hashtags != null) {
+                    LazyRow() {
+                        items(group.hashtags) { item ->
+                            Text(
+                                text = "#$item",
+                                fontFamily = pretendardFamily,
+                                fontWeight = FontWeight.Normal
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                        }
                     }
                 }
                 Text(
-                    text = "${group.currNum} / ${group.maxNum}", modifier = Modifier
+                    text = "${group.numOfPeople} / ${group.maxPop}", modifier = Modifier
                         .fillMaxWidth()
                         .padding(end = 8.dp, bottom = 8.dp), textAlign = TextAlign.End,
                     fontFamily = pretendardFamily, fontWeight = FontWeight.Normal, fontSize = 14.sp

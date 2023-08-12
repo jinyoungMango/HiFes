@@ -1,8 +1,9 @@
 package com.ssafy.hifes.ui.group.main
 
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -13,25 +14,48 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Paint
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.ssafy.hifes.R
 import com.ssafy.hifes.ui.HifesDestinations
-import com.ssafy.hifes.ui.common.top.TopWithBack
+import com.ssafy.hifes.ui.group.GroupScreenType
 import com.ssafy.hifes.ui.group.GroupViewModel
+import com.ssafy.hifes.ui.main.MainViewModel
 import com.ssafy.hifes.ui.theme.PrimaryPink
 
+private const val TAG = "GroupMainScreen"
+
 @Composable
-fun GroupMainScreen(navController: NavController, viewModel: GroupViewModel) {
+fun GroupMainScreen(
+    navController: NavController,
+    viewModel: GroupViewModel,
+    mainViewModel: MainViewModel
+) {
+    var context = LocalContext.current
+    var groupScreenType = mainViewModel.groupScreenType.observeAsState()
     val groupList = viewModel.groupList.observeAsState()
+    val errMsg = viewModel.errorMsg.observeAsState()
+
+    LaunchedEffect(groupScreenType){
+        if (groupScreenType.value == GroupScreenType.All) {
+            Log.d(TAG, "GroupMainScreen: 1 ${groupScreenType.value}")
+            viewModel.getAllGroupList()
+        } else {
+            Log.d(TAG, "GroupMainScreen: 2 ${groupScreenType.value}")
+            viewModel.getFestivalGroupList(1)
+        }
+
+        errMsg.value?.getContentIfNotHandled()?.let {
+            Log.d(TAG, "GroupMainScreen: 실패")
+            Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+        }
+    }
+
 
     Scaffold(
         topBar = { SearchAppBar(navController) },
@@ -46,7 +70,7 @@ fun GroupMainScreen(navController: NavController, viewModel: GroupViewModel) {
                         items(groupList.value!!.size) { index ->
                             GroupItem(
                                 groupList.value!![index]
-                            ){ groupData ->
+                            ) { groupData ->
                                 viewModel.getGroupDetail(groupData)
                                 navController.navigate(HifesDestinations.GROUP_DETAIL)
                             }
@@ -61,12 +85,14 @@ fun GroupMainScreen(navController: NavController, viewModel: GroupViewModel) {
             }
         },
         floatingActionButton = {
-            FloatingActionButton(
-                onClick = { navController.navigate(HifesDestinations.GROUP_CREATE) },
-                containerColor = PrimaryPink,
-                contentColor = Color.White
-            ) {
-                Icon(Icons.Filled.Add, contentDescription = "Add")
+            if (groupScreenType.value == GroupScreenType.FESTIVAL) {
+                FloatingActionButton(
+                    onClick = { navController.navigate(HifesDestinations.GROUP_CREATE) },
+                    containerColor = PrimaryPink,
+                    contentColor = Color.White
+                ) {
+                    Icon(Icons.Filled.Add, contentDescription = "Add")
+                }
             }
         }
     )
@@ -75,5 +101,5 @@ fun GroupMainScreen(navController: NavController, viewModel: GroupViewModel) {
 @Preview
 @Composable
 fun GroupMainPrev() {
-    GroupMainScreen(navController = rememberNavController(), GroupViewModel())
+//    GroupMainScreen(navController = rememberNavController(), GroupViewModel(), MainViewModel())
 }
