@@ -35,7 +35,7 @@ fun HifesNavGraph(
     navController: NavHostController = rememberNavController(),
     mainViewModel: MainViewModel,
     startDestination: String = HifesDestinations.LOGIN_ROUTE
-//    startDestination: String = NavigationItem.Map.screenRoute
+//    startDestination: String = NavigationItem.Home.screenRoute
 ) {
 
     val boardViewModel: BoardViewModel = viewModel()
@@ -70,7 +70,7 @@ fun HifesNavGraph(
         composable(
             route = HifesDestinations.FESTIVAL_DETAIL
         ) {
-            FestivalDetail(navController = navController, viewModel = mainViewModel)
+            FestivalDetail(navController = navController, viewModel = mainViewModel, detailViewModel = detailViewModel)
         }
         composable(
             route = HifesDestinations.PARTICIPATED_FEST_ROUTE
