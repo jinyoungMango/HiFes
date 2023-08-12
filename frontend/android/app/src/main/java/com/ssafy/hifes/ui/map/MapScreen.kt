@@ -141,7 +141,7 @@ fun MapScreen(
                         }
 
                         MapType.FESTIVAL -> {
-                            BoothMap(boothList.value!!, selectedBoothChip.value ?: 0)
+                            boothList.value?.let { booth -> BoothMap(booth, selectedBoothChip.value ?: 0) }
                             ChipsSelectable(
                                 listOf(
                                     R.string.map_chip_total,
