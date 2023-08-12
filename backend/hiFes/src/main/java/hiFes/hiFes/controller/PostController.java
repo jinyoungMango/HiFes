@@ -4,17 +4,25 @@ package hiFes.hiFes.controller;
 import hiFes.hiFes.domain.Post;
 import hiFes.hiFes.dto.commentDto.CommentUpdateDto;
 import hiFes.hiFes.dto.postDto.*;
+import hiFes.hiFes.repository.user.NormalUserRepository;
 import hiFes.hiFes.service.PostService;
+import hiFes.hiFes.service.user.HostUserService;
+import hiFes.hiFes.service.user.NormalUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.annotations.NotFound;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.net.http.HttpResponse;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,15 +30,21 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
+    private final NormalUserService normalUserService;
+    private final HostUserService hostUserService;
 
     @PostMapping("/post/create")
     @Operation(summary = "게시글 생성, 필요 값 userId(Long), title(String), content(String), postType(String)" +
             " 전부 JSON 형식으로 주시면 됩니다.")
 
     public ResponseEntity<?> create(@RequestBody PostCreateDto createDto) {
-        postService.create(createDto);
+        String response = postService.create(createDto);
+        if (response.equals("Fail V1")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No User");
+        } else if (response.equals("Fail V2")) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Not Created");
+        }
         return ResponseEntity.status(HttpStatus.CREATED).body("CREATE");
-//        status(HttpStatus.CREATED).body("OK")
     }
 
 
@@ -43,8 +57,11 @@ public class PostController {
 
     @GetMapping(value = "/post/get/{id}")
     @Operation(summary = "게시글 단일조회, 필요 값 postId(Long), 조회하려는 게시글의 postId 를 주시면 됩니다.")
-    public ResponseEntity<PostDto> findById(@PathVariable Long id) {
+    public ResponseEntity<?> findById(@PathVariable Long id) {
         PostDto postDto = postService.findById(id);
+        if (postDto == null || !Objects.equals(postDto.getId(), id)) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No Post Found");
+        }
         return ResponseEntity.ok(postDto);
     }
 
@@ -57,10 +74,17 @@ public class PostController {
     @PutMapping("/post/update/{id}")
     @Operation(summary = "게시글 수정, 필요 값 postId(Long), title(String), content(String), postType(String)" +
             " 수정할 대상의 postId 는 url 에 같이 넣고 나머지는 JSON 형식으로 주시면 됩니다.")
-    public PostUpdateResponseDto updatePost(@PathVariable Long id,
-                                            @RequestBody @Valid PostUpdateRequestDto requestDto) {
-        ResponseEntity.status(HttpStatus.OK).body("OK");
-        return postService.update(id, requestDto);
+    public ResponseEntity<?> updatePost(
+            @PathVariable Long id, @RequestBody @Valid PostUpdateRequestDto requestDto) {
+        PostDto updatingPost = postService.findById(id);
+
+//        if (Objects.equals(updatingPost.getCreatedBy(), userNow.getCreatedBy())) {
+//            postService.update(id, requestDto);
+        return ResponseEntity.status(HttpStatus.OK).body("OK");
+//        } else {
+//            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Writer No Match");
+//        }
+
     }
 
 

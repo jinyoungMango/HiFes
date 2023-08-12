@@ -18,10 +18,13 @@ public class PostUpdateRequestDto {
     @NotNull(message = "Cannot be null")
     private String postType;
 
+    private Long createdBy;
+
     @Builder
-    public PostUpdateRequestDto(String title, String content, String postType) {
+    public PostUpdateRequestDto(String title, String content, String postType, Long createdBy) {
         this.title = title;
         this.content = content;
         this.postType = postType;
+        this.createdBy = createdBy;
     }
 }

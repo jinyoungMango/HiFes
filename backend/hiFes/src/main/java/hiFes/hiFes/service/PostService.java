@@ -41,7 +41,7 @@ public class PostService {
 
 
     @Transactional
-    public void create(PostCreateDto createDto) {
+    public String create(PostCreateDto createDto) {
         Long userId = createDto.getCreatedBy();
 //        String userType
         String userRecognizer;
@@ -52,14 +52,21 @@ public class PostService {
 //            userType = "Host";
             userRecognizer = hostUser.getOrganization();
 
-        } else {
+        } else if (userId != null) {
             NormalUser normalUser = normalUserRepository.findById(userId)
                     .orElseThrow(() -> new IllegalArgumentException("!!!No Normal User Found!!!"));
 
 //            userType = "Normal";
             userRecognizer = normalUser.getNickname();
+        } else {
+            return "Fail V1";
         }
-        postRepository.save(createDto.toEntity());
+        Post savedPost = postRepository.save(createDto.toEntity());
+        if (savedPost != null && postRepository.existsById(savedPost.getId())) {
+            return "Created";
+        } else {
+            return "Fail V2";
+        }
     }
 
 //    @Transactional

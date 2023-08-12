@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 @Getter
 public class PostDto {
     private Long id;
+    private Long createdBy;
     private String title;
     private String content;
     private String postType;
@@ -33,6 +34,7 @@ public class PostDto {
         this.id = post.getId();
         this.createdAt = post.getCreatedAt();
         this.updatedAt = post.getUpdatedAt();
+        this.createdBy = post.getCreatedBy();
         this.title = post.getTitle();
         this.content = post.getContent();
         this.postType = post.getPostType();
