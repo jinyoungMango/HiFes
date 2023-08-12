@@ -22,13 +22,13 @@ public class GetGift {
     @Column(name="id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="itemId")
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonBackReference
     private ARItem arItem;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="normal_user_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonBackReference

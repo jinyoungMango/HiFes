@@ -16,11 +16,11 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
-    @POST("/normal/login")
+    @POST("normal/login")
     suspend fun login(@Query("accessToken") accessToken: String): NetworkResponse<LoginResponse, ErrorResponse>
 
     @Multipart
-    @POST("/normal/signUp")
+    @POST("normal/signUp")
     suspend fun signUp(
         @Part("normalUserSignUpDto") normalUserSignUpDto: RequestBody,
         @Part image: MultipartBody.Part

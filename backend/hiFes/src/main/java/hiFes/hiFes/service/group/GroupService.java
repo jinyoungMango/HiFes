@@ -7,7 +7,6 @@ import hiFes.hiFes.domain.group.JoinedGroup;
 import hiFes.hiFes.domain.group.RegisteredHashtag;
 import hiFes.hiFes.domain.user.NormalUser;
 import hiFes.hiFes.dto.group.GroupCreateDto;
-import hiFes.hiFes.dto.group.HashTagDto;
 import hiFes.hiFes.repository.group.GroupRepository;
 import hiFes.hiFes.repository.group.HashtagRepository;
 import hiFes.hiFes.repository.group.JoinedGroupRepository;
@@ -18,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.io.File;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,57 +29,14 @@ public class GroupService {
     private final RegisteredHashtagRepository registeredHashtagRepository;
     private final HashtagRepository hashtagRepository;
 
-//    public void groupCreate(/*이메일*/GroupCreateDto groupCreateDto){
-//        LocalDateTime now = LocalDateTime.of(2020,9,16,0,0,0);
-//        Group group = Group.builder()
-//                .groupName(groupCreateDto.getGroupName())
-//                .groupPic(groupCreateDto.getGroupPic())
-//                .maxPop(groupCreateDto.getMaxPop())
-//                .content(groupCreateDto.getContent())
-//                .build();
-//
-//
-//        groupRepository.save(group);
-//
-//        String[] hashtags = groupCreateDto.getHashtags();
-//        int hashLen = hashtags.length;
-//        for (int i = 0; i < hashLen; i++) {
-//            RegisteredHashtag registeredHashtag = new RegisteredHashtag();
-//            registeredHashtag.setGroup(group);
-//            if (hashtagRepository.existsByTitle(hashtags[i])) {
-//                Hashtag tag = hashtagRepository.findByTitle(hashtags[i]);
-//                registeredHashtag.setHashtag(tag);
-//            } else {
-//                Hashtag hashtag = Hashtag.builder()
-//                        .title(hashtags[i])
-//                        .build();
-//                hashtagRepository.save(hashtag);
-//
-//                registeredHashtag.setHashtag(hashtag);
-//            }
-//            registeredHashtagRepository.save(registeredHashtag);
-//        }
-//
-//
-//
-//
-//        RegisteredHashtag registeredHashtag = new RegisteredHashtag();
-//        registeredHashtag.setGroup(group);
-//
-//        registeredHashtagRepository.save(registeredHashtag);
-//
-//
-//
-//    }
 
     public void groupCreate(GroupCreateDto groupCreateDto, NormalUser normalUser, MultipartFile image) throws Exception {
-        String projectPath = System.getProperty("user.dir") +"\\src\\main\\resources\\static\\images";
+        String projectPath = "/home/ubuntu/images";
         String imageName = image.getOriginalFilename();
         File saveImage = new File(projectPath, imageName);
         image.transferTo(saveImage);
-        System.out.println(groupCreateDto.getGroupName() + groupCreateDto.getMaxPop() + groupCreateDto.getContent() + groupCreateDto.getFestivalId() + "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 
-        LocalDateTime now = LocalDateTime.of(2020,9,16,0,0,0);
+//        LocalDateTime now = LocalDateTime.of(2020,9,16,0,0,0);
         Group group = Group.builder()
                 .groupName(groupCreateDto.getGroupName())
                 .groupPic("/images/"+ imageName)
@@ -118,10 +73,8 @@ public class GroupService {
         joinedGroup.setGroup(group);
         // 그룹을 생성한 사람이 모임장이 된다.
         joinedGroup.setIsLeader(true);
-        System.out.println(normalUser.getNickname() + " ******************************************************************");
 
         joinedGroupRepository.save(joinedGroup);
-        System.out.println("(((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((((");
 
 
         RegisteredHashtag registeredHashtag = new RegisteredHashtag();
@@ -218,5 +171,23 @@ public class GroupService {
             groups.add(group);
         }
         return groups;
+    }
+
+    public List<NormalUser> getJoinedPeople(Long groupId){
+        List<JoinedGroup> joinedGroupsList = joinedGroupRepository.findByGroupId(groupId);
+        List<NormalUser> joinedPeople = new ArrayList<>();
+        NormalUser leader = null;
+        for (JoinedGroup joinedGroup : joinedGroupsList) {
+            if (joinedGroup.getIsLeader()){
+                leader = joinedGroup.getNormalUser();
+            }
+            else{
+                joinedPeople.add(joinedGroup.getNormalUser());
+            }
+
+        }
+        joinedPeople.add(leader);
+
+        return joinedPeople;
     }
 }

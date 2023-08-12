@@ -9,6 +9,7 @@ import hiFes.hiFes.dto.festival.*;
 import hiFes.hiFes.repository.festival.*;
 import hiFes.hiFes.repository.user.HostUserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -55,7 +56,7 @@ public class OrganizedFestivalService {
 
 
         //이미지 처리
-        String projectPath = System.getProperty("user.dir") +"\\hiFes\\src\\main\\resources\\static\\images";
+        String projectPath = "/home/ubuntu/images";
 //        UUID uuid = UUID.randomUUID();
 //        String imageName = uuid + "_" + image.getOriginalFilename();
         String imageName = image.getOriginalFilename();
@@ -149,6 +150,11 @@ public class OrganizedFestivalService {
         return organizedFestivalRepository.findOrganizedFestivalsByLocationWithin10Km(latitude.doubleValue(), longitude.doubleValue());
     }
 
+    // 검색 결과
+    public List<OrganizedFestival> searchResultFestival(String word){
+        return organizedFestivalRepository.findByFesTitleContaining(word);
+
+    }
 
     @org.springframework.transaction.annotation.Transactional
     public OrganizedFestival update(long id, UpdateOrganizedFestivalRequest request, MultipartFile file, MultipartFile image)throws Exception {
@@ -161,10 +167,8 @@ public class OrganizedFestivalService {
         BigDecimal fesLongitude = new BigDecimal(LatLong[1]);
         request.setFesLatitude(fesLatitude);
         request.setFesLongitude(fesLongitude);
-
-
         //update하기 전에 사진 다 삭제하고 다시 넣기
-        String projectPath = System.getProperty("user.dir") +"\\hiFes\\src\\main\\resources\\static\\images";
+        String projectPath = "/home/ubuntu/images";
         // 이 행사의 포스터 주소 삭제
         // Db에 저장된 포스터 삭제
         if(!image.isEmpty()){
@@ -272,7 +276,7 @@ public class OrganizedFestivalService {
         stampMissionRepository.deleteById(id);
     }
 
-
+    @Transactional
     public String[] getLatLonFromGoogleApi(String fesAddress) {
         String apiKey = "AIzaSyBe3i_41gwVR9efodpGJQuxCx1Qyr1ZDtE";
         String apiUrl = "https://maps.googleapis.com/maps/api/geocode/json";
@@ -311,6 +315,5 @@ public class OrganizedFestivalService {
             System.out.println("No results found");
         }
         return null;
-
     }
 }
