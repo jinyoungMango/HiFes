@@ -33,7 +33,8 @@ public class OrganizedFestivalApiController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Operation(summary = "행사 등록", description = "행사, aritem, stampMission, 행사일정(엑셀), 부스 마커를 한번에 등록." +
-            "RequestPart를 써서 이미지는 image, 엑셀은 file, 나머지는 data라는 이름을 FormData로 보내야 함.")
+            "RequestPart를 써서 이미지는 image, 엑셀은 file, 나머지는 data라는 이름을 FormData로 보내야 함. 위경도는 자체 변환되어서 주소만 넣어주면 되고 이미지 주소도 따로 보낼 필요 없음" +
+            "이미지 주소 필요 없음. 단, 주소는 실제 있는 주소여야 함(위경도로 변환 해야 해서)")
     @PostMapping("/{hostUserId}/create-festival")
     @CrossOrigin("*")
     public ResponseEntity<String> addOrganizedFestival(@RequestPart("data") AddOrganizedFestivalRequest request, @RequestPart("file") MultipartFile file, @RequestPart("image") MultipartFile image,
@@ -49,17 +50,15 @@ public class OrganizedFestivalApiController {
     }
 
 
-    @Operation(summary = "행사 수정", description = "특정 행사의 id를 받아서 그 행사 정보, aritem, stampMission, 일정(엑셀), 부스 마커 수정." +
-            "Formdata를 사용해서 엑셀은 file, 이미지는 image, 나머지는 data로 받음.")
-    @PutMapping("/update-festival/{festivalId}")
-    public ResponseEntity<OrganizedFestival> updateOrganizedFestival(@PathVariable long festivalId, @RequestPart("data") UpdateOrganizedFestivalRequest request,
-                                                                     @RequestPart("file") MultipartFile file, @RequestPart("image") MultipartFile image
-                                                                     )
-            throws Exception{
-
-        OrganizedFestival updateOrganizedFestival = organizedFestivalService.update(festivalId, request, file, image);
-        return ResponseEntity.ok()
-                .body(updateOrganizedFestival);
+    @Operation(summary = "행사 수정", description = "수정인데 Post요청임을 주의. 특정 행사의 id를 받아서 그 행사 정보, aritem, stampMission, 일정(엑셀), 부스 마커 수정." +
+            "Formdata를 사용해서 엑셀은 file, 이미지는 image, 나머지는 data로 받음." +
+            "정보 보낼때 어떤 것을 수정하는지 알아야 하므로 각 테이블마다 id 필요, 부스마커-스탬프 미션의 경우 추가적으로 찍히는 것이 수정 과정에 있을 수 있으므로" +
+            " id값이 없을 경우 save로직 수행됨")
+    @PostMapping("/update-festival/{festivalId}")
+    public Boolean updateOrganizedFestival(@PathVariable long festivalId, @RequestPart("data") UpdateOrganizedFestivalRequest request,
+                                           @RequestPart("file") MultipartFile file,
+                                           @RequestPart("image") MultipartFile image) throws Exception{
+        return organizedFestivalService.update(festivalId, request, file, image);
     }
 
 
