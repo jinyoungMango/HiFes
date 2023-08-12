@@ -3,6 +3,7 @@ package hiFes.hiFes.service.user;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import hiFes.hiFes.domain.user.HostUser;
 import hiFes.hiFes.domain.user.NormalUser;
 import hiFes.hiFes.dto.user.NormalUserSignUpDto;
 import hiFes.hiFes.repository.user.NormalUserRepository;
@@ -32,7 +33,7 @@ public class NormalUserService {
 
     public void signUp(NormalUserSignUpDto normalUserSignUpDto, Map<String, Object> context, MultipartFile image) throws Exception {
 
-        String projectPath = System.getProperty("user.dir") +"\\src\\main\\resources\\static\\images";
+        String projectPath = "/home/ubuntu/images";
         String imageName = image.getOriginalFilename();
         File saveImage = new File(projectPath, imageName);
         image.transferTo(saveImage);
@@ -54,6 +55,8 @@ public class NormalUserService {
     public NormalUser getByEmail(String email) {
         return normalUserRepository.findByEmail(email).orElse(null);
     }
+
+    public NormalUser getById(Long id) { return normalUserRepository.findById(id).orElse(null); }
 
 
     public JsonObject login(String email) throws UsernameNotFoundException {
