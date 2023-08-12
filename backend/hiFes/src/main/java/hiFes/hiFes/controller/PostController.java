@@ -26,6 +26,7 @@ public class PostController {
     @PostMapping("/post/create")
     @Operation(summary = "게시글 생성, 필요 값 userId(Long), title(String), content(String), postType(String)" +
             " 전부 JSON 형식으로 주시면 됩니다.")
+    @CrossOrigin("*")
     public ResponseEntity<?> create(@RequestBody PostCreateDto createDto) {
         postService.create(createDto);
         return ResponseEntity.status(HttpStatus.CREATED).body("CREATE");
@@ -35,12 +36,14 @@ public class PostController {
 
     @GetMapping("/post/list")
     @Operation(summary = "전체 게시글 조회, 필요 값 X")
+    @CrossOrigin("*")
     public List<PostListDto> searchAllPosts() {
         return postService.searchAllPosts();
     }
 
     @GetMapping(value = "/post/get/{id}")
     @Operation(summary = "게시글 단일조회, 필요 값 postId(Long), 조회하려는 게시글의 postId 를 주시면 됩니다.")
+    @CrossOrigin("*")
     public ResponseEntity<PostDto> findById(@PathVariable Long id) {
         PostDto postDto = postService.findById(id);
         return ResponseEntity.ok(postDto);
@@ -63,6 +66,7 @@ public class PostController {
 
     @DeleteMapping("/post/delete/{id}")
     @Operation(summary = "게시글 삭제, 필요 값 postId(Long), 삭제할 대상의 postId 는 url 에 같이 넣어주시면 됩니다.")
+    @CrossOrigin("*")
     public void delete(@PathVariable Long id) {
         postService.delete(id);
     }
