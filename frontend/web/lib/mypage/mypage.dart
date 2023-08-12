@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:web/constants.dart';
+import 'package:web/festival/FestivalDto.dart';
 import 'package:web/login/LoginController.dart';
 
 import '../MainController.dart';
@@ -19,11 +20,15 @@ class _MyPageState extends State<MyPage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final MainController _mainController =
       Get.find<MainController>(tag: 'MainController');
+  late Future<List<FestivalDto>> festivalsFuture;
 
   // 사용자 정보 저장
   var organization = "";
   var email = "";
   var phoneNo = "";
+
+  // 자기 축제 가져오기
+  late List<FestivalDto> myfestivals;
 
   @override
   void initState() {
@@ -34,16 +39,13 @@ class _MyPageState extends State<MyPage> with SingleTickerProviderStateMixin {
         vsync: this); // 탭 개수를 2로 설정, SingleTickerProviderStateMixin 사용
 
     Future.delayed(Duration.zero, () async {
-      var url = dotenv.env['YOUR_SERVER_URL']! + 'host/myPage';
+      var url = dotenv.env['YOUR_SERVER_URL']! + 'api/host/myPage';
 
       print(_mainController.jAccessToken.value);
 
-      var response = await Dio().post(
-        url,
-        options: Options(
-          headers: { 'accessToken' : _mainController.jAccessToken.value }
-        )
-      );
+      var response = await Dio().post(url,
+          options: Options(
+              headers: {'accessToken': _mainController.jAccessToken.value}));
 
       if (response.statusCode == 200) {
         // 요청 성공 처리
@@ -54,16 +56,37 @@ class _MyPageState extends State<MyPage> with SingleTickerProviderStateMixin {
         email = response.data['email'];
         phoneNo = response.data['phoneNo'];
         // phoneNo = response.data['phoneNo'];
-        setState(() {
-          
-        });
+        setState(() {});
       } else {
         // 요청 실패 처리
         print('Request failed with status: ${response.statusCode}');
         print('Error message: ${response.data}');
       }
-
     });
+
+    // festivalsFuture = fetchFestivals(); // 비동기 작업 시작
+  }
+
+  Future<List<FestivalDto>> fetchFestivals() async {
+    try {
+      var url = '${dotenv.env['YOUR_SERVER_URL']!}api/${_mainController.id}/festivals';
+
+      var response = await Dio().get(url);
+
+      if (response.statusCode == 200) {
+        List<FestivalDto> festivals = [];
+        for (var festivalJson in response.data) {
+          var festival = FestivalDto.fromJson(festivalJson);
+          print(festival);
+          festivals.add(festival);
+        }
+        return festivals;
+      } else {
+        throw Exception('Failed to load festivals');
+      }
+    } catch (error) {
+      throw Exception('Error fetching festivals: $error');
+    }
   }
 
   @override
@@ -197,27 +220,38 @@ class _MyPageState extends State<MyPage> with SingleTickerProviderStateMixin {
                           ),
                           Column(
                             children: [
-                              FestivalItem(),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              FestivalItem(),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              FestivalItem(),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              FestivalItem(),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              FestivalItem(),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              FestivalItem()
+                              FutureBuilder<List<FestivalDto>>(
+                                  future: fetchFestivals(),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return CircularProgressIndicator(); // 로딩 중인 경우 로딩 인디케이터 표시
+                                    } else if (snapshot.hasError) {
+                                      return Text('Error: ${snapshot.error}');
+                                    } else if (!snapshot.hasData ||
+                                        snapshot.data!.isEmpty) {
+                                      return Text(
+                                          'No festivals data available.');
+                                    } else {
+                                        myfestivals = snapshot!.data!;
+                                        print(myfestivals.runtimeType);
+                                        return Column(
+                                          children: myfestivals.map((festival) => FestivalItem(festival)).toList(),
+                                        );
+                                    }
+                                  })
+                              // Expanded(
+                              // child: ListView.builder(
+                              //   itemCount: myfestivals.length,
+                              //   itemBuilder: (context, index) {
+                              //     return Padding(
+                              //       padding: EdgeInsets.symmetric(
+                              //           horizontal: 20),
+                              //       child: FestivalItem(myfestivals[index]),
+                              //     );
+                              //   },
+                              // )
+                              // ),
                             ],
                           ),
                         ],
@@ -233,7 +267,7 @@ class _MyPageState extends State<MyPage> with SingleTickerProviderStateMixin {
     );
   }
 
-  Padding FestivalItem() {
+  Padding FestivalItem(FestivalDto fesItem) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Material(
@@ -246,7 +280,7 @@ class _MyPageState extends State<MyPage> with SingleTickerProviderStateMixin {
               children: [
                 Expanded(
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Container(
                         width: 100,
@@ -256,10 +290,7 @@ class _MyPageState extends State<MyPage> with SingleTickerProviderStateMixin {
                             child: Image.network(
                               "https://i.imgur.com/JOKsNeT.jpeg",
                               fit: BoxFit.cover,
-                            )
-                        )
-                    ),
-
+                            ))),
                     SizedBox(
                       height: 30,
                       width: 2,
@@ -267,12 +298,10 @@ class _MyPageState extends State<MyPage> with SingleTickerProviderStateMixin {
                         color: AppColor.PrimaryPink,
                       ),
                     ),
-
                     Text(
-                      "축제명",
+                      fesItem.fesTitle,
                       style: TextStyle(fontSize: 20),
                     ),
-
                     SizedBox(
                       height: 30,
                       width: 2,
@@ -280,9 +309,7 @@ class _MyPageState extends State<MyPage> with SingleTickerProviderStateMixin {
                         color: AppColor.PrimaryPink,
                       ),
                     ),
-
-                    Text("축제 위치"),
-
+                    Text(fesItem.fesAddress),
                     SizedBox(
                       height: 30,
                       width: 2,
@@ -290,10 +317,10 @@ class _MyPageState extends State<MyPage> with SingleTickerProviderStateMixin {
                         color: AppColor.PrimaryPink,
                       ),
                     ),
-
                     Column(
                       children: [
-                        Text("2023-08-08      ~      2023-08-18"),
+                        Text(
+                            "${fesItem.fesStartDate.toString()}      ~      ${fesItem.fesEndDate.toString()}"),
                       ],
                     ),
                     ElevatedButton(
@@ -301,18 +328,17 @@ class _MyPageState extends State<MyPage> with SingleTickerProviderStateMixin {
                           backgroundColor: MaterialStateProperty.all<Color>(
                               AppColor.PrimaryPink),
                           minimumSize:
-                          MaterialStateProperty.all<Size>(Size(100, 48)),
+                              MaterialStateProperty.all<Size>(Size(100, 48)),
                         ),
                         onPressed: () {
                           Get.rootDelegate.toNamed(Routes.FESTIVAL);
                         },
                         child: Text(
-                          "Detail",
+                          'Detail',
                           style: TextStyle(color: Colors.white, fontSize: 16),
                         ))
                   ],
                 )),
-
               ],
             ),
           ),
