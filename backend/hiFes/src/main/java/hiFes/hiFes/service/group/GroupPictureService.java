@@ -26,7 +26,7 @@ public class GroupPictureService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public String GroupPictureUpload(NormalUser normalUser, Group group, MultipartFile image) throws Exception{
-        String projectPath = System.getProperty("user.dir") +"\\src\\main\\resources\\static\\images";
+        String projectPath = "/home/ubuntu/images";
         String imageName = image.getOriginalFilename();
         File saveImage = new File(projectPath, imageName);
         image.transferTo(saveImage);
@@ -56,7 +56,6 @@ public class GroupPictureService {
     }
 
     public Long getNormalUserIdsForSharedPic(Long sharedPicId) {
-        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         logger.debug("debug log={}", sharedPicId);
         SharedPic sharedPic = sharedPicRepository.findById(sharedPicId)
                 .orElseThrow(() -> new IllegalArgumentException("올린 사람을 찾을 수 없습니다. : " + sharedPicId));

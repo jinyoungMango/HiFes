@@ -24,7 +24,8 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-//@RequestMapping("/api")
+@RequestMapping("/api")
+@CrossOrigin(origins = "*")
 public class GroupController extends BaseTimeEntity {
     private final NormalUserService normalUserService;
     private final GroupService groupService;
@@ -33,7 +34,6 @@ public class GroupController extends BaseTimeEntity {
 
     // 주석한 부분은 유저 관련 기능이다.
 
-    @CrossOrigin(origins = "*")
     @PostMapping("group/create")
     public ResponseEntity<String> groupCreate(HttpServletRequest request, @RequestPart("groupCreateDto") GroupCreateDto groupCreateDto, @RequestPart("image")  MultipartFile image) throws Exception {
         String accessToken = jwtService.extractAccessToken(request).orElse("");
@@ -46,14 +46,13 @@ public class GroupController extends BaseTimeEntity {
         return ResponseEntity.ok("group create success");
     }
 
-    @CrossOrigin(origins = "*")
     @DeleteMapping("group/delete")
     public ResponseEntity<String> groupDelete(HttpServletRequest request, @RequestBody Long id){
         groupService.groupDelete(id.longValue());
         return ResponseEntity.ok("group delete success");
     }
 
-    @CrossOrigin(origins = "*")
+
     @GetMapping("group/join/{groupId}")
     public String groupJoin(HttpServletRequest request, @PathVariable Long groupId){
         String accessToken = jwtService.extractAccessToken(request).orElse("");
@@ -65,7 +64,6 @@ public class GroupController extends BaseTimeEntity {
     }
 
     @Operation(summary = "그룹 디테일", description = "id에는 그룹 id를 넣어주시면 됩니다. 해당 모임이 참여중인 행사에, 유저가 참여중인 모임이 있는지, 그룹의 리더인지, 참여중인 그룹인지도 함께 반환됩니다.")
-    @CrossOrigin(origins = "*")
     @GetMapping("group/detail/{id}")
     public JsonObject groupDetail(HttpServletRequest request, @PathVariable Long id){
         // 여기서 id는 그룹 아이디
@@ -112,7 +110,6 @@ public class GroupController extends BaseTimeEntity {
         return groupInfo;
     }
 
-    @CrossOrigin(origins = "*")
     @GetMapping("group/list")
     public List groupList(){
         List<Group> groupList = groupService.getGrouplist();
@@ -120,7 +117,6 @@ public class GroupController extends BaseTimeEntity {
         return groupList;
     }
 
-    @CrossOrigin(origins = "*")
     @GetMapping("group/list/{searchWord}")
     public List groupSearchList(@PathVariable String searchWord){
         List<Group> groupList = groupService.getGroupSearch(searchWord);
@@ -128,7 +124,6 @@ public class GroupController extends BaseTimeEntity {
         return groupList;
     }
 
-    @CrossOrigin(origins = "*")
     @GetMapping("group/list/hashtag/{searchTag}")
     public List groupHashtagSearchList(@PathVariable String searchTag){
         List<Group> groupList = groupService.getGroupHashtagSearch(searchTag);
