@@ -17,10 +17,11 @@ import java.util.stream.Collectors;
 public class PostDto {
     private Long id;
     private Long createdBy;
+//    private String writer;
     private String title;
     private String content;
     private String postType;
-    private boolean isHidden;
+    private Boolean isHidden;
     private String hideReason;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -40,7 +41,7 @@ public class PostDto {
         this.postType = post.getPostType();
         this.views = post.getViews();
         this.rating = post.getRating();
-        this.isHidden = post.isHidden();
+        this.isHidden = post.getIsHidden();
         this.hideReason = post.getHideReason();
         this.topLevelComments = post.getTopLevelComments().stream()
                 .map(CommentDto::new)

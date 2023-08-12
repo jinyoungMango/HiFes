@@ -2,7 +2,6 @@ package hiFes.hiFes.controller;
 
 import hiFes.hiFes.dto.commentDto.CommentCreateDto;
 import hiFes.hiFes.dto.commentDto.CommentUpdateDto;
-import hiFes.hiFes.dto.reponse.CommentResponseDto;
 import hiFes.hiFes.service.CommentService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -27,11 +26,8 @@ public class CommentController {
     @PostMapping("/comment/create")
     @Operation(summary = "댓글 생성, 필요 값 postId(Long), content(Long), parentId(Long)" +
             " 전부 JSON 형식으로 주시면 됩니다. 단 parentId 는 없으면 0이 아니라 null 로 주셔야 됩니다.")
-<<<<<<< HEAD
-
-=======
     @CrossOrigin("*")
->>>>>>> develop
+
     public ResponseEntity<?> createComment(@RequestBody CommentCreateDto requestDto) {
         commentService.create(requestDto);
         return ResponseEntity.ok(requestDto);
@@ -39,11 +35,8 @@ public class CommentController {
 
     @PostMapping("/comment/create/re")
     @Operation(summary = "대댓글 생성, 필요 값 postId(Long), content(Long), parentId(Long) 전부 JSON 형식으로 주시면 됩니다.")
-<<<<<<< HEAD
-
-=======
     @CrossOrigin("*")
->>>>>>> develop
+
     public ResponseEntity<?> createReComment(@RequestBody CommentCreateDto requestDto) {
         commentService.create(requestDto);
         return ResponseEntity.ok(requestDto);

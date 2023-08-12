@@ -4,19 +4,15 @@ import hiFes.hiFes.domain.Comment;
 import hiFes.hiFes.domain.Post;
 
 import hiFes.hiFes.dto.commentDto.CommentCreateDto;
-import hiFes.hiFes.dto.commentDto.CommentListDto;
 import hiFes.hiFes.dto.commentDto.CommentUpdateDto;
-import hiFes.hiFes.dto.reponse.CommentResponseDto;
 import hiFes.hiFes.repository.CommentRepository;
 import hiFes.hiFes.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.List;
-import java.util.stream.Collectors;
+
 
 @RequiredArgsConstructor
 @Service

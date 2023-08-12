@@ -16,10 +16,8 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
-<<<<<<< HEAD
-=======
 @CrossOrigin(origins = "*")
->>>>>>> develop
+
 public class HostUserController {
     private final HostUserService hostUserService;
     private final HostUserRepository hostUserRepository;
