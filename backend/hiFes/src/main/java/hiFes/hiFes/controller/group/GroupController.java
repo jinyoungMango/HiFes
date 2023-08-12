@@ -7,6 +7,7 @@ import hiFes.hiFes.domain.BaseTimeEntity;
 import hiFes.hiFes.domain.group.Group;
 import hiFes.hiFes.domain.user.NormalUser;
 import hiFes.hiFes.dto.group.GroupCreateDto;
+import hiFes.hiFes.dto.group.GroupListDto;
 import hiFes.hiFes.repository.user.NormalUserRepository;
 import hiFes.hiFes.service.group.GroupService;
 import hiFes.hiFes.service.user.JwtService;
@@ -113,14 +114,20 @@ public class GroupController extends BaseTimeEntity {
 
     @GetMapping("group/list")
     public List groupList(){
-        List<Group> groupList = groupService.getGrouplist();
+        return groupService.getGrouplist();
 
-        return groupList;
     }
+
+    @GetMapping("group/list/fes/{festivalId}")
+    public List groupFesList(@PathVariable Long festivalId){
+        return groupService.getFesGroup(festivalId);
+
+    }
+
 
     @GetMapping("group/list/{searchWord}")
     public Map<String, Object> groupSearchList(@PathVariable String searchWord){
-        List<Group> groupList = groupService.getGroupSearch(searchWord);
+        List<GroupListDto> groupList = groupService.getGroupSearch(searchWord);
         Map<String, Object> searchResult = new HashMap<>();
         searchResult.put("searchType", "title");
         searchResult.put("groupList", groupList);
@@ -130,7 +137,7 @@ public class GroupController extends BaseTimeEntity {
 
     @GetMapping("group/list/hashtag/{searchTag}")
     public Map<String, Object> groupHashtagSearchList(@PathVariable String searchTag){
-        List<Group> groupList = groupService.getGroupHashtagSearch(searchTag);
+        List<GroupListDto> groupList = groupService.getGroupHashtagSearch(searchTag);
         Map<String, Object> searchResult = new HashMap<>();
         searchResult.put("searchType", "hashtag");
         searchResult.put("groupList", groupList);
