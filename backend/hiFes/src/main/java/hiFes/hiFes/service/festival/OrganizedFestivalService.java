@@ -19,6 +19,8 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 //@RequiredArgsConstructor
 @Service
@@ -60,8 +62,8 @@ public class OrganizedFestivalService {
 
 
         //이미지 처리
-//        String projectPath = "/home/ubuntu/images";
-        String projectPath = System.getProperty("user.dir") +"\\hifes\\src\\main\\resources\\static\\images";
+        String projectPath = "/home/ubuntu/images";
+//        String projectPath = System.getProperty("user.dir") +"\\hifes\\src\\main\\resources\\static\\images";
 //        UUID uuid = UUID.randomUUID();
 //        String imageName = uuid + "_" + image.getOriginalFilename();
         String imageName = image.getOriginalFilename();
@@ -156,8 +158,20 @@ public class OrganizedFestivalService {
     }
 
     // 검색 결과
-    public List<OrganizedFestival> searchResultFestival(String word){
-        return organizedFestivalRepository.findByFesTitleContaining(word);
+    public List<SearchOrganizedFestivalResponse> searchResultFestival(String word){
+        List<OrganizedFestival> titleResults = organizedFestivalRepository.findByFesTitleContaining(word);
+        List<OrganizedFestival> addressResults = organizedFestivalRepository.findByFesAddressContaining(word);
+
+        Stream<SearchOrganizedFestivalResponse> titleStream = titleResults.stream()
+                .map(organizedFestival -> new SearchOrganizedFestivalResponse(organizedFestival, "title"));
+
+        Stream<SearchOrganizedFestivalResponse> addressStream = addressResults.stream()
+                .map(organizedFestival -> new SearchOrganizedFestivalResponse(organizedFestival, "address"));
+
+        List<SearchOrganizedFestivalResponse> results = Stream.concat(titleStream,addressStream)
+                .collect(Collectors.toList());
+
+        return results;
 
     }
 ////////////////업데이트
@@ -174,8 +188,8 @@ public class OrganizedFestivalService {
         request.setFesLatitude(fesLatitude);
         request.setFesLongitude(fesLongitude);
         //update하기 전에 사진 다 삭제하고 다시 넣기
-//        String projectPath = "/home/ubuntu/images";
-        String projectPath = System.getProperty("user.dir") +"\\hifes\\src\\main\\resources\\static\\images";
+        String projectPath = "/home/ubuntu/images";
+//        String projectPath = System.getProperty("user.dir") +"\\hifes\\src\\main\\resources\\static\\images";
         // 이 행사의 포스터 주소 삭제
         // Db에 저장된 포스터 삭제
         if(!image.isEmpty()){

@@ -151,10 +151,10 @@ public class OrganizedFestivalApiController {
 
     @Operation(summary = "특정 행사 조회", description = "특정 행사의 id를 통해 상세 정보 조회")
     @GetMapping("/festival/{festivalId}")
-    public ResponseEntity<OrganizedFestivalResponse> findOrganizedFestival(@PathVariable long festivalId){
+    public ResponseEntity<OrganizedFestivalDetailResponse> findOrganizedFestival(@PathVariable long festivalId){
         OrganizedFestival organizedFestival = organizedFestivalService.findById(festivalId);
         return ResponseEntity.ok()
-                .body(new OrganizedFestivalResponse(organizedFestival));
+                .body(new OrganizedFestivalDetailResponse(organizedFestival));
     }
 
 
@@ -172,13 +172,10 @@ public class OrganizedFestivalApiController {
 
     @Operation(summary = "행사 검색 결과", description = "param으로 key값이 keyword인 검색어를 넣어줘야 합니다.")
     @GetMapping("/search-festival/")
-    public ResponseEntity<List<OrganizedFestivalResponse>> searchFestival(@RequestParam(value = "keyword") String word){
-        List<OrganizedFestival> organizedFestivals = organizedFestivalService.searchResultFestival(word);
-        List<OrganizedFestivalResponse> organizedFestivalResponses = organizedFestivals.stream()
-                .map(OrganizedFestivalResponse::new)
-                .collect(Collectors.toList());
+    public ResponseEntity<List<SearchOrganizedFestivalResponse>> searchFestival(@RequestParam(value = "keyword") String word){
+        List<SearchOrganizedFestivalResponse> organizedFestivals = organizedFestivalService.searchResultFestival(word);
         return ResponseEntity.ok()
-                .body(organizedFestivalResponses);
+                .body(organizedFestivals);
 
     }
 
