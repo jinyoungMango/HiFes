@@ -15,7 +15,7 @@ public class GetGiftApiController {
     private GetGiftService getGiftService;
     @Operation(summary = "특정 일반회원이 어떤 ar아이템을 획득했는지 등록")
     @PostMapping("/{normalUserId}/get-gift/{itemId}")
-
+    @CrossOrigin("*")
     public Boolean saveGetGift(@PathVariable Long normalUserId, @PathVariable Long itemId) {
         return getGiftService.saveGetGift(normalUserId, itemId);
     }
