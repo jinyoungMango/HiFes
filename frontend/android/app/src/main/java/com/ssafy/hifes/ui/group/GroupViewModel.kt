@@ -1,5 +1,6 @@
 package com.ssafy.hifes.ui.group
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -14,7 +15,9 @@ import com.ssafy.hifes.util.network.NetworkResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.math.log
 
+private const val TAG = "GroupViewModel"
 @HiltViewModel
 class GroupViewModel @Inject constructor(
     private val repository: GroupRepository
@@ -53,6 +56,7 @@ class GroupViewModel @Inject constructor(
     }
 
     fun getFestivalGroupList(festivalId: Int) {
+        Log.d(TAG, "getFestivalGroupList: $festivalId")
         var groupListDummyData = mutableListOf<Group>()
         val group = Group(
             id = 1,

@@ -50,6 +50,8 @@ class MainViewModel @Inject constructor(
     private var _groupScreenType: MutableLiveData<GroupScreenType> = MutableLiveData()
     val groupScreenType: LiveData<GroupScreenType> = _groupScreenType
 
+    var selectedFestival: Int = -1
+
 
     // 홈 화면, 일반 맵 화면에서 사용하는 축제 리스트
     fun getNearFestivalList(userLatitude: Double, userLongitude: Double) {
@@ -127,6 +129,7 @@ class MainViewModel @Inject constructor(
                 is NetworkResponse.Success -> {
                     Log.d(TAG, "getNearFestivalList: $response")
                     _festivalInfo.postValue(response.body)
+                    selectedFestival = response.body.festivalId
                 }
 
                 is NetworkResponse.ApiError -> {

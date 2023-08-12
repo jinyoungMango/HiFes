@@ -40,20 +40,20 @@ fun GroupMainScreen(
     var groupScreenType = mainViewModel.groupScreenType.observeAsState()
     val groupList = viewModel.groupList.observeAsState()
     val errMsg = viewModel.errorMsg.observeAsState()
+    val selectedFestival = mainViewModel.selectedFestival
 
-    LaunchedEffect(groupScreenType){
+    LaunchedEffect(groupScreenType) {
         if (groupScreenType.value == GroupScreenType.All) {
-            Log.d(TAG, "GroupMainScreen: 1 ${groupScreenType.value}")
+            Log.d(TAG, "GroupMainScreen: 1 ${groupScreenType}")
             viewModel.getAllGroupList()
         } else {
-            Log.d(TAG, "GroupMainScreen: 2 ${groupScreenType.value}")
-            viewModel.getFestivalGroupList(1)
+            Log.d(TAG, "GroupMainScreen: 2 ${groupScreenType}")
+            viewModel.getFestivalGroupList(selectedFestival)
         }
+    }
 
-        errMsg.value?.getContentIfNotHandled()?.let {
-            Log.d(TAG, "GroupMainScreen: 실패")
-            Toast.makeText(context, it, Toast.LENGTH_LONG).show()
-        }
+    errMsg.value?.getContentIfNotHandled()?.let {
+        Toast.makeText(context, it, Toast.LENGTH_LONG).show()
     }
 
 
