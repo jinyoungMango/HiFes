@@ -1,5 +1,9 @@
 package com.ssafy.hifes.di.module
 
+import com.ssafy.hifes.data.repository.festival.FestivalRepository
+import com.ssafy.hifes.data.repository.festival.FestivalRepositoryImpl
+import com.ssafy.hifes.data.repository.main.MainRepository
+import com.ssafy.hifes.data.repository.main.MainRepositoryImpl
 import com.ssafy.hifes.data.repository.user.UserRepository
 import com.ssafy.hifes.data.repository.user.UserRepositoryImpl
 import dagger.Binds
@@ -14,4 +18,14 @@ abstract class RepositoryModule {
     abstract fun bindsUserRepository(
         repositoryImpl: UserRepositoryImpl
     ): UserRepository
+
+    @Binds
+    abstract fun bindsMainRepository(
+        repositoryImpl: MainRepositoryImpl
+    ): MainRepository
+
+    @Binds
+    abstract fun bindsFestivalRepository(
+        repositoryImpl: FestivalRepositoryImpl
+    ): FestivalRepository
 }

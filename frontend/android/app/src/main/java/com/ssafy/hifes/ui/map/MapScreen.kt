@@ -111,7 +111,7 @@ fun MapScreen(
                     selectedFestival?.let { festival ->
                         // 추후 서버에서 가져온 score로 변경
                         DialogContent(festival, 4.0) {
-                            viewModel.getFestivalDetail(festival)
+                            viewModel.getFestivalInfo(festival.festivalId)
                             navController.navigate(HifesDestinations.FESTIVAL_DETAIL)
                         }
                     }
@@ -141,7 +141,7 @@ fun MapScreen(
                         }
 
                         MapType.FESTIVAL -> {
-                            BoothMap(boothList.value!!, selectedBoothChip.value ?: 0)
+                            boothList.value?.let { booth -> BoothMap(booth, selectedBoothChip.value ?: 0) }
                             ChipsSelectable(
                                 listOf(
                                     R.string.map_chip_total,
@@ -216,7 +216,7 @@ fun WavesAnimationCentered(onAnimationEnd: () -> Unit) {
 @OptIn(ExperimentalNaverMapApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun AroundMyLocationFestivalMap(
-    festivalList: MutableList<OrganizedFestivalDto>?,
+    festivalList: List<OrganizedFestivalDto>?,
     sheetState: ModalBottomSheetState,
     coroutineScope: CoroutineScope,
     onFestivalSelected: (OrganizedFestivalDto) -> Unit
@@ -269,7 +269,7 @@ fun AroundMyLocationFestivalMap(
 @OptIn(ExperimentalNaverMapApi::class)
 @Composable
 fun BoothMap(
-    boothList: MutableList<MarkerDto>,
+    boothList: List<MarkerDto>,
     selectedBoothChip: Int,
 ) {
     var markers by remember {
@@ -373,5 +373,5 @@ fun setMarkerIcon(boothNo: Int): Int {
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
 fun MapScreenPriview() {
-    MapScreen(rememberNavController(), MainViewModel(), DetailViewModel())
+//    MapScreen(rememberNavController(), MainViewModel(), DetailViewModel())
 }

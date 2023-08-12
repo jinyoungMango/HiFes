@@ -78,17 +78,18 @@ import com.ssafy.hifes.ui.iconpack.myiconpack.Imagenotfound
 import com.ssafy.hifes.ui.main.MainViewModel
 import com.ssafy.hifes.ui.map.StarScore
 import com.ssafy.hifes.ui.theme.pretendardFamily
+import com.ssafy.hifes.util.CommonUtils
 import com.ssafy.hifes.util.CommonUtils.formatSqlDateToString
 
 
 private const val TAG = "FestivalDetail_하이페스"
 @OptIn(ExperimentalNaverMapApi::class)
 @Composable
-fun FestivalDetail(navController: NavHostController, viewModel: MainViewModel) {
-    val selectedFestival = viewModel.selectedFestival.observeAsState()
+fun FestivalDetail(navController: NavHostController, viewModel: MainViewModel, detailViewModel: DetailViewModel) {
+    val festivalInfo = viewModel.festivalInfo.observeAsState()
     val context = LocalContext.current
-    if (selectedFestival.value != null) {
-        val festivalData = selectedFestival.value
+    if (festivalInfo.value != null) {
+        val festivalData = festivalInfo.value
         Column(
             Modifier
                 .verticalScroll(rememberScrollState())
@@ -114,6 +115,7 @@ fun FestivalDetail(navController: NavHostController, viewModel: MainViewModel) {
                     ) {
                         DetailIcons(painterResource(R.drawable.icon_map)) {
                             viewModel.updateMapTypeFestival()
+                            detailViewModel.getMarkerList(festivalData.festivalId)
                             navController.navigate(
                                 NavigationItem.Map.screenRoute
                             )
@@ -163,8 +165,8 @@ fun FestivalDetail(navController: NavHostController, viewModel: MainViewModel) {
                         Spacer(modifier = Modifier.size(12.dp))
                         DetailCommonContent(
                             title = "일정",
-                            content1 = formatSqlDateToString(festivalData.fesStartDate),
-                            content2 = formatSqlDateToString(festivalData.fesEndDate)
+                            content1 = CommonUtils.formatFestivalDateToString(festivalData.fesStartDate),
+                            content2 = CommonUtils.formatFestivalDateToString(festivalData.fesEndDate)
                         )
                         Spacer(modifier = Modifier.size(12.dp))
                         DetailCommonContent(title = "장소", address = "주소")
@@ -195,7 +197,7 @@ fun FestivalDetail(navController: NavHostController, viewModel: MainViewModel) {
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
 fun FestivalDetailPrev() {
-    FestivalDetail(navController = rememberNavController(), MainViewModel())
+//    FestivalDetail(navController = rememberNavController(), MainViewModel())
 }
 
 fun kakaoShare(festival: OrganizedFestivalDto, context: Context) {
@@ -276,7 +278,7 @@ fun kakaoShare(festival: OrganizedFestivalDto, context: Context) {
 fun FestivalLocation(lat: Double, lng: Double, title: String) {
     val festivalLatLng = LatLng(lat, lng)
     val cameraPositionState: CameraPositionState = rememberCameraPositionState {
-        position = CameraPosition(festivalLatLng, 14.0)
+        position = CameraPosition(festivalLatLng, 13.0)
     }
     NaverMap(
         modifier = Modifier
