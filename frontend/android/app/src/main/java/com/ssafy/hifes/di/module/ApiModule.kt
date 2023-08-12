@@ -17,7 +17,7 @@ import javax.inject.Singleton
 object ApiModule {
 
     private const val baseUrl = "https://i9d104.p.ssafy.io:8001/api/"
-//private const val baseUrl = "http://192.168.100.178:8081"
+
 
     @Provides
     @Singleton

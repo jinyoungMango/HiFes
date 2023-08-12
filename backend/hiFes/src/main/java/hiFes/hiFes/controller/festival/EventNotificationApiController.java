@@ -20,12 +20,14 @@ public class EventNotificationApiController {
 
     @Operation(summary = "특정 회원이 행사 일정 알림 등록")
     @PostMapping("/{normalUserId}/regist-eventNotifications/{programId}")
+    @CrossOrigin("*")
     public Boolean saveEventNotification(@PathVariable Long normalUserId, @PathVariable Long programId) {
         return eventNotificationService.saveEventNotification(normalUserId, programId);
     }
 
     @Operation(summary = "특정 회원이 행사 일정 알림 삭제")
     @DeleteMapping("/{normalUserId}/delete-eventNotifications/{programId}")
+    @CrossOrigin("*")
     public ResponseEntity<Void> deleteEventNotification(@PathVariable Long normalUserId, @PathVariable Long programId){
         eventNotificationRepository.deleteByNormalUser_idAndFestivalTable_programId(normalUserId,programId);
         return ResponseEntity.ok()

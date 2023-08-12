@@ -26,7 +26,7 @@ public interface OrganizedFestivalRepository extends JpaRepository<OrganizedFest
     );
 
     List<OrganizedFestival> findByFesTitleContaining(String word);
-
+    List<OrganizedFestival> findByFesAddressContaining(String word);
 
 }
 
