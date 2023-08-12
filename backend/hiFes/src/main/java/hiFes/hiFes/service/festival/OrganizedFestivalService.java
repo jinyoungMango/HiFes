@@ -8,6 +8,8 @@ import hiFes.hiFes.domain.user.HostUser;
 import hiFes.hiFes.dto.festival.*;
 import hiFes.hiFes.repository.festival.*;
 import hiFes.hiFes.repository.user.HostUserRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,9 +19,12 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 //@RequiredArgsConstructor
 @Service
+@Slf4j
 public class OrganizedFestivalService {
     private final OrganizedFestivalRepository organizedFestivalRepository;
     private final ARItemRepository arItemRepository;
@@ -47,7 +52,8 @@ public class OrganizedFestivalService {
 
     @org.springframework.transaction.annotation.Transactional
     public OrganizedFestival save(AddOrganizedFestivalRequest request, MultipartFile file, MultipartFile image, Long HostUserId) throws Exception {
-
+        System.out.println("파일저장!!!!!!!!!!"+file);
+        System.out.println("이미지저장!!!!!!"+image);
         String[] LatLong =  getLatLonFromGoogleApi(request.getFesAddress());
         BigDecimal fesLatitude = new BigDecimal(LatLong[0]);
         BigDecimal fesLongitude = new BigDecimal(LatLong[1]);
@@ -57,6 +63,7 @@ public class OrganizedFestivalService {
 
         //이미지 처리
         String projectPath = "/home/ubuntu/images";
+//        String projectPath = System.getProperty("user.dir") +"\\hifes\\src\\main\\resources\\static\\images";
 //        UUID uuid = UUID.randomUUID();
 //        String imageName = uuid + "_" + image.getOriginalFilename();
         String imageName = image.getOriginalFilename();
@@ -151,14 +158,27 @@ public class OrganizedFestivalService {
     }
 
     // 검색 결과
-    public List<OrganizedFestival> searchResultFestival(String word){
-        return organizedFestivalRepository.findByFesTitleContaining(word);
+    public List<SearchOrganizedFestivalResponse> searchResultFestival(String word){
+        List<OrganizedFestival> titleResults = organizedFestivalRepository.findByFesTitleContaining(word);
+        List<OrganizedFestival> addressResults = organizedFestivalRepository.findByFesAddressContaining(word);
+
+        Stream<SearchOrganizedFestivalResponse> titleStream = titleResults.stream()
+                .map(organizedFestival -> new SearchOrganizedFestivalResponse(organizedFestival, "title"));
+
+        Stream<SearchOrganizedFestivalResponse> addressStream = addressResults.stream()
+                .map(organizedFestival -> new SearchOrganizedFestivalResponse(organizedFestival, "address"));
+
+        List<SearchOrganizedFestivalResponse> results = Stream.concat(titleStream,addressStream)
+                .collect(Collectors.toList());
+
+        return results;
 
     }
-
+////////////////업데이트
     @org.springframework.transaction.annotation.Transactional
-    public OrganizedFestival update(long id, UpdateOrganizedFestivalRequest request, MultipartFile file, MultipartFile image)throws Exception {
-
+    public Boolean update(long id, UpdateOrganizedFestivalRequest request, MultipartFile file, MultipartFile image)throws Exception {
+        System.out.println("이미지!!!!!!"+image);
+        System.out.println("파일!!!!!"+file);
         OrganizedFestival organizedFestival = organizedFestivalRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("not found: " + id));
 
@@ -169,6 +189,7 @@ public class OrganizedFestivalService {
         request.setFesLongitude(fesLongitude);
         //update하기 전에 사진 다 삭제하고 다시 넣기
         String projectPath = "/home/ubuntu/images";
+//        String projectPath = System.getProperty("user.dir") +"\\hifes\\src\\main\\resources\\static\\images";
         // 이 행사의 포스터 주소 삭제
         // Db에 저장된 포스터 삭제
         if(!image.isEmpty()){
@@ -238,7 +259,6 @@ public class OrganizedFestivalService {
         }
 
 
-
         for (UpdateMarkerRequest markerReq : request.getMarkers()) {
 
             if (markerReq.getMarkerId() == null || markerReq.getMarkerId() == 0) {
@@ -252,7 +272,18 @@ public class OrganizedFestivalService {
                 marker.update(markerReq);
             }
         }
-        return organizedFestivalRepository.save(organizedFestival);
+
+        boolean flag = true;
+
+        try {
+            organizedFestivalRepository.save(organizedFestival);
+        } catch (IllegalArgumentException | OptimisticLockingFailureException e) {
+            log.error("행사 정보 수정 실패");
+            e.printStackTrace();
+            flag = false;
+        }
+
+        return flag;
     }
 
     // 삭제 메서드
@@ -275,6 +306,9 @@ public class OrganizedFestivalService {
     public void deleteStampMission(long id){
         stampMissionRepository.deleteById(id);
     }
+
+
+
 
     @Transactional
     public String[] getLatLonFromGoogleApi(String fesAddress) {

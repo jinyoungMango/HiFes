@@ -24,6 +24,7 @@ public class CompletedStampMissionApiController {
     private CompletedStampMissionService completedStampMissionService;
     @PostMapping("/{normalUserId}/complete-mission/{missionId}")
     @Operation(summary = "특정 회원이 스탬프 미션 달성")
+    @CrossOrigin("*")
     public Boolean saveCompletedStampMission(@PathVariable Long normalUserId, @PathVariable Long missionId) {
         return completedStampMissionService.saveCompletedStampMission(normalUserId,missionId);
     }

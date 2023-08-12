@@ -26,6 +26,7 @@ public class ParticipatedFesApiController {
     @Autowired
     private ParticipatedFesService participatedFesService;
     @Operation(summary = "특정 회원 이 행사 참여")
+    @CrossOrigin("*")
     @PostMapping("/{normalUserId}/participate-festival/{festivalId}")
     public boolean saveParticipateFes(@PathVariable Long normalUserId, @PathVariable Long festivalId){
         return participatedFesService.saveParticipatedFes(normalUserId, festivalId);
@@ -33,6 +34,7 @@ public class ParticipatedFesApiController {
 
     @Operation(summary = "특정 회원이 참여한 행사 정보")
     @GetMapping("/{normalUserId}/participate-festivals")
+    @CrossOrigin("*")
     public ResponseEntity<List<ParticipatedFesResponse>> findNormalUserParticipatedFest(@PathVariable long normalUserId){
         List<ParticipatedFes> participatedFes = participatedFesService.findNormalUserParticipatedFest(normalUserId);
         List<ParticipatedFesResponse> participatedFesResponses = participatedFes.stream()

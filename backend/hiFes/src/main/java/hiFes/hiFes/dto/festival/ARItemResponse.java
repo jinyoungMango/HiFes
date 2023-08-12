@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 
 @Getter
 public class ARItemResponse {
-
+    private final Long itemId;
   private final BigDecimal ARLatitude;
   private final BigDecimal ARLongitude;
   private final String ARImage;
@@ -15,6 +15,7 @@ public class ARItemResponse {
 
     public ARItemResponse(ARItem arItem){
         this.ARImage = arItem.getARImage();
+        this.itemId = arItem.getItemId();
         this.ARLongitude = arItem.getARLongitude();
         this.giftInfo = arItem.getGiftInfo();
         this.ARLatitude = arItem.getARLatitude();
