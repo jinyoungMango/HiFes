@@ -156,7 +156,7 @@ public class GroupService {
     }
 
     public List<Group> getGroupSearch(String searchWord){
-        return groupRepository.findBygroupNameContainingOrContentContaining(searchWord, searchWord);
+        return groupRepository.findByGroupNameContaining(searchWord);
     }
 
     public Group getById(Long id) {
