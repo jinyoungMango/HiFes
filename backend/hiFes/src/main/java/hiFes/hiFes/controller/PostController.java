@@ -43,10 +43,8 @@ public class PostController {
     @GetMapping(value = "/post/get/{id}")
     @Operation(summary = "게시글 단일조회, 필요 값 postId(Long), 조회하려는 게시글의 postId 를 주시면 됩니다.")
     @CrossOrigin("*")
-    public ResponseEntity<?> findById(@PathVariable Long id) {
-        System.out.println("+++++++++++++++++++++++1111++++++++++++++++++++");
+    public ResponseEntity<?> postDetail(@PathVariable Long id) {
         PostDto postDto = postService.findById(id);
-        System.out.println("+++++++++++++++++++++++2222++++++++++++++++++++");
         if (postDto == null || !Objects.equals(postDto.getId(), id)) {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("No Post Found");
         }
@@ -82,10 +80,12 @@ public class PostController {
     public void delete(@PathVariable Long id) {
         postService.delete(id);
     }
+
+
     @GetMapping("/post/{festivalId}")
     @Operation(summary = "축제별 게시글 조회, 필요 값 festivalId(Long), 현재 축제의 festivalId 를 주시면 됩니다.")
     @CrossOrigin("*")
-    public List<Post> searchAllPosts(@PathVariable Long festivalId) {
+    public List<PostDto> searchAllPosts(@PathVariable Long festivalId) {
         return postService.allPostsByFestival(festivalId);
     }
 
@@ -93,7 +93,6 @@ public class PostController {
     @Operation(summary = "게시글 종류 별로 조회, 필요 값 festivalId(Long), postType(String)," +
             " 현재 축제의 festivalId 와 검색하려는 글 종류를 url 에 같이 주시면 됩니다.")
     public List<PostDto> getPosts(@PathVariable String postType, @PathVariable Long festivalId) {
-        System.out.println("+++++++++++++++++++++++postTypeInFestival++++++++++++++++++++");
         return postService.postTypeInFestival(festivalId, postType);
     }
 
