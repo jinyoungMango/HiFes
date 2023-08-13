@@ -237,4 +237,18 @@ public class GroupService {
 
         return groupListInfo;
     }
+
+    public List makeHashtagList(List<Hashtag> hashtagList){
+        List hashtagsList = new ArrayList<>();
+        try {
+            for (Hashtag hashtag : hashtagList) {
+                hashtagsList.add(hashtag.getTitle());
+            }
+        }
+        catch (Exception e){
+
+        }
+
+        return hashtagsList;
+    }
 }
