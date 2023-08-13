@@ -68,6 +68,13 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.OK).body(updatedPost);
     }
 
+    @GetMapping("/post/list")
+    @Operation(summary = "전체 게시글 조회, 필요 값 X")
+    @CrossOrigin("*")
+    public List<PostListDto> searchAllPosts() {
+        return postService.searchAllPosts();
+    }
+
 
     @DeleteMapping("/post/delete/{id}")
     @Operation(summary = "게시글 삭제, 필요 값 postId(Long), 삭제할 대상의 postId 는 url 에 같이 넣어주시면 됩니다.")

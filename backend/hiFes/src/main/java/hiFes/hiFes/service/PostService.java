@@ -156,12 +156,12 @@ public class PostService {
     }
 
 
-//    @Transactional(readOnly = true)
-//    public List<Post> searchAllPosts() {
-//        return postRepository.findAllByOrderByIdDesc().stream()
-//                .map(Post::new)
-//                .collect(Collectors.toList());
-//    }
+    @Transactional(readOnly = true)
+    public List<PostListDto> searchAllPosts() {
+        return postRepository.findAllByOrderByIdDesc().stream()
+                .map(PostListDto::new)
+                .collect(Collectors.toList());
+    }
 
     @Transactional
     public void delete(Long id) {
