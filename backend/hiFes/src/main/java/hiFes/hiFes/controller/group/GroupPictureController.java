@@ -31,7 +31,7 @@ public class GroupPictureController {
     @Operation(summary = "그룹에 사진 업로드", description = "그룹 아이디는 Param으로 보내주세요 /upload?groupId=17 이런 식으로!")
     @PostMapping("group/picture/upload")
     public String groupPictureUpload(HttpServletRequest request,@RequestParam("groupId") Long groupId, @RequestPart("image") MultipartFile image) throws Exception {
-        String accessToken = jwtService.extractAccessToken(request).orElse("");
+        String accessToken = request.getHeader("accessToken");
         String email = jwtService.extractEmail(accessToken).orElse("");
         NormalUser user = normalUserService.getByEmail("test1@test.com");
         Group group = groupRepository.findById(groupId).orElse(null);

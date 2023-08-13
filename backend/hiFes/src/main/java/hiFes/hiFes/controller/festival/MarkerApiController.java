@@ -24,6 +24,7 @@ public class MarkerApiController {
 
     @Operation(summary = "특정 마커 상세 조회")
     @GetMapping("/marker/{markerId}")
+    @CrossOrigin("*")
     public ResponseEntity<MarkerResponse> findMarker(@PathVariable long markerId){
         Marker marker = markerService.findById(markerId);
         return ResponseEntity.ok()
@@ -32,6 +33,7 @@ public class MarkerApiController {
 
     @Operation(summary = "특정 행사의 모든 마커 조회")
     @GetMapping("/festival/{festivalId}/markers")
+    @CrossOrigin("*")
     public ResponseEntity<List<MarkerResponse>> findMarkersByFestival(@PathVariable long festivalId){
         List<Marker> markers = markerService.findByFestivalId(festivalId);
         List<MarkerResponse> markerResponses = markers.stream()

@@ -31,7 +31,7 @@ import com.ssafy.hifes.ui.theme.pretendardFamily
 @Composable
 fun HomePrev() {
     val navController = rememberNavController()
-    BottomNavigation(navController = navController, MainViewModel())
+//    BottomNavigation(navController = navController, MainViewModel())
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
