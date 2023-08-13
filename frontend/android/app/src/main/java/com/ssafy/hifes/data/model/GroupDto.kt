@@ -23,6 +23,19 @@ data class Group(
     val content: String,
     val hashtags: List<String>?,
     val numOfPeople: Int,
-    val festivalId : Int
+    val festivalId: Int
 )
 
+data class GroupDetailDto(
+    var isJoinedFesGroup: Boolean,
+    var isJoinedGroup: Boolean,
+    var isLeader: Boolean,
+    var groupName: String,
+    var groupContent: String,
+    var groupMaxPop: Int,
+    var groupCreatedAt: String,
+    var numOfJoinedPeople: Int,
+    var joinedPeople: List<Member>,
+    var hashtags: List<String>?,
+    var groupPic: String?
+)
