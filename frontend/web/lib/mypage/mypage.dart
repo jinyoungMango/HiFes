@@ -10,6 +10,7 @@ import 'package:web/login/LoginController.dart';
 
 import '../MainController.dart';
 import '../common.dart';
+import '../festival/ScheduleDto.dart';
 
 class MyPage extends StatefulWidget {
   @override
@@ -27,7 +28,7 @@ class _MyPageState extends State<MyPage> with SingleTickerProviderStateMixin {
   var email = "";
   var phoneNo = "";
 
-  // 자기 축제 가져오기
+  // 자기 축제
   late List<FestivalDto> myfestivals;
 
   @override
@@ -240,18 +241,6 @@ class _MyPageState extends State<MyPage> with SingleTickerProviderStateMixin {
                                         );
                                     }
                                   })
-                              // Expanded(
-                              // child: ListView.builder(
-                              //   itemCount: myfestivals.length,
-                              //   itemBuilder: (context, index) {
-                              //     return Padding(
-                              //       padding: EdgeInsets.symmetric(
-                              //           horizontal: 20),
-                              //       child: FestivalItem(myfestivals[index]),
-                              //     );
-                              //   },
-                              // )
-                              // ),
                             ],
                           ),
                         ],
@@ -331,6 +320,7 @@ class _MyPageState extends State<MyPage> with SingleTickerProviderStateMixin {
                               MaterialStateProperty.all<Size>(Size(100, 48)),
                         ),
                         onPressed: () {
+                          _mainController.fid.value = fesItem.festivalId as int;
                           Get.rootDelegate.toNamed(Routes.FESTIVAL);
                         },
                         child: Text(

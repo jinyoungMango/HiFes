@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 
 class MainController extends GetxController {
   var id = 0.obs;
-
+  var fid = 0.obs;
   // 카카오 토큰
   var kAccessToken = "".obs;
   var kRefreshToken = "".obs;
