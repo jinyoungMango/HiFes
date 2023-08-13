@@ -1,10 +1,12 @@
 package hiFes.hiFes.controller.group;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import hiFes.hiFes.domain.BaseTimeEntity;
 import hiFes.hiFes.domain.group.Group;
+import hiFes.hiFes.domain.group.Hashtag;
 import hiFes.hiFes.domain.user.NormalUser;
 import hiFes.hiFes.dto.group.GroupCreateDto;
 import hiFes.hiFes.dto.group.GroupListDto;
@@ -70,13 +72,19 @@ public class GroupController extends BaseTimeEntity {
     public JsonObject groupDetail(HttpServletRequest request, @PathVariable Long id){
         // 여기서 id는 그룹 아이디
         String email =jwtService.extractEmail(request.getHeader("accessToken")).orElse("");
-        System.out.println(email+ "///////////////////////////////////////");
         NormalUser user = normalUserService.getByEmail(email);
-        System.out.println("+++++++++++++++++++++++++++" + user.getName());
 
         Group group = groupService.groupDetail(id.longValue());
         List<NormalUser> joinedPeople = groupService.getJoinedPeople(id);
 
+        List<Hashtag> hashtags = groupService.getGroupHashtags(id);
+        List hashtagList = groupService.makeHashtagList(hashtags);
+
+        JsonArray hashtagArray = new JsonArray();
+        for (Object hashtag : hashtagList) {
+            String hashtagS = (String) hashtag;
+            hashtagArray.add(hashtagS);
+        }
 
 
         JsonObject groupInfo =groupService.isJoined(id, user);
@@ -85,6 +93,9 @@ public class GroupController extends BaseTimeEntity {
         groupInfo.addProperty("groupMaxPop", group.getMaxPop());
         groupInfo.addProperty("groupCreatedAt", String.valueOf(group.getCreatedAt()));
         groupInfo.addProperty("numOfJoinedPeople", joinedPeople.size());
+        groupInfo.add("hashtags", hashtagArray);
+
+        System.out.println(hashtagList + " ------------------------------");
 
         JsonArray joinedPeopleArray = new JsonArray();
 
@@ -108,6 +119,7 @@ public class GroupController extends BaseTimeEntity {
         }
 
         groupInfo.add("joinedPeople", joinedPeopleArray);
+
 
 
         return groupInfo;
