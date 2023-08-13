@@ -70,7 +70,7 @@ public class NormalUserController {
     @PostMapping("normal/fcmSave")
     public Boolean fcmSave(HttpServletRequest request, String fcmToken){
         try{
-            String accessToken = jwtService.extractAccessToken(request).orElse("");
+            String accessToken = request.getHeader("accessToken");
             String email = jwtService.extractEmail(accessToken).orElse("");
             NormalUser user = normalUserService.getByEmail(email);
 
@@ -88,7 +88,7 @@ public class NormalUserController {
     @ResponseBody
     @PostMapping("normal/myPage")
     public JsonObject myPage(HttpServletRequest request){
-        String accessToken = jwtService.extractAccessToken(request).orElse("");
+        String accessToken = request.getHeader("accessToken");
         String email = jwtService.extractEmail(accessToken).orElse("");
         NormalUser user = normalUserService.getByEmail(email);
         JsonObject info =new JsonObject();
