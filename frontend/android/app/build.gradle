@@ -155,6 +155,9 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging-ktx'
     implementation("com.google.firebase:firebase-firestore-ktx")
 
+    // firebase realtime database
+    implementation 'com.google.firebase:firebase-database-ktx'
+
     // lottie
     implementation "com.airbnb.android:lottie-compose:6.1.0"
 
