@@ -22,7 +22,7 @@ data class Group(
     val maxPop: Int,
     val content: String,
     val hashtags: List<String>?,
-    val numOfPeople: Int,
+    val numOfPeople: Int?,
     val festivalId: Int
 )
 
