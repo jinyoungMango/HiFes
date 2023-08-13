@@ -1,34 +1,33 @@
 package hiFes.hiFes.dto.postDto;
 
 
+
+import hiFes.hiFes.domain.Picture;
 import hiFes.hiFes.domain.Post;
+import hiFes.hiFes.domain.festival.OrganizedFestival;
+import hiFes.hiFes.domain.user.HostUser;
+import hiFes.hiFes.domain.user.NormalUser;
+import hiFes.hiFes.dto.festival.OrganizedFestivalResponse;
 import lombok.*;
+
+import java.util.List;
 
 @Getter @Setter
 @ToString
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class PostCreateDto {
 
     private String postType;
     private String title;
     private String content;
     private Long createdBy;
-
-    @Builder
-    public PostCreateDto(String postType,String title, String content, Long createdBy) {
-        this.postType = postType;
-        this.title = title;
-        this.content = content;
-        this.createdBy = createdBy;
-    }
-
-    public Post toEntity() {
-        return Post.builder()
-                .postType(postType)
-                .title(title)
-                .content(content)
-                .createdBy(createdBy)
-                .build();
-    }
+    private String picture;
+    private Boolean isHidden;
+    private Long festivalId;
+//    private NormalUser normalUser;
+//    private HostUser hostUser;
+    private Float rating;
 
 }

@@ -17,6 +17,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @RequestMapping("/api")
 @CrossOrigin(origins = "*")
+
 public class HostUserController {
     private final HostUserService hostUserService;
     private final HostUserRepository hostUserRepository;
@@ -77,8 +78,8 @@ public class HostUserController {
     @PostMapping("host/myPage")
     @CrossOrigin("*")
     public JsonObject myPage(HttpServletRequest request){
-//        String email = jwtService.extractEmail(request.getHeader("accessToken")).orElse("");
-        String email = jwtService.extractEmail("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJSZWZyZXNoVG9rZW4iLCJleHAiOjE2OTI5MzYzNTcsImVtYWlsIjoibGVlaHl1bms2MzEwQG5hdmVyLmNvbSJ9.z55wfot9yO7wSinMaVy8OttFKr0Mv9HgxITUl4CO81f-gFetoKfDjnqeyh6EQVmOkHHj5kpmROdimUFuOQ1Spg").orElse("");
+        String email = jwtService.extractEmail(request.getHeader("accessToken")).orElse("");
+//        String email = jwtService.extractEmail("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJSZWZyZXNoVG9rZW4iLCJleHAiOjE2OTI5MzYzNTcsImVtYWlsIjoibGVlaHl1bms2MzEwQG5hdmVyLmNvbSJ9.z55wfot9yO7wSinMaVy8OttFKr0Mv9HgxITUl4CO81f-gFetoKfDjnqeyh6EQVmOkHHj5kpmROdimUFuOQ1Spg").orElse("");
         System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" + email);
         HostUser user = hostUserService.getByEmail(email);
 //        HostUser user = hostUserService.getById(id);
