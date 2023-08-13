@@ -92,7 +92,7 @@ public class PostController {
     @GetMapping("/post/{festivalId}/{postType}")
     @Operation(summary = "게시글 종류 별로 조회, 필요 값 festivalId(Long), postType(String)," +
             " 현재 축제의 festivalId 와 검색하려는 글 종류를 url 에 같이 주시면 됩니다.")
-    public List<Post> getPosts(@PathVariable String postType, @PathVariable Long festivalId) {
+    public List<PostDto> getPosts(@PathVariable String postType, @PathVariable Long festivalId) {
         System.out.println("+++++++++++++++++++++++postTypeInFestival++++++++++++++++++++");
         return postService.postTypeInFestival(festivalId, postType);
     }

@@ -5,27 +5,21 @@ import hiFes.hiFes.domain.Post;
 import hiFes.hiFes.domain.festival.OrganizedFestival;
 import hiFes.hiFes.domain.user.HostUser;
 import hiFes.hiFes.domain.user.NormalUser;
-
 import hiFes.hiFes.dto.commentDto.CommentDto;
-import hiFes.hiFes.dto.festival.OrganizedFestivalResponse;
+import hiFes.hiFes.dto.commentDto.CommentListDto;
 import hiFes.hiFes.dto.postDto.*;
-
 import hiFes.hiFes.repository.CommentRepository;
 import hiFes.hiFes.repository.PostRepository;
 import hiFes.hiFes.repository.festival.OrganizedFestivalRepository;
 import hiFes.hiFes.repository.user.HostUserRepository;
 import hiFes.hiFes.repository.user.NormalUserRepository;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.http.HttpResponse;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -48,8 +42,20 @@ public class PostService {
     }
 
     @Transactional
-    public List<Post> postTypeInFestival(Long festivalId, String postType) {
-        return postRepository.findAllByOrganizedFestival_FestivalIdAndPostType(festivalId, postType);
+    public List<PostDto> postTypeInFestival(Long festivalId, String postType) {
+        System.out.println("=========================================");
+        List<Post> dasd = postRepository.findAllByOrganizedFestival_FestivalIdAndPostType(festivalId, postType);
+        ArrayList<PostDto> postList = new ArrayList<>();
+
+        for (Post post : dasd) {
+            PostDto postDto = PostDto.builder()
+                    .postType(post.getPostType())
+                    .organizedFestivalId(post.getOrganizedFestival().getFestivalId())
+                    .build();
+            postList.add(postDto);
+        }
+
+        return postList;
     }
 
 
@@ -150,7 +156,19 @@ public class PostService {
                 .map(CommentDto::new)
                 .collect(Collectors.toList());
 
-        PostDto postDto = new PostDto(post);
+
+        PostDto postDto = PostDto.builder()
+                .commentsCount(post.getComments().size())
+                .postType(post.getPostType())
+                .title(post.getTitle())
+                .content(post.getContent())
+                .createdAt(post.getCreatedAt())
+                .createdBy(post.getCreatedBy())
+                .views(post.getViews())
+                .rating(post.getRating())
+                .isHidden(post.getIsHidden())
+                .topLevelComments(topLevelCommentListDto)
+                .build();
 
         return postDto;
     }
