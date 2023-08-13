@@ -1,10 +1,12 @@
 package com.ssafy.hifes.data.remote
 
 import com.ssafy.hifes.data.model.ErrorResponse
+import com.ssafy.hifes.data.model.Group
+import com.ssafy.hifes.data.model.GroupDetailDto
 import com.ssafy.hifes.data.model.LoginResponse
 import com.ssafy.hifes.data.model.MarkerDto
-import com.ssafy.hifes.data.model.NormalUserSignUpDto
 import com.ssafy.hifes.data.model.OrganizedFestivalDto
+import com.ssafy.hifes.data.model.SharedPicDto
 import com.ssafy.hifes.util.network.NetworkResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -39,5 +41,18 @@ interface ApiService {
     suspend fun getFestivalInfo(@Path("festivalId") festivalId: Int): NetworkResponse<OrganizedFestivalDto, ErrorResponse>
 
     @GET("/api/festival/{festivalId}/markers")
-    suspend fun getMarkerList(@Path("festivalId") festivalId: Int) : NetworkResponse<List<MarkerDto>, ErrorResponse>
+    suspend fun getMarkerList(@Path("festivalId") festivalId: Int): NetworkResponse<List<MarkerDto>, ErrorResponse>
+
+    //Group
+    @GET("group/list")
+    suspend fun getAllGroupList(): NetworkResponse<List<Group>, ErrorResponse>
+
+    @GET("group/list/fes/{festivalId}")
+    suspend fun getFestivalGroupList(@Path("festivalId") festivalId: Int): NetworkResponse<List<Group>, ErrorResponse>
+
+    @GET("group/detail/{id}")
+    suspend fun getGroupDetailInfo(@Path("id") groupId: Int): NetworkResponse<GroupDetailDto, ErrorResponse>
+
+    @GET("group/{groupId}/picture/")
+    suspend fun getGroupImages(@Path("groupId") groupId: Int): NetworkResponse<List<SharedPicDto>, ErrorResponse>
 }

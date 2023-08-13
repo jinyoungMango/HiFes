@@ -1,6 +1,6 @@
 package com.ssafy.hifes.util
 
-import com.ssafy.hifes.data.model.FestivalDate
+import com.ssafy.hifes.data.model.DateDto
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -15,7 +15,7 @@ object CommonUtils {
         return formatter.format(date)
     }
 
-    fun formatFestivalDateToString(festivalDate: FestivalDate): String {
+    fun formatFestivalDateToString(festivalDate: DateDto): String {
         return "${festivalDate.year}. ${festivalDate.month}. ${festivalDate.day}"
     }
 }
