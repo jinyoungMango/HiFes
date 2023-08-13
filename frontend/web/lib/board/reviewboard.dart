@@ -24,7 +24,7 @@ Expanded ReviewBoardList() {
         Padding(
           padding: const EdgeInsets.all(20.0),
           child: Row(children: [
-            Text('리뷰게시판',
+            Text('후기게시판',
                 style: TextStyle(
                     fontWeight: FontWeight.bold, fontSize: 40)),
           ]),

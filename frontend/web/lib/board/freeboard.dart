@@ -17,7 +17,16 @@ class _FreePageState extends State<FreePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: TopBar(),
-      body: SingleChildScrollView(child: FreeItem(context))
+      body: SingleChildScrollView(
+        child: Center(
+          child: Container(
+            width: 800,
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [FreeItem(context)]),
+          ),
+        ),
+      )
     );
   }
 }
@@ -25,22 +34,28 @@ class _FreePageState extends State<FreePage> {
 Column FreeItem(BuildContext context) {
   return Column(
     children: [
+      SizedBox(height: 40,),
+
       Material(
         elevation: 4,
         borderRadius: BorderRadius.circular(8),
         child: Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
           child: Container(
             child: Column(
               children: [
+                SizedBox(height: 40,),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [Text("공지 제목"), Text("조회수")],
+                  children: [Text("질문입니다", style: TextStyle(fontSize: 20),), Text("조회수")],
                 ),
+                SizedBox(height: 10,),
                 Divider(
                   color: Colors.black, // 수평선 색상 설정
                   thickness: 2, // 수평선 두께 설정
                 ),
+                SizedBox(height: 10,),
+
                 Align(
                   alignment: Alignment.topLeft,
                   child: Text("내용입니다"),
@@ -67,10 +82,12 @@ Column FreeItem(BuildContext context) {
                         },
                         child: Text(
                           "답변하기",
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(color: Colors.white, fontSize: 16),
                         )),
                     Column(
-                      children: [Text("연월일"), Text("시간")],
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [Text("2023-08-09"),
+                        Container(child: Text("00:00"))],
                     ),
                   ],
                 ),
