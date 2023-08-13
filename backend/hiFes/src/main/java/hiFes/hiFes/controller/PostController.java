@@ -86,7 +86,6 @@ public class PostController {
     @Operation(summary = "축제별 게시글 조회, 필요 값 festivalId(Long), 현재 축제의 festivalId 를 주시면 됩니다.")
     @CrossOrigin("*")
     public List<PostDto> searchAllPosts(@PathVariable Long festivalId) {
-        System.out.println("+++++++++++++++++++++++posts search with festId++++++++++++++++++++");
         return postService.allPostsByFestival(festivalId);
     }
 
