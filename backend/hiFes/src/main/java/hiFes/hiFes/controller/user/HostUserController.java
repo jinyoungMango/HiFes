@@ -17,6 +17,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @RequestMapping("/api")
 @CrossOrigin(origins = "*")
+
 public class HostUserController {
     private final HostUserService hostUserService;
     private final HostUserRepository hostUserRepository;
