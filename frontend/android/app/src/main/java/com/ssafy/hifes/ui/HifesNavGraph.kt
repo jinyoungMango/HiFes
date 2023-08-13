@@ -55,7 +55,7 @@ fun HifesNavGraph(
             MapScreen(navController, mainViewModel, detailViewModel)
         }
         composable(NavigationItem.Group.screenRoute) {
-            GroupMainScreen(navController, groupViewModel)
+            GroupMainScreen(navController, groupViewModel, mainViewModel)
         }
         composable(
             route = HifesDestinations.LOGIN_ROUTE
@@ -70,7 +70,11 @@ fun HifesNavGraph(
         composable(
             route = HifesDestinations.FESTIVAL_DETAIL
         ) {
-            FestivalDetail(navController = navController, viewModel = mainViewModel, detailViewModel = detailViewModel)
+            FestivalDetail(
+                navController = navController,
+                viewModel = mainViewModel,
+                detailViewModel = detailViewModel
+            )
         }
         composable(
             route = HifesDestinations.PARTICIPATED_FEST_ROUTE
@@ -106,7 +110,10 @@ fun HifesNavGraph(
         composable(
             route = HifesDestinations.GROUP_DETAIL
         ) {
-            GroupInfoScreen(navController = navController, viewModel = groupViewModel)
+            GroupInfoScreen(
+                navController = navController,
+                viewModel = groupViewModel
+            )
         }
     }
 }

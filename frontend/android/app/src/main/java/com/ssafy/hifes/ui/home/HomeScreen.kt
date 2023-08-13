@@ -47,7 +47,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.ssafy.hifes.R
-import com.ssafy.hifes.data.model.FestivalDate
+import com.ssafy.hifes.data.model.DateDto
 import com.ssafy.hifes.data.model.OrganizedFestivalDto
 import com.ssafy.hifes.ui.HifesDestinations
 import com.ssafy.hifes.ui.iconpack.MyIconPack
@@ -86,8 +86,8 @@ fun HomeScreen(navController: NavController, viewModel: MainViewModel) {
             "",
             "",
             "",
-            FestivalDate(0, 0, 0),
-            FestivalDate(0, 0, 0),
+            DateDto(0, 0, 0),
+            DateDto(0, 0, 0),
             0.0,
             0.0,
             0

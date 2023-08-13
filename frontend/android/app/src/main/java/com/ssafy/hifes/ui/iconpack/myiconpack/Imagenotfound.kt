@@ -18,7 +18,7 @@ public val MyIconPack.Imagenotfound: ImageVector
         }
         _imagenotfound = Builder(name = "Imagenotfound", defaultWidth = 84.0.dp, defaultHeight =
                 84.0.dp, viewportWidth = 84.0f, viewportHeight = 84.0f).apply {
-            path(fill = SolidColor(Color(0xFF000000)), stroke = null, strokeLineWidth = 0.0f,
+            path(fill = SolidColor(Color(0xFFCDCDCD)), stroke = null, strokeLineWidth = 0.0f,
                     strokeLineCap = Butt, strokeLineJoin = Miter, strokeLineMiter = 4.0f,
                     pathFillType = NonZero) {
                 moveTo(82.5002f, 64.6248f)

@@ -15,10 +15,27 @@ data class GroupDto(
 )
 
 data class Group(
-    val url: String,
-    val title: String,
+    val id: Int,
+    val groupName: String,
+    val groupPic: String,
+    val createdAt: CreatedAtDto,
+    val maxPop: Int,
     val content: String,
-    val hashtag: List<String>,
-    val currNum: Int,
-    val maxNum: Int
+    val hashtags: List<String>?,
+    val numOfPeople: Int?,
+    val festivalId: Int
+)
+
+data class GroupDetailDto(
+    var isJoinedFesGroup: Boolean,
+    var isJoinedGroup: Boolean,
+    var isLeader: Boolean,
+    var groupName: String,
+    var groupContent: String,
+    var groupMaxPop: Int,
+    var groupCreatedAt: String,
+    var numOfJoinedPeople: Int,
+    var joinedPeople: List<Member>,
+    var hashtags: List<String>?,
+    var groupPic: String?
 )
