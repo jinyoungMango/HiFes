@@ -4,6 +4,7 @@ package hiFes.hiFes.domain.festival;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import hiFes.hiFes.domain.Post;
 import hiFes.hiFes.domain.user.HostUser;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
@@ -79,6 +80,9 @@ public class OrganizedFestival {
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonBackReference
     private HostUser hostUser;
+
+    @OneToMany(mappedBy = "organizedFestival", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Post> posts = new ArrayList<>();
 
     @Builder
     public OrganizedFestival(HostUser hostUser, String fesTitle, String fesOutline, String fesAddress, String fesPosterPath, LocalDate fesStartDate, LocalDate fesEndDate, BigDecimal fesLatitude, BigDecimal fesLongitude){

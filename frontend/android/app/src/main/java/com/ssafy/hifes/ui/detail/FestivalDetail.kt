@@ -51,7 +51,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.kakao.sdk.common.util.KakaoCustomTabsClient
 import com.kakao.sdk.share.ShareClient
@@ -79,13 +78,17 @@ import com.ssafy.hifes.ui.main.MainViewModel
 import com.ssafy.hifes.ui.map.StarScore
 import com.ssafy.hifes.ui.theme.pretendardFamily
 import com.ssafy.hifes.util.CommonUtils
-import com.ssafy.hifes.util.CommonUtils.formatSqlDateToString
 
 
 private const val TAG = "FestivalDetail_하이페스"
+
 @OptIn(ExperimentalNaverMapApi::class)
 @Composable
-fun FestivalDetail(navController: NavHostController, viewModel: MainViewModel, detailViewModel: DetailViewModel) {
+fun FestivalDetail(
+    navController: NavHostController,
+    viewModel: MainViewModel,
+    detailViewModel: DetailViewModel
+) {
     val festivalInfo = viewModel.festivalInfo.observeAsState()
     val context = LocalContext.current
     if (festivalInfo.value != null) {
@@ -138,7 +141,10 @@ fun FestivalDetail(navController: NavHostController, viewModel: MainViewModel, d
                         shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
                         shadowElevation = 2.dp
                     ) {
-                        Column(modifier = Modifier.padding(start = 12.dp, end = 12.dp)) {
+                        Column(
+                            modifier = Modifier
+                                .padding(start = 12.dp, end = 12.dp)
+                        ) {
                             Spacer(modifier = Modifier.size(4.dp))
                             Row(
                                 verticalAlignment = Alignment.Top,
@@ -147,7 +153,11 @@ fun FestivalDetail(navController: NavHostController, viewModel: MainViewModel, d
                                     .fillMaxWidth()
                                     .padding(top = 4.dp, end = 8.dp, bottom = 6.dp)
                             ) {
-                                navigateToMeetingScreen("12개", navController) // 추후 서버에서 가져옴
+                                navigateToMeetingScreen(
+                                    "12개",
+                                    navController,
+                                    viewModel
+                                ) // 추후 서버에서 가져옴
                             }
                             DetailTitle(festivalData.fesTitle)
 
@@ -208,7 +218,7 @@ fun kakaoShare(festival: OrganizedFestivalDto, context: Context) {
             description = festival.fesOutline,
             imageUrl = festival.fesPosterPath,
             link = Link(
-                webUrl ="kakao$apiKey://kakaolink",
+                webUrl = "kakao$apiKey://kakaolink",
                 mobileWebUrl = "kakao$apiKey://kakaolink"
             )
         ),
@@ -238,8 +248,7 @@ fun kakaoShare(festival: OrganizedFestivalDto, context: Context) {
         ShareClient.instance.shareDefault(context, defaultFeed) { sharingResult, error ->
             if (error != null) {
                 Log.e(TAG, "카카오톡 공유 실패", error)
-            }
-            else if (sharingResult != null) {
+            } else if (sharingResult != null) {
                 Log.d(TAG, "카카오톡 공유 성공 ${sharingResult.intent}")
                 context.startActivity(sharingResult.intent)
 
@@ -259,7 +268,7 @@ fun kakaoShare(festival: OrganizedFestivalDto, context: Context) {
         // ex) Chrome, 삼성 인터넷, FireFox, 웨일 등
         try {
             KakaoCustomTabsClient.openWithDefault(context, sharerUrl)
-        } catch(e: UnsupportedOperationException) {
+        } catch (e: UnsupportedOperationException) {
             // CustomTabsServiceConnection 지원 브라우저가 없을 때 예외처리
         }
 
@@ -369,9 +378,10 @@ fun DetailContent(
 
 
 @Composable
-fun navigateToMeetingScreen(count: String, navController: NavController) {
+fun navigateToMeetingScreen(count: String, navController: NavController, viewModel: MainViewModel) {
     OutlinedButton(
         onClick = {
+            viewModel.updateGroupScreenTypeFestival()
             navController.navigate(NavigationItem.Group.screenRoute)
         },
         modifier = Modifier.height(36.dp),

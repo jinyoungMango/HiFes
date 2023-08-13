@@ -1,12 +1,15 @@
 package hiFes.hiFes.controller.group;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import hiFes.hiFes.domain.BaseTimeEntity;
 import hiFes.hiFes.domain.group.Group;
+import hiFes.hiFes.domain.group.Hashtag;
 import hiFes.hiFes.domain.user.NormalUser;
 import hiFes.hiFes.dto.group.GroupCreateDto;
+import hiFes.hiFes.dto.group.GroupListDto;
 import hiFes.hiFes.repository.user.NormalUserRepository;
 import hiFes.hiFes.service.group.GroupService;
 import hiFes.hiFes.service.user.JwtService;
@@ -37,7 +40,7 @@ public class GroupController extends BaseTimeEntity {
 
     @PostMapping("group/create")
     public ResponseEntity<String> groupCreate(HttpServletRequest request, @RequestPart("groupCreateDto") GroupCreateDto groupCreateDto, @RequestPart("image")  MultipartFile image) throws Exception {
-        String accessToken = jwtService.extractAccessToken(request).orElse("");
+        String accessToken = request.getHeader("accessToken");
         String email = jwtService.extractEmail(accessToken).orElse("");
         NormalUser user = normalUserService.getByEmail(email);
 
@@ -56,7 +59,7 @@ public class GroupController extends BaseTimeEntity {
 
     @GetMapping("group/join/{groupId}")
     public String groupJoin(HttpServletRequest request, @PathVariable Long groupId){
-        String accessToken = jwtService.extractAccessToken(request).orElse("");
+        String accessToken = request.getHeader("accessToken");
         String email = jwtService.extractEmail(accessToken).orElse("");
         NormalUser user = normalUserService.getByEmail(email);
         Group group = groupService.getById(groupId);
@@ -68,13 +71,20 @@ public class GroupController extends BaseTimeEntity {
     @GetMapping("group/detail/{id}")
     public JsonObject groupDetail(HttpServletRequest request, @PathVariable Long id){
         // 여기서 id는 그룹 아이디
-        String accessToken = jwtService.extractAccessToken(request).orElse("");
-        String email = jwtService.extractEmail(accessToken).orElse("");
+        String email =jwtService.extractEmail(request.getHeader("accessToken")).orElse("");
         NormalUser user = normalUserService.getByEmail(email);
 
         Group group = groupService.groupDetail(id.longValue());
         List<NormalUser> joinedPeople = groupService.getJoinedPeople(id);
 
+        List<Hashtag> hashtags = groupService.getGroupHashtags(id);
+        List hashtagList = groupService.makeHashtagList(hashtags);
+
+        JsonArray hashtagArray = new JsonArray();
+        for (Object hashtag : hashtagList) {
+            String hashtagS = (String) hashtag;
+            hashtagArray.add(hashtagS);
+        }
 
 
         JsonObject groupInfo =groupService.isJoined(id, user);
@@ -83,6 +93,9 @@ public class GroupController extends BaseTimeEntity {
         groupInfo.addProperty("groupMaxPop", group.getMaxPop());
         groupInfo.addProperty("groupCreatedAt", String.valueOf(group.getCreatedAt()));
         groupInfo.addProperty("numOfJoinedPeople", joinedPeople.size());
+        groupInfo.add("hashtags", hashtagArray);
+
+        System.out.println(hashtagList + " ------------------------------");
 
         JsonArray joinedPeopleArray = new JsonArray();
 
@@ -108,19 +121,26 @@ public class GroupController extends BaseTimeEntity {
         groupInfo.add("joinedPeople", joinedPeopleArray);
 
 
+
         return groupInfo;
     }
 
     @GetMapping("group/list")
     public List groupList(){
-        List<Group> groupList = groupService.getGrouplist();
+        return groupService.getGrouplist();
 
-        return groupList;
     }
+
+    @GetMapping("group/list/fes/{festivalId}")
+    public List groupFesList(@PathVariable Long festivalId){
+        return groupService.getFesGroup(festivalId);
+
+    }
+
 
     @GetMapping("group/list/{searchWord}")
     public Map<String, Object> groupSearchList(@PathVariable String searchWord){
-        List<Group> groupList = groupService.getGroupSearch(searchWord);
+        List<GroupListDto> groupList = groupService.getGroupSearch(searchWord);
         Map<String, Object> searchResult = new HashMap<>();
         searchResult.put("searchType", "title");
         searchResult.put("groupList", groupList);
@@ -130,7 +150,7 @@ public class GroupController extends BaseTimeEntity {
 
     @GetMapping("group/list/hashtag/{searchTag}")
     public Map<String, Object> groupHashtagSearchList(@PathVariable String searchTag){
-        List<Group> groupList = groupService.getGroupHashtagSearch(searchTag);
+        List<GroupListDto> groupList = groupService.getGroupHashtagSearch(searchTag);
         Map<String, Object> searchResult = new HashMap<>();
         searchResult.put("searchType", "hashtag");
         searchResult.put("groupList", groupList);

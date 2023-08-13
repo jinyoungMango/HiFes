@@ -1,7 +1,6 @@
 package com.ssafy.hifes.ui.group.info.detail
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -21,14 +20,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.ssafy.hifes.data.model.Member
+import com.ssafy.hifes.data.model.SharedPicDto
+import com.ssafy.hifes.ui.iconpack.MyIconPack
+import com.ssafy.hifes.ui.iconpack.myiconpack.Imagenotfound
+import com.ssafy.hifes.ui.iconpack.myiconpack.Imagenotfoundmedium
 import com.ssafy.hifes.ui.theme.pretendardFamily
-import java.lang.reflect.Member
 
 // https://ichef.bbci.co.uk/news/640/cpsprodpb/E172/production/_126241775_getty_cats.png
 
@@ -41,31 +45,44 @@ data class Img(
     val url: String
 )
 
+private const val TAG = "Items"
+
 @Composable
-fun GroupMember(user: User) {
+fun GroupMember(member: Member) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         AsyncImage(
-            model = user.url,
+            model = member.userProfilePic,
             contentDescription = null,
             contentScale = ContentScale.Crop,
             placeholder = ColorPainter(Color.Green),
             modifier = Modifier
                 .size(68.dp)
-                .clip(CircleShape)
+                .clip(CircleShape),
+            error = rememberVectorPainter(MyIconPack.Imagenotfoundmedium)
         )
         Spacer(modifier = Modifier.height(8.dp))
-        Text(text = user.name, fontSize = 14.sp, fontFamily = pretendardFamily, fontWeight = FontWeight.Normal)
+        Text(
+            text = member.userNickname,
+            fontSize = 14.sp,
+            fontFamily = pretendardFamily,
+            fontWeight = FontWeight.Normal
+        )
     }
 }
 
 @Composable
-fun GroupMemberRow(groupMember: List<User>) {
+fun GroupMemberRow(groupMember: List<Member>) {
     Column {
-        Text(text = "멤버", fontSize = 16.sp, fontFamily = pretendardFamily, fontWeight = FontWeight.SemiBold)
+        Text(
+            text = "멤버",
+            fontSize = 16.sp,
+            fontFamily = pretendardFamily,
+            fontWeight = FontWeight.SemiBold
+        )
         Spacer(modifier = Modifier.height(8.dp))
         LazyRow {
             items(groupMember) { item ->
-                GroupMember(user = item)
+                GroupMember(item)
                 Spacer(modifier = Modifier.width(16.dp))
             }
         }
@@ -73,20 +90,26 @@ fun GroupMemberRow(groupMember: List<User>) {
 }
 
 @Composable
-fun GroupPictureRow(img: List<Img>) {
+fun GroupPictureRow(img: List<SharedPicDto>) {
     Column {
-        Text(text = "사진", fontSize = 16.sp, fontFamily = pretendardFamily, fontWeight = FontWeight.SemiBold)
+        Text(
+            text = "사진",
+            fontSize = 16.sp,
+            fontFamily = pretendardFamily,
+            fontWeight = FontWeight.SemiBold
+        )
         Spacer(modifier = Modifier.height(8.dp))
         LazyRow {
             items(img) { item ->
                 AsyncImage(
-                    model = item.url,
+                    model = item.sharedPic,
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     placeholder = ColorPainter(Color.Green),
                     modifier = Modifier
                         .size(80.dp)
-                        .clip(RoundedCornerShape(16.dp))
+                        .clip(RoundedCornerShape(16.dp)),
+                    error = rememberVectorPainter(MyIconPack.Imagenotfound)
                 )
                 Spacer(modifier = Modifier.width(14.dp))
             }
@@ -97,7 +120,7 @@ fun GroupPictureRow(img: List<Img>) {
 @Composable
 fun GroupPictureGrid(img: List<Img>) {
     LazyVerticalGrid(columns = GridCells.Fixed(3), modifier = Modifier.padding(8.dp)) {
-        items(img) {item ->
+        items(img) { item ->
             AsyncImage(
                 model = item.url,
                 contentDescription = null,
@@ -116,19 +139,19 @@ fun GroupPictureGrid(img: List<Img>) {
 @Preview
 @Composable
 fun GroupMemeberPrev() {
-    val user = User(
-        url = "https://fastly.picsum.photos/id/10/2500/1667.jpg?hmac=J04WWC_ebchx3WwzbM-Z4_KC_LeLBWr5LZMaAkWkF68",
-        name = "L"
-    )
-    val img = Img(
-        url = "https://fastly.picsum.photos/id/237/200/300.jpg?hmac=TmmQSbShHz9CdQm0NkEjx1Dyh_Y984R9LpNrpvH2D_U"
-    )
-//    GroupMember(user)
-    Column() {
-        GroupPictureRow(img = listOf(img, img, img, img, img, img))
-        Spacer(modifier = Modifier.height(24.dp))
-        GroupMemberRow(groupMember = listOf(user, user, user, user, user, user))
-        Spacer(modifier = Modifier.height(24.dp))
-        GroupPictureGrid(img = listOf(img, img, img, img, img, img, img, img, img, img, img, img))
-    }
+//    val user = User(
+//        url = "https://fastly.picsum.photos/id/10/2500/1667.jpg?hmac=J04WWC_ebchx3WwzbM-Z4_KC_LeLBWr5LZMaAkWkF68",
+//        name = "L"
+//    )
+//    val img = Img(
+//        url = "https://fastly.picsum.photos/id/237/200/300.jpg?hmac=TmmQSbShHz9CdQm0NkEjx1Dyh_Y984R9LpNrpvH2D_U"
+//    )
+////    GroupMember(user)
+//    Column() {
+//        GroupPictureRow(img = listOf(img, img, img, img, img, img))
+//        Spacer(modifier = Modifier.height(24.dp))
+//        GroupMemberRow(groupMember = listOf(user, user, user, user, user, user))
+//        Spacer(modifier = Modifier.height(24.dp))
+//        GroupPictureGrid(img = listOf(img, img, img, img, img, img, img, img, img, img, img, img))
+//    }
 }
