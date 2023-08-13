@@ -38,7 +38,7 @@ public class GroupController extends BaseTimeEntity {
 
     @PostMapping("group/create")
     public ResponseEntity<String> groupCreate(HttpServletRequest request, @RequestPart("groupCreateDto") GroupCreateDto groupCreateDto, @RequestPart("image")  MultipartFile image) throws Exception {
-        String accessToken = jwtService.extractAccessToken(request).orElse("");
+        String accessToken = request.getHeader("accessToken");
         String email = jwtService.extractEmail(accessToken).orElse("");
         NormalUser user = normalUserService.getByEmail(email);
 
@@ -57,7 +57,7 @@ public class GroupController extends BaseTimeEntity {
 
     @GetMapping("group/join/{groupId}")
     public String groupJoin(HttpServletRequest request, @PathVariable Long groupId){
-        String accessToken = jwtService.extractAccessToken(request).orElse("");
+        String accessToken = request.getHeader("accessToken");
         String email = jwtService.extractEmail(accessToken).orElse("");
         NormalUser user = normalUserService.getByEmail(email);
         Group group = groupService.getById(groupId);
@@ -69,9 +69,10 @@ public class GroupController extends BaseTimeEntity {
     @GetMapping("group/detail/{id}")
     public JsonObject groupDetail(HttpServletRequest request, @PathVariable Long id){
         // 여기서 id는 그룹 아이디
-        String accessToken = jwtService.extractAccessToken(request).orElse("");
-        String email = jwtService.extractEmail(accessToken).orElse("");
+        String email =jwtService.extractEmail(request.getHeader("accessToken")).orElse("");
+        System.out.println(email+ "///////////////////////////////////////");
         NormalUser user = normalUserService.getByEmail(email);
+        System.out.println("+++++++++++++++++++++++++++" + user.getName());
 
         Group group = groupService.groupDetail(id.longValue());
         List<NormalUser> joinedPeople = groupService.getJoinedPeople(id);
