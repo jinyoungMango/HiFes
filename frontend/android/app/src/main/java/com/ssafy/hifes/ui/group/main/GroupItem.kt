@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -27,6 +28,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.ssafy.hifes.data.model.Group
+import com.ssafy.hifes.ui.iconpack.MyIconPack
+import com.ssafy.hifes.ui.iconpack.myiconpack.Imagenotfoundmedium
 import com.ssafy.hifes.ui.theme.pretendardFamily
 
 @Composable
@@ -54,7 +57,8 @@ fun GroupItem(
                 placeholder = ColorPainter(Color.Green),
                 modifier = Modifier
                     .size(100.dp)
-                    .clip(RoundedCornerShape(8.dp))
+                    .clip(RoundedCornerShape(8.dp)),
+                error = rememberVectorPainter(image = MyIconPack.Imagenotfoundmedium)
             )
             Spacer(modifier = Modifier.width(16.dp))
             Column(Modifier.fillMaxWidth()) {

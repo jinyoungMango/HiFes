@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -27,6 +28,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.ssafy.hifes.data.model.Member
+import com.ssafy.hifes.data.model.SharedPicDto
+import com.ssafy.hifes.ui.iconpack.MyIconPack
+import com.ssafy.hifes.ui.iconpack.myiconpack.Imagenotfound
+import com.ssafy.hifes.ui.iconpack.myiconpack.Imagenotfoundmedium
 import com.ssafy.hifes.ui.theme.pretendardFamily
 
 // https://ichef.bbci.co.uk/news/640/cpsprodpb/E172/production/_126241775_getty_cats.png
@@ -52,7 +57,8 @@ fun GroupMember(member: Member) {
             placeholder = ColorPainter(Color.Green),
             modifier = Modifier
                 .size(68.dp)
-                .clip(CircleShape)
+                .clip(CircleShape),
+            error = rememberVectorPainter(MyIconPack.Imagenotfoundmedium)
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
@@ -84,7 +90,7 @@ fun GroupMemberRow(groupMember: List<Member>) {
 }
 
 @Composable
-fun GroupPictureRow(img: List<Img>) {
+fun GroupPictureRow(img: List<SharedPicDto>) {
     Column {
         Text(
             text = "사진",
@@ -96,13 +102,14 @@ fun GroupPictureRow(img: List<Img>) {
         LazyRow {
             items(img) { item ->
                 AsyncImage(
-                    model = item.url,
+                    model = item.sharedPic,
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     placeholder = ColorPainter(Color.Green),
                     modifier = Modifier
                         .size(80.dp)
-                        .clip(RoundedCornerShape(16.dp))
+                        .clip(RoundedCornerShape(16.dp)),
+                    error = rememberVectorPainter(MyIconPack.Imagenotfound)
                 )
                 Spacer(modifier = Modifier.width(14.dp))
             }

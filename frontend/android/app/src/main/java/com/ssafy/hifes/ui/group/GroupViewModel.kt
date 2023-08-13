@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.ssafy.hifes.data.model.Event
 import com.ssafy.hifes.data.model.Group
 import com.ssafy.hifes.data.model.GroupDetailDto
+import com.ssafy.hifes.data.model.SharedPicDto
 import com.ssafy.hifes.data.repository.group.GroupRepository
 import com.ssafy.hifes.util.network.NetworkResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -31,6 +32,9 @@ class GroupViewModel @Inject constructor(
 
     private var _groupDetailInfo: MutableLiveData<GroupDetailDto> = MutableLiveData()
     val groupDetailInfo: LiveData<GroupDetailDto> = _groupDetailInfo
+
+    private var _groupImages: MutableLiveData<List<SharedPicDto>> = MutableLiveData()
+    val groupImages: LiveData<List<SharedPicDto>> = _groupImages
 
     fun getAllGroupList() {
         viewModelScope.launch {
@@ -88,6 +92,30 @@ class GroupViewModel @Inject constructor(
             when (response) {
                 is NetworkResponse.Success -> {
                     _groupDetailInfo.postValue(response.body)
+                }
+
+                is NetworkResponse.ApiError -> {
+                    postValueEvent(0, type)
+                }
+
+                is NetworkResponse.NetworkError -> {
+                    postValueEvent(1, type)
+                }
+
+                is NetworkResponse.UnknownError -> {
+                    postValueEvent(2, type)
+                }
+            }
+        }
+    }
+
+    fun getGroupImages(groupId: Int) {
+        viewModelScope.launch {
+            val response = repository.getGroupImages(groupId)
+            val type = "그룹 이미지 조회에"
+            when (response) {
+                is NetworkResponse.Success -> {
+                    _groupImages.postValue(response.body)
                 }
 
                 is NetworkResponse.ApiError -> {
