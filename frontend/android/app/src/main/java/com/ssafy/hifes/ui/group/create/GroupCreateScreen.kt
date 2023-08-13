@@ -53,6 +53,7 @@ fun GroupCreateScreen(
     var title by remember { mutableStateOf("") }
     var content by remember { mutableStateOf("") }
     var maxPop by remember { mutableStateOf("1") }
+    var tagList by remember { mutableStateOf(mutableListOf<String>()) }
     var selectedFestival = mainViewModel.selectedFestival
     val errMsg = viewModel.errorMsgGroupCreate.observeAsState()
 
@@ -97,7 +98,10 @@ fun GroupCreateScreen(
                 selectedOptionText = maxPop,
                 { it -> maxPop = it }
             )
-            //TextFieldWithCaption(caption = "태그 작성")
+
+            addHashTagWithCaption(caption = "태그 작성", hashTags = tagList, addTag = { newTag ->
+                tagList.add(newTag)
+            })
 
             Spacer(modifier = Modifier.height(24.dp))
             Row(
@@ -141,7 +145,7 @@ fun GroupCreateScreen(
                                     createdAt = null,
                                     maxPop = maxPop.toInt(),
                                     content = content,
-                                    hashtags = listOf(),
+                                    hashtags = tagList,
                                     numOfPeople = null,
                                     festivalId = selectedFestival
                                 )

@@ -28,6 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ssafy.hifes.ui.common.HashtagChips
 import com.ssafy.hifes.ui.theme.PrimaryPink
 import com.ssafy.hifes.ui.theme.pretendardFamily
 
@@ -141,6 +142,66 @@ fun DropdownWithCaption(
         }
         Spacer(modifier = Modifier.height(24.dp))
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun addHashTagWithCaption(caption: String, hashTags: List<String>, addTag: (String) -> Unit) {
+    var text by remember { mutableStateOf("") }
+
+    var isFocused by remember { mutableStateOf(false) }
+
+    val borderStroke = if (isFocused) {
+        BorderStroke(1.dp, PrimaryPink)    // 선택된 보더의 색 변경
+    } else {
+        BorderStroke(0.5.dp, Color.Gray)
+    }
+
+    Column {
+        Text(text = caption, fontFamily = pretendardFamily, fontWeight = FontWeight.SemiBold)
+        Spacer(modifier = Modifier.height(8.dp))
+        TextField(
+            value = text,
+            onValueChange = { newText ->
+                if (newText.length > 1) {
+                    val lastChar = newText.substring(newText.length - 1, newText.length)
+                    if (lastChar == " ") {
+                        addTag(newText.substring(0 until newText.length - 1))
+                        text = ""
+                    } else {
+                        text = newText
+                    }
+                } else {
+                    if (newText == " ") {
+                        text = ""
+                    } else {
+                        text = newText
+                    }
+                }
+            },
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                disabledIndicatorColor = Color.Transparent
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .border(borderStroke, MaterialTheme.shapes.small)
+                .onFocusChanged {
+                    isFocused = it.isFocused
+                },
+            textStyle = LocalTextStyle.current.copy(fontSize = 16.sp),
+        )
+        Spacer(modifier = Modifier.height(24.dp))
+
+        HashtagChips(chips = hashTags, isDeleteable = true) {
+
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+    }
+
 }
 
 
