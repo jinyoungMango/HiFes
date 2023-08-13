@@ -1,6 +1,5 @@
 package com.ssafy.hifes.ui.group.main
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -44,10 +43,8 @@ fun GroupMainScreen(
 
     LaunchedEffect(groupScreenType) {
         if (groupScreenType.value == GroupScreenType.All) {
-            Log.d(TAG, "GroupMainScreen: 1 ${groupScreenType}")
             viewModel.getAllGroupList()
         } else {
-            Log.d(TAG, "GroupMainScreen: 2 ${groupScreenType}")
             viewModel.getFestivalGroupList(selectedFestival)
         }
     }
@@ -71,7 +68,7 @@ fun GroupMainScreen(
                             GroupItem(
                                 groupList.value!![index]
                             ) { groupData ->
-                                viewModel.getGroupDetail(groupData)
+                                viewModel.setSelectedGroupId(groupData.id)
                                 navController.navigate(HifesDestinations.GROUP_DETAIL)
                             }
                             Spacer(modifier = Modifier.size(4.dp))
