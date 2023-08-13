@@ -1,46 +1,153 @@
 package com.ssafy.hifes.ui.group
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.ssafy.hifes.data.model.Event
 import com.ssafy.hifes.data.model.Group
-import com.ssafy.hifes.data.model.OrganizedFestivalDto
+import com.ssafy.hifes.data.model.GroupDetailDto
+import com.ssafy.hifes.data.model.SharedPicDto
+import com.ssafy.hifes.data.repository.group.GroupRepository
+import com.ssafy.hifes.util.network.NetworkResponse
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class GroupViewModel : ViewModel()  {
-    private var _groupList : MutableLiveData<MutableList<Group>> = MutableLiveData()
-    val groupList : LiveData<MutableList<Group>> = _groupList
+private const val TAG = "GroupViewModel"
 
-    private var _selectedGroup: MutableLiveData<Group> = MutableLiveData()
-    val selectedGroup: LiveData<Group> = _selectedGroup
+@HiltViewModel
+class GroupViewModel @Inject constructor(
+    private val repository: GroupRepository
+) : ViewModel() {
+    private val _msg = MutableLiveData<Event<String>>()
+    val errorMsg: LiveData<Event<String>> = _msg
 
-    init {
-        getGroupList()
-    }
+    private var _groupList: MutableLiveData<List<Group>> = MutableLiveData()
+    val groupList: LiveData<List<Group>> = _groupList
 
-    fun getGroupList(){
-        //추후 서버 통신 코드가 생기면 이 부분을 서버에게서 모임 리스트를 받아오는것으로 변경한다
-        var groupListDummyData = mutableListOf<Group>()
-        val tmp = Group(
-            "https://picsum.photos/600",
-            "제목",
-            "내용",
-            hashtag = listOf("1", "2", "3", "4"),
-            3,
-            6
-        )
-        groupListDummyData.apply {
-            add(tmp)
-            add(tmp)
-            add(tmp)
-            add(tmp)
-            add(tmp)
-            add(tmp)
+    private var _selectedGroup: MutableLiveData<Int> = MutableLiveData()
+    val selectedGroup: LiveData<Int> = _selectedGroup
+
+    private var _groupDetailInfo: MutableLiveData<GroupDetailDto> = MutableLiveData()
+    val groupDetailInfo: LiveData<GroupDetailDto> = _groupDetailInfo
+
+    private var _groupImages: MutableLiveData<List<SharedPicDto>> = MutableLiveData()
+    val groupImages: LiveData<List<SharedPicDto>> = _groupImages
+
+    fun getAllGroupList() {
+        viewModelScope.launch {
+            val response = repository.getAllGroupList()
+            val type = "그룹 리스트 조회에"
+            when (response) {
+                is NetworkResponse.Success -> {
+                    _groupList.postValue(response.body)
+                }
+
+                is NetworkResponse.ApiError -> {
+                    postValueEvent(0, type)
+                }
+
+                is NetworkResponse.NetworkError -> {
+                    postValueEvent(1, type)
+                }
+
+                is NetworkResponse.UnknownError -> {
+                    postValueEvent(2, type)
+                }
+            }
         }
-
-        _groupList.postValue(groupListDummyData)
     }
 
-    fun getGroupDetail(group: Group) {
-        _selectedGroup.postValue(group)
+    fun getFestivalGroupList(festivalId: Int) {
+        Log.d(TAG, "getFestivalGroupList: $festivalId")
+        viewModelScope.launch {
+            val response = repository.getFestivalGroupList(festivalId)
+            val type = "그룹 리스트 조회에"
+            when (response) {
+                is NetworkResponse.Success -> {
+                    _groupList.postValue(response.body)
+                }
+
+                is NetworkResponse.ApiError -> {
+                    postValueEvent(0, type)
+                }
+
+                is NetworkResponse.NetworkError -> {
+                    postValueEvent(1, type)
+                }
+
+                is NetworkResponse.UnknownError -> {
+                    postValueEvent(2, type)
+                }
+            }
+        }
+    }
+
+    fun getGroupDetail(groupId: Int) {
+        viewModelScope.launch {
+            val response = repository.getGroupDetailInfo(groupId)
+            val type = "그룹 조회에"
+            when (response) {
+                is NetworkResponse.Success -> {
+                    _groupDetailInfo.postValue(response.body)
+                }
+
+                is NetworkResponse.ApiError -> {
+                    postValueEvent(0, type)
+                }
+
+                is NetworkResponse.NetworkError -> {
+                    postValueEvent(1, type)
+                }
+
+                is NetworkResponse.UnknownError -> {
+                    postValueEvent(2, type)
+                }
+            }
+        }
+    }
+
+    fun getGroupImages(groupId: Int) {
+        viewModelScope.launch {
+            val response = repository.getGroupImages(groupId)
+            val type = "그룹 이미지 조회에"
+            when (response) {
+                is NetworkResponse.Success -> {
+                    _groupImages.postValue(response.body)
+                }
+
+                is NetworkResponse.ApiError -> {
+                    postValueEvent(0, type)
+                }
+
+                is NetworkResponse.NetworkError -> {
+                    postValueEvent(1, type)
+                }
+
+                is NetworkResponse.UnknownError -> {
+                    postValueEvent(2, type)
+                }
+            }
+        }
+    }
+
+    fun setSelectedGroupId(groupId: Int) {
+        _selectedGroup.postValue(groupId)
+    }
+
+    private fun postValueEvent(value: Int, type: String) {
+        val msgArrayList = arrayOf(
+            "Api 오류 : $type 실패했습니다.",
+            "서버 오류 : $type 실패했습니다.",
+            "알 수 없는 오류 : $type 실패했습니다."
+        )
+
+        when (value) {
+            0 -> _msg.postValue(Event(msgArrayList[0]))
+            1 -> _msg.postValue(Event(msgArrayList[1]))
+            2 -> _msg.postValue(Event(msgArrayList[2]))
+        }
     }
 }

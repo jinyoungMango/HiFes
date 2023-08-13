@@ -78,6 +78,8 @@ fun BottomNavigation(navController: NavHostController, viewModel: MainViewModel)
                     navController.navigate(item.screenRoute) {
                         if (item.screenRoute == MAP) {
                             viewModel.updateMapTypeGeneral()
+                        } else if (item.screenRoute == GROUP) {
+                            viewModel.updateGroupScreenTypeAll()
                         }
                         NavigationItem.Home.screenRoute.let {
                             popUpTo(it) { saveState = true }

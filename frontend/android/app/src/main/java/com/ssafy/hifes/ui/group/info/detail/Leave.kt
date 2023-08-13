@@ -22,9 +22,15 @@ import com.ssafy.hifes.ui.iconpack.myiconpack.Leave
 import com.ssafy.hifes.ui.theme.pretendardFamily
 
 @Composable
-fun Leave() {
+fun Leave(
+    isJoinedGroup: Boolean,
+    onClick: (Boolean) -> Unit
+) {
     Row(
-        verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.End) {
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.End,
+        modifier = Modifier.clickable { onClick(isJoinedGroup) }
+    ) {
         IconButton(onClick = { /*TODO*/ }) {
             Image(
                 imageVector = MyIconPack.Leave,
@@ -34,10 +40,10 @@ fun Leave() {
                     .padding(4.dp)
             )
         }
+
         Text(
-            text = "탈퇴하기",
+            text = if (isJoinedGroup) "탈퇴하기" else "가입하기",
             color = Color(0xFF979797),
-            modifier = Modifier.clickable { },
             fontFamily = pretendardFamily,
             fontWeight = FontWeight.SemiBold
         )
@@ -47,5 +53,5 @@ fun Leave() {
 @Preview
 @Composable
 fun LeavePrev() {
-    Leave()
+    Leave(false, {})
 }
