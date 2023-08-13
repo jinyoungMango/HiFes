@@ -28,5 +28,9 @@ public interface OrganizedFestivalRepository extends JpaRepository<OrganizedFest
     List<OrganizedFestival> findByFesTitleContaining(String word);
     List<OrganizedFestival> findByFesAddressContaining(String word);
 
+    // 평균 평점 계산
+    @Query("SELECT AVG(rating) FROM Post WHERE festivalId = :festivalId")
+    Float getAverageRatingByOrganizedFestival(@Param("festivalId")Long festivalId);
+
 }
 
