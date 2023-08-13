@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -37,13 +38,30 @@ public class PostService {
 
 
     @Transactional
-    public List<Post> allPostsByFestival(Long festivalId) {
-        return postRepository.findAllByOrganizedFestival_FestivalId(festivalId);
+    public List<PostDto> allPostsByFestival(Long festivalId) {
+        System.out.println("=========================================");
+        List<Post> allByOrganizedFestivalFestivalId = postRepository.findAllByOrganizedFestival_FestivalId(festivalId);
+        ArrayList<PostDto> postList = new ArrayList<>();
+//        System.out.println("=========================================");
+
+        for (Post post : allByOrganizedFestivalFestivalId) {
+            PostDto postDto = PostDto.builder()
+                    .postType(post.getPostType())
+                    .title(post.getTitle())
+                    .createdAt(post.getCreatedAt())
+                    .createdBy(post.getCreatedBy())
+                    .commentsCount(post.getComments().size())
+                    .views(post.getViews())
+                    .build();
+            postList.add(postDto);
+        }
+        return postList;
+
     }
 
     @Transactional
     public List<PostDto> postTypeInFestival(Long festivalId, String postType) {
-        System.out.println("=========================================");
+
         List<Post> dasd = postRepository.findAllByOrganizedFestival_FestivalIdAndPostType(festivalId, postType);
         ArrayList<PostDto> postList = new ArrayList<>();
 
@@ -133,22 +151,22 @@ public class PostService {
         post.increaseView();
         postRepository.save(post);
         // 유저 id 로 작성자 정보 저장 로직
-        Long userId = post.getCreatedBy();
+//        Long userId = post.getCreatedBy();
 
-        String userRecognizer;  // 주최 행사 이름이 될 수도 있고 별명이 될 수도 있으니 recognizer 하나를 만든다
-
-        if (userId >= 1 && userId <= 300) {  // 1 ~ 300 이면 hostUser 니까 주최 행사 명을 설정한다
-            HostUser hostUser = hostUserRepository.findById(userId)
-                    .orElseThrow(() -> new IllegalArgumentException("!!!No Host User Found!!!"));
-            userRecognizer = hostUser.getOrganization();
-
-        } else if (userId > 300) {  // 300 보다 크다면 normalUser 니까 별명을 저장한다
-            NormalUser normalUser = normalUserRepository.findById(userId)
-                    .orElseThrow(() -> new IllegalArgumentException("!!!No Normal User Found!!!"));
-            userRecognizer = normalUser.getNickname();
-        } else {  // 그 외의 경우는 유저가 없는 걸로 판단 에러 발생
-            ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong userId");
-        }
+//        String userRecognizer;  // 주최 행사 이름이 될 수도 있고 별명이 될 수도 있으니 recognizer 하나를 만든다
+//
+//        if (userId >= 1 && userId <= 300) {  // 1 ~ 300 이면 hostUser 니까 주최 행사 명을 설정한다
+//            HostUser hostUser = hostUserRepository.findById(userId)
+//                    .orElseThrow(() -> new IllegalArgumentException("!!!No Host User Found!!!"));
+//            userRecognizer = hostUser.getOrganization();
+//
+//        } else if (userId > 300) {  // 300 보다 크다면 normalUser 니까 별명을 저장한다
+//            NormalUser normalUser = normalUserRepository.findById(userId)
+//                    .orElseThrow(() -> new IllegalArgumentException("!!!No Normal User Found!!!"));
+//            userRecognizer = normalUser.getNickname();
+//        } else {  // 그 외의 경우는 유저가 없는 걸로 판단 에러 발생
+//            ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong userId");
+//        }
 
         // 댓글 목록 불러오기
         List<Comment> topLevelComments = commentRepository.findAllByPostIdAndParentIsNull(postId);
@@ -158,6 +176,7 @@ public class PostService {
 
 
         PostDto postDto = PostDto.builder()
+                .id(post.getId())
                 .commentsCount(post.getComments().size())
                 .postType(post.getPostType())
                 .title(post.getTitle())
@@ -167,10 +186,12 @@ public class PostService {
                 .views(post.getViews())
                 .rating(post.getRating())
                 .isHidden(post.getIsHidden())
+                .organizedFestivalId(post.getOrganizedFestival().getFestivalId())
                 .topLevelComments(topLevelCommentListDto)
                 .build();
 
         return postDto;
+
     }
 
 
