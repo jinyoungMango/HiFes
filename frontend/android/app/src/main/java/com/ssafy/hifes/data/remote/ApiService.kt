@@ -55,4 +55,11 @@ interface ApiService {
 
     @GET("group/{groupId}/picture/")
     suspend fun getGroupImages(@Path("groupId") groupId: Int): NetworkResponse<List<SharedPicDto>, ErrorResponse>
+
+    @Multipart
+    @POST("group/create")
+    suspend fun createGroup(
+        @Part("groupCreateDto") groupCreateDto: RequestBody,
+        @Part image: MultipartBody.Part
+    ): NetworkResponse<String, ErrorResponse>
 }

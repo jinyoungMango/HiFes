@@ -1,6 +1,7 @@
 package com.ssafy.hifes.ui.group.create
 
 import android.net.Uri
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,66 +21,145 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
+import com.ssafy.hifes.data.model.Group
 import com.ssafy.hifes.ui.common.ProfileImg
 import com.ssafy.hifes.ui.common.top.TopWithBack
+import com.ssafy.hifes.ui.group.GroupViewModel
+import com.ssafy.hifes.ui.main.MainViewModel
 import com.ssafy.hifes.ui.theme.PrimaryPink
 import com.ssafy.hifes.ui.theme.pretendardFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun GroupCreateScreen(navController: NavController) {
+fun GroupCreateScreen(
+    navController: NavController,
+    viewModel: GroupViewModel,
+    mainViewModel: MainViewModel
+) {
+    var context = LocalContext.current
     var imageUri by remember { mutableStateOf<Uri?>(null) }
+    var title by remember { mutableStateOf("") }
+    var content by remember { mutableStateOf("") }
+    var maxPop by remember { mutableStateOf("1") }
+    var selectedFestival = mainViewModel.selectedFestival
+    val errMsg = viewModel.errorMsgGroupCreate.observeAsState()
 
-    Scaffold (
-        topBar = { TopWithBack(navController, title = "모임 생성", onClick = {})},
-        content = {
-            val scrollState = rememberScrollState()
+    errMsg.value?.getContentIfNotHandled()?.let {
+        Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+    }
 
-            Column(
-                Modifier
-                    .padding(it)
-                    .padding(start = 18.dp, end = 18.dp)
-                    .verticalScroll(scrollState)
-                    ,
-                horizontalAlignment = Alignment.CenterHorizontally) {
-                ProfileImg(imageUri = imageUri, onImageChange = { uri -> imageUri = uri })
-                Spacer(modifier = Modifier.height(16.dp))
-                TextFieldWithCaption(caption = "모임명")
+    Scaffold(
+        topBar = { TopWithBack(navController, title = "모임 생성", onClick = {}) }
 
-                DropdownWithCaption(caption = "최대 인원")
-                TextFieldWithCaption(caption = "태그 작성")
+    ) {
+        val scrollState = rememberScrollState()
 
-                Spacer(modifier = Modifier.height(24.dp))
-                Row (modifier = Modifier.fillMaxWidth(),  horizontalArrangement = Arrangement.SpaceBetween){
-                    Button(modifier = Modifier.weight(1f), shape = MaterialTheme.shapes.medium,border = BorderStroke(1.dp, PrimaryPink), onClick = { /*TODO*/ }, colors = ButtonDefaults.buttonColors(containerColor = Color.White, contentColor = Color.Black )) {
-                        Text(text = "취소", fontFamily = pretendardFamily, fontWeight = FontWeight.Bold)
-                    }
-                    Spacer(modifier = Modifier.width(24.dp))
-                    Button(modifier = Modifier.weight(1f), shape = MaterialTheme.shapes.medium,onClick = { /*TODO*/ }, colors = ButtonDefaults.buttonColors(containerColor = PrimaryPink, )) {
-                        Text(text = "생성")
-                    }
+        Column(
+            Modifier
+                .padding(it)
+                .padding(start = 18.dp, end = 18.dp)
+                .verticalScroll(scrollState),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            ProfileImg(
+                imageUri = imageUri,
+                onImageChange = { uri -> imageUri = uri }
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            TextFieldWithCaption(
+                caption = "모임명",
+                title,
+                { text ->
+                    title = text
                 }
-                Spacer(modifier = Modifier.height(16.dp))
-            }
-        }
+            )
+            TextFieldWithCaption(
+                caption = "모임 설명",
+                content,
+                { text ->
+                    content = text
+                }
+            )
+            DropdownWithCaption(
+                caption = "최대 인원",
+                selectedOptionText = maxPop,
+                { it -> maxPop = it }
+            )
+            //TextFieldWithCaption(caption = "태그 작성")
 
-    )
+            Spacer(modifier = Modifier.height(24.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Button(
+                    modifier = Modifier.weight(1f),
+                    shape = MaterialTheme.shapes.medium,
+                    border = BorderStroke(1.dp, PrimaryPink),
+                    onClick = { /*TODO*/ },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.White,
+                        contentColor = Color.Black
+                    )
+                ) {
+                    Text(
+                        text = "취소",
+                        fontFamily = pretendardFamily,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+                Spacer(modifier = Modifier.width(24.dp))
+                Button(
+                    modifier = Modifier.weight(1f),
+                    shape = MaterialTheme.shapes.medium,
+                    onClick = {
+                        if (title == "" || imageUri == null || content == "") {
+                            Toast.makeText(
+                                context,
+                                "이미지 선택과 모임 이름, 설명은 필수입니다! 값을 입력해주세요",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        } else {
+                            viewModel.createGroup(
+                                context,
+                                imageUri!!,
+                                Group(
+                                    groupName = title,
+                                    groupPic = null,
+                                    createdAt = null,
+                                    maxPop = maxPop.toInt(),
+                                    content = content,
+                                    hashtags = listOf(),
+                                    numOfPeople = null,
+                                    festivalId = selectedFestival
+                                )
+                            )
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = PrimaryPink)
+                ) {
+                    Text(text = "생성")
+                }
+            }
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+    }
 }
 
 @Preview
 @Composable
 fun CreatePrev() {
-    GroupCreateScreen(rememberNavController())
+    //GroupCreateScreen(rememberNavController())
 }

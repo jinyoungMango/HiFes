@@ -23,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -32,8 +33,8 @@ import com.ssafy.hifes.ui.theme.pretendardFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TextFieldWithCaption(caption: String) {
-    var text by remember { mutableStateOf("") }
+fun TextFieldWithCaption(caption: String, text: String, onChange: (String) -> Unit) {
+
     var isFocused by remember { mutableStateOf(false) }
 
     val borderStroke = if (isFocused) {
@@ -48,7 +49,7 @@ fun TextFieldWithCaption(caption: String) {
         TextField(
             value = text,
             onValueChange = { newText ->
-                text = newText
+                onChange(newText)
             },
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = Color.Transparent,
@@ -70,11 +71,14 @@ fun TextFieldWithCaption(caption: String) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DropdownWithCaption(caption: String) {
+fun DropdownWithCaption(
+    caption: String,
+    selectedOptionText: String,
+    onChange: (String) -> Unit
+) {
     val options = (1..10).toList()
 
     var expanded by remember { mutableStateOf(false) }
-    var selectedOptionText by remember { mutableStateOf(options[0].toString()) }
 
     var isFocused by remember { mutableStateOf(false) }
 
@@ -127,7 +131,7 @@ fun DropdownWithCaption(caption: String) {
                     DropdownMenuItem(
                         text = { Text(selectionOption.toString()) },
                         onClick = {
-                            selectedOptionText = selectionOption.toString()
+                            onChange(selectionOption.toString())
                             expanded = false
                         },
                         contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
@@ -144,8 +148,10 @@ fun DropdownWithCaption(caption: String) {
 @Preview
 @Composable
 fun EditPrev() {
-    TextFieldWithCaption(caption = "caption")
-    DropdownWithCaption(caption = "caption")
+    var context = LocalContext.current
+
+    TextFieldWithCaption("caption", "", {})
+    DropdownWithCaption("caption", "1", {})
 }
 
 

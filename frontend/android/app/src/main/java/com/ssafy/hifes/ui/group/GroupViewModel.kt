@@ -1,18 +1,25 @@
 package com.ssafy.hifes.ui.group
 
+import android.content.Context
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.gson.Gson
 import com.ssafy.hifes.data.model.Event
 import com.ssafy.hifes.data.model.Group
 import com.ssafy.hifes.data.model.GroupDetailDto
 import com.ssafy.hifes.data.model.SharedPicDto
 import com.ssafy.hifes.data.repository.group.GroupRepository
+import com.ssafy.hifes.util.MultipartUtil
+import com.ssafy.hifes.util.UriUtil
 import com.ssafy.hifes.util.network.NetworkResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
 import javax.inject.Inject
 
 private const val TAG = "GroupViewModel"
@@ -21,8 +28,19 @@ private const val TAG = "GroupViewModel"
 class GroupViewModel @Inject constructor(
     private val repository: GroupRepository
 ) : ViewModel() {
-    private val _msg = MutableLiveData<Event<String>>()
-    val errorMsg: LiveData<Event<String>> = _msg
+    private val gson = Gson()
+
+    private val _msgGroupList = MutableLiveData<Event<String>>()
+    val errorMsgGroupList: LiveData<Event<String>> = _msgGroupList
+
+    private val _msgGroupDetail = MutableLiveData<Event<String>>()
+    val errorMsgGroupDetail: LiveData<Event<String>> = _msgGroupDetail
+
+    private val _msgGroupImages = MutableLiveData<Event<String>>()
+    val errorMsgGroupImages: LiveData<Event<String>> = _msgGroupImages
+
+    private val _msgGroupCreate = MutableLiveData<Event<String>>()
+    val errorMsgGroupCreate: LiveData<Event<String>> = _msgGroupCreate
 
     private var _groupList: MutableLiveData<List<Group>> = MutableLiveData()
     val groupList: LiveData<List<Group>> = _groupList
@@ -46,24 +64,24 @@ class GroupViewModel @Inject constructor(
                 }
 
                 is NetworkResponse.ApiError -> {
-                    postValueEvent(0, type)
+                    postValueEvent(0, type, _msgGroupList)
                 }
 
                 is NetworkResponse.NetworkError -> {
-                    postValueEvent(1, type)
+                    postValueEvent(1, type, _msgGroupList)
                 }
 
                 is NetworkResponse.UnknownError -> {
-                    postValueEvent(2, type)
+                    postValueEvent(2, type, _msgGroupList)
                 }
             }
         }
     }
 
-    fun getFestivalGroupList(festivalId: Int) {
-        Log.d(TAG, "getFestivalGroupList: $festivalId")
+    fun getFestivalGroupList(selectedFestivalId: Int) {
+        Log.d(TAG, "getFestivalGroupList: $selectedFestivalId")
         viewModelScope.launch {
-            val response = repository.getFestivalGroupList(festivalId)
+            val response = repository.getFestivalGroupList(selectedFestivalId)
             val type = "그룹 리스트 조회에"
             when (response) {
                 is NetworkResponse.Success -> {
@@ -71,15 +89,15 @@ class GroupViewModel @Inject constructor(
                 }
 
                 is NetworkResponse.ApiError -> {
-                    postValueEvent(0, type)
+                    postValueEvent(0, type, _msgGroupList)
                 }
 
                 is NetworkResponse.NetworkError -> {
-                    postValueEvent(1, type)
+                    postValueEvent(1, type, _msgGroupList)
                 }
 
                 is NetworkResponse.UnknownError -> {
-                    postValueEvent(2, type)
+                    postValueEvent(2, type, _msgGroupList)
                 }
             }
         }
@@ -95,15 +113,15 @@ class GroupViewModel @Inject constructor(
                 }
 
                 is NetworkResponse.ApiError -> {
-                    postValueEvent(0, type)
+                    postValueEvent(0, type, _msgGroupDetail)
                 }
 
                 is NetworkResponse.NetworkError -> {
-                    postValueEvent(1, type)
+                    postValueEvent(1, type, _msgGroupDetail)
                 }
 
                 is NetworkResponse.UnknownError -> {
-                    postValueEvent(2, type)
+                    postValueEvent(2, type, _msgGroupDetail)
                 }
             }
         }
@@ -119,15 +137,15 @@ class GroupViewModel @Inject constructor(
                 }
 
                 is NetworkResponse.ApiError -> {
-                    postValueEvent(0, type)
+                    postValueEvent(0, type, _msgGroupImages)
                 }
 
                 is NetworkResponse.NetworkError -> {
-                    postValueEvent(1, type)
+                    postValueEvent(1, type, _msgGroupImages)
                 }
 
                 is NetworkResponse.UnknownError -> {
-                    postValueEvent(2, type)
+                    postValueEvent(2, type, _msgGroupImages)
                 }
             }
         }
@@ -137,7 +155,40 @@ class GroupViewModel @Inject constructor(
         _selectedGroup.postValue(groupId)
     }
 
-    private fun postValueEvent(value: Int, type: String) {
+    fun createGroup(context: Context, uri: Uri, groupDto: Group) {
+
+        val groupImage = MultipartUtil.getImageBody(UriUtil.toFile(context, uri))
+        val groupDtoPart =
+            gson.toJson(groupDto).toRequestBody("application/json".toMediaTypeOrNull())
+
+        viewModelScope.launch {
+            val response = repository.createGroup(groupDtoPart, groupImage)
+            val type = "그룹 생성에"
+            when (response) {
+                is NetworkResponse.Success -> {
+
+                }
+
+                is NetworkResponse.ApiError -> {
+                    postValueEvent(0, type, _msgGroupCreate)
+                }
+
+                is NetworkResponse.NetworkError -> {
+                    postValueEvent(1, type, _msgGroupCreate)
+                }
+
+                is NetworkResponse.UnknownError -> {
+                    postValueEvent(2, type, _msgGroupCreate)
+                }
+            }
+        }
+    }
+
+    private fun postValueEvent(
+        value: Int,
+        type: String,
+        mutableLiveData: MutableLiveData<Event<String>>
+    ) {
         val msgArrayList = arrayOf(
             "Api 오류 : $type 실패했습니다.",
             "서버 오류 : $type 실패했습니다.",
@@ -145,9 +196,9 @@ class GroupViewModel @Inject constructor(
         )
 
         when (value) {
-            0 -> _msg.postValue(Event(msgArrayList[0]))
-            1 -> _msg.postValue(Event(msgArrayList[1]))
-            2 -> _msg.postValue(Event(msgArrayList[2]))
+            0 -> mutableLiveData.postValue(Event(msgArrayList[0]))
+            1 -> mutableLiveData.postValue(Event(msgArrayList[1]))
+            2 -> mutableLiveData.postValue(Event(msgArrayList[2]))
         }
     }
 }
