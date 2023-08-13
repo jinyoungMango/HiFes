@@ -39,41 +39,45 @@ public class PostService {
 
     @Transactional
     public List<PostDto> allPostsByFestival(Long festivalId) {
-        System.out.println("=========================================");
-        List<Post> allByOrganizedFestivalFestivalId = postRepository.findAllByOrganizedFestival_FestivalId(festivalId);
-        ArrayList<PostDto> postList = new ArrayList<>();
-//        System.out.println("=========================================");
+        List<Post> allPostsInFestival = postRepository.findAllByOrganizedFestival_FestivalId(festivalId);
+        ArrayList<PostDto> postDtoArrayList = new ArrayList<>();
 
-        for (Post post : allByOrganizedFestivalFestivalId) {
+        for (Post post : allPostsInFestival) {
             PostDto postDto = PostDto.builder()
                     .postType(post.getPostType())
                     .title(post.getTitle())
-                    .createdAt(post.getCreatedAt())
-                    .createdBy(post.getCreatedBy())
                     .commentsCount(post.getComments().size())
                     .views(post.getViews())
+                    .createdBy(post.getCreatedBy())
+                    .createdAt(post.getCreatedAt())
+                    .organizedFestivalId(post.getOrganizedFestival().getFestivalId())
                     .build();
-            postList.add(postDto);
+            postDtoArrayList.add(postDto);
         }
-        return postList;
+        return postDtoArrayList;
 
     }
 
     @Transactional
     public List<PostDto> postTypeInFestival(Long festivalId, String postType) {
 
-        List<Post> dasd = postRepository.findAllByOrganizedFestival_FestivalIdAndPostType(festivalId, postType);
-        ArrayList<PostDto> postList = new ArrayList<>();
+        List<Post> postList = postRepository.findAllByOrganizedFestival_FestivalIdAndPostType(festivalId, postType);
+        ArrayList<PostDto> postDtoArrayList = new ArrayList<>();
 
-        for (Post post : dasd) {
+        for (Post post : postList) {
             PostDto postDto = PostDto.builder()
                     .postType(post.getPostType())
+                    .title(post.getTitle())
+                    .commentsCount(post.getComments().size())
+                    .views(post.getViews())
+                    .createdBy(post.getCreatedBy())
+                    .createdAt(post.getCreatedAt())
                     .organizedFestivalId(post.getOrganizedFestival().getFestivalId())
                     .build();
-            postList.add(postDto);
+            postDtoArrayList.add(postDto);
         }
 
-        return postList;
+        return postDtoArrayList;
     }
 
 
@@ -177,17 +181,18 @@ public class PostService {
 
         PostDto postDto = PostDto.builder()
                 .id(post.getId())
-                .commentsCount(post.getComments().size())
-                .postType(post.getPostType())
                 .title(post.getTitle())
                 .content(post.getContent())
-                .createdAt(post.getCreatedAt())
+                .postType(post.getPostType())
+                .isHidden(post.getIsHidden())
+                .hideReason(post.getHideReason())
+                .organizedFestivalId(post.getOrganizedFestival().getFestivalId())
                 .createdBy(post.getCreatedBy())
                 .views(post.getViews())
                 .rating(post.getRating())
-                .isHidden(post.getIsHidden())
-                .organizedFestivalId(post.getOrganizedFestival().getFestivalId())
                 .topLevelComments(topLevelCommentListDto)
+                .commentsCount(post.getComments().size())
+                .createdAt(post.getCreatedAt())
                 .build();
 
         return postDto;
