@@ -1,5 +1,6 @@
 package com.ssafy.hifes.ui.proof
 
+import NavigationItem
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,7 +19,7 @@ import com.ssafy.hifes.data.model.ProofResponseType
 private const val TAG = "StampProofScreen"
 
 @Composable
-fun ProofScreen(navController: NavController, viewModel: ProofViewModel, type: String, id: String) {
+fun ProofScreen(navController: NavController, viewModel: ProofViewModel, type: String, id: Int) {
     var stampResponse = viewModel.stampProofResponse.observeAsState()
     var festivalResponse = viewModel.festivalProofResponse.observeAsState()
     Log.d(TAG, "StampProofScreen: id ${id}")
@@ -51,6 +52,7 @@ fun ProofScreen(navController: NavController, viewModel: ProofViewModel, type: S
 
         }
     } else {
+        Log.d(TAG, "ProofScreen: festival~~~~~~~~~~~~~~~~~~ ${festivalResponse.value}")
         LaunchedEffect(Unit, { viewModel.requestFestivalProof(id) })
 
         Column(
@@ -69,9 +71,9 @@ fun ProofScreen(navController: NavController, viewModel: ProofViewModel, type: S
                 }) {
                     Text(text = "홈으로")
                 }
-            } else if (stampResponse.value == ProofResponseType.FAIL) {
+            } else if (festivalResponse.value == ProofResponseType.FAIL) {
                 Text(text = "오류로 인증에 실패했습니다!\n 다시 시도해주세요!")
-            } else if (stampResponse.value == ProofResponseType.LOADING) {
+            } else if (festivalResponse.value == ProofResponseType.LOADING) {
                 Text(text = "잠시만 기다려주세요")
             }
 

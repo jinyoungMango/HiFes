@@ -2,7 +2,6 @@ package com.ssafy.hifes.ui
 
 import NavigationItem
 import android.content.Intent
-import android.provider.SyncStateContract.Columns
 import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -36,12 +35,11 @@ import com.ssafy.hifes.ui.main.MainViewModel
 import com.ssafy.hifes.ui.map.MapScreen
 import com.ssafy.hifes.ui.mypage.MyPageScreen
 import com.ssafy.hifes.ui.participatedfest.ParticipatedFestScreen
-import com.ssafy.hifes.ui.proof.ProofViewModel
 import com.ssafy.hifes.ui.proof.ProofScreen
-import org.w3c.dom.Text
-import java.lang.Exception
+import com.ssafy.hifes.ui.proof.ProofViewModel
 
 private const val TAG = "HifesNavGraph"
+
 @Composable
 fun HifesNavGraph(
     appContainer: AppContainer,
@@ -56,7 +54,7 @@ fun HifesNavGraph(
     val boardViewModel: BoardViewModel = viewModel()
     val groupViewModel: GroupViewModel = viewModel()
     val detailViewModel: DetailViewModel = viewModel()
-    val proofViewModel : ProofViewModel = viewModel()
+    val proofViewModel: ProofViewModel = viewModel()
     val loginViewModel: LoginViewModel = viewModel()
 
     NavHost(
@@ -141,14 +139,44 @@ fun HifesNavGraph(
                 uriPattern = "hifes://main?type={type}&id={id}"
                 action = Intent.ACTION_VIEW
             })
-        ){
+        ) {
             val type = it.arguments?.getString("type")
             val id = it.arguments?.getString("id")
             Log.d(TAG, "HifesNavGraph: id ${id}")
-            if(type != null && id != null && (type == "festival" || type == "stamp"))
-                ProofScreen(navController = navController, viewModel = proofViewModel, type = type, id = id)
-            else
-                Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+            if (type != null && id != null && (type == "festival" || type == "stamp")) {
+                var isNumber = false
+                var idNumber = -1
+                try {
+                    idNumber = id.toInt()
+                    isNumber = true
+                } catch (e: Exception) {
+                    isNumber = false
+                }
+
+                if (isNumber == true) {
+                    ProofScreen(
+                        navController = navController,
+                        viewModel = proofViewModel,
+                        type = type,
+                        id = idNumber
+                    )
+                } else {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(text = "잘못된 QR입니다")
+                    }
+                }
+
+
+            } else
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
                     Text(text = "잘못된 QR입니다")
                 }
 
