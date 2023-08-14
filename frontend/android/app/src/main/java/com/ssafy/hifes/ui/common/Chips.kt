@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ElevatedFilterChip
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -82,10 +83,11 @@ fun ChipsSelectable(
 
 @Composable
 fun Chip(
+    index: Int,
     text: String,
     modifier: Modifier = Modifier,
     isDeleteable: Boolean,
-    onDeleteButtonClicked: () -> Unit
+    onDeleteButtonClicked: (Int) -> Unit
 ) {
     Surface(
         modifier = modifier,
@@ -100,7 +102,7 @@ fun Chip(
                 modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
             )
             if (isDeleteable) {
-                IconButton(onClick = { onDeleteButtonClicked() }) {
+                IconButton(onClick = { onDeleteButtonClicked(index) }) {
                     Icon(
                         modifier = Modifier
                             .size(20.dp)
@@ -116,10 +118,15 @@ fun Chip(
 }
 
 @Composable
-fun HashtagChips(chips: List<String>, isDeleteable: Boolean, onDeleteButtonClicked: () -> Unit) {
+fun HashtagChips(
+    chips: List<String>,
+    isDeleteable: Boolean,
+    onDeleteButtonClicked: (Int) -> Unit
+) {
     LazyRow() {
-        items(chips) { item ->
+        itemsIndexed(chips) { index, item ->
             Chip(
+                index = index,
                 text = item,
                 isDeleteable = isDeleteable,
                 onDeleteButtonClicked = onDeleteButtonClicked

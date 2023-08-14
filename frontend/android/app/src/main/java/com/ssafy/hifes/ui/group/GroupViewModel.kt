@@ -13,6 +13,7 @@ import com.ssafy.hifes.data.model.Group
 import com.ssafy.hifes.data.model.GroupDetailDto
 import com.ssafy.hifes.data.model.SharedPicDto
 import com.ssafy.hifes.data.repository.group.GroupRepository
+import com.ssafy.hifes.ui.group.create.GroupCreateStateType
 import com.ssafy.hifes.util.MultipartUtil
 import com.ssafy.hifes.util.UriUtil
 import com.ssafy.hifes.util.network.NetworkResponse
@@ -53,6 +54,9 @@ class GroupViewModel @Inject constructor(
 
     private var _groupImages: MutableLiveData<List<SharedPicDto>> = MutableLiveData()
     val groupImages: LiveData<List<SharedPicDto>> = _groupImages
+
+    private var _createStateType: MutableLiveData<GroupCreateStateType> = MutableLiveData()
+    val createStateType: LiveData<GroupCreateStateType> = _createStateType
 
     fun getAllGroupList() {
         viewModelScope.launch {
@@ -166,19 +170,26 @@ class GroupViewModel @Inject constructor(
             val type = "그룹 생성에"
             when (response) {
                 is NetworkResponse.Success -> {
-
+                    Log.d(TAG, "createGroup: success")
+                    _createStateType.postValue(GroupCreateStateType.SUCCESS)
                 }
 
                 is NetworkResponse.ApiError -> {
+                    Log.d(TAG, "createGroup: fail1")
                     postValueEvent(0, type, _msgGroupCreate)
+                    _createStateType.postValue(GroupCreateStateType.FAIL)
                 }
 
                 is NetworkResponse.NetworkError -> {
+                    Log.d(TAG, "createGroup: fail2")
                     postValueEvent(1, type, _msgGroupCreate)
+                    _createStateType.postValue(GroupCreateStateType.FAIL)
                 }
 
                 is NetworkResponse.UnknownError -> {
+                    Log.d(TAG, "createGroup: fail3")
                     postValueEvent(2, type, _msgGroupCreate)
+                    _createStateType.postValue(GroupCreateStateType.FAIL)
                 }
             }
         }

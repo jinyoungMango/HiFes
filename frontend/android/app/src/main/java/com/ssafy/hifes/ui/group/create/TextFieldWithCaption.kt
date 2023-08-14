@@ -146,7 +146,12 @@ fun DropdownWithCaption(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun addHashTagWithCaption(caption: String, hashTags: List<String>, addTag: (String) -> Unit) {
+fun addHashTagWithCaption(
+    caption: String,
+    hashTags: List<String>,
+    addTag: (String) -> Unit,
+    onDelete: (Int) -> Unit
+) {
     var text by remember { mutableStateOf("") }
 
     var isFocused by remember { mutableStateOf(false) }
@@ -195,9 +200,7 @@ fun addHashTagWithCaption(caption: String, hashTags: List<String>, addTag: (Stri
         )
         Spacer(modifier = Modifier.height(24.dp))
 
-        HashtagChips(chips = hashTags, isDeleteable = true) {
-
-        }
+        HashtagChips(chips = hashTags, isDeleteable = true, onDeleteButtonClicked = onDelete)
 
         Spacer(modifier = Modifier.height(24.dp))
     }

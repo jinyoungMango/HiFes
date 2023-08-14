@@ -1,6 +1,7 @@
 package com.ssafy.hifes.ui.group.create
 
 import android.net.Uri
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -53,12 +54,16 @@ fun GroupCreateScreen(
     var title by remember { mutableStateOf("") }
     var content by remember { mutableStateOf("") }
     var maxPop by remember { mutableStateOf("1") }
-    var tagList by remember { mutableStateOf(mutableListOf<String>()) }
+    var tagList by remember { mutableStateOf(listOf<String>()) }
     var selectedFestival = mainViewModel.selectedFestival
     val errMsg = viewModel.errorMsgGroupCreate.observeAsState()
+    val groupCreateState = viewModel.createStateType.observeAsState()
 
     errMsg.value?.getContentIfNotHandled()?.let {
         Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+        if(groupCreateState.value == GroupCreateStateType.SUCCESS){
+            navController.popBackStack()
+        }
     }
 
     Scaffold(
@@ -99,9 +104,17 @@ fun GroupCreateScreen(
                 { it -> maxPop = it }
             )
 
-            addHashTagWithCaption(caption = "태그 작성", hashTags = tagList, addTag = { newTag ->
-                tagList.add(newTag)
-            })
+            addHashTagWithCaption(
+                caption = "태그 작성",
+                hashTags = tagList,
+                addTag = { newTag ->
+                    tagList = tagList + newTag
+                },
+                onDelete = { index ->
+                    val item = tagList[index]
+                    tagList = tagList.toMutableList().also { it.remove(item) }
+                }
+            )
 
             Spacer(modifier = Modifier.height(24.dp))
             Row(
@@ -112,7 +125,7 @@ fun GroupCreateScreen(
                     modifier = Modifier.weight(1f),
                     shape = MaterialTheme.shapes.medium,
                     border = BorderStroke(1.dp, PrimaryPink),
-                    onClick = { /*TODO*/ },
+                    onClick = { navController.popBackStack() },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.White,
                         contentColor = Color.Black
@@ -150,7 +163,9 @@ fun GroupCreateScreen(
                                     festivalId = selectedFestival
                                 )
                             )
+
                         }
+
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = PrimaryPink)
                 ) {
