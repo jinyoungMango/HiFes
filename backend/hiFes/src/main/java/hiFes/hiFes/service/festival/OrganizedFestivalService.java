@@ -57,6 +57,7 @@ public class OrganizedFestivalService {
 
     @org.springframework.transaction.annotation.Transactional
     public OrganizedFestival save(AddOrganizedFestivalRequest request, MultipartFile file, MultipartFile image, Long HostUserId) throws Exception {
+
         System.out.println("파일저장!!!!!!!!!!"+file);
         System.out.println("이미지저장!!!!!!"+image);
         String[] LatLong =  getLatLonFromGoogleApi(request.getFesAddress());
