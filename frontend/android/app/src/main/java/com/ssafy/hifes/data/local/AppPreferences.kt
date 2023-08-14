@@ -25,7 +25,7 @@ object AppPreferences {
         preferences.edit().putString(ACCESS_TOKEN, loginResponse.accessToken)
             .putString(REFRESH_TOKEN, loginResponse.refreshToken)
             .putString(USER_ID, loginResponse.id)
-//            .putString(USER_NICKNAME, loginResponse.)
+            .putString(USER_NICKNAME, loginResponse.nickname)
             .commit()
     }
 
@@ -43,7 +43,7 @@ object AppPreferences {
     }
 
     fun getUserNickname(): String? {
-        return preferences.getString(USER_ID, "")
+        return preferences.getString(USER_NICKNAME, "")
     }
 
 }
