@@ -96,8 +96,6 @@ public class PostController {
         return postService.postTypeInFestival(festivalId, postType);
     }
 
-
-
 //    private final PictureService fileService;
 
 //    @PostMapping("/post")
