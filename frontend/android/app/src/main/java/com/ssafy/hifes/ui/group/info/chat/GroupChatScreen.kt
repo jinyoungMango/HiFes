@@ -13,20 +13,24 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -53,15 +57,23 @@ fun GroupChatScreen(viewModel: ChatViewModel, groupViewModel: GroupViewModel) {
     val userId = AppPreferences.getUserId()
     val nickname = AppPreferences.getUserId()
     val userData = UserData(userId, nickname)
-    val messageData = MessageData("content", userData, System.currentTimeMillis())
-//    viewModel.testNewMessage(groupId, messageData)
     val chatMessages = viewModel.chatMessages.collectAsState()
+    val listState = rememberLazyListState()
+    var triggerScroll by remember { mutableStateOf(false) }
 
-    Column() {
-        LaunchedEffect(Unit) {
-            // 채팅창 들어가서 정보 가져오기- 채팅 데이터, 채팅 내용
-            viewModel.enterChatRoom(groupId.value.toString())
+    LaunchedEffect(Unit) {
+        // 채팅창 들어가서 정보 가져오기- 채팅 데이터
+        viewModel.enterChatRoom(groupId.value.toString())
+    }
+
+    LaunchedEffect(triggerScroll) {
+        if (triggerScroll) {
+            listState.animateScrollToItem(index = listState.layoutInfo.totalItemsCount - 1)
+            triggerScroll = false
         }
+    }
+
+    Column {
         Box(
             modifier = Modifier
                 .weight(1f)
@@ -69,6 +81,7 @@ fun GroupChatScreen(viewModel: ChatViewModel, groupViewModel: GroupViewModel) {
                 .padding(12.dp)
         ) {
             LazyColumn(
+                state = listState,
                 verticalArrangement = Arrangement.Bottom
             ) {
                 items(chatMessages.value) { message ->
@@ -83,6 +96,8 @@ fun GroupChatScreen(viewModel: ChatViewModel, groupViewModel: GroupViewModel) {
         ChatInputField(onMessageSent = { message, time ->
             var messageData = MessageData(message, userData, time)
             viewModel.sendNewMessage(groupId = groupId.value.toString(), messageData = messageData)
+            triggerScroll = true
+
         })
     }
 }
@@ -160,7 +175,7 @@ fun ChatBubble(
                 fontWeight = FontWeight.Light,
                 fontSize = 10.sp
             )
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
         }
     }

@@ -10,13 +10,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Send
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -33,7 +32,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ssafy.hifes.R
-import com.ssafy.hifes.data.model.MessageData
 import com.ssafy.hifes.ui.theme.PrimaryPink
 import com.ssafy.hifes.ui.theme.pretendardFamily
 
@@ -46,7 +44,6 @@ fun ChatInputField(
     val timestamp = remember {
         mutableStateOf<Long>(0)
     }
-    val borderStroke = BorderStroke(2.dp, Color.LightGray)    // 선택된 보더의 색 변경해야함
 
     Row(
         modifier = Modifier
@@ -54,7 +51,7 @@ fun ChatInputField(
             .padding(start = 8.dp, end = 8.dp)
     ) {
         // 채팅 입력 필드
-        TextField(
+        OutlinedTextField(
             value = message,
             onValueChange = { message = it },
             trailingIcon = {  // Instead of directly passing the IconButton, it should be wrapped in a trailingIcon lambda.
@@ -89,11 +86,11 @@ fun ChatInputField(
                 focusedContainerColor = Color.White,
                 unfocusedContainerColor = Color.White,
                 disabledContainerColor = Color.White,
-                focusedIndicatorColor = Color.White
+                unfocusedIndicatorColor = Color.Gray,
+                focusedIndicatorColor = PrimaryPink
             ),
             modifier = Modifier
                 .fillMaxWidth()
-                .border(borderStroke, MaterialTheme.shapes.small)
                 .weight(1f),
             textStyle = LocalTextStyle.current.copy(
                 fontSize = 18.sp,
