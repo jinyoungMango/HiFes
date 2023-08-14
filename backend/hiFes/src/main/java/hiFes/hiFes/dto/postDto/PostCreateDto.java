@@ -23,7 +23,7 @@ public class PostCreateDto {
     private String title;
     private String content;
     private Long createdBy;
-    private String picture;
+//    private String picture;
     private Boolean isHidden;
     private Long festivalId;
 //    private NormalUser normalUser;
