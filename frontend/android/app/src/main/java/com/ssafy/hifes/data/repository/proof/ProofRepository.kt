@@ -12,7 +12,6 @@ interface ProofRepository {
     ): NetworkResponse<Boolean, ErrorResponse>
 
     suspend fun getParticipateFestival(
-        @Path("normalUserId") normalUserId: String,
-        @Path("festivalId") festivalId: Int
-    ): NetworkResponse<ParticipatedFestDto, ErrorResponse>
+        @Path("normalUserId") normalUserId: String
+    ): NetworkResponse<List<ParticipatedFestDto>, ErrorResponse>
 }

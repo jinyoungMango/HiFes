@@ -73,7 +73,6 @@ interface ApiService {
 
     @GET("{normalUserId}/participate-festivals")//티켓 조회
     suspend fun getParticipateFestival(
-        @Path("normalUserId") normalUserId: String,
-        @Path("festivalId") festivalId: Int
-    ): NetworkResponse<ParticipatedFestDto, ErrorResponse>
+        @Path("normalUserId") normalUserId: String
+    ): NetworkResponse<List<ParticipatedFestDto>, ErrorResponse>
 }
