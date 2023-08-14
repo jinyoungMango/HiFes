@@ -8,6 +8,7 @@ import com.ssafy.hifes.data.model.MarkerDto
 import com.ssafy.hifes.data.model.OrganizedFestivalDto
 import com.ssafy.hifes.data.model.ParticipatedFestDto
 import com.ssafy.hifes.data.model.SharedPicDto
+import com.ssafy.hifes.data.model.StampListDto
 import com.ssafy.hifes.util.network.NetworkResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -77,4 +78,10 @@ interface ApiService {
     suspend fun getParticipateFestival(
         @Path("normalUserId") normalUserId: String
     ): NetworkResponse<List<ParticipatedFestDto>, ErrorResponse>
+
+    @GET("{normalUserId}/{festivalId}/complete-missions")
+    suspend fun getParticipatedStampList(
+        @Path("normalUserId") normalUserId: String,
+        @Path("festivalId") festivalId: Int
+    ): NetworkResponse<StampListDto, ErrorResponse>
 }
