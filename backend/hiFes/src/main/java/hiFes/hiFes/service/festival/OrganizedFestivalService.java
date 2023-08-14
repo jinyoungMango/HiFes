@@ -134,8 +134,10 @@ public class OrganizedFestivalService {
     public OrganizedFestivalDetailResponse findById(long id){
         OrganizedFestival organizedFestival = organizedFestivalRepository.findById(id)
                 .orElseThrow(()->new IllegalArgumentException("not found festival: "+ id));
-        float avgRating = organizedFestivalRepository.getAverageRatingByOrganizedFestival(id);
-
+        Float avgRating = organizedFestivalRepository.getAverageRatingByOrganizedFestival(id);
+        if(avgRating == null){
+            avgRating = 0f;
+        }
         return new OrganizedFestivalDetailResponse(organizedFestival,avgRating);
     }
 
