@@ -26,13 +26,15 @@ public class FCMService {
     }
 
     private String getAccessToken() throws IOException{
+
+        System.out.println("accessToken Service ------------------------------------------");
         GoogleCredentials googleCredentials = GoogleCredentials
                 .fromStream(new ClassPathResource(FIREBASE_PATH).getInputStream())
                 .createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
 
         googleCredentials.refreshIfExpired();
+        System.out.println(FIREBASE_PATH + " **************************************************");
 
-        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
         return googleCredentials.getAccessToken().getTokenValue();
     }
