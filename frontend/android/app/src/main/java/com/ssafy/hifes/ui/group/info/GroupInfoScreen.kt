@@ -1,5 +1,6 @@
 package com.ssafy.hifes.ui.group.info
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -11,15 +12,16 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.ssafy.hifes.ui.common.top.TopWithBack
 import com.ssafy.hifes.ui.group.GroupViewModel
 import com.ssafy.hifes.ui.group.info.chat.GroupChatScreen
@@ -28,8 +30,22 @@ import com.ssafy.hifes.ui.group.info.picture.GroupPictureScreen
 import com.ssafy.hifes.ui.theme.PrimaryPink
 
 @Composable
-fun GroupInfoScreen(navController: NavController, viewModel: GroupViewModel) {
+fun GroupInfoScreen(
+    navController: NavController,
+    viewModel: GroupViewModel
+) {
+    var context = LocalContext.current
     var selectedTab by remember { mutableStateOf(0) }
+    val imageErrMsg = viewModel.errorMsgGroupImages.observeAsState()
+    val detailErrMsg = viewModel.errorMsgGroupDetail.observeAsState()
+
+    imageErrMsg.value?.getContentIfNotHandled()?.let {
+        Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+    }
+    detailErrMsg.value?.getContentIfNotHandled()?.let {
+        Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+    }
+
     var title = if (selectedTab == 0) "모임 상세"
     else if (selectedTab == 1) "모임 사진"
     else "모임 채팅"
@@ -71,5 +87,5 @@ fun GroupInfoScreen(navController: NavController, viewModel: GroupViewModel) {
 @Preview
 @Composable
 fun GroupInfoScreenPrev() {
-    GroupInfoScreen(rememberNavController(), GroupViewModel())
+    // GroupInfoScreen(rememberNavController(), GroupViewModel())
 }

@@ -2,6 +2,7 @@ package hiFes.hiFes.dto.festival;
 
 
 import hiFes.hiFes.domain.festival.OrganizedFestival;
+import hiFes.hiFes.domain.user.HostUser;
 import lombok.Getter;
 
 import java.math.BigDecimal;
@@ -18,9 +19,11 @@ public class OrganizedFestivalResponse {
     private final LocalDate fesEndDate;
     private final BigDecimal fesLatitude;
     private final BigDecimal fesLongitude;
+    private final Long festivalId;
 
 
     public OrganizedFestivalResponse(OrganizedFestival organizedFestival){
+        this.festivalId = organizedFestival.getFestivalId();
         this.fesTitle = organizedFestival.getFesTitle();
         this.fesAddress = organizedFestival.getFesAddress();
         this.fesEndDate = organizedFestival.getFesEndDate();
@@ -29,5 +32,6 @@ public class OrganizedFestivalResponse {
         this.fesOutline = organizedFestival.getFesOutline();
         this.fesPosterPath = organizedFestival.getFesPosterPath();
         this.fesStartDate = organizedFestival.getFesStartDate();
+
     }
 }

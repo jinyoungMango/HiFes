@@ -49,7 +49,7 @@ fun HifesNavGraph(
     navController: NavHostController = rememberNavController(),
     mainViewModel: MainViewModel,
     startDestination: String = HifesDestinations.LOGIN_ROUTE
-//    startDestination: String = NavigationItem.Map.screenRoute
+//    startDestination: String = NavigationItem.Home.screenRoute
 ) {
     val uri = "hifes://main"
 
@@ -71,7 +71,7 @@ fun HifesNavGraph(
             MapScreen(navController, mainViewModel, detailViewModel)
         }
         composable(NavigationItem.Group.screenRoute) {
-            GroupMainScreen(navController, groupViewModel)
+            GroupMainScreen(navController, groupViewModel, mainViewModel)
         }
         composable(
             route = HifesDestinations.LOGIN_ROUTE
@@ -86,7 +86,11 @@ fun HifesNavGraph(
         composable(
             route = HifesDestinations.FESTIVAL_DETAIL
         ) {
-            FestivalDetail(navController = navController, viewModel = mainViewModel)
+            FestivalDetail(
+                navController = navController,
+                viewModel = mainViewModel,
+                detailViewModel = detailViewModel
+            )
         }
         composable(
             route = HifesDestinations.PARTICIPATED_FEST_ROUTE
@@ -112,7 +116,11 @@ fun HifesNavGraph(
         composable(
             route = HifesDestinations.GROUP_CREATE
         ) {
-            GroupCreateScreen(navController = navController)
+            GroupCreateScreen(
+                navController = navController,
+                viewModel = groupViewModel,
+                mainViewModel = mainViewModel
+            )
         }
         composable(
             route = HifesDestinations.POST_WRITE_ROUTE
@@ -122,7 +130,10 @@ fun HifesNavGraph(
         composable(
             route = HifesDestinations.GROUP_DETAIL
         ) {
-            GroupInfoScreen(navController = navController, viewModel = groupViewModel)
+            GroupInfoScreen(
+                navController = navController,
+                viewModel = groupViewModel
+            )
         }
         composable(
             route = HifesDestinations.STAMP_PROOF,

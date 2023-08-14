@@ -17,6 +17,7 @@ import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api")
 public class NormalUserController {
     private final NormalUserService normalUserService;
     private final NormalUserRepository normalUserRepository;
@@ -26,7 +27,6 @@ public class NormalUserController {
     @PostMapping("normal/signUp")
     public JsonObject signUp(@RequestPart(value = "normalUserSignUpDto") NormalUserSignUpDto normalUserSignUpDto, @RequestPart(value = "image")  MultipartFile image) throws Exception{
         String accessToken = normalUserSignUpDto.getAccessToken();
-
         Map<String, Object> context =  normalUserService.searchKakaoUser(accessToken);
 
         normalUserService.signUp(normalUserSignUpDto, context, image);
@@ -70,7 +70,7 @@ public class NormalUserController {
     @PostMapping("normal/fcmSave")
     public Boolean fcmSave(HttpServletRequest request, String fcmToken){
         try{
-            String accessToken = jwtService.extractAccessToken(request).orElse("");
+            String accessToken = request.getHeader("accessToken");
             String email = jwtService.extractEmail(accessToken).orElse("");
             NormalUser user = normalUserService.getByEmail(email);
 
@@ -88,7 +88,7 @@ public class NormalUserController {
     @ResponseBody
     @PostMapping("normal/myPage")
     public JsonObject myPage(HttpServletRequest request){
-        String accessToken = jwtService.extractAccessToken(request).orElse("");
+        String accessToken = request.getHeader("accessToken");
         String email = jwtService.extractEmail(accessToken).orElse("");
         NormalUser user = normalUserService.getByEmail(email);
         JsonObject info =new JsonObject();

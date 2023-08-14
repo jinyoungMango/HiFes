@@ -10,23 +10,22 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
+@RequestMapping("/api")
 @Tag(name="스탬프 달성 관련 컨트롤러")
 public class CompletedStampMissionApiController {
 
     @Autowired
     private CompletedStampMissionService completedStampMissionService;
-    @PostMapping("api/{normalUserId}/complete-mission/{missionId}")
+    @PostMapping("/{normalUserId}/complete-mission/{missionId}")
     @Operation(summary = "특정 회원이 스탬프 미션 달성")
-    public CompletedStampMission saveCompletedStampMission(@PathVariable Long normalUserId, @PathVariable Long missionId) {
+    @CrossOrigin("*")
+    public Boolean saveCompletedStampMission(@PathVariable Long normalUserId, @PathVariable Long missionId) {
         return completedStampMissionService.saveCompletedStampMission(normalUserId,missionId);
     }
 
@@ -40,7 +39,8 @@ public class CompletedStampMissionApiController {
 //        return ResponseEntity.ok()
 //                .body(completedStampMissionResponses);
 //    }
-        @GetMapping("api/{normalUserId}/{festivalId}/complete-missions")
+
+        @GetMapping("/{normalUserId}/{festivalId}/complete-missions")
         @Operation(summary = "특정 회원이 행사에서 달성한 미션 목록 조회")
         public ResponseEntity<CompletedStampMissionResponse> findFesMissionByNormalUser(@PathVariable Long normalUserId, @PathVariable Long festivalId) {
             List<Long> completedMissionIds = completedStampMissionService.getCompletedMissionIdsByUserIdAndFestivalId(normalUserId, festivalId);
