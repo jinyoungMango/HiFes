@@ -1,7 +1,6 @@
 package com.ssafy.hifes.ui.group.create
 
 import android.net.Uri
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -21,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -42,6 +42,8 @@ import com.ssafy.hifes.ui.main.MainViewModel
 import com.ssafy.hifes.ui.theme.PrimaryPink
 import com.ssafy.hifes.ui.theme.pretendardFamily
 
+private const val TAG = "GroupCreateScreen"
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GroupCreateScreen(
@@ -61,10 +63,14 @@ fun GroupCreateScreen(
 
     errMsg.value?.getContentIfNotHandled()?.let {
         Toast.makeText(context, it, Toast.LENGTH_LONG).show()
-        if(groupCreateState.value == GroupCreateStateType.SUCCESS){
+    }
+    LaunchedEffect(groupCreateState.value) {
+        if (groupCreateState.value == GroupCreateStateType.SUCCESS) {
+            viewModel.initCreateState()
             navController.popBackStack()
         }
     }
+
 
     Scaffold(
         topBar = { TopWithBack(navController, title = "모임 생성", onClick = {}) }
