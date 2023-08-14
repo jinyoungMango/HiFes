@@ -10,8 +10,4 @@ interface ProofRepository {
         @Path("normalUserId") normalUserId: String,
         @Path("festivalId") festivalId: Int
     ): NetworkResponse<Boolean, ErrorResponse>
-
-    suspend fun getParticipateFestival(
-        @Path("normalUserId") normalUserId: String
-    ): NetworkResponse<List<ParticipatedFestDto>, ErrorResponse>
 }

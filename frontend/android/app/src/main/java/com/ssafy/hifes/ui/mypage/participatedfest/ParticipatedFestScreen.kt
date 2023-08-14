@@ -1,4 +1,4 @@
-package com.ssafy.hifes.ui.participatedfest
+package com.ssafy.hifes.ui.mypage.participatedfest
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
@@ -36,20 +36,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.ssafy.hifes.R
 import com.ssafy.hifes.data.model.StampMissionDto
 import com.ssafy.hifes.ui.common.top.TopWithBack
+import com.ssafy.hifes.ui.mypage.MyPageViewModel
 import com.ssafy.hifes.ui.theme.LightGrey
 import com.ssafy.hifes.util.CommonUtils
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ParticipatedFestScreen(
     navController: NavController,
-    viewModel: ParticipatedFestViewModel
+    viewModel: MyPageViewModel
 ) {
     var context = LocalContext.current
     var participatedFest = viewModel.participatedFestival.observeAsState()

@@ -11,7 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -35,9 +34,9 @@ import com.ssafy.hifes.ui.login.LoginScreen
 import com.ssafy.hifes.ui.login.LoginViewModel
 import com.ssafy.hifes.ui.main.MainViewModel
 import com.ssafy.hifes.ui.map.MapScreen
-import com.ssafy.hifes.ui.mypage.MyPageScreen
-import com.ssafy.hifes.ui.participatedfest.ParticipatedFestScreen
-import com.ssafy.hifes.ui.participatedfest.ParticipatedFestViewModel
+import com.ssafy.hifes.ui.mypage.main.MyPageScreen
+import com.ssafy.hifes.ui.mypage.participatedfest.ParticipatedFestScreen
+import com.ssafy.hifes.ui.mypage.MyPageViewModel
 import com.ssafy.hifes.ui.proof.ProofScreen
 import com.ssafy.hifes.ui.proof.ProofViewModel
 
@@ -60,7 +59,7 @@ fun HifesNavGraph(
     val proofViewModel: ProofViewModel = hiltViewModel()
     val loginViewModel: LoginViewModel = hiltViewModel()
     val chatViewModel: ChatViewModel = hiltViewModel()
-    val participatedFestViewModel: ParticipatedFestViewModel = hiltViewModel()
+    val participatedFestViewModel: MyPageViewModel = hiltViewModel()
 
     NavHost(
         navController = navController,

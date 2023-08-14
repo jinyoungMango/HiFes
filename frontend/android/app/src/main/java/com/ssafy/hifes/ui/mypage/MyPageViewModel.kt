@@ -1,4 +1,4 @@
-package com.ssafy.hifes.ui.participatedfest
+package com.ssafy.hifes.ui.mypage
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,17 +7,15 @@ import androidx.lifecycle.viewModelScope
 import com.ssafy.hifes.data.local.AppPreferences
 import com.ssafy.hifes.data.model.Event
 import com.ssafy.hifes.data.model.ParticipatedFestDto
-import com.ssafy.hifes.data.repository.proof.ProofRepository
+import com.ssafy.hifes.data.repository.mypage.MyPageRepository
 import com.ssafy.hifes.util.network.NetworkResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-private const val TAG = "ParticipatedFestViewMod"
-
 @HiltViewModel
-class ParticipatedFestViewModel @Inject constructor(
-    private val repository: ProofRepository
+class MyPageViewModel @Inject constructor(
+    private val repository: MyPageRepository
 ) : ViewModel() {
     private val _errMsgParticipatedFestList = MutableLiveData<Event<String>>()
     val errMsgParticipatedFestList: LiveData<Event<String>> = _errMsgParticipatedFestList

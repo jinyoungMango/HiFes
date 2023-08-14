@@ -15,11 +15,4 @@ class ProofRepositoryImpl @Inject constructor(
     ): NetworkResponse<Boolean, ErrorResponse> {
         return apiService.participateFestival(normalUserId, festivalId)
     }
-
-    override suspend fun getParticipateFestival(
-        normalUserId: String
-    ): NetworkResponse<List<ParticipatedFestDto>, ErrorResponse> {
-        return apiService.getParticipateFestival(normalUserId)
-    }
-
 }

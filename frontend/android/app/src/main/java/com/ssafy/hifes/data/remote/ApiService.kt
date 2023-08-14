@@ -71,6 +71,8 @@ interface ApiService {
         @Path("festivalId") festivalId: Int
     ): NetworkResponse<Boolean, ErrorResponse>
 
+
+    //MyPage
     @GET("{normalUserId}/participate-festivals")//티켓 조회
     suspend fun getParticipateFestival(
         @Path("normalUserId") normalUserId: String
