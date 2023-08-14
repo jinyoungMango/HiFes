@@ -48,6 +48,7 @@ public class FCMController {
 
             if (normalUser != null) {
                 fcmTokens.add(normalUser.getFirebaseToken());
+
                 fcmService.sendMessageTo(normalUser.getFirebaseToken(), fcmForUserDto.getTitle(), fcmForUserDto.getDetail());
             }
         }
@@ -65,6 +66,8 @@ public class FCMController {
         String email = jwtService.extractEmail(accessToken).orElse("");
         NormalUser user = normalUserService.getByEmail(email);
         Group group = groupRepository.getById(fcmForGroupDto.getGroupId());
+
+        System.out.println(fcmForGroupDto.getGroupId() + fcmForGroupDto.getDescription() + fcmForGroupDto.getLongitude()+ fcmForGroupDto.getLatitude() + fcmForGroupDto.getLocation());
 
         if (!(joinedGroupRepository.findByNormalUserAndGroup(user, group).getIsLeader())){
             return ResponseEntity.ok("모임장이 아닙니다.");
