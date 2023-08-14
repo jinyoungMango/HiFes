@@ -48,6 +48,7 @@ public class FCMController {
 
             if (normalUser != null) {
                 fcmTokens.add(normalUser.getFirebaseToken());
+
                 fcmService.sendMessageTo(normalUser.getFirebaseToken(), fcmForUserDto.getTitle(), fcmForUserDto.getDetail());
             }
         }
