@@ -131,9 +131,12 @@ public class OrganizedFestivalService {
         return organizedFestivalRepository.findByHostUser_Id(hostId);
     }
 
-    public OrganizedFestival findById(long id){
-        return organizedFestivalRepository.findById(id)
-                .orElseThrow(()-> new IllegalArgumentException("not found: " + id));
+    public OrganizedFestivalDetailResponse findById(long id){
+        OrganizedFestival organizedFestival = organizedFestivalRepository.findById(id)
+                .orElseThrow(()->new IllegalArgumentException("not found festival: "+ id));
+        float avgRating = organizedFestivalRepository.getAverageRatingByOrganizedFestival(id);
+
+        return new OrganizedFestivalDetailResponse(organizedFestival,avgRating);
     }
 
     public List<ARItem> findARItemByFestivalId(long festivalId){
