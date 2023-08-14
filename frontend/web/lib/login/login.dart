@@ -107,7 +107,7 @@ class LoginPage extends StatelessWidget {
       _mainController.kRefreshToken.value = token.refreshToken!;
 
       // 여기서 토큰을 서버에 넘긴다
-      var url = dotenv.env['YOUR_SERVER_URL']! + 'host/login';
+      var url = dotenv.env['YOUR_SERVER_URL']! + 'api/host/login';
 
       var response = await dio.post(
         url,
