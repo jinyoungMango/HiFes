@@ -4,6 +4,7 @@ import hiFes.hiFes.domain.festival.OrganizedFestival;
 import hiFes.hiFes.dto.festival.OrganizedFestivalResponse;
 import hiFes.hiFes.dto.postDto.PostCreateDto;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -49,25 +50,9 @@ public class Post extends BaseEntity {
 
     private int views;
 
-//    @OneToMany(
-//            mappedBy = "post",
-//            cascade = {CascadeType.PERSIST,CascadeType.REMOVE},
-//            orphanRemoval = true
-//    )
-//    private List<Picture> picture = new ArrayList<>();
     private Float rating;
 
-
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "host_user_id")
-//    @OnDelete(action = OnDeleteAction.CASCADE)
-//    private HostUser hostUser;
-//
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "normal_user_id")
-//    @OnDelete(action = OnDeleteAction.CASCADE)
-//    private NormalUser normalUser;
-
+    private String imagePath;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.MERGE, orphanRemoval = true)
     private List<Comment> comments;
@@ -86,8 +71,9 @@ public class Post extends BaseEntity {
                 .content(postCreateDto.getContent())
                 .postType(postCreateDto.getPostType())
                 .isHidden(postCreateDto.getIsHidden())
-                .organizedFestival(organizedFestival)
                 .rating(postCreateDto.getRating())
+                .imagePath(postCreateDto.getImagePath())
+                .organizedFestival(organizedFestival)
                 .build();
     }
 
