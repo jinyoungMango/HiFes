@@ -18,6 +18,7 @@ import com.ssafy.hifes.ui.detail.FestivalDetail
 import com.ssafy.hifes.ui.group.GroupViewModel
 import com.ssafy.hifes.ui.group.create.GroupCreateScreen
 import com.ssafy.hifes.ui.group.info.GroupInfoScreen
+import com.ssafy.hifes.ui.group.info.chat.ChatViewModel
 import com.ssafy.hifes.ui.group.main.GroupMainScreen
 import com.ssafy.hifes.ui.home.HomeScreen
 import com.ssafy.hifes.ui.login.LoginDetailScreen
@@ -42,6 +43,7 @@ fun HifesNavGraph(
     val groupViewModel: GroupViewModel = viewModel()
     val detailViewModel: DetailViewModel = viewModel()
     val loginViewModel: LoginViewModel = viewModel()
+    val chatViewModel: ChatViewModel = viewModel()
 
     NavHost(
         navController = navController,
@@ -114,10 +116,7 @@ fun HifesNavGraph(
         composable(
             route = HifesDestinations.GROUP_DETAIL
         ) {
-            GroupInfoScreen(
-                navController = navController,
-                viewModel = groupViewModel
-            )
+            GroupInfoScreen(navController = navController, groupViewModel = groupViewModel, chatViewModel = chatViewModel)
         }
     }
 }
