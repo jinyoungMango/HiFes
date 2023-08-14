@@ -3,6 +3,7 @@ package com.ssafy.hifes.util
 import com.ssafy.hifes.data.model.DateDto
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 
 object CommonUtils {
     fun formatDateToString(date: Date): String {
@@ -17,5 +18,10 @@ object CommonUtils {
 
     fun formatFestivalDateToString(festivalDate: DateDto): String {
         return "${festivalDate.year}. ${festivalDate.month}. ${festivalDate.day}"
+    }
+
+    fun formatLongToTime(time: Long): String {
+        val dateFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+        return dateFormat.format(Date(time))
     }
 }
