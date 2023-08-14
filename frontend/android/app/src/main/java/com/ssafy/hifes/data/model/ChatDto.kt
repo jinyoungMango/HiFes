@@ -5,11 +5,11 @@ data class ChatData(
     val messages: List<MessageData>
 )
 data class UserData(
-    val id: String?,
-    val nickname: String?
+    val nickname: String?,
+    val id: String?
 )
 data class MessageData(
     val content: String,
-    val id: UserData,
+    val userData: UserData,
     val time: Long
 )

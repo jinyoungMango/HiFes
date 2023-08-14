@@ -71,5 +71,6 @@
 
     <!-- Group -->
     <string name="group_app_bar">제목 · 해시태그로 검색</string>
+    <string name="group_chat">메세지를 작성해주세요</string>
 
 </resources>
