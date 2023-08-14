@@ -10,6 +10,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -26,6 +27,7 @@ import com.ssafy.hifes.ui.detail.FestivalDetail
 import com.ssafy.hifes.ui.group.GroupViewModel
 import com.ssafy.hifes.ui.group.create.GroupCreateScreen
 import com.ssafy.hifes.ui.group.info.GroupInfoScreen
+import com.ssafy.hifes.ui.group.info.chat.ChatViewModel
 import com.ssafy.hifes.ui.group.main.GroupMainScreen
 import com.ssafy.hifes.ui.home.HomeScreen
 import com.ssafy.hifes.ui.login.LoginDetailScreen
@@ -51,11 +53,12 @@ fun HifesNavGraph(
 ) {
     val uri = "hifes://main"
 
-    val boardViewModel: BoardViewModel = viewModel()
-    val groupViewModel: GroupViewModel = viewModel()
-    val detailViewModel: DetailViewModel = viewModel()
-    val proofViewModel: ProofViewModel = viewModel()
-    val loginViewModel: LoginViewModel = viewModel()
+    val boardViewModel: BoardViewModel = hiltViewModel()
+    val groupViewModel: GroupViewModel = hiltViewModel()
+    val detailViewModel: DetailViewModel = hiltViewModel()
+    val proofViewModel: ProofViewModel = hiltViewModel()
+    val loginViewModel: LoginViewModel = hiltViewModel()
+    val chatViewModel: ChatViewModel = hiltViewModel()
 
     NavHost(
         navController = navController,
@@ -128,10 +131,7 @@ fun HifesNavGraph(
         composable(
             route = HifesDestinations.GROUP_DETAIL
         ) {
-            GroupInfoScreen(
-                navController = navController,
-                viewModel = groupViewModel
-            )
+            GroupInfoScreen(navController = navController, groupViewModel = groupViewModel, chatViewModel = chatViewModel)
         }
         composable(
             route = HifesDestinations.STAMP_PROOF,
