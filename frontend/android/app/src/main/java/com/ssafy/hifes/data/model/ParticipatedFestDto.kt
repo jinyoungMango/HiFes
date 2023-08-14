@@ -6,6 +6,6 @@ data class ParticipatedFestDto(
     var normalUserId: Int,
     var isCompleted: Boolean,
     var fesTitle: String,
-    var countMisson: Int,
+    var countMission: Int,
     var participateTime: CreatedAtDto
 )
