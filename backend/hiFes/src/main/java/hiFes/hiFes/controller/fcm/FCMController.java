@@ -67,6 +67,8 @@ public class FCMController {
         NormalUser user = normalUserService.getByEmail(email);
         Group group = groupRepository.getById(fcmForGroupDto.getGroupId());
 
+        System.out.println(fcmForGroupDto.getGroupId() + fcmForGroupDto.getDescription() + fcmForGroupDto.getLongitude()+ fcmForGroupDto.getLatitude() + fcmForGroupDto.getLocation());
+
         if (!(joinedGroupRepository.findByNormalUserAndGroup(user, group).getIsLeader())){
             return ResponseEntity.ok("모임장이 아닙니다.");
         }
