@@ -10,6 +10,8 @@ import hiFes.hiFes.repository.festival.ParticipatedFesRepository;
 import hiFes.hiFes.repository.group.GroupRepository;
 import hiFes.hiFes.repository.group.JoinedGroupRepository;
 import hiFes.hiFes.service.fcm.FCMService;
+import hiFes.hiFes.service.user.JwtService;
+import hiFes.hiFes.service.user.NormalUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -29,15 +31,9 @@ public class FCMController {
     private final ParticipatedFesRepository participatedFesRepository;
     private final JoinedGroupRepository joinedGroupRepository;
     private final GroupRepository groupRepository;
+    private final JwtService jwtService;
+    private final NormalUserService normalUserService;
 
-    @PostMapping("fcm/test")
-    public ResponseEntity<String> sendFCMToUser() throws IOException {
-        String tmpToken = "cVzmL784TiuwCMgvo236SA:APA91bG6atCqFpfv7735AxfoC1u2zSg-GEUicKgKpS76zhLzoNL2maM1z07CJRgDYH7DI9LQwxrP_j3WxBwh68-89Evm0n3K5H_y53jxTwQ227j2L_a34rEWHKltA2Q8h4jzpEA8w7-g";
-
-        fcmService.sendMessageTo(tmpToken, "test Title", "test content");
-
-        return ResponseEntity.ok("send success");
-    }
 
 
     @Operation(summary = "주최자가 참여자 전원에게 보냅니다.", description = "필요값 : festivalId, title, detail")
@@ -64,12 +60,20 @@ public class FCMController {
     @Operation(summary = "그룹 집합 알림을 보냅니다.", description = "필요값 : groupId, location, description, latitude, longitude")
     @CrossOrigin(origins = "*")
     @PostMapping("fcm/for_group")
-    public ResponseEntity<String> sendGroupCall(@RequestBody FCMForGroupDto fcmForGroupDto) throws  IOException{
+    public ResponseEntity<String> sendGroupCall(HttpServletRequest request, @RequestBody FCMForGroupDto fcmForGroupDto) throws  IOException{
+        String accessToken = request.getHeader("accessToken");
+        String email = jwtService.extractEmail(accessToken).orElse("");
+        NormalUser user = normalUserService.getByEmail(email);
+        Group group = groupRepository.getById(fcmForGroupDto.getGroupId());
+
+        if (!(joinedGroupRepository.findByNormalUserAndGroup(user, group).getIsLeader())){
+            return ResponseEntity.ok("모임장이 아닙니다.");
+        }
+
         List<String> fcmTokens = new ArrayList<>();
         List<JoinedGroup> joinedGroupList = joinedGroupRepository.findByGroupId(fcmForGroupDto.getGroupId());
 
         // 모임 DB에 저장
-        Group group = groupRepository.getById(fcmForGroupDto.getGroupId());
         group.setGetterLatitude(fcmForGroupDto.getLatitude());
         group.setGetterLongitude(fcmForGroupDto.getLongitude());
         group.setGetterOutline(fcmForGroupDto.getDescription());
