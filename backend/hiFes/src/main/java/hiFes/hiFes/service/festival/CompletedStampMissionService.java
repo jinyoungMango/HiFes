@@ -1,6 +1,7 @@
 package hiFes.hiFes.service.festival;
 
 import hiFes.hiFes.domain.festival.CompletedStampMission;
+import hiFes.hiFes.domain.festival.OrganizedFestival;
 import hiFes.hiFes.domain.festival.ParticipatedFes;
 import hiFes.hiFes.domain.festival.StampMission;
 import hiFes.hiFes.domain.user.NormalUser;
@@ -15,6 +16,7 @@ import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -56,9 +58,9 @@ public class CompletedStampMissionService {
         CompletedStampMission completedStampMission = new CompletedStampMission();
         completedStampMission.setNormalUser(normalUser);
         completedStampMission.setStampMission(stampMission);
+        OrganizedFestival organizedFestival = stampMission.getOrganizedFestival();
         Long festivalId = stampMission.getOrganizedFestival().getFestivalId();
 
-        ParticipatedFes participatedFes = participatedFesRepository.findByNormalUser_IdAndOrganizedFestival_FestivalId(normalUserId,festivalId);
 
         try {
             completedStampMissionRepository.save(completedStampMission);
@@ -68,11 +70,29 @@ public class CompletedStampMissionService {
             flag = false;
         }
         //스탬프 찍으면서 완료 여부 계속 업데이트.
+
+        ParticipatedFes participatedFes = participatedFesRepository.findByNormalUser_IdAndOrganizedFestival_FestivalId(normalUserId,festivalId);
         Long countMission = completedStampMissionRepository.countCompletedStampMissionByNormalUser_idAndOrganizedFestival_FestivalId(normalUserId, festivalId);
         Long festivalMission = stampMissionRepository.countStampMissionsByFestivalId(festivalId);
         Boolean isCompleted = Objects.equals(countMission, festivalMission);
-        participatedFes.setIsCompleted(isCompleted);
-        participatedFesRepository.save(participatedFes);
+        if (participatedFes == null){
+            //행사 참여 기록이 없으면 새로 테이블 넣어주기.
+            ParticipatedFes newParticipatedFes = ParticipatedFes.builder()
+                    .participateTime((LocalDateTime.now()))
+                    .isCompleted(isCompleted)
+                    .countMission(festivalMission)
+                    .build();
+            newParticipatedFes.setNormalUser(normalUser);
+            newParticipatedFes.setOrganizedFestival(organizedFestival);
+            participatedFesRepository.save(newParticipatedFes);
+
+
+        } else{
+            participatedFes.setIsCompleted(isCompleted);
+            participatedFesRepository.save(participatedFes);
+        }
+
+
 
         return flag;
 
