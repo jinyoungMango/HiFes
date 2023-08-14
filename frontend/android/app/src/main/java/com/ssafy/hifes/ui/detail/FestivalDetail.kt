@@ -3,7 +3,9 @@ package com.ssafy.hifes.ui.detail
 import NavigationItem
 import android.content.ActivityNotFoundException
 import android.content.Context
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -82,7 +84,7 @@ import com.ssafy.hifes.util.CommonUtils
 
 private const val TAG = "FestivalDetail_하이페스"
 
-@OptIn(ExperimentalNaverMapApi::class)
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun FestivalDetail(
     navController: NavHostController,
@@ -90,6 +92,7 @@ fun FestivalDetail(
     detailViewModel: DetailViewModel
 ) {
     val festivalInfo = viewModel.festivalInfo.observeAsState()
+    val festivalTimeTable = detailViewModel.timeTableList.observeAsState()
     val context = LocalContext.current
     if (festivalInfo.value != null) {
         val festivalData = festivalInfo.value
@@ -98,6 +101,7 @@ fun FestivalDetail(
                 .verticalScroll(rememberScrollState())
         ) {
             if (festivalData != null) {
+                detailViewModel.getTimeTableList(festivalData.festivalId)
                 Box {
                     AsyncImage(
                         model = festivalData.fesPosterPath,
@@ -178,6 +182,8 @@ fun FestivalDetail(
                             content1 = CommonUtils.formatFestivalDateToString(festivalData.fesStartDate),
                             content2 = CommonUtils.formatFestivalDateToString(festivalData.fesEndDate)
                         )
+                        Spacer(modifier = Modifier.size(12.dp))
+                        festivalTimeTable.value?.let { ScheduleDisplay(it) }
                         Spacer(modifier = Modifier.size(12.dp))
                         DetailCommonContent(title = "장소", address = "주소")
                         Spacer(modifier = Modifier.size(12.dp))
