@@ -6,6 +6,7 @@ import com.ssafy.hifes.data.model.GroupDetailDto
 import com.ssafy.hifes.data.model.LoginResponse
 import com.ssafy.hifes.data.model.MarkerDto
 import com.ssafy.hifes.data.model.OrganizedFestivalDto
+import com.ssafy.hifes.data.model.ParticipatedFestDto
 import com.ssafy.hifes.data.model.SharedPicDto
 import com.ssafy.hifes.util.network.NetworkResponse
 import okhttp3.MultipartBody
@@ -62,4 +63,17 @@ interface ApiService {
         @Part("groupCreateDto") groupCreateDto: RequestBody,
         @Part image: MultipartBody.Part
     ): NetworkResponse<String, ErrorResponse>
+
+    //Proof
+    @POST("{normalUserId}/participate-festival/{festivalId}") //티켓 발급(행사 참여 인증)
+    suspend fun participateFestival(
+        @Path("normalUserId") normalUserId: String,
+        @Path("festivalId") festivalId: Int
+    ): NetworkResponse<Boolean, ErrorResponse>
+
+    @GET("{normalUserId}/participate-festivals")//티켓 조회
+    suspend fun getParticipateFestival(
+        @Path("normalUserId") normalUserId: String,
+        @Path("festivalId") festivalId: Int
+    ): NetworkResponse<ParticipatedFestDto, ErrorResponse>
 }

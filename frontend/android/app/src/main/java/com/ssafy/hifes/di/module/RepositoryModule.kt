@@ -6,6 +6,8 @@ import com.ssafy.hifes.data.repository.group.GroupRepository
 import com.ssafy.hifes.data.repository.group.GroupRepositoryImpl
 import com.ssafy.hifes.data.repository.main.MainRepository
 import com.ssafy.hifes.data.repository.main.MainRepositoryImpl
+import com.ssafy.hifes.data.repository.proof.ProofRepository
+import com.ssafy.hifes.data.repository.proof.ProofRepositoryImpl
 import com.ssafy.hifes.data.repository.user.UserRepository
 import com.ssafy.hifes.data.repository.user.UserRepositoryImpl
 import dagger.Binds
@@ -35,4 +37,9 @@ abstract class RepositoryModule {
     abstract fun bindsGroupRepository(
         repositoryImpl: GroupRepositoryImpl
     ): GroupRepository
+
+    @Binds
+    abstract fun bindsProofRepository(
+        repositoryImpl: ProofRepositoryImpl
+    ): ProofRepository
 }
