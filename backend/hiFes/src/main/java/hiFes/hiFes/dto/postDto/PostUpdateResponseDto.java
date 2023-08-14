@@ -26,5 +26,8 @@ public class PostUpdateResponseDto {
         this.title = post.getTitle();
         this.content = post.getContent();
         this.postType = post.getPostType();
+        this.rating = post.getRating();
+        this.isHidden = post.getIsHidden();
+        this.createdBy = post.getCreatedBy();
     }
 }
