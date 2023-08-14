@@ -37,6 +37,7 @@ public class NormalUserController {
         JsonObject loginSuccess = normalUserService.login((String) context.get("email"));
         loginSuccess.addProperty("result", true);
         loginSuccess.addProperty("id",  normalUserService.getByEmail((String) context.get("email")).getId());
+        loginSuccess.addProperty("nickname", normalUserService.getByEmail((String) context.get("email")).getNickname());
         return loginSuccess;
 
     }
@@ -55,6 +56,7 @@ public class NormalUserController {
             JsonObject loginSuccess = normalUserService.login((String) context.get("email"));
             loginSuccess.addProperty("id",  String.valueOf(normalUserService.getByEmail((String) context.get("email")).getId()));
             loginSuccess.addProperty("result", true);
+            loginSuccess.addProperty("nickname", normalUserService.getByEmail((String) context.get("email")).getNickname());
 
             return loginSuccess;
         }
@@ -64,6 +66,7 @@ public class NormalUserController {
         loginFail.addProperty("refreshToken", "");
         loginFail.addProperty("result", false);
         loginFail.addProperty("id", "");
+        loginFail.addProperty("nickname", "");
         return loginFail;
 
     }
