@@ -38,7 +38,7 @@ fun GroupMainScreen(
     var context = LocalContext.current
     var groupScreenType = mainViewModel.groupScreenType.observeAsState()
     val groupList = viewModel.groupList.observeAsState()
-    val errMsg = viewModel.errorMsg.observeAsState()
+    val errMsg = viewModel.errorMsgGroupList.observeAsState()
     val selectedFestival = mainViewModel.selectedFestival
 
     LaunchedEffect(groupScreenType) {
