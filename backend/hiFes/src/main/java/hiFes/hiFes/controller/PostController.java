@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
@@ -27,21 +28,21 @@ import java.util.Objects;
 public class PostController {
 
     private final PostService postService;
-    private final NormalUserService normalUserService;
-    private final HostUserService hostUserService;
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @PostMapping("/post/create")
     @Operation(summary = "게시글 생성, 필요 값 createdBy(Long), title(String), content(String), postType(String), " +
             "isHidden(Boolean), rating(Float), festivalId(Long), 전부 JSON 형식으로 주시면 됩니다.")
     @CrossOrigin("*")
-    public ResponseEntity<?> create(@RequestBody PostCreateDto createDto) {
-        return postService.create(createDto);
+    public ResponseEntity<?> create(@RequestPart(value = "data") PostCreateDto createDto,
+                                    @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
+        return postService.create(createDto, image);
     }
 
 
     @GetMapping(value = "/post/get/{id}")
-    @Operation(summary = "게시글 단일조회, 필요 값 postId(Long), 조회하려는 게시글의 postId 를 주시면 됩니다.")
+    @Operation(summary = "게시글 단일 조회, 필요 값 postId(Long), 조회하려는 게시글의 postId 를 주시면 됩니다.")
     @CrossOrigin("*")
     public ResponseEntity<?> postDetail(@PathVariable Long id) {
         PostDto postDto = postService.findById(id);

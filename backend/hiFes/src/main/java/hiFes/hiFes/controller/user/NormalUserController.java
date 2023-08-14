@@ -1,5 +1,7 @@
 package hiFes.hiFes.controller.user;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 import hiFes.hiFes.domain.user.NormalUser;
 import hiFes.hiFes.dto.user.NormalUserSignUpDto;
@@ -35,6 +37,7 @@ public class NormalUserController {
         JsonObject loginSuccess = normalUserService.login((String) context.get("email"));
         loginSuccess.addProperty("result", true);
         loginSuccess.addProperty("id",  normalUserService.getByEmail((String) context.get("email")).getId());
+        loginSuccess.addProperty("nickname", normalUserService.getByEmail((String) context.get("email")).getNickname());
         return loginSuccess;
 
     }
@@ -53,6 +56,7 @@ public class NormalUserController {
             JsonObject loginSuccess = normalUserService.login((String) context.get("email"));
             loginSuccess.addProperty("id",  String.valueOf(normalUserService.getByEmail((String) context.get("email")).getId()));
             loginSuccess.addProperty("result", true);
+            loginSuccess.addProperty("nickname", normalUserService.getByEmail((String) context.get("email")).getNickname());
 
             return loginSuccess;
         }
@@ -62,19 +66,25 @@ public class NormalUserController {
         loginFail.addProperty("refreshToken", "");
         loginFail.addProperty("result", false);
         loginFail.addProperty("id", "");
+        loginFail.addProperty("nickname", "");
         return loginFail;
 
     }
 
     @CrossOrigin(origins = "*")
     @PostMapping("normal/fcmSave")
-    public Boolean fcmSave(HttpServletRequest request, String fcmToken){
+    public Boolean fcmSave(HttpServletRequest request,@RequestBody String fcmTokenJson){
         try{
             String accessToken = request.getHeader("accessToken");
             String email = jwtService.extractEmail(accessToken).orElse("");
             NormalUser user = normalUserService.getByEmail(email);
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(fcmTokenJson);
+            String fcmToken = jsonNode.get("fcmToken").asText();
 
-            user.updateFCMToken(fcmToken);
+            user.setFirebaseToken(fcmToken);
+            System.out.println(fcmToken);
+            normalUserRepository.save(user);
 
             return true;
         }
