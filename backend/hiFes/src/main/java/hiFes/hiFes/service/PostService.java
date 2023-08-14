@@ -3,23 +3,26 @@ package hiFes.hiFes.service;
 import hiFes.hiFes.domain.Comment;
 import hiFes.hiFes.domain.Post;
 import hiFes.hiFes.domain.festival.OrganizedFestival;
-import hiFes.hiFes.domain.user.HostUser;
-import hiFes.hiFes.domain.user.NormalUser;
+
 import hiFes.hiFes.dto.commentDto.CommentDto;
-import hiFes.hiFes.dto.commentDto.CommentListDto;
 import hiFes.hiFes.dto.postDto.*;
+
 import hiFes.hiFes.repository.CommentRepository;
 import hiFes.hiFes.repository.PostRepository;
 import hiFes.hiFes.repository.festival.OrganizedFestivalRepository;
-import hiFes.hiFes.repository.user.HostUserRepository;
-import hiFes.hiFes.repository.user.NormalUserRepository;
+
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
+import java.io.File;
+import java.io.IOException;
+
+import java.util.UUID;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -31,8 +34,6 @@ import java.util.stream.Collectors;
 public class PostService {
 
     private final PostRepository postRepository;
-    private final HostUserRepository hostUserRepository;
-    private final NormalUserRepository normalUserRepository;
     private final CommentRepository commentRepository;
     private final OrganizedFestivalRepository organizedFestivalRepository;
 
@@ -44,6 +45,7 @@ public class PostService {
 
         for (Post post : allPostsInFestival) {
             PostDto postDto = PostDto.builder()
+                    .id(post.getId())
                     .postType(post.getPostType())
                     .title(post.getTitle())
                     .commentsCount(post.getComments().size())
@@ -66,6 +68,7 @@ public class PostService {
 
         for (Post post : postList) {
             PostDto postDto = PostDto.builder()
+                    .id(post.getId())
                     .postType(post.getPostType())
                     .title(post.getTitle())
                     .commentsCount(post.getComments().size())
@@ -82,14 +85,17 @@ public class PostService {
 
 
     @Transactional
-    public ResponseEntity<?> create(PostCreateDto createDto) {
-        // 이미지 처리 로직 , MultipartFile image) throws IOException {
+    public ResponseEntity<?> create(PostCreateDto createDto, MultipartFile image) throws IOException {
+        if (image != null) {
+        String projectPath = System.getProperty("user.dir") +"\\hifes\\src\\main\\resources\\static\\images";
+        UUID uuid = UUID.randomUUID();
+        String imageName = uuid + "_" + image.getOriginalFilename();
 //        String projectPath = "/home/ubuntu/images";
 //        String imageName = image.getOriginalFilename();
-//        File saveImage = new File(projectPath, imageName);
-//        image.transferTo(saveImage);
-//
-//        createDto.setPicture("/images/"+  imageName);
+        File saveImage = new File(projectPath, imageName);
+        image.transferTo(saveImage);
+        createDto.setImagePath("/images/" +  imageName);
+        }
 
         // 글 종류에 따라 로직이 조금씩 바뀐다
         String postTypeInput = createDto.getPostType(); // 글 종류
@@ -120,12 +126,6 @@ public class PostService {
         }
     }
 
-//        if (postRepository.existsById(savedPost.getId())) {  // 만약 저장 했는데 저장한 게시글이 DB에 있으면
-//            ResponseEntity.status(HttpStatus.CREATED).body("CREATED");  // 생성 됐다는 메시지
-//        } else {
-//            ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Fail To Create");  // 아니면 실패
-//            return null;
-//        }
 
 //    @Transactional
 //    public Long update(Long id, PostUpdateDto requestDto) {
@@ -178,25 +178,40 @@ public class PostService {
                 .map(CommentDto::new)
                 .collect(Collectors.toList());
 
-
-        PostDto postDto = PostDto.builder()
-                .id(post.getId())
-                .title(post.getTitle())
-                .content(post.getContent())
-                .postType(post.getPostType())
-                .isHidden(post.getIsHidden())
-                .hideReason(post.getHideReason())
-                .organizedFestivalId(post.getOrganizedFestival().getFestivalId())
-                .createdBy(post.getCreatedBy())
-                .views(post.getViews())
-                .rating(post.getRating())
-                .topLevelComments(topLevelCommentListDto)
-                .commentsCount(post.getComments().size())
-                .createdAt(post.getCreatedAt())
-                .build();
-
-        return postDto;
-
+        if (post.getRating() != null) {
+            PostDto postDto = PostDto.builder()
+                    .id(post.getId())
+                    .title(post.getTitle())
+                    .content(post.getContent())
+                    .postType(post.getPostType())
+                    .isHidden(post.getIsHidden())
+                    .hideReason(post.getHideReason())
+                    .organizedFestivalId(post.getOrganizedFestival().getFestivalId())
+                    .createdBy(post.getCreatedBy())
+                    .views(post.getViews())
+                    .rating(post.getRating())
+                    .topLevelComments(topLevelCommentListDto)
+                    .commentsCount(post.getComments().size())
+                    .createdAt(post.getCreatedAt())
+                    .build();
+            return postDto;
+        } else {
+            PostDto postDto = PostDto.builder()
+                    .id(post.getId())
+                    .title(post.getTitle())
+                    .content(post.getContent())
+                    .postType(post.getPostType())
+                    .isHidden(post.getIsHidden())
+                    .hideReason(post.getHideReason())
+                    .organizedFestivalId(post.getOrganizedFestival().getFestivalId())
+                    .createdBy(post.getCreatedBy())
+                    .views(post.getViews())
+                    .topLevelComments(topLevelCommentListDto)
+                    .commentsCount(post.getComments().size())
+                    .createdAt(post.getCreatedAt())
+                    .build();
+            return postDto;
+        }
     }
 
 
