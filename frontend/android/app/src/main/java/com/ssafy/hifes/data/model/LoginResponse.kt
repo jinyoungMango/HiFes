@@ -4,7 +4,8 @@ data class LoginResponse(
     val accessToken: String,
     val refreshToken: String,
     val result: Boolean,
-    val id: String
+    val id: String,
+    val nickname: String
 )
 
 data class NormalUserSignUpDto(

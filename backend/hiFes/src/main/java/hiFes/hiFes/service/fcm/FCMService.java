@@ -18,7 +18,7 @@ import java.util.Arrays;
 @Slf4j
 public class FCMService {
     private final ObjectMapper objectMapper;
-    private static final String FIREBASE_PATH = "/home/ubuntu/resource/hifes-83f33-firebase-adminsdk-fvbk6-1d84770099.json";
+    private static final String FIREBASE_PATH = "hifes-83f33-firebase-adminsdk-fvbk6-1d84770099.json";
 
     @Autowired
     public FCMService(ObjectMapper objectMapper){
@@ -26,13 +26,15 @@ public class FCMService {
     }
 
     private String getAccessToken() throws IOException{
+
+        System.out.println("accessToken Service ------------------------------------------");
         GoogleCredentials googleCredentials = GoogleCredentials
                 .fromStream(new ClassPathResource(FIREBASE_PATH).getInputStream())
                 .createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
 
         googleCredentials.refreshIfExpired();
+        System.out.println(FIREBASE_PATH + " **************************************************");
 
-        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
         return googleCredentials.getAccessToken().getTokenValue();
     }
