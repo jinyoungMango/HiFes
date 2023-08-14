@@ -2,15 +2,7 @@ package hiFes.hiFes.dto.postDto;
 
 
 
-import hiFes.hiFes.domain.Picture;
-import hiFes.hiFes.domain.Post;
-import hiFes.hiFes.domain.festival.OrganizedFestival;
-import hiFes.hiFes.domain.user.HostUser;
-import hiFes.hiFes.domain.user.NormalUser;
-import hiFes.hiFes.dto.festival.OrganizedFestivalResponse;
 import lombok.*;
-
-import java.util.List;
 
 @Getter @Setter
 @ToString
