@@ -72,7 +72,11 @@ fun GroupDetailScreen(
                         )
                         Spacer(modifier = Modifier.height(24.dp))
                         if (groupDetailInfo.value!!.hashtags != null) {
-                            HashtagChips(chips = groupDetailInfo.value!!.hashtags!!)
+                            HashtagChips(
+                                chips = groupDetailInfo.value!!.hashtags!!,
+                                isDeleteable = false,
+                                onDeleteButtonClicked = {}
+                            )
                         }
                         Spacer(modifier = Modifier.height(24.dp))
                         if (groupImages.value != null && groupImages.value!!.size > 0) {

@@ -23,17 +23,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ssafy.hifes.ui.common.HashtagChips
 import com.ssafy.hifes.ui.theme.PrimaryPink
 import com.ssafy.hifes.ui.theme.pretendardFamily
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TextFieldWithCaption(caption: String) {
-    var text by remember { mutableStateOf("") }
+fun TextFieldWithCaption(caption: String, text: String, onChange: (String) -> Unit) {
+
     var isFocused by remember { mutableStateOf(false) }
 
     val borderStroke = if (isFocused) {
@@ -48,7 +50,7 @@ fun TextFieldWithCaption(caption: String) {
         TextField(
             value = text,
             onValueChange = { newText ->
-                text = newText
+                onChange(newText)
             },
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = Color.Transparent,
@@ -70,11 +72,14 @@ fun TextFieldWithCaption(caption: String) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DropdownWithCaption(caption: String) {
+fun DropdownWithCaption(
+    caption: String,
+    selectedOptionText: String,
+    onChange: (String) -> Unit
+) {
     val options = (1..10).toList()
 
     var expanded by remember { mutableStateOf(false) }
-    var selectedOptionText by remember { mutableStateOf(options[0].toString()) }
 
     var isFocused by remember { mutableStateOf(false) }
 
@@ -127,7 +132,7 @@ fun DropdownWithCaption(caption: String) {
                     DropdownMenuItem(
                         text = { Text(selectionOption.toString()) },
                         onClick = {
-                            selectedOptionText = selectionOption.toString()
+                            onChange(selectionOption.toString())
                             expanded = false
                         },
                         contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
@@ -139,13 +144,78 @@ fun DropdownWithCaption(caption: String) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun addHashTagWithCaption(
+    caption: String,
+    hashTags: List<String>,
+    addTag: (String) -> Unit,
+    onDelete: (Int) -> Unit
+) {
+    var text by remember { mutableStateOf("") }
+
+    var isFocused by remember { mutableStateOf(false) }
+
+    val borderStroke = if (isFocused) {
+        BorderStroke(1.dp, PrimaryPink)    // 선택된 보더의 색 변경
+    } else {
+        BorderStroke(0.5.dp, Color.Gray)
+    }
+
+    Column {
+        Text(text = caption, fontFamily = pretendardFamily, fontWeight = FontWeight.SemiBold)
+        Spacer(modifier = Modifier.height(8.dp))
+        TextField(
+            value = text,
+            onValueChange = { newText ->
+                if (newText.length > 1) {
+                    val lastChar = newText.substring(newText.length - 1, newText.length)
+                    if (lastChar == " ") {
+                        addTag(newText.substring(0 until newText.length - 1))
+                        text = ""
+                    } else {
+                        text = newText
+                    }
+                } else {
+                    if (newText == " ") {
+                        text = ""
+                    } else {
+                        text = newText
+                    }
+                }
+            },
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                disabledIndicatorColor = Color.Transparent
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .border(borderStroke, MaterialTheme.shapes.small)
+                .onFocusChanged {
+                    isFocused = it.isFocused
+                },
+            textStyle = LocalTextStyle.current.copy(fontSize = 16.sp),
+        )
+        Spacer(modifier = Modifier.height(24.dp))
+
+        HashtagChips(chips = hashTags, isDeleteable = true, onDeleteButtonClicked = onDelete)
+
+        Spacer(modifier = Modifier.height(24.dp))
+    }
+
+}
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 fun EditPrev() {
-    TextFieldWithCaption(caption = "caption")
-    DropdownWithCaption(caption = "caption")
+    var context = LocalContext.current
+
+    TextFieldWithCaption("caption", "", {})
+    DropdownWithCaption("caption", "1", {})
 }
 
 
