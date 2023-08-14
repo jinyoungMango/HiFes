@@ -100,7 +100,11 @@ fun HifesNavGraph(
         composable(
             route = HifesDestinations.GROUP_CREATE
         ) {
-            GroupCreateScreen(navController = navController)
+            GroupCreateScreen(
+                navController = navController,
+                viewModel = groupViewModel,
+                mainViewModel = mainViewModel
+            )
         }
         composable(
             route = HifesDestinations.POST_WRITE_ROUTE

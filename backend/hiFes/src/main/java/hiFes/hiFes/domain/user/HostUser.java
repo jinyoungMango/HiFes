@@ -24,9 +24,6 @@ public class HostUser {
     private String orgNo;
     private String orgCode;
     private String email;
-    private String org_code;
-    private String phone_no;
-    private String org_no;
 
     private String refreshToken;
 

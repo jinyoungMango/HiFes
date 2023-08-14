@@ -164,9 +164,9 @@ public class OrganizedFestivalApiController {
     @CrossOrigin("*")
 
     public ResponseEntity<OrganizedFestivalDetailResponse> findOrganizedFestival(@PathVariable long festivalId){
-        OrganizedFestival organizedFestival = organizedFestivalService.findById(festivalId);
+        OrganizedFestivalDetailResponse organizedFestival = organizedFestivalService.findById(festivalId);
         return ResponseEntity.ok()
-                .body(new OrganizedFestivalDetailResponse(organizedFestival));
+                .body(organizedFestival);
     }
 
 

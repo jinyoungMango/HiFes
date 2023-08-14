@@ -93,9 +93,8 @@ public class GroupController extends BaseTimeEntity {
         groupInfo.addProperty("groupMaxPop", group.getMaxPop());
         groupInfo.addProperty("groupCreatedAt", String.valueOf(group.getCreatedAt()));
         groupInfo.addProperty("numOfJoinedPeople", joinedPeople.size());
+        groupInfo.addProperty("groupPic", group.getGroupPic());
         groupInfo.add("hashtags", hashtagArray);
-
-        System.out.println(hashtagList + " ------------------------------");
 
         JsonArray joinedPeopleArray = new JsonArray();
 
