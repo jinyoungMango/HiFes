@@ -37,6 +37,7 @@ import com.ssafy.hifes.ui.main.MainViewModel
 import com.ssafy.hifes.ui.map.MapScreen
 import com.ssafy.hifes.ui.mypage.MyPageScreen
 import com.ssafy.hifes.ui.participatedfest.ParticipatedFestScreen
+import com.ssafy.hifes.ui.participatedfest.ParticipatedFestViewModel
 import com.ssafy.hifes.ui.proof.ProofScreen
 import com.ssafy.hifes.ui.proof.ProofViewModel
 
@@ -59,6 +60,7 @@ fun HifesNavGraph(
     val proofViewModel: ProofViewModel = hiltViewModel()
     val loginViewModel: LoginViewModel = hiltViewModel()
     val chatViewModel: ChatViewModel = hiltViewModel()
+    val participatedFestViewModel: ParticipatedFestViewModel = hiltViewModel()
 
     NavHost(
         navController = navController,
@@ -96,7 +98,7 @@ fun HifesNavGraph(
         composable(
             route = HifesDestinations.PARTICIPATED_FEST_ROUTE
         ) {
-            ParticipatedFestScreen(navController = navController)
+            ParticipatedFestScreen(navController = navController, participatedFestViewModel)
         }
         composable(
             route = HifesDestinations.MY_PAGE_ROUTE
