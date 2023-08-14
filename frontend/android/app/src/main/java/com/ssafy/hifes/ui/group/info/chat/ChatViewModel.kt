@@ -47,7 +47,7 @@ class ChatViewModel : ViewModel() {
                     val content = messageMap["content"] as? String
 
                     if (nickname != null && id != null && time != null && content != null) {
-                        val userData = UserData(nickname, id)
+                        val userData = UserData(nickname = nickname, id = id)
                         val messageData = MessageData(content, userData, time)
                         Log.d(TAG, "onDataChange: $messageData")
                         _chatMessage.add(messageData)
