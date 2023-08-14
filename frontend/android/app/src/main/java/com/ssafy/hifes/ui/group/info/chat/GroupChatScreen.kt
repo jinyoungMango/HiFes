@@ -43,20 +43,12 @@ import com.ssafy.hifes.ui.group.GroupViewModel
 import com.ssafy.hifes.ui.theme.pretendardFamily
 import com.ssafy.hifes.util.CommonUtils
 
-data class ChatItem(
-    var text: String,
-    var isSentByUser: Boolean,
-)
-
-//val item = ChatItem("텍스트", true)
-//var itemList = listOf(item, item, item, item, item, item, item, item)
-
 @Composable
 fun GroupChatScreen(viewModel: ChatViewModel, groupViewModel: GroupViewModel) {
     val groupId = groupViewModel.selectedGroup.observeAsState()
     val userId = AppPreferences.getUserId()
-    val nickname = AppPreferences.getUserId()
-    val userData = UserData(userId, nickname)
+    val nickname = AppPreferences.getUserNickname()
+    val userData = UserData(nickname, userId)
     val chatMessages = viewModel.chatMessages.collectAsState()
     val listState = rememberLazyListState()
     var triggerScroll by remember { mutableStateOf(false) }
@@ -141,11 +133,11 @@ fun ChatBubble(
                     .size(48.dp)
                     .clip(CircleShape)
             )
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(8.dp))
         }
         Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = bubbleArrange) {
             if (!isMe) {
-                Text(text = message.userData.nickname!!)
+                Text(text = message.userData.nickname!!, fontFamily = pretendardFamily, fontWeight = FontWeight.Normal, fontSize = 12.sp)
             }
             Spacer(modifier = Modifier.height(4.dp))
             Box(
