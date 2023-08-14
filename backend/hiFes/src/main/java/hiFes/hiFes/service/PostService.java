@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -37,25 +38,46 @@ public class PostService {
 
 
     @Transactional
-    public List<Post> allPostsByFestival(Long festivalId) {
-        return postRepository.findAllByOrganizedFestival_FestivalId(festivalId);
+    public List<PostDto> allPostsByFestival(Long festivalId) {
+        List<Post> allPostsInFestival = postRepository.findAllByOrganizedFestival_FestivalId(festivalId);
+        ArrayList<PostDto> postDtoArrayList = new ArrayList<>();
+
+        for (Post post : allPostsInFestival) {
+            PostDto postDto = PostDto.builder()
+                    .postType(post.getPostType())
+                    .title(post.getTitle())
+                    .commentsCount(post.getComments().size())
+                    .views(post.getViews())
+                    .createdBy(post.getCreatedBy())
+                    .createdAt(post.getCreatedAt())
+                    .organizedFestivalId(post.getOrganizedFestival().getFestivalId())
+                    .build();
+            postDtoArrayList.add(postDto);
+        }
+        return postDtoArrayList;
+
     }
 
     @Transactional
     public List<PostDto> postTypeInFestival(Long festivalId, String postType) {
-        System.out.println("=========================================");
-        List<Post> dasd = postRepository.findAllByOrganizedFestival_FestivalIdAndPostType(festivalId, postType);
-        ArrayList<PostDto> postList = new ArrayList<>();
 
-        for (Post post : dasd) {
+        List<Post> postList = postRepository.findAllByOrganizedFestival_FestivalIdAndPostType(festivalId, postType);
+        ArrayList<PostDto> postDtoArrayList = new ArrayList<>();
+
+        for (Post post : postList) {
             PostDto postDto = PostDto.builder()
                     .postType(post.getPostType())
+                    .title(post.getTitle())
+                    .commentsCount(post.getComments().size())
+                    .views(post.getViews())
+                    .createdBy(post.getCreatedBy())
+                    .createdAt(post.getCreatedAt())
                     .organizedFestivalId(post.getOrganizedFestival().getFestivalId())
                     .build();
-            postList.add(postDto);
+            postDtoArrayList.add(postDto);
         }
 
-        return postList;
+        return postDtoArrayList;
     }
 
 
@@ -133,22 +155,22 @@ public class PostService {
         post.increaseView();
         postRepository.save(post);
         // 유저 id 로 작성자 정보 저장 로직
-        Long userId = post.getCreatedBy();
+//        Long userId = post.getCreatedBy();
 
-        String userRecognizer;  // 주최 행사 이름이 될 수도 있고 별명이 될 수도 있으니 recognizer 하나를 만든다
-
-        if (userId >= 1 && userId <= 300) {  // 1 ~ 300 이면 hostUser 니까 주최 행사 명을 설정한다
-            HostUser hostUser = hostUserRepository.findById(userId)
-                    .orElseThrow(() -> new IllegalArgumentException("!!!No Host User Found!!!"));
-            userRecognizer = hostUser.getOrganization();
-
-        } else if (userId > 300) {  // 300 보다 크다면 normalUser 니까 별명을 저장한다
-            NormalUser normalUser = normalUserRepository.findById(userId)
-                    .orElseThrow(() -> new IllegalArgumentException("!!!No Normal User Found!!!"));
-            userRecognizer = normalUser.getNickname();
-        } else {  // 그 외의 경우는 유저가 없는 걸로 판단 에러 발생
-            ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong userId");
-        }
+//        String userRecognizer;  // 주최 행사 이름이 될 수도 있고 별명이 될 수도 있으니 recognizer 하나를 만든다
+//
+//        if (userId >= 1 && userId <= 300) {  // 1 ~ 300 이면 hostUser 니까 주최 행사 명을 설정한다
+//            HostUser hostUser = hostUserRepository.findById(userId)
+//                    .orElseThrow(() -> new IllegalArgumentException("!!!No Host User Found!!!"));
+//            userRecognizer = hostUser.getOrganization();
+//
+//        } else if (userId > 300) {  // 300 보다 크다면 normalUser 니까 별명을 저장한다
+//            NormalUser normalUser = normalUserRepository.findById(userId)
+//                    .orElseThrow(() -> new IllegalArgumentException("!!!No Normal User Found!!!"));
+//            userRecognizer = normalUser.getNickname();
+//        } else {  // 그 외의 경우는 유저가 없는 걸로 판단 에러 발생
+//            ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong userId");
+//        }
 
         // 댓글 목록 불러오기
         List<Comment> topLevelComments = commentRepository.findAllByPostIdAndParentIsNull(postId);
@@ -158,19 +180,23 @@ public class PostService {
 
 
         PostDto postDto = PostDto.builder()
-                .commentsCount(post.getComments().size())
-                .postType(post.getPostType())
+                .id(post.getId())
                 .title(post.getTitle())
                 .content(post.getContent())
-                .createdAt(post.getCreatedAt())
+                .postType(post.getPostType())
+                .isHidden(post.getIsHidden())
+                .hideReason(post.getHideReason())
+                .organizedFestivalId(post.getOrganizedFestival().getFestivalId())
                 .createdBy(post.getCreatedBy())
                 .views(post.getViews())
                 .rating(post.getRating())
-                .isHidden(post.getIsHidden())
                 .topLevelComments(topLevelCommentListDto)
+                .commentsCount(post.getComments().size())
+                .createdAt(post.getCreatedAt())
                 .build();
 
         return postDto;
+
     }
 
 
