@@ -66,19 +66,16 @@ public class FCMController {
         String email = jwtService.extractEmail(accessToken).orElse("");
         NormalUser user = normalUserService.getByEmail(email);
         Group group = groupRepository.getById(fcmForGroupDto.getGroupId());
-        System.out.println("111111111111111" + user.getName());
 
 
         if (!(joinedGroupRepository.findByNormalUserAndGroup(user, group).getIsLeader())){
             return ResponseEntity.ok("모임장이 아닙니다.");
         }
 
-        System.out.println("222222222222222222222" + group.getGroupName());
 
         List<String> fcmTokens = new ArrayList<>();
         List<JoinedGroup> joinedGroupList = joinedGroupRepository.findByGroupId(fcmForGroupDto.getGroupId());
 
-        System.out.println("333333333333333333333" + joinedGroupList);
 
         // 모임 DB에 저장
         group.setGetterLatitude(fcmForGroupDto.getLatitude());
@@ -90,11 +87,9 @@ public class FCMController {
         for (JoinedGroup joinedGroup : joinedGroupList) {
             NormalUser normalUser = joinedGroup.getNormalUser();
 
-            System.out.println("4444444444444444444444444" + normalUser.getName());
 
             if (normalUser != null) {
                 fcmTokens.add(normalUser.getFirebaseToken());
-                System.out.println("5555555555555555555555555555555555555");
                 fcmService.sendMessageTo(normalUser.getFirebaseToken(), "모임 집합 콜 : "+ fcmForGroupDto.getLocation() + "에 모여주세요.", fcmForGroupDto.getDescription());
             }
         }

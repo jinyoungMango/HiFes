@@ -64,9 +64,9 @@ public class OrganizedFestivalService {
         //이미지 처리
         String projectPath = "/home/ubuntu/images";
 //        String projectPath = System.getProperty("user.dir") +"\\hifes\\src\\main\\resources\\static\\images";
-//        UUID uuid = UUID.randomUUID();
-//        String imageName = uuid + "_" + image.getOriginalFilename();
-        String imageName = image.getOriginalFilename();
+        UUID uuid = UUID.randomUUID();
+        String imageName = uuid + "_" + image.getOriginalFilename();
+//        String imageName = image.getOriginalFilename();
         File saveImage = new File(projectPath, imageName);
         image.transferTo(saveImage);
 
@@ -195,15 +195,15 @@ public class OrganizedFestivalService {
         //update하기 전에 사진 다 삭제하고 다시 넣기
         String projectPath = "/home/ubuntu/images";
 //        String projectPath = System.getProperty("user.dir") +"\\hifes\\src\\main\\resources\\static\\images";
-        // 이 행사의 포스터 주소 삭제
-        // Db에 저장된 포스터 삭제
         if(!image.isEmpty()){
             String imagePath = projectPath + organizedFestival.getFesPosterPath();
-            String imageName = image.getOriginalFilename();
+            UUID uuid = UUID.randomUUID();
+            String imageName = uuid + "_" + image.getOriginalFilename();
+//            String imageName = image.getOriginalFilename();
             File saveImage = new File(projectPath, imageName);
-            if(saveImage.exists()){
-                saveImage.delete();
-            }
+            //기존 파일 삭제
+            String originImg = organizedFestival.getFesPosterPath();
+            new File("/home/ubuntu" + originImg).delete();
             image.transferTo(saveImage);
             request.setFesPosterPath("/images/"+  imageName);
         }
