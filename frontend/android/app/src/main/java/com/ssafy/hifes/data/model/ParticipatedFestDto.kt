@@ -7,5 +7,5 @@ data class ParticipatedFestDto(
     var isCompleted: Boolean,
     var fesTitle: String,
     var countMission: Int,
-    var participateTime: CreatedAtDto
+    var participateTime: DateTime
 )
