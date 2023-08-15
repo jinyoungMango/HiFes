@@ -42,7 +42,7 @@ public class Post extends BaseEntity {
     @JoinColumn(name = "festivalId")
     private OrganizedFestival organizedFestival;
 
-    @Column(columnDefinition = "TEXT", name = "createdBy")
+    @Column(name = "createdBy")
     private Long createdBy;
 
     private int views;
