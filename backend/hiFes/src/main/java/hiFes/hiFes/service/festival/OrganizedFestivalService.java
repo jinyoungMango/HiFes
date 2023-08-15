@@ -133,10 +133,25 @@ public class OrganizedFestivalService {
 
 
     //조회
-    public List<OrganizedFestival> findByHost_hostId(long hostId){
-        return organizedFestivalRepository.findByHostUser_Id(hostId);
+    // 주최자의 모든 행사 리스트 조회
+    public List<OrganizedFestivalDetailResponse> findByHost_hostId(long hostId){
+        List<OrganizedFestival> organizedFestivals = organizedFestivalRepository.findByHostUser_Id(hostId);
+        List<OrganizedFestivalDetailResponse> organizedFestivalDetailResponses = new ArrayList<>();
+        for (OrganizedFestival organizedFestival : organizedFestivals) {
+            Long festivalId = organizedFestival.getFestivalId();
+            Float avgRating = organizedFestivalRepository.getAverageRatingByOrganizedFestival(festivalId);
+            if(avgRating==null){
+                avgRating = 0f;
+            }
+            Integer countGroups = groupRepository.findByFestivalId(festivalId).size();
+            OrganizedFestivalDetailResponse detailResponse = new OrganizedFestivalDetailResponse(organizedFestival, avgRating, countGroups);
+            organizedFestivalDetailResponses.add(detailResponse);
+        }
+
+        return organizedFestivalDetailResponses;
     }
 
+    // 행사 상세 조회
     public OrganizedFestivalDetailResponse findById(long id){
         OrganizedFestival organizedFestival = organizedFestivalRepository.findById(id)
                 .orElseThrow(()->new IllegalArgumentException("not found festival: "+ id));
@@ -147,6 +162,74 @@ public class OrganizedFestivalService {
         Integer countGroups = groupRepository.findByFestivalId(id).size();
 
         return new OrganizedFestivalDetailResponse(organizedFestival,avgRating, countGroups);
+    }
+    //랜덤
+    public List<OrganizedFestivalDetailResponse> findRandomOrganizedFestival(){
+        List<OrganizedFestival> organizedFestivals = organizedFestivalRepository.findAll();
+        List<OrganizedFestivalDetailResponse> organizedFestivalDetailResponses = new ArrayList<>();
+        for (OrganizedFestival organizedFestival : organizedFestivals) {
+            Long festivalId = organizedFestival.getFestivalId();
+            Float avgRating = organizedFestivalRepository.getAverageRatingByOrganizedFestival(festivalId);
+            if(avgRating==null){
+                avgRating = 0f;
+            }
+            Integer countGroups = groupRepository.findByFestivalId(festivalId).size();
+            OrganizedFestivalDetailResponse detailResponse = new OrganizedFestivalDetailResponse(organizedFestival, avgRating, countGroups);
+            organizedFestivalDetailResponses.add(detailResponse);
+        }
+        return organizedFestivalDetailResponses;
+    }
+
+    //반경 10km내 조회
+    public List<OrganizedFestivalDetailResponse> getFestivalsByLocationWithin10Km(BigDecimal latitude, BigDecimal longitude) {
+        List<OrganizedFestival> organizedFestivals = organizedFestivalRepository.findOrganizedFestivalsByLocationWithin10Km(latitude.doubleValue(), longitude.doubleValue());
+        List<OrganizedFestivalDetailResponse> organizedFestivalDetailResponses = new ArrayList<>();
+        for (OrganizedFestival organizedFestival : organizedFestivals) {
+            Long festivalId = organizedFestival.getFestivalId();
+            Float avgRating = organizedFestivalRepository.getAverageRatingByOrganizedFestival(festivalId);
+            if(avgRating==null){
+                avgRating = 0f;
+            }
+            Integer countGroups = groupRepository.findByFestivalId(festivalId).size();
+            OrganizedFestivalDetailResponse detailResponse = new OrganizedFestivalDetailResponse(organizedFestival, avgRating, countGroups);
+            organizedFestivalDetailResponses.add(detailResponse);
+        }
+        return organizedFestivalDetailResponses;
+    }
+
+    // 검색 결과
+    public List<SearchOrganizedFestivalResponse> searchResultFestival(String word){
+        List<OrganizedFestival> titleResults = organizedFestivalRepository.findByFesTitleContaining(word);
+        List<OrganizedFestival> addressResults = organizedFestivalRepository.findByFesAddressContaining(word);
+
+
+
+        Stream<SearchOrganizedFestivalResponse> titleStream = titleResults.stream()
+                .map(organizedFestival -> {
+                    Long festivalId = organizedFestival.getFestivalId();
+                    Float avgRating = organizedFestivalRepository.getAverageRatingByOrganizedFestival(festivalId);
+                    if(avgRating==null){
+                        avgRating = 0f;
+                    }
+                    Integer countGroups = groupRepository.findByFestivalId(festivalId).size();
+                    return new SearchOrganizedFestivalResponse(organizedFestival, "title", avgRating, countGroups);
+                });
+
+        Stream<SearchOrganizedFestivalResponse> addressStream = addressResults.stream()
+                .map(organizedFestival -> {
+                    Long festivalId = organizedFestival.getFestivalId();
+                    Float avgRating = organizedFestivalRepository.getAverageRatingByOrganizedFestival(festivalId);
+                    if(avgRating==null){
+                        avgRating = 0f;
+                    }
+                    Integer countGroups = groupRepository.findByFestivalId(festivalId).size();
+                    return new SearchOrganizedFestivalResponse(organizedFestival, "address", avgRating, countGroups);
+                });
+
+        List<SearchOrganizedFestivalResponse> results = Stream.concat(titleStream, addressStream)
+                .collect(Collectors.toList());
+
+        return results;
     }
 
     public List<ARItem> findARItemByFestivalId(long festivalId){
@@ -161,32 +244,7 @@ public class OrganizedFestivalService {
         return festivalTableRepository.findByOrganizedFestival_festivalId(festivalId);
     }
 
-    public List<OrganizedFestival> findRandomOrganizedFestival(){
-        return organizedFestivalRepository.findAll();
-    }
 
-    //반경 10km내 조회
-    public List<OrganizedFestival> getFestivalsByLocationWithin10Km(BigDecimal latitude, BigDecimal longitude) {
-        return organizedFestivalRepository.findOrganizedFestivalsByLocationWithin10Km(latitude.doubleValue(), longitude.doubleValue());
-    }
-
-    // 검색 결과
-    public List<SearchOrganizedFestivalResponse> searchResultFestival(String word){
-        List<OrganizedFestival> titleResults = organizedFestivalRepository.findByFesTitleContaining(word);
-        List<OrganizedFestival> addressResults = organizedFestivalRepository.findByFesAddressContaining(word);
-
-        Stream<SearchOrganizedFestivalResponse> titleStream = titleResults.stream()
-                .map(organizedFestival -> new SearchOrganizedFestivalResponse(organizedFestival, "title"));
-
-        Stream<SearchOrganizedFestivalResponse> addressStream = addressResults.stream()
-                .map(organizedFestival -> new SearchOrganizedFestivalResponse(organizedFestival, "address"));
-
-        List<SearchOrganizedFestivalResponse> results = Stream.concat(titleStream,addressStream)
-                .collect(Collectors.toList());
-
-        return results;
-
-    }
 ////////////////업데이트
     @org.springframework.transaction.annotation.Transactional
     public Boolean update(long id, UpdateOrganizedFestivalRequest request, MultipartFile file, MultipartFile image)throws Exception {
