@@ -223,6 +223,35 @@ public class PostService {
                 .map(CommentDto::new)
                 .collect(Collectors.toList());
 
+        String writer = "";
+        for (CommentDto commentDto : topLevelCommentListDto) {
+            Long topWriterId = commentDto.getCreatedBy();
+            if (topWriterId > 300) {
+                NormalUser normalUser = normalUserRepository.findById(topWriterId)
+                        .orElseThrow(() -> new IllegalArgumentException("!!!No Normal User Found!!!"));
+                writer = normalUser.getNickname();
+            } else if (1 <= topWriterId && topWriterId <= 300) {
+                HostUser hostUser = hostUserRepository.findById(topWriterId)
+                        .orElseThrow(() -> new IllegalArgumentException("!!!No Host User Found!!!"));
+                writer = hostUser.getOrganization();
+            }
+            commentDto.setWriter(writer);
+            writer = null;
+            for (CommentDto childDto : commentDto.getChildComments()) {
+                Long childWriterId = childDto.getCreatedBy();
+                if (childWriterId > 300) {
+                    NormalUser normalUser = normalUserRepository.findById(childWriterId)
+                            .orElseThrow(() -> new IllegalArgumentException("!!!No Normal User Found!!!"));
+                    writer = normalUser.getNickname();
+                } else if (1 <= childWriterId && childWriterId <= 300) {
+                    HostUser hostUser = hostUserRepository.findById(childWriterId)
+                            .orElseThrow(() -> new IllegalArgumentException("!!!No Host User Found!!!"));
+                    writer = hostUser.getOrganization();
+                }
+                childDto.setWriter(writer);
+            }
+        }
+        
         PostDto postDto = PostDto.builder()
                 .id(post.getId())
                 .title(post.getTitle())
