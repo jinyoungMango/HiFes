@@ -72,11 +72,10 @@ public class OrganizedFestivalService {
 //        String projectPath = System.getProperty("user.dir") +"\\hifes\\src\\main\\resources\\static\\images";
         UUID uuid = UUID.randomUUID();
         String imageName = uuid + "_" + image.getOriginalFilename();
-//        String imageName = image.getOriginalFilename();
         File saveImage = new File(projectPath, imageName);
         image.transferTo(saveImage);
 
-        request.setFesPosterPath("/images/"+  imageName);
+        request.setFesPosterPath("https://i9d104.p.ssafy.io/images/"+  imageName);
 
         HostUser hostUser = hostUserRepository.findById(HostUserId).orElseThrow(null);
         request.setHostUser(hostUser);
@@ -265,13 +264,12 @@ public class OrganizedFestivalService {
             String imagePath = projectPath + organizedFestival.getFesPosterPath();
             UUID uuid = UUID.randomUUID();
             String imageName = uuid + "_" + image.getOriginalFilename();
-//            String imageName = image.getOriginalFilename();
             File saveImage = new File(projectPath, imageName);
             //기존 파일 삭제
             String originImg = organizedFestival.getFesPosterPath();
             new File("/home/ubuntu" + originImg).delete();
             image.transferTo(saveImage);
-            request.setFesPosterPath("/images/"+  imageName);
+            request.setFesPosterPath("https://i9d104.p.ssafy.io/images/"+  imageName);
         }
 
         // Update 주최 행사
@@ -281,23 +279,26 @@ public class OrganizedFestivalService {
 
 
         // Update 스탬프 미션
-        for (UpdateStampMissionRequest stampMissionReq : request.getStampMissions()) {
+        if (request.getStampMissions() != null){
+            for (UpdateStampMissionRequest stampMissionReq : request.getStampMissions()) {
 
-            if (stampMissionReq.getMissionId() == null || stampMissionReq.getMissionId() == 0) {
-                // 새로운 미션 추가
-                StampMission newStampMission = new StampMission();
-                // 사용자가 입력한 데이터로 새 미션 생성
-                newStampMission.update(stampMissionReq);
-                newStampMission.setOrganizedFestival(organizedFestival);
-                // 새 미션 저장
-                stampMissionRepository.save(newStampMission);
-            } else {
-                // 기존 스탬프 미션 업데이트
-                StampMission stampMission = stampMissionRepository.findById(stampMissionReq.getMissionId())
-                        .orElseThrow(() -> new IllegalArgumentException("Stamp mission not found: " + stampMissionReq.getMissionId()));
-                stampMission.update(stampMissionReq);
+                if (stampMissionReq.getMissionId() == null || stampMissionReq.getMissionId() == 0) {
+                    // 새로운 미션 추가
+                    StampMission newStampMission = new StampMission();
+                    // 사용자가 입력한 데이터로 새 미션 생성
+                    newStampMission.update(stampMissionReq);
+                    newStampMission.setOrganizedFestival(organizedFestival);
+                    // 새 미션 저장
+                    stampMissionRepository.save(newStampMission);
+                } else {
+                    // 기존 스탬프 미션 업데이트
+                    StampMission stampMission = stampMissionRepository.findById(stampMissionReq.getMissionId())
+                            .orElseThrow(() -> new IllegalArgumentException("Stamp mission not found: " + stampMissionReq.getMissionId()));
+                    stampMission.update(stampMissionReq);
+                }
             }
         }
+
 
 //        System.out.println("ar 저장 전 아이디 = " + request.getItems());
 //        // Update AR 아이템
@@ -317,31 +318,35 @@ public class OrganizedFestivalService {
 //        }
 
         //업데이트 일정
-
-        try {
-            List<FestivalTable> newFestivalTableData = ExcelUtils.readFestivalTable(file.getInputStream());
-            festivalTableRepository.deleteByOrganizedFestival_festivalId(id);
-            for (FestivalTable ft : newFestivalTableData) {
-                ft.setOrganizedFestival(organizedFestival);
+        if (request.getFestivalTables() != null){
+            try {
+                List<FestivalTable> newFestivalTableData = ExcelUtils.readFestivalTable(file.getInputStream());
+                festivalTableRepository.deleteByOrganizedFestival_festivalId(id);
+                for (FestivalTable ft : newFestivalTableData) {
+                    ft.setOrganizedFestival(organizedFestival);
+                }
+                festivalTableRepository.saveAll(newFestivalTableData);
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to read festival table Excel file.", e);
             }
-            festivalTableRepository.saveAll(newFestivalTableData);
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to read festival table Excel file.", e);
+
         }
 
+        if (request.getMarkers() != null){
+            for (UpdateMarkerRequest markerReq : request.getMarkers()) {
 
-        for (UpdateMarkerRequest markerReq : request.getMarkers()) {
-
-            if (markerReq.getMarkerId() == null || markerReq.getMarkerId() == 0) {
-                Marker newMarker = new Marker();
-                newMarker.update(markerReq);
-                newMarker.setOrganizedFestival(organizedFestival);
-                markerRepository.save(newMarker);
-            } else {
-                Marker marker = markerRepository.findById(markerReq.getMarkerId())
-                        .orElseThrow(() -> new IllegalArgumentException("Marker not found" + markerReq.getMarkerId()));
-                marker.update(markerReq);
+                if (markerReq.getMarkerId() == null || markerReq.getMarkerId() == 0) {
+                    Marker newMarker = new Marker();
+                    newMarker.update(markerReq);
+                    newMarker.setOrganizedFestival(organizedFestival);
+                    markerRepository.save(newMarker);
+                } else {
+                    Marker marker = markerRepository.findById(markerReq.getMarkerId())
+                            .orElseThrow(() -> new IllegalArgumentException("Marker not found" + markerReq.getMarkerId()));
+                    marker.update(markerReq);
+                }
             }
+
         }
 
         boolean flag = true;
