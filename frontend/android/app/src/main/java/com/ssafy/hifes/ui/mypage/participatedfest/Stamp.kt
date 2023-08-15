@@ -1,4 +1,4 @@
-package com.ssafy.hifes.ui.participatedfest
+package com.ssafy.hifes.ui.mypage.participatedfest
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

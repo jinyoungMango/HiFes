@@ -11,4 +11,5 @@ object HifesDestinations {
     const val POST_WRITE_ROUTE = "post_write"
     const val GROUP_CREATE = "group_create"
     const val GROUP_DETAIL = "group_detail"
+    const val STAMP_PROOF = "stamp_proof"
 }

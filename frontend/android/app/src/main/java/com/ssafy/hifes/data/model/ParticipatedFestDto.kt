@@ -1,13 +1,11 @@
 package com.ssafy.hifes.data.model
 
-import java.sql.Date
-
 
 data class ParticipatedFestDto(
-    var normalUserId: Int,
     var festivalId: Int,
-    var hostId: Int,
-    var participatedFesImg: String,
+    var normalUserId: Int,
     var isCompleted: Boolean,
-    var completeTime: Date
+    var fesTitle: String,
+    var countMission: Int,
+    var participateTime: DateTime
 )

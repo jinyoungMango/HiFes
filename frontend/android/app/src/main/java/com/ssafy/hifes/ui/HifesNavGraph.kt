@@ -1,14 +1,21 @@
 package com.ssafy.hifes.ui
 
 import NavigationItem
+import android.content.Intent
+import android.util.Log
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navDeepLink
 import com.ssafy.hifes.data.AppContainer
 import com.ssafy.hifes.ui.board.BoardScreen
 import com.ssafy.hifes.ui.board.BoardViewModel
@@ -27,8 +34,13 @@ import com.ssafy.hifes.ui.login.LoginScreen
 import com.ssafy.hifes.ui.login.LoginViewModel
 import com.ssafy.hifes.ui.main.MainViewModel
 import com.ssafy.hifes.ui.map.MapScreen
-import com.ssafy.hifes.ui.mypage.MyPageScreen
-import com.ssafy.hifes.ui.participatedfest.ParticipatedFestScreen
+import com.ssafy.hifes.ui.mypage.main.MyPageScreen
+import com.ssafy.hifes.ui.mypage.participatedfest.ParticipatedFestScreen
+import com.ssafy.hifes.ui.mypage.MyPageViewModel
+import com.ssafy.hifes.ui.proof.ProofScreen
+import com.ssafy.hifes.ui.proof.ProofViewModel
+
+private const val TAG = "HifesNavGraph"
 
 @Composable
 fun HifesNavGraph(
@@ -39,12 +51,15 @@ fun HifesNavGraph(
     startDestination: String = HifesDestinations.LOGIN_ROUTE
 //    startDestination: String = NavigationItem.Home.screenRoute
 ) {
+    val uri = "hifes://main"
 
     val boardViewModel: BoardViewModel = hiltViewModel()
     val groupViewModel: GroupViewModel = hiltViewModel()
     val detailViewModel: DetailViewModel = hiltViewModel()
+    val proofViewModel: ProofViewModel = hiltViewModel()
     val loginViewModel: LoginViewModel = hiltViewModel()
     val chatViewModel: ChatViewModel = hiltViewModel()
+    val participatedFestViewModel: MyPageViewModel = hiltViewModel()
 
     NavHost(
         navController = navController,
@@ -82,7 +97,7 @@ fun HifesNavGraph(
         composable(
             route = HifesDestinations.PARTICIPATED_FEST_ROUTE
         ) {
-            ParticipatedFestScreen(navController = navController)
+            ParticipatedFestScreen(navController = navController, participatedFestViewModel)
         }
         composable(
             route = HifesDestinations.MY_PAGE_ROUTE
@@ -118,6 +133,54 @@ fun HifesNavGraph(
             route = HifesDestinations.GROUP_DETAIL
         ) {
             GroupInfoScreen(navController = navController, groupViewModel = groupViewModel, chatViewModel = chatViewModel)
+        }
+        composable(
+            route = HifesDestinations.STAMP_PROOF,
+            deepLinks = listOf(navDeepLink {
+                uriPattern = "hifes://main?type={type}&id={id}"
+                action = Intent.ACTION_VIEW
+            })
+        ) {
+            val type = it.arguments?.getString("type")
+            val id = it.arguments?.getString("id")
+            Log.d(TAG, "HifesNavGraph: id ${id}")
+            if (type != null && id != null && (type == "festival" || type == "stamp")) {
+                var isNumber = false
+                var idNumber = -1
+                try {
+                    idNumber = id.toInt()
+                    isNumber = true
+                } catch (e: Exception) {
+                    isNumber = false
+                }
+
+                if (isNumber == true) {
+                    ProofScreen(
+                        navController = navController,
+                        viewModel = proofViewModel,
+                        type = type,
+                        id = idNumber
+                    )
+                } else {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(text = "잘못된 QR입니다")
+                    }
+                }
+
+
+            } else
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(text = "잘못된 QR입니다")
+                }
+
         }
     }
 }
