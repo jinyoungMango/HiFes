@@ -34,25 +34,27 @@ import com.ssafy.hifes.ui.iconpack.myiconpack.Camera
 @Composable
 fun ProfileImg(
     imageUri: Uri?,
-    onImageChange: (Uri)->Unit
-) {    val context = LocalContext.current
-    val getContent = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-        if(uri!=null)
-            onImageChange(uri)
-    }
+    onImageChange: (Uri) -> Unit
+) {
+    val context = LocalContext.current
+    val getContent =
+        rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            if (uri != null)
+                onImageChange(uri)
+        }
     // API level 28 이하는 MediaStore.Images.Media.getBitmap 사용 (deprecated)
     // 그 이상부터 ImageDecoder.createSource 사용
     val bitmap = imageUri?.let {
-        if(Build.VERSION.SDK_INT<28){
+        if (Build.VERSION.SDK_INT < 28) {
             MediaStore.Images.Media.getBitmap(context.contentResolver, it)
-        }else{
+        } else {
             val source = ImageDecoder.createSource(context.contentResolver, it)
             ImageDecoder.decodeBitmap(source)
         }
     }
 
     Box() {
-        if(imageUri == null || bitmap == null){
+        if (imageUri == null || bitmap == null) {
             Image(
                 ColorPainter(Color.Gray),
                 contentDescription = "profile image",
@@ -61,7 +63,7 @@ fun ProfileImg(
                     .padding(8.dp)
                     .clip(CircleShape),
             )
-        }else{
+        } else {
             Image(
                 bitmap = bitmap.asImageBitmap(),
                 contentDescription = "profile image",
@@ -77,7 +79,8 @@ fun ProfileImg(
             onClick = { getContent.launch("image/*") },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(end = 24.dp)) {
+                .padding(end = 24.dp)
+        ) {
             Image(
                 imageVector = MyIconPack.Camera, // SVG 파일을 지정
                 contentDescription = "Search",
