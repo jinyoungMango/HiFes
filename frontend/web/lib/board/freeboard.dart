@@ -1,10 +1,15 @@
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:web/common.dart';
 
+import '../MainController.dart';
 import '../constants.dart';
+import 'PostDto.dart';
+import 'PostWithCommentDto.dart';
 import 'board.dart';
 
 class FreePage extends StatefulWidget {
@@ -13,43 +18,98 @@ class FreePage extends StatefulWidget {
 }
 
 class _FreePageState extends State<FreePage> {
+
+  final MainController _mainController =
+  Get.find<MainController>(tag: 'MainController');
+  late PostWithCommentDto free = PostWithCommentDto.empty();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    // 게시글 정보 가져오기
+    Future.delayed(Duration.zero, () async {
+      var url = dotenv.env['YOUR_SERVER_URL']! +
+          'api/post/get/${_mainController.pid.value}';
+
+      // 공지 정보 받아오기
+      var response = await Dio().get(url);
+
+      if (response.statusCode == 200) {
+        // print('Request succeeded: ${response.data}');
+        // 사용자 정보 json을 파싱해서 토큰 저장
+        setState(() {
+          free = PostWithCommentDto.fromJson(response.data);
+        });
+      } else {
+        // 요청 실패 처리
+        print('Request failed with status: ${response.statusCode}');
+        print('Error message: ${response.data}');
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: TopBar(),
-      body: SingleChildScrollView(child: FreeItem(context))
+      body: SingleChildScrollView(
+        child: Center(
+          child: Container(
+            width: 800,
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [FreeItem(context, free)]),
+          ),
+        ),
+      )
     );
   }
 }
 
-Column FreeItem(BuildContext context) {
+Column FreeItem(BuildContext context, PostWithCommentDto free) {
   return Column(
     children: [
+      SizedBox(height: 40,),
       Material(
         elevation: 4,
         borderRadius: BorderRadius.circular(8),
         child: Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
           child: Container(
             child: Column(
               children: [
+                SizedBox(height: 40,),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [Text("공지 제목"), Text("조회수")],
+                  children: [Text("${free.title}", style: TextStyle(fontSize: 20),), Text("조회수 ${free.views}")],
                 ),
+                SizedBox(height: 10,),
                 Divider(
                   color: Colors.black, // 수평선 색상 설정
                   thickness: 2, // 수평선 두께 설정
                 ),
+                SizedBox(height: 10,),
+
                 Align(
                   alignment: Alignment.topLeft,
-                  child: Text("내용입니다"),
+                  child: Text("${free.content}"),
                 ),
                 SizedBox(
                   height: 40,
                 ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [Text("${free.createdAt.date}"),
+                        Container(child: Text("${free.createdAt.time}"))],
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     ElevatedButton(
                         style: ButtonStyle(
@@ -62,16 +122,13 @@ Column FreeItem(BuildContext context) {
                           showDialog(
                               context: context,
                               builder: (BuildContext context) {
-                                return CommentDialog(context);
+                                return RemovePostDialog(context, free);
                               });
                         },
                         child: Text(
-                          "답변하기",
-                          style: TextStyle(color: Colors.white),
+                          "삭제하기",
+                          style: TextStyle(color: Colors.white, fontSize: 16),
                         )),
-                    Column(
-                      children: [Text("연월일"), Text("시간")],
-                    ),
                   ],
                 ),
                 SizedBox(
@@ -84,11 +141,15 @@ Column FreeItem(BuildContext context) {
                 SizedBox(
                   height: 20,
                 ),
-                Comment(),
-                Reply(),
-                Reply(),
-                Reply(),
-                Reply(),
+                // 댓글, 대댓글 가져오기
+                for (var comment in free.topLevelComments)
+                  Column(
+                    children: [
+                      Comment(context, comment, free.postType),
+                      for (var reply in comment.childComments)
+                        Reply(context, reply, free.postType)
+                    ],
+                  )
               ],
             ),
           ),
@@ -101,7 +162,7 @@ Column FreeItem(BuildContext context) {
   );
 }
 
-Expanded FreeBoardList() {
+Expanded FreeBoardList(BuildContext context, List<PostDto> free, MainController _mainController) {
   return Expanded(
     child: Column(
       children: [
@@ -113,27 +174,18 @@ Expanded FreeBoardList() {
                     fontWeight: FontWeight.bold, fontSize: 40)),
           ]),
         ),
-        Expanded(
-          child: ListView.builder(
-            // ListView.builder로 변경
-            itemCount: 10, // 반복할 횟수를 지정
-            itemBuilder: (context, index) {
-              return Padding(
-                // Padding으로 감싸서 좌우 padding 적용
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: FreePostItem(),
-              );
-            },
-          ),
-        ),
+        Column(
+            children : free.map((post) => FreePostItem(post, _mainController)).toList()
+        )
       ],
     ),
   );
 }
 
-InkWell FreePostItem() {
+InkWell FreePostItem(PostDto free, MainController _mainController) {
   return InkWell(
     onTap: () {
+      _mainController.pid.value = free.id;
       Get.rootDelegate.toNamed(Routes.FREE);
     },
     child: Container(
@@ -142,7 +194,7 @@ InkWell FreePostItem() {
           SizedBox(height: 10),
           Row(
             children: [
-              Text('심심한 10기를 위한 9기의 꿀팁'),
+              Text(free.title),
             ],
           ),
           SizedBox(
@@ -165,9 +217,9 @@ InkWell FreePostItem() {
               Container(
                 child: Row(
                   children: [
-                    Text('조회수'),
+                    Text('조회수 ${free.views}'),
                     SizedBox(width: 10,),
-                    Text('댓글수')
+                    Text('댓글수 ${free.commentsCount}')
                   ],
                 ),
               )

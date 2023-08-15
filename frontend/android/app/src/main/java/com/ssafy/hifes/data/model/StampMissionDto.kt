@@ -9,3 +9,8 @@ data class StampMissionDto(
     var missionLatitude: Double,
     var missionLongitude: Double
 )
+
+data class StampListDto(
+    var festivalId: Int,
+    var missionId: List<Int>
+)

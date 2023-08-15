@@ -12,4 +12,5 @@ object HifesDestinations {
     const val GROUP_CREATE = "group_create"
     const val GROUP_DETAIL = "group_detail"
     const val HOME_SEARCH = "home_search"
+    const val STAMP_PROOF = "stamp_proof"
 }
