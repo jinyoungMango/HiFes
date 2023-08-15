@@ -52,32 +52,38 @@ fun ProofScreen(navController: NavController, viewModel: ProofViewModel, type: S
 
         }
     } else {
-        Log.d(TAG, "ProofScreen: festival~~~~~~~~~~~~~~~~~~ ${festivalResponse.value}")
+
         LaunchedEffect(Unit, { viewModel.requestFestivalProof(id) })
-
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            if (festivalResponse.value == ProofResponseType.SUCESS) {
-                Text(text = "행사 인증이 완료되었습니다!")
-                TextButton(onClick = {
-                    navController.navigate(NavigationItem.Home.screenRoute) {
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            inclusive = true
-                        }
+        if (festivalResponse.value != null) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                if (festivalResponse.value!!.first == ProofResponseType.SUCESS) {
+                    if (festivalResponse.value!!.second == true) {
+                        Text(text = "행사 인증이 완료되었습니다!")
+                    } else {
+                        Text(text = "이미 인증된 행사 입니다!")
                     }
-                }) {
-                    Text(text = "홈으로")
+                    TextButton(onClick = {
+                        navController.navigate(NavigationItem.Home.screenRoute) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                inclusive = true
+                            }
+                        }
+                    }) {
+                        Text(text = "홈으로")
+                    }
+                } else if (festivalResponse.value!!.first == ProofResponseType.FAIL) {
+                    Text(text = "오류로 인증에 실패했습니다!\n 다시 시도해주세요!")
+                } else if (festivalResponse.value!!.first == ProofResponseType.LOADING) {
+                    Text(text = "잠시만 기다려주세요")
                 }
-            } else if (festivalResponse.value == ProofResponseType.FAIL) {
-                Text(text = "오류로 인증에 실패했습니다!\n 다시 시도해주세요!")
-            } else if (festivalResponse.value == ProofResponseType.LOADING) {
-                Text(text = "잠시만 기다려주세요")
-            }
 
+            }
         }
+
     }
 
 }
