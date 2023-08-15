@@ -73,6 +73,11 @@ interface ApiService {
         @Path("festivalId") festivalId: Int
     ): NetworkResponse<Boolean, ErrorResponse>
 
+    @POST("{normalUserId}/complete-mission/{missionId}")
+    suspend fun completeMission(
+        @Path("normalUserId") normalUserId: String,
+        @Path("missionId") missionId: Int
+    ): NetworkResponse<Boolean, ErrorResponse>
 
     // MyPage
     @GET("{normalUserId}/participate-festivals")//티켓 조회
