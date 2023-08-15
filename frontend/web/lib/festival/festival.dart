@@ -21,7 +21,7 @@ class _FestivalState extends State<Festival> {
   final MainController _mainController =
       Get.find<MainController>(tag: 'MainController');
 
-  late FestivalDto festival;
+  late FestivalDto festival = FestivalDto.empty();
 
   // 자기 일정
   late List<ScheduleDto> myschedules;
@@ -95,7 +95,7 @@ class _FestivalState extends State<Festival> {
                         child: ClipRRect(
                             borderRadius: BorderRadius.circular(100),
                             child: Image.network(
-                              "https://i.imgur.com/05SMxGu.jpeg",
+                              "http://i9d104.p.ssafy.io/images/DogPoster.jpg",
                               width: 800,
                               height: 400,
                               fit: BoxFit.cover,
@@ -156,12 +156,11 @@ class _FestivalState extends State<Festival> {
                             ),
                             borderRadius: BorderRadius.circular(8.0),
                           ),
-                          child: Text('4.2'),
+                          child: Text('평점 ${festival.avgRating}'),
                         ),
                         SizedBox(
                           width: 10,
                         ),
-                        Text('100 reviews')
                       ],
                     ),
                     SizedBox(
@@ -170,7 +169,7 @@ class _FestivalState extends State<Festival> {
                     Align(
                         alignment: Alignment.centerRight,
                         child: Text(
-                            '${festival.fesStartDate.toString()}      ~      ${festival.fesStartDate.toString()}')),
+                            '${festival.fesStartDate.toString()}      ~      ${festival.fesEndDate.toString()}')),
                     SizedBox(
                       height: 10,
                     ),

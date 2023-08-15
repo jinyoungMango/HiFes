@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 
 import '../constants.dart';
+import 'PostDto.dart';
 
 class ReviewPage extends StatefulWidget {
 
@@ -17,7 +18,7 @@ class _ReviewPageState extends State<ReviewPage> {
   }
 }
 
-Expanded ReviewBoardList() {
+Expanded ReviewBoardList(List<PostDto> review) {
   return Expanded(
     child: Column(
       children: [
@@ -29,25 +30,15 @@ Expanded ReviewBoardList() {
                     fontWeight: FontWeight.bold, fontSize: 40)),
           ]),
         ),
-        Expanded(
-          child: ListView.builder(
-            // ListView.builder로 변경
-            itemCount: 10, // 반복할 횟수를 지정
-            itemBuilder: (context, index) {
-              return Padding(
-                // Padding으로 감싸서 좌우 padding 적용
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: ReviewPostItem(),
-              );
-            },
-          ),
-        ),
+        Column(
+            children : review.map((post) => ReviewPostItem(post)).toList()
+        )
       ],
     ),
   );
 }
 
-InkWell ReviewPostItem() {
+InkWell ReviewPostItem(PostDto review) {
   return InkWell(
     onTap: () {Get.rootDelegate.toNamed(Routes.REVIEW);},
     child: Container(
@@ -56,7 +47,7 @@ InkWell ReviewPostItem() {
           SizedBox(height: 10),
           Row(
             children: [
-              Text('심심한 10기를 위한 9기의 꿀팁'),
+              Text(review.title),
             ],
           ),
           SizedBox(
@@ -79,9 +70,9 @@ InkWell ReviewPostItem() {
               Container(
                 child: Row(
                   children: [
-                    Text('조회수'),
+                    Text('조회수 ${review.views}'),
                     SizedBox(width: 10,),
-                    Text('댓글수')
+                    Text('댓글수 ${review.commentsCount}')
                   ],
                 ),
               )

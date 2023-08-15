@@ -1,9 +1,14 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:web/board/PostWithCommentDto.dart';
 import 'package:web/common.dart';
 
+import '../MainController.dart';
 import '../constants.dart';
+import 'board.dart';
 
 class NoticePage extends StatefulWidget {
   @override
@@ -11,6 +16,37 @@ class NoticePage extends StatefulWidget {
 }
 
 class _NoticePageState extends State<NoticePage> {
+  final MainController _mainController =
+      Get.find<MainController>(tag: 'MainController');
+  late PostWithCommentDto notice = PostWithCommentDto.empty();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    // 게시글 정보 가져오기
+    Future.delayed(Duration.zero, () async {
+      var url = dotenv.env['YOUR_SERVER_URL']! +
+          'api/post/get/${_mainController.pid.value}';
+
+      // 축제 정보 받아오기
+      var response = await Dio().get(url);
+
+      if (response.statusCode == 200) {
+        // print('Request succeeded: ${response.data}');
+        // 사용자 정보 json을 파싱해서 토큰 저장
+        setState(() {
+          notice = PostWithCommentDto.fromJson(response.data);
+        });
+      } else {
+        // 요청 실패 처리
+        print('Request failed with status: ${response.statusCode}');
+        print('Error message: ${response.data}');
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,7 +57,9 @@ class _NoticePageState extends State<NoticePage> {
             width: 800,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [NoticeItem(context)],
+              children: [
+                NoticeItem(context, notice),
+              ],
             ),
           ),
         ),
@@ -30,7 +68,7 @@ class _NoticePageState extends State<NoticePage> {
   }
 }
 
-Column NoticeItem(BuildContext context) {
+Column NoticeItem(BuildContext context, PostWithCommentDto notice) {
   return Column(
     children: [
       SizedBox(
@@ -51,10 +89,10 @@ Column NoticeItem(BuildContext context) {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "공지입니다",
+                      notice.title,
                       style: TextStyle(fontSize: 20),
                     ),
-                    Text("조회수")
+                    Text('조회수 ${notice.views}')
                   ],
                 ),
                 SizedBox(
@@ -69,8 +107,7 @@ Column NoticeItem(BuildContext context) {
                 ),
                 Align(
                   alignment: Alignment.topLeft,
-                  child: Text(
-                      "다람쥐쳇바퀴굴러간다\n다람쥐쳇바퀴굴러간다\n다람쥐쳇바퀴굴러간다\n다람쥐쳇바퀴굴러간다\n다람쥐쳇바퀴굴러간다\n다람쥐쳇바퀴굴러간다\n다람쥐쳇바퀴굴러간다\n다람쥐쳇바퀴굴러간다\n다람쥐쳇바퀴굴러간다\n다람쥐쳇바퀴굴러간다\n"),
+                  child: Text('${notice.content}'),
                 ),
                 SizedBox(
                   height: 40,
@@ -81,8 +118,8 @@ Column NoticeItem(BuildContext context) {
                     Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("2023-08-09"),
-                        Container(child: Text("00:00"))
+                        Text("${notice.createdAt.date} "),
+                        Container(child: Text("${notice.createdAt.time}"))
                       ],
                     ),
                   ],
@@ -97,6 +134,14 @@ Column NoticeItem(BuildContext context) {
                 SizedBox(
                   height: 20,
                 ),
+                for (var comment in notice.topLevelComments)
+                  Column(
+                    children: [
+                      Comment(comment),
+                      for (var reply in comment.childComments)
+                        Reply(reply)
+                    ],
+                  )
               ],
             ),
           ),

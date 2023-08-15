@@ -5,6 +5,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:web/common.dart';
 
 import '../constants.dart';
+import 'PostDto.dart';
 import 'board.dart';
 
 class FreePage extends StatefulWidget {
@@ -101,11 +102,7 @@ Column FreeItem(BuildContext context) {
                 SizedBox(
                   height: 20,
                 ),
-                Comment(),
-                Reply(),
-                Reply(),
-                Reply(),
-                Reply(),
+
               ],
             ),
           ),
@@ -118,7 +115,7 @@ Column FreeItem(BuildContext context) {
   );
 }
 
-Expanded FreeBoardList() {
+Expanded FreeBoardList(List<PostDto> free) {
   return Expanded(
     child: Column(
       children: [
@@ -130,25 +127,15 @@ Expanded FreeBoardList() {
                     fontWeight: FontWeight.bold, fontSize: 40)),
           ]),
         ),
-        Expanded(
-          child: ListView.builder(
-            // ListView.builder로 변경
-            itemCount: 10, // 반복할 횟수를 지정
-            itemBuilder: (context, index) {
-              return Padding(
-                // Padding으로 감싸서 좌우 padding 적용
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: FreePostItem(),
-              );
-            },
-          ),
-        ),
+        Column(
+            children : free.map((post) => FreePostItem(post)).toList()
+        )
       ],
     ),
   );
 }
 
-InkWell FreePostItem() {
+InkWell FreePostItem(PostDto free) {
   return InkWell(
     onTap: () {
       Get.rootDelegate.toNamed(Routes.FREE);
@@ -159,7 +146,7 @@ InkWell FreePostItem() {
           SizedBox(height: 10),
           Row(
             children: [
-              Text('심심한 10기를 위한 9기의 꿀팁'),
+              Text(free.title),
             ],
           ),
           SizedBox(
@@ -182,9 +169,9 @@ InkWell FreePostItem() {
               Container(
                 child: Row(
                   children: [
-                    Text('조회수'),
+                    Text('조회수 ${free.views}'),
                     SizedBox(width: 10,),
-                    Text('댓글수')
+                    Text('댓글수 ${free.commentsCount}')
                   ],
                 ),
               )

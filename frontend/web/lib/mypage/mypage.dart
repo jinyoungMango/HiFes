@@ -20,7 +20,7 @@ class MyPage extends StatefulWidget {
 class _MyPageState extends State<MyPage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final MainController _mainController =
-      Get.find<MainController>(tag: 'MainController');
+      Get.find();
   late Future<List<FestivalDto>> festivalsFuture;
 
   // 사용자 정보 저장
@@ -42,6 +42,7 @@ class _MyPageState extends State<MyPage> with SingleTickerProviderStateMixin {
     Future.delayed(Duration.zero, () async {
       var url = dotenv.env['YOUR_SERVER_URL']! + 'api/host/myPage';
 
+      print("hi");
       print(_mainController.jAccessToken.value);
 
       var response = await Dio().post(url,

@@ -36,6 +36,11 @@ class DateModel {
     required this.time,
   });
 
+  DateModel.empty():
+      date = DayModel.empty(),
+      time = TimeModel.empty();
+
+
   factory DateModel.fromJson(Map<String, dynamic> json) {
     return DateModel(
       date: DayModel.fromJson(json['date']),
@@ -62,6 +67,11 @@ class DayModel {
     required this.month,
     required this.day
   });
+
+  DayModel.empty()
+      : year = 0,
+        month = 0,
+        day = 0;
 
   factory DayModel.fromJson(Map<String, dynamic> json) {
     return DayModel(
@@ -91,6 +101,12 @@ class TimeModel {
     required this.nano
   });
 
+  TimeModel.empty():
+      hour = 0,
+      minute = 0,
+      second = 0,
+      nano = 0;
+
   factory TimeModel.fromJson(Map<String, dynamic> json) {
     return TimeModel(
       hour: json['hour'],
@@ -102,6 +118,6 @@ class TimeModel {
 
   @override
   String toString() {
-    return '$hour - $minute - $second';
+    return '$hour : $minute';
   }
 }

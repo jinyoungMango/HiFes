@@ -8,6 +8,7 @@ class FestivalDto {
   final double fesLatitude;
   final double fesLongitude;
   final double festivalId;
+  final double? avgRating;
 
   FestivalDto({
     required this.fesTitle,
@@ -19,7 +20,22 @@ class FestivalDto {
     required this.fesLatitude,
     required this.fesLongitude,
     required this.festivalId,
+    required this.avgRating
   });
+
+  // 기본 생성자 (매개변수 없는 생성자)
+  FestivalDto.empty()
+      : fesTitle = "",
+        fesOutline = "",
+        fesAddress = "",
+        fesPosterPath = "",
+        fesStartDate = DateModel.empty(),
+        fesEndDate = DateModel.empty(),
+        fesLatitude = 0,
+        fesLongitude = 0,
+        festivalId = 0,
+        avgRating = 0;
+
 
   factory FestivalDto.fromJson(Map<String, dynamic> json) {
     return FestivalDto(
@@ -32,6 +48,7 @@ class FestivalDto {
       fesLatitude: json['fesLatitude'],
       fesLongitude: json['fesLongitude'],
       festivalId: json['festivalId'],
+      avgRating: json['avgRating']
     );
   }
 
@@ -65,6 +82,12 @@ class DateModel {
       day: json['day'],
     );
   }
+
+  // 기본 생성자 (매개변수 없는 생성자)
+  DateModel.empty()
+      : year = 0,
+        month = 0,
+        day = 0;
 
   @override
   String toString() {

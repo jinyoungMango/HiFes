@@ -4,6 +4,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:web/common.dart';
 
 import '../constants.dart';
+import 'PostDto.dart';
 import 'board.dart';
 
 class AskPage extends StatefulWidget {
@@ -105,11 +106,6 @@ Column AskItem(BuildContext context) {
                 SizedBox(
                   height: 20,
                 ),
-                Comment(),
-                Reply(),
-                Reply(),
-                Reply(),
-                Reply(),
               ],
             ),
           ),
@@ -122,7 +118,7 @@ Column AskItem(BuildContext context) {
   );
 }
 
-Expanded AskBoardList() {
+Expanded AskBoardList(List<PostDto> ask) {
   return Expanded(
     child: Column(
       children: [
@@ -134,25 +130,15 @@ Expanded AskBoardList() {
                     fontWeight: FontWeight.bold, fontSize: 40)),
           ]),
         ),
-        Expanded(
-          child: ListView.builder(
-            // ListView.builder로 변경
-            itemCount: 10, // 반복할 횟수를 지정
-            itemBuilder: (context, index) {
-              return Padding(
-                // Padding으로 감싸서 좌우 padding 적용
-                padding: EdgeInsets.symmetric(horizontal: 20),
-                child: AskPostItem(),
-              );
-            },
-          ),
+        Column(
+            children : ask.map((post) => AskPostItem(post)).toList()
         ),
       ],
     ),
   );
 }
 
-InkWell AskPostItem() {
+InkWell AskPostItem(PostDto ask) {
   return InkWell(
     onTap: () {Get.rootDelegate.toNamed(Routes.ASK);},
     child: Container(
@@ -161,7 +147,7 @@ InkWell AskPostItem() {
           SizedBox(height: 10),
           Row(
             children: [
-              Text('심심한 10기를 위한 9기의 꿀팁'),
+              Text(ask.title),
             ],
           ),
           SizedBox(
@@ -184,9 +170,9 @@ InkWell AskPostItem() {
               Container(
                 child: Row(
                   children: [
-                    Text('조회수'),
+                    Text('조회수 ${ask.views}'),
                     SizedBox(width: 10,),
-                    Text('댓글수')
+                    Text('댓글수 ${ask.commentsCount}')
                   ],
                 ),
               )
