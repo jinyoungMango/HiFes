@@ -98,6 +98,11 @@ public class GroupService {
 
     }
 
+    public void groupSignOut(NormalUser normalUser, Group group){
+        JoinedGroup joinedGroup = joinedGroupRepository.findByNormalUserAndGroup(normalUser, group);
+        joinedGroupRepository.delete(joinedGroup);
+    }
+
     public void groupDelete(Long id){
         groupRepository.deleteById(id);
     }

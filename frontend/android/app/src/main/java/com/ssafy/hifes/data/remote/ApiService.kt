@@ -9,6 +9,7 @@ import com.ssafy.hifes.data.model.OrganizedFestivalDto
 import com.ssafy.hifes.data.model.ParticipatedFestDto
 import com.ssafy.hifes.data.model.SharedPicDto
 import com.ssafy.hifes.data.model.StampListDto
+import com.ssafy.hifes.data.model.TimeTable
 import com.ssafy.hifes.util.network.NetworkResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -45,7 +46,7 @@ interface ApiService {
     @GET("/api/festival/{festivalId}/markers")
     suspend fun getMarkerList(@Path("festivalId") festivalId: Int): NetworkResponse<List<MarkerDto>, ErrorResponse>
 
-    //Group
+    // Group
     @GET("group/list")
     suspend fun getAllGroupList(): NetworkResponse<List<Group>, ErrorResponse>
 
@@ -65,7 +66,7 @@ interface ApiService {
         @Part image: MultipartBody.Part
     ): NetworkResponse<String, ErrorResponse>
 
-    //Proof
+    // Proof
     @POST("{normalUserId}/participate-festival/{festivalId}") //티켓 발급(행사 참여 인증)
     suspend fun participateFestival(
         @Path("normalUserId") normalUserId: String,
@@ -73,7 +74,7 @@ interface ApiService {
     ): NetworkResponse<Boolean, ErrorResponse>
 
 
-    //MyPage
+    // MyPage
     @GET("{normalUserId}/participate-festivals")//티켓 조회
     suspend fun getParticipateFestival(
         @Path("normalUserId") normalUserId: String
@@ -84,4 +85,8 @@ interface ApiService {
         @Path("normalUserId") normalUserId: String,
         @Path("festivalId") festivalId: Int
     ): NetworkResponse<StampListDto, ErrorResponse>
+
+    // Festival
+    @GET("festival/{festivalId}/festivalTables")
+    suspend fun getFestivalTimeTable(@Path("festivalId") festivalId: Int): NetworkResponse<List<TimeTable>, ErrorResponse>
 }

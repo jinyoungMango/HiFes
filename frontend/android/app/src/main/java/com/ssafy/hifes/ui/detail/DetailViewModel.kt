@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ssafy.hifes.data.model.Event
 import com.ssafy.hifes.data.model.MarkerDto
+import com.ssafy.hifes.data.model.TimeTable
 import com.ssafy.hifes.data.repository.festival.FestivalRepository
 import com.ssafy.hifes.util.network.NetworkResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,6 +27,10 @@ class DetailViewModel @Inject constructor(
         MutableLiveData()
     val markerList: LiveData<List<MarkerDto>> = _markerList
 
+    private var _timeTableList: MutableLiveData<List<TimeTable>> =
+        MutableLiveData()
+    val timeTableList: LiveData<List<TimeTable>> = _timeTableList
+
     private var _selectedBoothChip: MutableLiveData<Int> = MutableLiveData()
     val selectedBoothChip: LiveData<Int> = _selectedBoothChip
 
@@ -37,6 +42,31 @@ class DetailViewModel @Inject constructor(
                 is NetworkResponse.Success -> {
                     Log.d(TAG, "getNearFestivalList: $response")
                     _markerList.postValue(response.body)
+                }
+
+                is NetworkResponse.ApiError -> {
+                    postValueEvent(0, type)
+                }
+
+                is NetworkResponse.NetworkError -> {
+                    postValueEvent(1, type)
+                }
+
+                is NetworkResponse.UnknownError -> {
+                    postValueEvent(2, type)
+                }
+            }
+        }
+    }
+
+    fun getTimeTableList(festivalId: Int) {
+        viewModelScope.launch {
+            val response = repository.getFestivalTimeTable(festivalId)
+            val type = "token 정보 조회에"
+            when (response) {
+                is NetworkResponse.Success -> {
+                    Log.d(TAG, "getTimeTableList: $response")
+                    _timeTableList.postValue(response.body)
                 }
 
                 is NetworkResponse.ApiError -> {
