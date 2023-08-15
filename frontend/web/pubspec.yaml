@@ -81,12 +81,12 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - .env # path to your .env file
-    - assets/hifes_timetable.xlsx
-    - assets/kakao.svg
-    - assets/logo.svg
-    - assets/naver.svg
-    - assets/profile.svg
-    - assets/reply.svg
+    - hifes_timetable.xlsx
+    - kakao.svg
+    - logo.svg
+    - naver.svg
+    - profile.svg
+    - reply.svg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

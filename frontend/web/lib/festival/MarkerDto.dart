@@ -1,28 +1,37 @@
 class MarkerDto {
+
+  final String boothName;
+  final String description;
+  final int boothNo;
   final double boothLatitude;
   final double boothLongitude;
-  final String markerType;
-  final int markerId;
-  final String markerTitle;
-  final String markerDescription;
+
 
   MarkerDto({
+    required this.boothName,
+    required this.description,
+    required this.boothNo,
     required this.boothLatitude,
     required this.boothLongitude,
-    required this.markerType,
-    required this.markerId,
-    required this.markerTitle,
-    required this.markerDescription,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'boothName': boothName,
+      'description': description,
+      'boothNo': boothNo,
+      'boothLatitude': boothLatitude,
+      'boothLongitude': boothLongitude,
+    };
+  }
 
   @override
   String toString() {
     return 'MarkerDto{'
+        'boothName: $boothName, '
+        'description: $description, '
+        'boothNo: $boothNo, '
         'boothLatitude: $boothLatitude, '
-        'boothLongitude: $boothLongitude, '
-        'markerType: $markerType, '
-        'markerId: $markerId, '
-        'markerTitle: $markerTitle, '
-        'markerDescription: $markerDescription}';
+        'boothLongitude: $boothLongitude, }';
   }
 }
