@@ -39,7 +39,7 @@ import com.ssafy.hifes.ui.theme.pretendardFamily
 private const val TAG = "DialogMarkerDetail_하이페스"
 
 @Composable
-fun MarkerDetailDialog(title: String, content: String, onDismissRequest: () -> Unit) {
+fun MarkerDetailDialog(title: String, content: String, time : String = "", onDismissRequest: () -> Unit) {
     Dialog(onDismissRequest = onDismissRequest) {
         Surface(
             modifier = Modifier
@@ -48,7 +48,7 @@ fun MarkerDetailDialog(title: String, content: String, onDismissRequest: () -> U
             shape = RoundedCornerShape(12.dp),
             color = Color.White
         ) {
-            CustomDialog(title = title, message = content, onDismiss = onDismissRequest)
+            CustomDialog(title = title, time = time, message = content, onDismiss = onDismissRequest)
 
         }
     }
@@ -58,6 +58,7 @@ fun MarkerDetailDialog(title: String, content: String, onDismissRequest: () -> U
 fun CustomDialog(
     title: String,
     message: String,
+    time: String = "",
     onDismiss: () -> Unit,
 ) {
     Column(
@@ -75,8 +76,17 @@ fun CustomDialog(
         )
         Spacer(modifier = Modifier.height(8.dp))
         Divider(color = Color.Black)
+        if (!time.isNullOrEmpty()) {
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = time,
+                color = Color.DarkGray,
+                fontFamily = pretendardFamily,
+                fontWeight = FontWeight.Medium,
+                fontSize = 14.sp
+            )
+        }
         Spacer(modifier = Modifier.height(16.dp))
-
         Text(
             text = message,
             color = Color.Black,
