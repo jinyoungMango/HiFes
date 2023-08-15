@@ -38,4 +38,4 @@ out/
 
 
 ### secret key ###
-**/src/main/resources/hifes-83f33-firebase-adminsdk-fvbk6-1d84770099.json
+#**/src/main/resources/hifes-83f33-firebase-adminsdk-fvbk6-1d84770099.json
