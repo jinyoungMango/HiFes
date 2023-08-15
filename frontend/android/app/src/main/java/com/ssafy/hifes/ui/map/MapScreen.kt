@@ -6,7 +6,6 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.ExperimentalMaterialApi
@@ -30,19 +29,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.LayoutCoordinates
-import androidx.compose.ui.layout.layout
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.positionInParent
-import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraPosition
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
@@ -70,7 +61,6 @@ import com.ssafy.hifes.ui.theme.PrimaryPink
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.math.roundToInt
 
 
 private const val TAG = "MapScreen_하이페스"
@@ -110,7 +100,7 @@ fun MapScreen(
                 sheetContent = {
                     selectedFestival?.let { festival ->
                         // 추후 서버에서 가져온 score로 변경
-                        DialogContent(festival, 4.0) {
+                        DialogContent(festival) {
                             viewModel.getFestivalInfo(festival.festivalId)
                             navController.navigate(HifesDestinations.FESTIVAL_DETAIL)
                         }
@@ -141,7 +131,12 @@ fun MapScreen(
                         }
 
                         MapType.FESTIVAL -> {
-                            boothList.value?.let { booth -> BoothMap(booth, selectedBoothChip.value ?: 0) }
+                            boothList.value?.let { booth ->
+                                BoothMap(
+                                    booth,
+                                    selectedBoothChip.value ?: 0
+                                )
+                            }
                             ChipsSelectable(
                                 listOf(
                                     R.string.map_chip_total,

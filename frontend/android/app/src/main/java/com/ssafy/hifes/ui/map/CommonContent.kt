@@ -1,5 +1,6 @@
 package com.ssafy.hifes.ui.map
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -36,6 +37,7 @@ import com.ssafy.hifes.ui.theme.LightGrey
 import com.ssafy.hifes.ui.theme.pretendardFamily
 import com.ssafy.hifes.util.CommonUtils
 
+private const val TAG = "CommonContent_하이페스"
 @Preview(showBackground = true, backgroundColor = 0xFFFFFF)
 @Composable
 fun MapPreview() {
@@ -56,9 +58,8 @@ fun MapCard(festival: OrganizedFestivalDto, onClick: (OrganizedFestivalDto) -> U
         colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(8.dp)
     ) {
-        // score 나중에 서버에서 가져옴
         MapCommonContent(
-            festival, 4.0
+            festival
         )
     }
 }
@@ -66,9 +67,9 @@ fun MapCard(festival: OrganizedFestivalDto, onClick: (OrganizedFestivalDto) -> U
 @Composable
 fun DialogContent(
     festival: OrganizedFestivalDto,
-    score: Double,
     onClick: (OrganizedFestivalDto) -> Unit
 ) {
+    Log.d(TAG, "DialogContent: $festival")
     Spacer(modifier = Modifier.size(8.dp))
     Column(modifier = Modifier.clickable {
         onClick(festival)
@@ -89,14 +90,14 @@ fun DialogContent(
 
         Spacer(modifier = Modifier.size(8.dp))
         Divider(color = LightGrey, thickness = 2.dp)
-        MapCommonContent(festival = festival, score = score, false)
+        MapCommonContent(festival = festival, false)
     }
 
 
 }
 
 @Composable
-fun MapCommonContent(festival: OrganizedFestivalDto, score: Double, isViewPager: Boolean = true) {
+fun MapCommonContent(festival: OrganizedFestivalDto, isViewPager: Boolean = true) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.padding(12.dp)
@@ -122,7 +123,7 @@ fun MapCommonContent(festival: OrganizedFestivalDto, score: Double, isViewPager:
                 )
                 Spacer(modifier = Modifier.size(4.dp))
             }
-            StarScore(score)
+            StarScore(festival.avgRating)
             TextTitleWithContent(
                 title = "장소",
                 content = festival.fesAddress
