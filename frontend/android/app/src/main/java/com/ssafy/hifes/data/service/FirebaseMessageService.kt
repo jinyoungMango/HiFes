@@ -12,11 +12,12 @@ import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.ssafy.hifes.R
+import com.ssafy.hifes.data.local.AppPreferences
 import com.ssafy.hifes.ui.main.MainActivity
-import java.util.UUID
 
 
 private const val TAG = "FirebaseMessageService_싸피"
@@ -26,8 +27,13 @@ class FirebaseMessageService : FirebaseMessagingService() {
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-        Log.d(TAG, "onNewToken: $token")
-        //새 토큰 서버로 전송
+        AppPreferences.initFcmToken(token)
+    }
+
+    fun getFirebaseToken() {
+        FirebaseMessaging.getInstance().token.addOnSuccessListener {
+            AppPreferences.initFcmToken(it)
+        }
     }
 
     // Foreground, Background 모두 처리하기 위해서는 data에 값을 담아서 넘긴다.

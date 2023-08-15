@@ -15,6 +15,7 @@ object AppPreferences {
     private const val REFRESH_TOKEN = "refresh_token"
     private const val USER_ID = "user_id"
     private const val USER_NICKNAME = "user_nickname"
+    private const val FCM_TOKEN = "fcm_token"
 
 
     fun openSharedPreferences(context: Context) {
@@ -44,6 +45,14 @@ object AppPreferences {
 
     fun getUserNickname(): String? {
         return preferences.getString(USER_NICKNAME, "")
+    }
+
+    fun initFcmToken(fcmToken: String) {
+        preferences.edit().putString(FCM_TOKEN, fcmToken).commit()
+    }
+
+    fun getFcmToken(): String {
+        return preferences.getString(FCM_TOKEN, "") ?: ""
     }
 
 }
