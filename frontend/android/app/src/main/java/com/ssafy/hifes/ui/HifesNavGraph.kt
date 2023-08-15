@@ -3,6 +3,7 @@ package com.ssafy.hifes.ui
 import NavigationItem
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -18,10 +19,12 @@ import com.ssafy.hifes.ui.detail.FestivalDetail
 import com.ssafy.hifes.ui.group.GroupViewModel
 import com.ssafy.hifes.ui.group.create.GroupCreateScreen
 import com.ssafy.hifes.ui.group.info.GroupInfoScreen
+import com.ssafy.hifes.ui.group.info.chat.ChatViewModel
 import com.ssafy.hifes.ui.group.main.GroupMainScreen
 import com.ssafy.hifes.ui.home.HomeScreen
 import com.ssafy.hifes.ui.login.LoginDetailScreen
 import com.ssafy.hifes.ui.login.LoginScreen
+import com.ssafy.hifes.ui.login.LoginViewModel
 import com.ssafy.hifes.ui.main.MainViewModel
 import com.ssafy.hifes.ui.map.MapScreen
 import com.ssafy.hifes.ui.mypage.MyPageScreen
@@ -34,12 +37,14 @@ fun HifesNavGraph(
     navController: NavHostController = rememberNavController(),
     mainViewModel: MainViewModel,
     startDestination: String = HifesDestinations.LOGIN_ROUTE
-//    startDestination: String = NavigationItem.Map.screenRoute
+//    startDestination: String = NavigationItem.Home.screenRoute
 ) {
 
-    val boardViewModel: BoardViewModel = viewModel()
-    val groupViewModel: GroupViewModel = viewModel()
-    val detailViewModel: DetailViewModel = viewModel()
+    val boardViewModel: BoardViewModel = hiltViewModel()
+    val groupViewModel: GroupViewModel = hiltViewModel()
+    val detailViewModel: DetailViewModel = hiltViewModel()
+    val loginViewModel: LoginViewModel = hiltViewModel()
+    val chatViewModel: ChatViewModel = hiltViewModel()
 
     NavHost(
         navController = navController,
@@ -53,22 +58,26 @@ fun HifesNavGraph(
             MapScreen(navController, mainViewModel, detailViewModel)
         }
         composable(NavigationItem.Group.screenRoute) {
-            GroupMainScreen(navController, groupViewModel)
+            GroupMainScreen(navController, groupViewModel, mainViewModel)
         }
         composable(
             route = HifesDestinations.LOGIN_ROUTE
         ) {
-            LoginScreen(navController = navController)
+            LoginScreen(navController = navController, loginViewModel)
         }
         composable(
             route = HifesDestinations.LOGIN_DETAIL_ROUTE
         ) {
-            LoginDetailScreen(navController = navController)
+            LoginDetailScreen(navController = navController, loginViewModel)
         }
         composable(
             route = HifesDestinations.FESTIVAL_DETAIL
         ) {
-            FestivalDetail(navController = navController, viewModel = mainViewModel)
+            FestivalDetail(
+                navController = navController,
+                viewModel = mainViewModel,
+                detailViewModel = detailViewModel
+            )
         }
         composable(
             route = HifesDestinations.PARTICIPATED_FEST_ROUTE
@@ -94,7 +103,11 @@ fun HifesNavGraph(
         composable(
             route = HifesDestinations.GROUP_CREATE
         ) {
-            GroupCreateScreen(navController = navController)
+            GroupCreateScreen(
+                navController = navController,
+                viewModel = groupViewModel,
+                mainViewModel = mainViewModel
+            )
         }
         composable(
             route = HifesDestinations.POST_WRITE_ROUTE
@@ -104,7 +117,7 @@ fun HifesNavGraph(
         composable(
             route = HifesDestinations.GROUP_DETAIL
         ) {
-            GroupInfoScreen(navController = navController, viewModel = groupViewModel)
+            GroupInfoScreen(navController = navController, groupViewModel = groupViewModel, chatViewModel = chatViewModel)
         }
     }
 }

@@ -9,6 +9,8 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.io.File
 import java.io.FileOutputStream
+import java.util.Calendar
+import java.util.UUID
 
 object FileUtil {
     // 임시 파일 생성
@@ -47,7 +49,16 @@ object UriUtil {
     // get file name & extension
     fun getFileName(context: Context, uri: Uri): String {
         //val name = uri.toString().split("/").last()
-        val name = "uritoimage"
+        val uuid = UUID.randomUUID()
+        val cal = Calendar.getInstance()
+        val name = cal.get(Calendar.YEAR).toString() +
+                cal.get(Calendar.MONTH + 1).toString() +
+                cal.get(Calendar.DATE).toString() +
+                cal.get(Calendar.HOUR).toString() +
+                cal.get(Calendar.MINUTE).toString() +
+                cal.get(Calendar.SECOND).toString() +
+                uuid.toString() +
+                "mobile"
         val ext = context.contentResolver.getType(uri)!!.split("/").last()
 
         return "$name.$ext"
@@ -57,6 +68,6 @@ object UriUtil {
 object MultipartUtil {
     fun getImageBody(file: File): MultipartBody.Part {
         val requestFile = RequestBody.create("multipart/form-data".toMediaTypeOrNull(), file)
-        return MultipartBody.Part.createFormData("files", file.name, requestFile)
+        return MultipartBody.Part.createFormData("image", file.name, requestFile)
     }
 }

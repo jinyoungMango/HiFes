@@ -16,6 +16,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 
 @Configuration
@@ -39,24 +40,12 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .antMatchers("host/sign-up").permitAll()
                 .antMatchers("host/login").permitAll()
-                .antMatchers("group/delete").permitAll()
-                .antMatchers("group/create").permitAll()
+                .antMatchers( "/swagger-ui/**", "/v3/api-docs/").permitAll()
                 .antMatchers("/","/css/**","/images/**","/js/**","/favicon.ico").permitAll();
 
 
         return http.build();
     }
-
-    @Bean
-    public LoginSuccessHandler loginSuccessHandler() {
-        return new LoginSuccessHandler(jwtService, hostUserRepository, normalUserRepository);
-    }
-
-    @Bean
-    public LoginFailureHandler loginFailureHandler() {
-        return new LoginFailureHandler();
-    }
-
 
 
 

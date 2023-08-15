@@ -1,5 +1,7 @@
 package hiFes.hiFes.controller.user;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 import hiFes.hiFes.domain.user.NormalUser;
 import hiFes.hiFes.dto.user.NormalUserSignUpDto;
@@ -17,6 +19,7 @@ import java.util.Objects;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api")
 public class NormalUserController {
     private final NormalUserService normalUserService;
     private final NormalUserRepository normalUserRepository;
@@ -24,9 +27,8 @@ public class NormalUserController {
 
     @CrossOrigin(origins = "*")
     @PostMapping("normal/signUp")
-    public JsonObject signUp(@RequestBody NormalUserSignUpDto normalUserSignUpDto,  @RequestPart("image") MultipartFile image) throws Exception{
+    public JsonObject signUp(@RequestPart(value = "normalUserSignUpDto") NormalUserSignUpDto normalUserSignUpDto, @RequestPart(value = "image")  MultipartFile image) throws Exception{
         String accessToken = normalUserSignUpDto.getAccessToken();
-
         Map<String, Object> context =  normalUserService.searchKakaoUser(accessToken);
 
         normalUserService.signUp(normalUserSignUpDto, context, image);
@@ -35,6 +37,7 @@ public class NormalUserController {
         JsonObject loginSuccess = normalUserService.login((String) context.get("email"));
         loginSuccess.addProperty("result", true);
         loginSuccess.addProperty("id",  normalUserService.getByEmail((String) context.get("email")).getId());
+        loginSuccess.addProperty("nickname", normalUserService.getByEmail((String) context.get("email")).getNickname());
         return loginSuccess;
 
     }
@@ -53,6 +56,7 @@ public class NormalUserController {
             JsonObject loginSuccess = normalUserService.login((String) context.get("email"));
             loginSuccess.addProperty("id",  String.valueOf(normalUserService.getByEmail((String) context.get("email")).getId()));
             loginSuccess.addProperty("result", true);
+            loginSuccess.addProperty("nickname", normalUserService.getByEmail((String) context.get("email")).getNickname());
 
             return loginSuccess;
         }
@@ -62,19 +66,25 @@ public class NormalUserController {
         loginFail.addProperty("refreshToken", "");
         loginFail.addProperty("result", false);
         loginFail.addProperty("id", "");
+        loginFail.addProperty("nickname", "");
         return loginFail;
 
     }
 
     @CrossOrigin(origins = "*")
     @PostMapping("normal/fcmSave")
-    public Boolean fcmSave(HttpServletRequest request, String fcmToken){
+    public Boolean fcmSave(HttpServletRequest request,@RequestBody String fcmTokenJson){
         try{
-            String accessToken = jwtService.extractAccessToken(request).orElse("");
+            String accessToken = request.getHeader("accessToken");
             String email = jwtService.extractEmail(accessToken).orElse("");
             NormalUser user = normalUserService.getByEmail(email);
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode jsonNode = objectMapper.readTree(fcmTokenJson);
+            String fcmToken = jsonNode.get("fcmToken").asText();
 
-            user.updateFCMToken(fcmToken);
+            user.setFirebaseToken(fcmToken);
+            System.out.println(fcmToken);
+            normalUserRepository.save(user);
 
             return true;
         }
@@ -88,7 +98,7 @@ public class NormalUserController {
     @ResponseBody
     @PostMapping("normal/myPage")
     public JsonObject myPage(HttpServletRequest request){
-        String accessToken = jwtService.extractAccessToken(request).orElse("");
+        String accessToken = request.getHeader("accessToken");
         String email = jwtService.extractEmail(accessToken).orElse("");
         NormalUser user = normalUserService.getByEmail(email);
         JsonObject info =new JsonObject();
@@ -96,7 +106,7 @@ public class NormalUserController {
         info.addProperty("email", email);
         info.addProperty("name", user.getName());
         info.addProperty("nickname", user.getNickname());
-        info.addProperty("orgCode", user.getProfilePic());
+        info.addProperty("ProfilePic", user.getProfilePic());
 
         return info;
 

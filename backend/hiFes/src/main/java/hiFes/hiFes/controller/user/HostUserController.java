@@ -15,6 +15,9 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api")
+@CrossOrigin(origins = "*")
+
 public class HostUserController {
     private final HostUserService hostUserService;
     private final HostUserRepository hostUserRepository;
@@ -22,8 +25,8 @@ public class HostUserController {
     private final JwtService jwtService;
 
 
-    @CrossOrigin(origins = "*")
     @PostMapping("host/sign-up")
+    @CrossOrigin("*")
     public JsonObject  signUp(@RequestBody HostUserSignUpDto hostUserSignUpDto) throws Exception{
         String accessToken = hostUserSignUpDto.getAccessToken();
         Map<String, Object> context =  hostUserService.searchKakaoUser(accessToken);
@@ -36,9 +39,9 @@ public class HostUserController {
         return loginSuccess;
     }
 
-    @CrossOrigin(origins = "*")
     @PostMapping("host/login")
     @ResponseBody
+    @CrossOrigin("*")
     public Object login(@RequestBody Map<String, String> accessToken ) throws Exception{
         System.out.println(accessToken.get("accessToken") + "++++++++++++++++++++++++++++++++++++++++++++");
         Map<String, Object> context =  hostUserService.searchKakaoUser(accessToken.get("accessToken"));
@@ -71,12 +74,12 @@ public class HostUserController {
 //        return "logout success";
 //    }
 
-    @CrossOrigin(origins = "*")
     @ResponseBody
     @PostMapping("host/myPage")
+    @CrossOrigin("*")
     public JsonObject myPage(HttpServletRequest request){
         String email = jwtService.extractEmail(request.getHeader("accessToken")).orElse("");
-        System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" + email);
+//        String email = jwtService.extractEmail("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJSZWZyZXNoVG9rZW4iLCJleHAiOjE2OTI5MzYzNTcsImVtYWlsIjoibGVlaHl1bms2MzEwQG5hdmVyLmNvbSJ9.z55wfot9yO7wSinMaVy8OttFKr0Mv9HgxITUl4CO81f-gFetoKfDjnqeyh6EQVmOkHHj5kpmROdimUFuOQ1Spg").orElse("");
         HostUser user = hostUserService.getByEmail(email);
 //        HostUser user = hostUserService.getById(id);
         JsonObject info =new JsonObject();
@@ -86,10 +89,7 @@ public class HostUserController {
 
         info.addProperty("email", user.getEmail());
         info.addProperty("name", user.getName());
-        info.addProperty("orgNo", user.getOrg_no());
-        info.addProperty("orgCode", user.getOrg_code());
         info.addProperty("organization", user.getOrganization());
-        info.addProperty("phoneNo2", user.getPhone_no());
         info.addProperty("phoneNo", user.getPhoneNo());
 
         return info;

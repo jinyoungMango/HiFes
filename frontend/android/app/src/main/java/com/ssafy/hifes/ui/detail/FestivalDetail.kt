@@ -3,7 +3,9 @@ package com.ssafy.hifes.ui.detail
 import NavigationItem
 import android.content.ActivityNotFoundException
 import android.content.Context
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -51,7 +53,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.kakao.sdk.common.util.KakaoCustomTabsClient
 import com.kakao.sdk.share.ShareClient
@@ -78,22 +79,29 @@ import com.ssafy.hifes.ui.iconpack.myiconpack.Imagenotfound
 import com.ssafy.hifes.ui.main.MainViewModel
 import com.ssafy.hifes.ui.map.StarScore
 import com.ssafy.hifes.ui.theme.pretendardFamily
-import com.ssafy.hifes.util.CommonUtils.formatSqlDateToString
+import com.ssafy.hifes.util.CommonUtils
 
 
 private const val TAG = "FestivalDetail_하이페스"
-@OptIn(ExperimentalNaverMapApi::class)
+
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun FestivalDetail(navController: NavHostController, viewModel: MainViewModel) {
-    val selectedFestival = viewModel.selectedFestival.observeAsState()
+fun FestivalDetail(
+    navController: NavHostController,
+    viewModel: MainViewModel,
+    detailViewModel: DetailViewModel
+) {
+    val festivalInfo = viewModel.festivalInfo.observeAsState()
+    val festivalTimeTable = detailViewModel.timeTableList.observeAsState()
     val context = LocalContext.current
-    if (selectedFestival.value != null) {
-        val festivalData = selectedFestival.value
+    if (festivalInfo.value != null) {
+        val festivalData = festivalInfo.value
         Column(
             Modifier
                 .verticalScroll(rememberScrollState())
         ) {
             if (festivalData != null) {
+                detailViewModel.getTimeTableList(festivalData.festivalId)
                 Box {
                     AsyncImage(
                         model = festivalData.fesPosterPath,
@@ -114,6 +122,7 @@ fun FestivalDetail(navController: NavHostController, viewModel: MainViewModel) {
                     ) {
                         DetailIcons(painterResource(R.drawable.icon_map)) {
                             viewModel.updateMapTypeFestival()
+                            detailViewModel.getMarkerList(festivalData.festivalId)
                             navController.navigate(
                                 NavigationItem.Map.screenRoute
                             )
@@ -136,7 +145,10 @@ fun FestivalDetail(navController: NavHostController, viewModel: MainViewModel) {
                         shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
                         shadowElevation = 2.dp
                     ) {
-                        Column(modifier = Modifier.padding(start = 12.dp, end = 12.dp)) {
+                        Column(
+                            modifier = Modifier
+                                .padding(start = 12.dp, end = 12.dp)
+                        ) {
                             Spacer(modifier = Modifier.size(4.dp))
                             Row(
                                 verticalAlignment = Alignment.Top,
@@ -145,11 +157,15 @@ fun FestivalDetail(navController: NavHostController, viewModel: MainViewModel) {
                                     .fillMaxWidth()
                                     .padding(top = 4.dp, end = 8.dp, bottom = 6.dp)
                             ) {
-                                navigateToMeetingScreen("12개", navController) // 추후 서버에서 가져옴
+                                navigateToMeetingScreen(
+                                    "${festivalData.countGroups}개",
+                                    navController,
+                                    viewModel
+                                ) // 추후 서버에서 가져옴
                             }
                             DetailTitle(festivalData.fesTitle)
 
-                            StarScore(score = 4.0)
+                            StarScore(score = festivalData.avgRating)
 
 
                             Spacer(modifier = Modifier.size(12.dp))
@@ -163,9 +179,11 @@ fun FestivalDetail(navController: NavHostController, viewModel: MainViewModel) {
                         Spacer(modifier = Modifier.size(12.dp))
                         DetailCommonContent(
                             title = "일정",
-                            content1 = formatSqlDateToString(festivalData.fesStartDate),
-                            content2 = formatSqlDateToString(festivalData.fesEndDate)
+                            content1 = CommonUtils.formatFestivalDateToString(festivalData.fesStartDate),
+                            content2 = CommonUtils.formatFestivalDateToString(festivalData.fesEndDate)
                         )
+                        Spacer(modifier = Modifier.size(12.dp))
+                        festivalTimeTable.value?.let { ScheduleDisplay(it) }
                         Spacer(modifier = Modifier.size(12.dp))
                         DetailCommonContent(title = "장소", address = "주소")
                         Spacer(modifier = Modifier.size(12.dp))
@@ -178,8 +196,8 @@ fun FestivalDetail(navController: NavHostController, viewModel: MainViewModel) {
                         // 추후 서버에서 가져온 데이터로 변경
                         DetailCommonContent(
                             title = "주최",
-                            content1 = "대구광역시",
-                            content2 = "053 - 248 - 9998"
+                            content1 = festivalData.hostName,
+                            content2 = CommonUtils.formatPhoneNumber(festivalData.hostPhoneNo)
                         )
                         Spacer(modifier = Modifier.size(24.dp))
                     }
@@ -195,7 +213,7 @@ fun FestivalDetail(navController: NavHostController, viewModel: MainViewModel) {
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
 fun FestivalDetailPrev() {
-    FestivalDetail(navController = rememberNavController(), MainViewModel())
+//    FestivalDetail(navController = rememberNavController(), MainViewModel())
 }
 
 fun kakaoShare(festival: OrganizedFestivalDto, context: Context) {
@@ -206,7 +224,7 @@ fun kakaoShare(festival: OrganizedFestivalDto, context: Context) {
             description = festival.fesOutline,
             imageUrl = festival.fesPosterPath,
             link = Link(
-                webUrl ="kakao$apiKey://kakaolink",
+                webUrl = "kakao$apiKey://kakaolink",
                 mobileWebUrl = "kakao$apiKey://kakaolink"
             )
         ),
@@ -236,8 +254,7 @@ fun kakaoShare(festival: OrganizedFestivalDto, context: Context) {
         ShareClient.instance.shareDefault(context, defaultFeed) { sharingResult, error ->
             if (error != null) {
                 Log.e(TAG, "카카오톡 공유 실패", error)
-            }
-            else if (sharingResult != null) {
+            } else if (sharingResult != null) {
                 Log.d(TAG, "카카오톡 공유 성공 ${sharingResult.intent}")
                 context.startActivity(sharingResult.intent)
 
@@ -257,7 +274,7 @@ fun kakaoShare(festival: OrganizedFestivalDto, context: Context) {
         // ex) Chrome, 삼성 인터넷, FireFox, 웨일 등
         try {
             KakaoCustomTabsClient.openWithDefault(context, sharerUrl)
-        } catch(e: UnsupportedOperationException) {
+        } catch (e: UnsupportedOperationException) {
             // CustomTabsServiceConnection 지원 브라우저가 없을 때 예외처리
         }
 
@@ -276,7 +293,7 @@ fun kakaoShare(festival: OrganizedFestivalDto, context: Context) {
 fun FestivalLocation(lat: Double, lng: Double, title: String) {
     val festivalLatLng = LatLng(lat, lng)
     val cameraPositionState: CameraPositionState = rememberCameraPositionState {
-        position = CameraPosition(festivalLatLng, 14.0)
+        position = CameraPosition(festivalLatLng, 13.0)
     }
     NaverMap(
         modifier = Modifier
@@ -367,9 +384,10 @@ fun DetailContent(
 
 
 @Composable
-fun navigateToMeetingScreen(count: String, navController: NavController) {
+fun navigateToMeetingScreen(count: String, navController: NavController, viewModel: MainViewModel) {
     OutlinedButton(
         onClick = {
+            viewModel.updateGroupScreenTypeFestival()
             navController.navigate(NavigationItem.Group.screenRoute)
         },
         modifier = Modifier.height(36.dp),

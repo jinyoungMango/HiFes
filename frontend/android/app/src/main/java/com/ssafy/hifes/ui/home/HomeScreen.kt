@@ -1,6 +1,7 @@
 package com.ssafy.hifes.ui.home
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -25,6 +26,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,9 +44,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.ssafy.hifes.R
+import com.ssafy.hifes.data.model.DateDto
 import com.ssafy.hifes.data.model.OrganizedFestivalDto
 import com.ssafy.hifes.ui.HifesDestinations
 import com.ssafy.hifes.ui.iconpack.MyIconPack
@@ -52,11 +54,25 @@ import com.ssafy.hifes.ui.iconpack.myiconpack.Imagenotfound
 import com.ssafy.hifes.ui.main.MainViewModel
 import com.ssafy.hifes.ui.theme.pretendardFamily
 
+private const val TAG = "HomeScreen_하이페스"
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HomeScreen(navController: NavController, viewModel: MainViewModel) {
     val festivalList = viewModel.festivalList.observeAsState()
+    val randomFestivalList = viewModel.randomFestivalList.observeAsState()
+    val context = LocalContext.current
+    LaunchedEffect(Unit) {
+        val location = viewModel.fetchCurrentLocation(context)
+        location?.let {
+            val curLat = location.latitude
+            val curLon = location.longitude
+            Log.d(TAG, "HomeScreen: $curLat, $curLon")
+
+            viewModel.getNearFestivalList(curLat, curLon)
+            viewModel.getRandomFestivalList()
+        }
+    }
 
     val nearestFestival: OrganizedFestivalDto?
     val nearFestivalList: List<OrganizedFestivalDto>
@@ -64,7 +80,21 @@ fun HomeScreen(navController: NavController, viewModel: MainViewModel) {
         nearestFestival = festivalList.value!!.first()
         nearFestivalList = festivalList.value!!.drop(1)
     } else {
-        nearestFestival = OrganizedFestivalDto()
+        nearestFestival = OrganizedFestivalDto(
+            0,
+            "",
+            "",
+            "",
+            "",
+            DateDto(0, 0, 0),
+            DateDto(0, 0, 0),
+            0.0,
+            0.0,
+            0.0,
+            0,
+            "",
+            ""
+        )
         nearFestivalList = emptyList()
     }
 
@@ -80,7 +110,7 @@ fun HomeScreen(navController: NavController, viewModel: MainViewModel) {
         ) {
             HomeGreeting(stringResource(id = R.string.home_greeting))
             Column(modifier = Modifier.clickable {
-                viewModel.getFestivalDetail(nearestFestival)
+                viewModel.getFestivalInfo(nearestFestival.festivalId)
                 navController.navigate(HifesDestinations.FESTIVAL_DETAIL)
             }) {
                 HomeFestivalImage(nearestFestival)
@@ -104,7 +134,7 @@ fun HomeScreen(navController: NavController, viewModel: MainViewModel) {
                             .height(240.dp),
                         nearFestivalList[index]
                     ) { fesData ->
-                        viewModel.getFestivalDetail(fesData)
+                        viewModel.getFestivalInfo(fesData.festivalId)
                         navController.navigate(HifesDestinations.FESTIVAL_DETAIL)
                     }
                     Spacer(modifier = Modifier.size(4.dp))
@@ -114,10 +144,12 @@ fun HomeScreen(navController: NavController, viewModel: MainViewModel) {
             Spacer(modifier = Modifier.size(24.dp))
             HomeMiddleText(stringResource(id = R.string.home_bottom_ment))
             Spacer(modifier = Modifier.size(8.dp))
-            // 추후에 서버를 연결 후 전체 FestivalList를 전달한다.
-            RandomFestivalsRow(nearFestivalList) { fesData ->
-                viewModel.getFestivalDetail(fesData)
-                navController.navigate(HifesDestinations.FESTIVAL_DETAIL)
+
+            randomFestivalList.value?.let { festival ->
+                RandomFestivalsRow(festival) { fesData ->
+                    viewModel.getFestivalInfo(fesData.festivalId)
+                    navController.navigate(HifesDestinations.FESTIVAL_DETAIL)
+                }
             }
 
         }
@@ -131,17 +163,14 @@ fun RandomFestivalsRow(
     festivalList: List<OrganizedFestivalDto>,
     onClick: (OrganizedFestivalDto) -> Unit
 ) {
-    // 랜덤으로 리스트를 섞은 후 3개의 항목을 선택
-    val randomFestivals = festivalList.shuffled().take(3)
-
     val context = LocalContext.current
     val displayMetrics = context.resources.displayMetrics
     val screenWidth = displayMetrics.widthPixels / LocalDensity.current.density
     val spacerWidth = 8 // Spacer의 너비
     val sidePadding = 16 // start와 end에 추가할 padding
 
-    val availableWidth = screenWidth - 2 * sidePadding - (randomFestivals.size - 1) * spacerWidth
-    val itemWidth = availableWidth / randomFestivals.size
+    val availableWidth = screenWidth - 2 * sidePadding - (festivalList.size - 1) * spacerWidth
+    val itemWidth = availableWidth / festivalList.size
 
     Row(
         modifier = Modifier
@@ -149,7 +178,7 @@ fun RandomFestivalsRow(
             .padding(start = sidePadding.dp, end = sidePadding.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        randomFestivals.forEachIndexed { index, festival ->
+        festivalList.forEachIndexed { index, festival ->
             RoundedImageWithText(
                 modifier = Modifier
                     .width(itemWidth.dp)
@@ -159,7 +188,7 @@ fun RandomFestivalsRow(
             )
 
             // 마지막 항목이 아닐 때만 Spacer 추가
-            if (index < randomFestivals.size - 1) {
+            if (index < festivalList.size - 1) {
                 Spacer(modifier = Modifier.width(spacerWidth.dp))
             }
         }
@@ -214,7 +243,7 @@ fun RoundedImageWithText(
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
 @Composable
 fun HomeCardPrev() {
-    HomeScreen(navController = rememberNavController(), viewModel = MainViewModel())
+//    HomeScreen(navController = rememberNavController(), viewModel = MainViewModel())
 }
 
 @Composable

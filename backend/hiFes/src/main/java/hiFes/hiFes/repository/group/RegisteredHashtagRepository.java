@@ -9,4 +9,5 @@ import java.util.List;
 
 public interface RegisteredHashtagRepository extends JpaRepository<RegisteredHashtag, Long> {
     List<RegisteredHashtag> findByHashtagTitleContaining(String searchTag);
+    List<RegisteredHashtag> findByGroupId(Long groupId);
 }
