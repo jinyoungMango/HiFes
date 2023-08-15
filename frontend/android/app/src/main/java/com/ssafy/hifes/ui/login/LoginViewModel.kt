@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import com.ssafy.hifes.data.local.AppPreferences
 import com.ssafy.hifes.data.model.Event
+import com.ssafy.hifes.data.model.FcmTokenDto
 import com.ssafy.hifes.data.model.LoginResponse
 import com.ssafy.hifes.data.model.NormalUserSignUpDto
 import com.ssafy.hifes.data.repository.user.UserRepository
@@ -19,7 +20,6 @@ import com.ssafy.hifes.util.network.NetworkResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import javax.inject.Inject
 
@@ -34,6 +34,9 @@ class LoginViewModel @Inject constructor(
 
     private val _msg = MutableLiveData<Event<String>>()
     val errorMsg: LiveData<Event<String>> = _msg
+
+    private val _msgFcmSave = MutableLiveData<Event<String>>()
+    val msgFcmSave: LiveData<Event<String>> = _msgFcmSave
 
     private val _loginResponse = MutableLiveData<LoginResponse>()
     val loginResponse: LiveData<LoginResponse> = _loginResponse
@@ -53,15 +56,15 @@ class LoginViewModel @Inject constructor(
                 }
 
                 is NetworkResponse.ApiError -> {
-                    postValueEvent(0, type)
+                    postValueEvent(0, type, _msg)
                 }
 
                 is NetworkResponse.NetworkError -> {
-                    postValueEvent(1, type)
+                    postValueEvent(1, type, _msg)
                 }
 
                 is NetworkResponse.UnknownError -> {
-                    postValueEvent(2, type)
+                    postValueEvent(2, type, _msg)
                 }
             }
         }
@@ -74,7 +77,8 @@ class LoginViewModel @Inject constructor(
         val normalUserSignUpDto = NormalUserSignUpDto(nickname, kakaoAccessToken)
         viewModelScope.launch {
             val requestBody =
-                gson.toJson(normalUserSignUpDto).toRequestBody("application/json".toMediaTypeOrNull())
+                gson.toJson(normalUserSignUpDto)
+                    .toRequestBody("application/json".toMediaTypeOrNull())
             val response = repository.signUp(requestBody, profilePic)
             Log.d(TAG, "signUp: $response")
             val type = "token 정보 조회에"
@@ -86,21 +90,57 @@ class LoginViewModel @Inject constructor(
                 }
 
                 is NetworkResponse.ApiError -> {
-                    postValueEvent(0, type)
+                    postValueEvent(0, type, _msg)
                 }
 
                 is NetworkResponse.NetworkError -> {
-                    postValueEvent(1, type)
+                    postValueEvent(1, type, _msg)
                 }
 
                 is NetworkResponse.UnknownError -> {
-                    postValueEvent(2, type)
+                    postValueEvent(2, type, _msg)
                 }
             }
         }
     }
 
-    private fun postValueEvent(value: Int, type: String) {
+    fun saveFcmToken() {
+        viewModelScope.launch {
+            val type = "알림 토큰 저장에"
+            var fcmToken = AppPreferences.getFcmToken()
+
+            if (fcmToken == "") {
+                postValueEvent(2, type, _msgFcmSave)
+            } else {
+                val response = repository.saveFcmToken(FcmTokenDto(fcmToken))
+
+                when (response) {
+                    is NetworkResponse.Success -> {
+
+                    }
+
+                    is NetworkResponse.ApiError -> {
+                        postValueEvent(0, type, _msgFcmSave)
+                    }
+
+                    is NetworkResponse.NetworkError -> {
+                        postValueEvent(1, type, _msgFcmSave)
+                    }
+
+                    is NetworkResponse.UnknownError -> {
+                        postValueEvent(2, type, _msgFcmSave)
+                    }
+                }
+            }
+
+        }
+    }
+
+    private fun postValueEvent(
+        value: Int,
+        type: String,
+        mutableLiveData: MutableLiveData<Event<String>>
+    ) {
         val msgArrayList = arrayOf(
             "Api 오류 : $type 실패했습니다.",
             "서버 오류 : $type 실패했습니다.",
@@ -108,9 +148,9 @@ class LoginViewModel @Inject constructor(
         )
 
         when (value) {
-            0 -> _msg.postValue(Event(msgArrayList[0]))
-            1 -> _msg.postValue(Event(msgArrayList[1]))
-            2 -> _msg.postValue(Event(msgArrayList[2]))
+            0 -> mutableLiveData.postValue(Event(msgArrayList[0]))
+            1 -> mutableLiveData.postValue(Event(msgArrayList[1]))
+            2 -> mutableLiveData.postValue(Event(msgArrayList[2]))
         }
     }
 }

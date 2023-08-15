@@ -1,6 +1,7 @@
 package com.ssafy.hifes.data.repository.user
 
 import com.ssafy.hifes.data.model.ErrorResponse
+import com.ssafy.hifes.data.model.FcmTokenDto
 import com.ssafy.hifes.data.model.LoginResponse
 import com.ssafy.hifes.data.remote.ApiService
 import com.ssafy.hifes.util.network.NetworkResponse
@@ -20,6 +21,10 @@ class UserRepositoryImpl @Inject constructor(
         image: MultipartBody.Part
     ): NetworkResponse<LoginResponse, ErrorResponse> {
         return apiService.signUp(normalUserSignUpDto, image)
+    }
+
+    override suspend fun saveFcmToken(fcmToken: FcmTokenDto): NetworkResponse<Boolean, ErrorResponse> {
+        return apiService.saveFcmToken(fcmToken)
     }
 
 
