@@ -1,6 +1,7 @@
 package com.ssafy.hifes.data.model
 
 data class OrganizedFestivalDto(
+    var festivalId: Int,
     var fesTitle: String,
     var fesOutline: String,
     var fesAddress: String,
@@ -9,5 +10,8 @@ data class OrganizedFestivalDto(
     var fesEndDate: DateDto,
     var fesLatitude: Double,
     var fesLongitude: Double,
-    var festivalId: Int
+    var avgRating : Double,
+    var countGroups : Int,
+    var hostName : String,
+    var hostPhoneNo : String
 )

@@ -7,6 +7,7 @@ import com.ssafy.hifes.data.model.LoginResponse
 import com.ssafy.hifes.data.model.MarkerDto
 import com.ssafy.hifes.data.model.OrganizedFestivalDto
 import com.ssafy.hifes.data.model.SharedPicDto
+import com.ssafy.hifes.data.model.TimeTable
 import com.ssafy.hifes.util.network.NetworkResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -62,4 +63,7 @@ interface ApiService {
         @Part("groupCreateDto") groupCreateDto: RequestBody,
         @Part image: MultipartBody.Part
     ): NetworkResponse<String, ErrorResponse>
+
+    @GET("festival/{festivalId}/festivalTables")
+    suspend fun getFestivalTimeTable(@Path("festivalId") festivalId: Int): NetworkResponse<List<TimeTable>, ErrorResponse>
 }
