@@ -1,11 +1,15 @@
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:web/common.dart';
 
+import '../MainController.dart';
 import '../constants.dart';
 import 'PostDto.dart';
+import 'PostWithCommentDto.dart';
 import 'board.dart';
 
 class FreePage extends StatefulWidget {
@@ -14,6 +18,37 @@ class FreePage extends StatefulWidget {
 }
 
 class _FreePageState extends State<FreePage> {
+
+  final MainController _mainController =
+  Get.find<MainController>(tag: 'MainController');
+  late PostWithCommentDto free = PostWithCommentDto.empty();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    // 게시글 정보 가져오기
+    Future.delayed(Duration.zero, () async {
+      var url = dotenv.env['YOUR_SERVER_URL']! +
+          'api/post/get/${_mainController.pid.value}';
+
+      // 공지 정보 받아오기
+      var response = await Dio().get(url);
+
+      if (response.statusCode == 200) {
+        // print('Request succeeded: ${response.data}');
+        // 사용자 정보 json을 파싱해서 토큰 저장
+        setState(() {
+          free = PostWithCommentDto.fromJson(response.data);
+        });
+      } else {
+        // 요청 실패 처리
+        print('Request failed with status: ${response.statusCode}');
+        print('Error message: ${response.data}');
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,7 +59,7 @@ class _FreePageState extends State<FreePage> {
             width: 800,
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [FreeItem(context)]),
+                children: [FreeItem(context, free)]),
           ),
         ),
       )
@@ -32,11 +67,10 @@ class _FreePageState extends State<FreePage> {
   }
 }
 
-Column FreeItem(BuildContext context) {
+Column FreeItem(BuildContext context, PostWithCommentDto free) {
   return Column(
     children: [
       SizedBox(height: 40,),
-
       Material(
         elevation: 4,
         borderRadius: BorderRadius.circular(8),
@@ -48,7 +82,7 @@ Column FreeItem(BuildContext context) {
                 SizedBox(height: 40,),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [Text("질문입니다", style: TextStyle(fontSize: 20),), Text("조회수")],
+                  children: [Text("${free.title}", style: TextStyle(fontSize: 20),), Text("조회수 ${free.views}")],
                 ),
                 SizedBox(height: 10,),
                 Divider(
@@ -59,13 +93,23 @@ Column FreeItem(BuildContext context) {
 
                 Align(
                   alignment: Alignment.topLeft,
-                  child: Text("내용입니다"),
+                  child: Text("${free.content}"),
                 ),
                 SizedBox(
                   height: 40,
                 ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [Text("${free.createdAt.date}"),
+                        Container(child: Text("${free.createdAt.time}"))],
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     ElevatedButton(
                         style: ButtonStyle(
@@ -78,18 +122,13 @@ Column FreeItem(BuildContext context) {
                           showDialog(
                               context: context,
                               builder: (BuildContext context) {
-                                return CommentDialog(context);
+                                return RemovePostDialog(context, free);
                               });
                         },
                         child: Text(
-                          "답변하기",
+                          "삭제하기",
                           style: TextStyle(color: Colors.white, fontSize: 16),
                         )),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [Text("2023-08-09"),
-                        Container(child: Text("00:00"))],
-                    ),
                   ],
                 ),
                 SizedBox(
@@ -102,7 +141,15 @@ Column FreeItem(BuildContext context) {
                 SizedBox(
                   height: 20,
                 ),
-
+                // 댓글, 대댓글 가져오기
+                for (var comment in free.topLevelComments)
+                  Column(
+                    children: [
+                      Comment(context, comment, free.postType),
+                      for (var reply in comment.childComments)
+                        Reply(context, reply, free.postType)
+                    ],
+                  )
               ],
             ),
           ),
@@ -115,7 +162,7 @@ Column FreeItem(BuildContext context) {
   );
 }
 
-Expanded FreeBoardList(List<PostDto> free) {
+Expanded FreeBoardList(BuildContext context, List<PostDto> free, MainController _mainController) {
   return Expanded(
     child: Column(
       children: [
@@ -128,16 +175,17 @@ Expanded FreeBoardList(List<PostDto> free) {
           ]),
         ),
         Column(
-            children : free.map((post) => FreePostItem(post)).toList()
+            children : free.map((post) => FreePostItem(post, _mainController)).toList()
         )
       ],
     ),
   );
 }
 
-InkWell FreePostItem(PostDto free) {
+InkWell FreePostItem(PostDto free, MainController _mainController) {
   return InkWell(
     onTap: () {
+      _mainController.pid.value = free.id;
       Get.rootDelegate.toNamed(Routes.FREE);
     },
     child: Container(

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -8,10 +10,11 @@ import 'package:web/board/PostWithCommentDto.dart';
 import 'package:web/board/freeboard.dart';
 import 'package:web/board/reviewboard.dart';
 import 'package:web/common.dart';
-
+import 'package:http/http.dart' as http;
 import '../MainController.dart';
 import '../constants.dart';
 import 'askboard.dart';
+import 'package:http_parser/http_parser.dart'; // MediaType import 추가
 import 'noticeboard.dart';
 
 class Board extends StatefulWidget {
@@ -20,18 +23,15 @@ class Board extends StatefulWidget {
 }
 
 class _BoardState extends State<Board> {
-
-  String selectedValue = '공지';
-  final MainController _mainController = Get.find<MainController>(
-      tag: 'MainController');
+  String selectedValue = '자유';
+  final MainController _mainController =
+      Get.find<MainController>(tag: 'MainController');
 
   // 공지, 질문, 자유, 후기글을 종류별로 리스트에 담는다.
   List<PostDto> notice = [];
   List<PostDto> ask = [];
   List<PostDto> free = [];
   List<PostDto> review = [];
-
-  //
 
   @override
   void initState() {
@@ -67,9 +67,7 @@ class _BoardState extends State<Board> {
         print('Error message: ${response.data}');
       }
     }).then((value) {
-      setState(() {
-
-      });
+      setState(() {});
     });
   }
 
@@ -121,15 +119,12 @@ class _BoardState extends State<Board> {
               SizedBox(height: 20),
               if (selectedValue == '공지')
                 NoticeBoardList(context, notice, _mainController)
-              else
-                if (selectedValue == '질문')
-                  AskBoardList(ask)
-                else
-                  if (selectedValue == '자유')
-                    FreeBoardList(free)
-                  else
-                    if (selectedValue == '후기')
-                      ReviewBoardList(review)
+              else if (selectedValue == '질문')
+                AskBoardList(context, ask, _mainController)
+              else if (selectedValue == '자유')
+                FreeBoardList(context, free, _mainController)
+              else if (selectedValue == '후기')
+                ReviewBoardList(review)
             ],
           ),
         ),
@@ -151,16 +146,13 @@ Expanded NoticeBoardList(BuildContext context, List<PostDto> notice,
             children: [
               Text(
                 '공지게시판',
-                style: TextStyle(
-                    fontWeight: FontWeight.bold, fontSize: 40),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 40),
               ),
               ElevatedButton(
                   style: ButtonStyle(
                     backgroundColor:
-                    MaterialStateProperty.all<Color>(
-                        AppColor.PrimaryPink),
-                    minimumSize: MaterialStateProperty.all<Size>(
-                        Size(200, 48)),
+                        MaterialStateProperty.all<Color>(AppColor.PrimaryPink),
+                    minimumSize: MaterialStateProperty.all<Size>(Size(200, 48)),
                   ),
                   onPressed: () {
                     showDialog(
@@ -177,9 +169,9 @@ Expanded NoticeBoardList(BuildContext context, List<PostDto> notice,
           ),
         ),
         Column(
-            children: notice.map((post) =>
-                NoticePostItem(post, _mainController)).toList()
-        ),
+            children: notice
+                .map((post) => NoticePostItem(post, _mainController))
+                .toList()),
       ],
     ),
   );
@@ -242,38 +234,49 @@ AlertDialog NoticeDialog(BuildContext context, MainController _mainController) {
             ElevatedButton(
                 style: ButtonStyle(
                   backgroundColor:
-                  MaterialStateProperty.all<Color>(AppColor.PrimaryPink),
+                      MaterialStateProperty.all<Color>(AppColor.PrimaryPink),
                   minimumSize: MaterialStateProperty.all<Size>(Size(200, 48)),
                 ),
                 onPressed: () async {
                   // 등록하고 pop
-                  var url = dotenv.env['YOUR_SERVER_URL']! +
-                      'api/post/create';
+                  var url = Uri.parse(dotenv.env['YOUR_SERVER_URL']! + 'api/post/create');
 
-                  var postData = {
-                    "postType": "notice",
-                    "title": title,
-                    "content": content,
-                    "createdBy": _mainController.id.value,
-                    "isHidden": false,
-                    "festivalId": _mainController.fid.value,
-                    "rating": null
+                  var request = http.MultipartRequest('POST', url);
+
+                  // JSON 데이터를 http.MultipartFile 형태로 생성하여 추가
+                  var jsonBody = {
+                      "postType": "notice",
+                      "title": title,
+                      "content": content,
+                      "createdBy": _mainController.id.value,
+                      "imagePath": null,
+                      "isHidden": false,
+                      "festivalId": _mainController.fid.value,
+                      "rating": null
                   };
 
-                  // 축제 정보 받아오기
-                  var response = await Dio().post(url
-                      , data: postData);
+                  var jsonPart = http.MultipartFile.fromString(
+                    'data',
+                    jsonEncode(jsonBody),
+                    filename: 'data',
+                    contentType: MediaType('application', 'json'),
+                  );
 
-                  if (response.statusCode == 200) {
+                  request.files.add(jsonPart);
+
+                  // 축제 정보 받아오기
+                  var response = await request.send();
+
+                  if (response.statusCode == 201) {
                     // 요청 성공 처리
-                    print("게시글 등록 성공");
+                    Navigator.pop(context, true);
+                    Get.rootDelegate.offNamed(Routes.BOARD);
                   } else {
                     // 요청 실패 처리
                     print('Request failed with status: ${response.statusCode}');
-                    print('Error message: ${response.data}');
                   }
-
                   Navigator.of(context).pop();
+
                 },
                 child: Text(
                   "등록하기",
@@ -284,11 +287,10 @@ AlertDialog NoticeDialog(BuildContext context, MainController _mainController) {
             ),
             ElevatedButton(
               style: ButtonStyle(
-                backgroundColor:
-                MaterialStateProperty.all<Color>(Colors.white),
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
                 minimumSize: MaterialStateProperty.all<Size>(Size(200, 48)),
                 foregroundColor:
-                MaterialStateProperty.all<Color>(Colors.black), // 텍스트 색상
+                    MaterialStateProperty.all<Color>(Colors.black), // 텍스트 색상
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.0),
@@ -363,7 +365,7 @@ InkWell NoticePostItem(PostDto post, MainController _mainController) {
   );
 }
 
-Container Comment(CommentDto comment) {
+Container Comment(BuildContext context, CommentDto comment, String type) {
   return Container(
     child: Column(
       children: [
@@ -380,13 +382,12 @@ Container Comment(CommentDto comment) {
                     children: [
                       Text('작성자'),
                       SizedBox(width: 10),
-                      Text('${comment.createdAt.date.toString()}   ${comment
-                          .createdAt.time.toString()}'),
+                      Text(
+                          '${comment.createdAt.date.toString()}   ${comment.createdAt.time.toString()}'),
                     ],
                   ),
                   SizedBox(height: 20),
-                  Text(
-                      "${comment.content}"),
+                  Text("${comment.content}"),
                 ],
               ),
             ),
@@ -428,7 +429,23 @@ Container Comment(CommentDto comment) {
                     SizedBox(
                       width: 8,
                     ),
-                    Text('삭제', )
+                    InkWell(
+                      onTap: () async {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return RemoveCommentDialog(context, comment, type);
+                          },
+                        ).then((value) {
+                          if (value != null && value) {
+
+                          }
+                        });
+                      },
+                      child: Text(
+                        '삭제',
+                      ),
+                    )
                   ],
                 ),
               ),
@@ -443,7 +460,7 @@ Container Comment(CommentDto comment) {
   );
 }
 
-Container Reply(CommentDto reply) {
+Container Reply(BuildContext context, CommentDto reply, String type) {
   return Container(
     child: Column(
       children: [
@@ -467,16 +484,15 @@ Container Reply(CommentDto reply) {
                     children: [
                       Text('작성자'),
                       SizedBox(width: 10),
-                      Align(alignment: Alignment.centerRight,
-                          child: Text(
-                              '${reply.createdAt.date.toString()}   ${reply
-                                  .createdAt.time.toString()}'),)
-
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                            '${reply.createdAt.date.toString()}   ${reply.createdAt.time.toString()}'),
+                      )
                     ],
                   ),
                   SizedBox(height: 20),
-                  Text(
-                      "${reply.content}"),
+                  Text("${reply.content}"),
                 ],
               ),
             ),
@@ -518,7 +534,23 @@ Container Reply(CommentDto reply) {
                     SizedBox(
                       width: 8,
                     ),
-                    Text('삭제')
+                    InkWell(
+                      onTap: () async {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return RemoveCommentDialog(context, reply, type);
+                          },
+                        ).then((value) {
+                          if (value != null && value) {
+                            Get.back();
+                          }
+                        });
+                      },
+                      child: Text(
+                        '삭제',
+                      ),
+                    )
                   ],
                 ),
               ),
@@ -533,7 +565,11 @@ Container Reply(CommentDto reply) {
   );
 }
 
-AlertDialog CommentDialog(BuildContext context) {
+// ASK에서만 사용함.
+AlertDialog CommentDialog(
+    BuildContext context, MainController _mainController) {
+  var content = "";
+
   return AlertDialog(
     title: Text('댓글 작성'),
     content: Column(
@@ -546,6 +582,9 @@ AlertDialog CommentDialog(BuildContext context) {
             children: [
               Expanded(
                 child: TextField(
+                  onChanged: (value) {
+                    content = value;
+                  },
                   maxLines: null,
                   expands: true,
                   decoration: InputDecoration(
@@ -566,10 +605,29 @@ AlertDialog CommentDialog(BuildContext context) {
             ElevatedButton(
                 style: ButtonStyle(
                   backgroundColor:
-                  MaterialStateProperty.all<Color>(AppColor.PrimaryPink),
+                      MaterialStateProperty.all<Color>(AppColor.PrimaryPink),
                   minimumSize: MaterialStateProperty.all<Size>(Size(200, 48)),
                 ),
-                onPressed: () {
+                onPressed: () async {
+                  // 댓글 작성하기
+                  var url = dotenv.env['YOUR_SERVER_URL']! + 'api/comment/create';
+
+                  var response = await Dio().post(url, data: {
+                    'postId': _mainController.pid.value,
+                    'content': content,
+                    'parentId': null,
+                    'createdBy': _mainController.id.value
+                  });
+
+                  if (response.statusCode == 200) {
+                    Navigator.pop(context, true);
+                    Get.rootDelegate.offNamed(Routes.ASK); // ASK 화면으로 이동
+                  } else {
+                    // 요청 실패 처리
+                    print('Request failed with status: ${response.statusCode}');
+                    print('Error message: ${response.data}');
+                  }
+
                   Navigator.of(context).pop();
                 },
                 child: Text(
@@ -581,11 +639,79 @@ AlertDialog CommentDialog(BuildContext context) {
             ),
             ElevatedButton(
               style: ButtonStyle(
-                backgroundColor:
-                MaterialStateProperty.all<Color>(Colors.white),
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
                 minimumSize: MaterialStateProperty.all<Size>(Size(200, 48)),
                 foregroundColor:
-                MaterialStateProperty.all<Color>(Colors.black), // 텍스트 색상
+                    MaterialStateProperty.all<Color>(Colors.black), // 텍스트 색상
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                    // 버튼의 모서리를 둥글게 설정
+                    side: BorderSide(color: AppColor.PrimaryPink), // 테두리 색상
+                  ),
+                ),
+              ),
+              onPressed: () async {
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                "취소",
+                style: TextStyle(color: Colors.black), // 텍스트 색상
+              ),
+            )
+          ],
+        )
+      ],
+    ),
+  );
+}
+
+// post의 id값으로 게시글을 삭제하는 함수
+AlertDialog RemovePostDialog(BuildContext context, PostWithCommentDto post) {
+  return AlertDialog(
+    title: Text('정말 삭제하시겠습니까?'),
+    content: Column(
+      mainAxisSize: MainAxisSize.min, // 다이얼로그의 높이를 내용에 맞게 조절
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(AppColor.PrimaryPink),
+                  minimumSize: MaterialStateProperty.all<Size>(Size(200, 48)),
+                ),
+                onPressed: () async {
+                  var url = dotenv.env['YOUR_SERVER_URL']! +
+                      'api/post/delete/${post.id}';
+
+                  var response = await Dio().delete(url);
+
+                  if (response.statusCode == 200) {
+                    // 현재 화면을 종료하고 이전 화면으로 돌아감
+                    Navigator.pop(context, true);
+                    Get.rootDelegate.offNamed(Routes.BOARD);
+                  } else {
+                    // 요청 실패 처리
+                    print('Request failed with status: ${response.statusCode}');
+                    print('Error message: ${response.data}');
+                  }
+                  // Navigator.of(context).pop();
+                },
+                child: Text(
+                  "삭제하기",
+                  style: TextStyle(color: Colors.white),
+                )),
+            SizedBox(
+              width: 20,
+            ),
+            ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                minimumSize: MaterialStateProperty.all<Size>(Size(200, 48)),
+                foregroundColor:
+                    MaterialStateProperty.all<Color>(Colors.black), // 텍스트 색상
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.0),
@@ -609,8 +735,8 @@ AlertDialog CommentDialog(BuildContext context) {
   );
 }
 
-// post의 id값으로 게시글을 삭제하는 함수
-AlertDialog RemoveDialog(BuildContext context, PostWithCommentDto post) {
+// comment의 id값으로 댓글,대댓글을 삭제하는 함수
+AlertDialog RemoveCommentDialog(BuildContext context, CommentDto comment, String type) {
   return AlertDialog(
     title: Text('정말 삭제하시겠습니까?'),
     content: Column(
@@ -622,22 +748,32 @@ AlertDialog RemoveDialog(BuildContext context, PostWithCommentDto post) {
             ElevatedButton(
                 style: ButtonStyle(
                   backgroundColor:
-                  MaterialStateProperty.all<Color>(AppColor.PrimaryPink),
+                      MaterialStateProperty.all<Color>(AppColor.PrimaryPink),
                   minimumSize: MaterialStateProperty.all<Size>(Size(200, 48)),
                 ),
                 onPressed: () async {
-                  var url =
-                      dotenv.env['YOUR_SERVER_URL']! + 'api/post/delete/${post.id}';
+                  var url = dotenv.env['YOUR_SERVER_URL']! +
+                      'api/comment/delete/${comment.id}';
 
                   var response = await Dio().delete(url);
 
                   if (response.statusCode == 200) {
-                    // 마이페이지로 이동
-                    Get.rootDelegate.toNamed(Routes.BOARD);
+                    // 삭제하고 이동
+
+                    if (type == "ask") {
+                      Navigator.pop(context, true);
+                      Get.rootDelegate.offNamed(Routes.ASK); // ASK 화면으로 이동
+                    } else if (type == "free") {
+                      Navigator.pop(context, true);
+                      Get.rootDelegate.offNamed(Routes.FREE); // FREE 화면으로 이동
+                    } else if (type == "review") {
+                      Navigator.pop(context, true);
+                      Get.rootDelegate.offNamed(Routes.REVIEW); // REVIEW 화면으로 이동
+                    }
+
                   } else {
                     // 요청 실패 처리
-                    print(
-                        'Request failed with status: ${response.statusCode}');
+                    print('Request failed with status: ${response.statusCode}');
                     print('Error message: ${response.data}');
                   }
                   Navigator.of(context).pop();
@@ -651,11 +787,10 @@ AlertDialog RemoveDialog(BuildContext context, PostWithCommentDto post) {
             ),
             ElevatedButton(
               style: ButtonStyle(
-                backgroundColor:
-                MaterialStateProperty.all<Color>(Colors.white),
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
                 minimumSize: MaterialStateProperty.all<Size>(Size(200, 48)),
                 foregroundColor:
-                MaterialStateProperty.all<Color>(Colors.black), // 텍스트 색상
+                    MaterialStateProperty.all<Color>(Colors.black), // 텍스트 색상
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.0),

@@ -132,8 +132,11 @@ Column NoticeItem(BuildContext context, PostWithCommentDto notice) {
                               showDialog(
                                   context: context,
                                   builder: (BuildContext context) {
-                                    return RemoveDialog(context, notice);
-                                  });
+                                    return RemovePostDialog(context, notice);
+                                  }).then((value) {
+                                    if (value != null) {
+                                    }
+                              });
                             },
                             child: Text(
                               "삭제하기",
@@ -153,14 +156,6 @@ Column NoticeItem(BuildContext context, PostWithCommentDto notice) {
                 SizedBox(
                   height: 20,
                 ),
-                for (var comment in notice.topLevelComments)
-                  Column(
-                    children: [
-                      Comment(comment),
-                      for (var reply in comment.childComments)
-                        Reply(reply)
-                    ],
-                  )
               ],
             ),
           ),

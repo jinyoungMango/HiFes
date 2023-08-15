@@ -20,7 +20,7 @@ class MyPage extends StatefulWidget {
 class _MyPageState extends State<MyPage> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final MainController _mainController =
-      Get.find();
+      Get.find(tag: 'MainController');
   late Future<List<FestivalDto>> festivalsFuture;
 
   // 사용자 정보 저장

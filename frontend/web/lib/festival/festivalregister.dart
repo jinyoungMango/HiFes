@@ -473,7 +473,7 @@ class _FestivalRegisterState extends State<FestivalRegister> {
                       // Get.rootDelegate.toNamed(Routes.BOARD);
                       // 행사 등록
 
-                      var url = Uri.parse('${dotenv.env['YOUR_SERVER_URL']!}api/create-festival');
+                      var url = Uri.parse('${dotenv.env['YOUR_SERVER_URL']!}api/${_mainController.id.value}/create-festival');
 
                       var request = http.MultipartRequest('POST', url);
 
@@ -535,8 +535,44 @@ class _FestivalRegisterState extends State<FestivalRegister> {
 
                       if (response.statusCode == 201) {
                         print('Festival data sent successfully');
+                        // 성공 다이얼로그 표시
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text("Success"),
+                              content: Text("Festival data sent successfully."),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: Text("OK"),
+                                  onPressed: () {
+                                    Navigator.of(context).pop(); // 다이얼로그 닫기
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
                       } else {
                         print('Failed to send festival data. Status code: ${response.statusCode}');
+                        // 실패 다이얼로그 표시
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text("Failed"),
+                              content: Text("Failed to send festival data. Status code: ${response.statusCode}"),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: Text("OK"),
+                                  onPressed: () {
+                                    Navigator.of(context).pop(); // 다이얼로그 닫기
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
                       }
                     },
                     child: Text(

@@ -26,6 +26,7 @@ void main() async{
     defaultTransition: Transition.fade,
     getPages: AppPages.pages,
     routerDelegate: AppRouterDelegate(),theme: ThemeData(fontFamily: 'Pretendard'),
+    key: Get.key,
   ));
 }
 
