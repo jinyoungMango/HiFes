@@ -1,4 +1,4 @@
-package com.ssafy.hifes.ui.mypage
+package com.ssafy.hifes.ui.mypage.main
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable

@@ -27,6 +27,7 @@
     <!-- participated fest-->
     <string name="participated_fest_appbar_title">참여 행사 목록</string>
     <string name="participated_fest_stamp_list_title">스탬프 목록</string>
+    <string name="participated_fest_stamp_list_none">스탬프가 없는 행사입니다.</string>
 
     <!-- my page -->
     <string name="mypage_appbar_title">마이페이지</string>
