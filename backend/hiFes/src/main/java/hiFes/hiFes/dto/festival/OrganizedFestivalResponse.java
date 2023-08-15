@@ -20,6 +20,8 @@ public class OrganizedFestivalResponse {
     private final BigDecimal fesLatitude;
     private final BigDecimal fesLongitude;
     private final Long festivalId;
+    private final String hostName;
+    private final String hostPhoneNo;
 
 
     public OrganizedFestivalResponse(OrganizedFestival organizedFestival){
@@ -32,6 +34,10 @@ public class OrganizedFestivalResponse {
         this.fesOutline = organizedFestival.getFesOutline();
         this.fesPosterPath = organizedFestival.getFesPosterPath();
         this.fesStartDate = organizedFestival.getFesStartDate();
+
+        HostUser hostUser = organizedFestival.getHostUser();
+        this.hostName = hostUser.getName();
+        this.hostPhoneNo = hostUser.getPhoneNo();
 
     }
 }
