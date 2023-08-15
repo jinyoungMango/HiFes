@@ -158,14 +158,14 @@ fun FestivalDetail(
                                     .padding(top = 4.dp, end = 8.dp, bottom = 6.dp)
                             ) {
                                 navigateToMeetingScreen(
-                                    "12개",
+                                    "${festivalData.countGroups}개",
                                     navController,
                                     viewModel
                                 ) // 추후 서버에서 가져옴
                             }
                             DetailTitle(festivalData.fesTitle)
 
-                            StarScore(score = 4.0)
+                            StarScore(score = festivalData.avgRating)
 
 
                             Spacer(modifier = Modifier.size(12.dp))
@@ -196,8 +196,8 @@ fun FestivalDetail(
                         // 추후 서버에서 가져온 데이터로 변경
                         DetailCommonContent(
                             title = "주최",
-                            content1 = "대구광역시",
-                            content2 = "053 - 248 - 9998"
+                            content1 = festivalData.hostName,
+                            content2 = CommonUtils.formatPhoneNumber(festivalData.hostPhoneNo)
                         )
                         Spacer(modifier = Modifier.size(24.dp))
                     }
