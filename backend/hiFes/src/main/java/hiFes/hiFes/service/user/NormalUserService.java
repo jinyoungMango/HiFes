@@ -44,7 +44,7 @@ public class NormalUserService {
         NormalUser normalUser = NormalUser.builder()
                 .email((String) context.get("email"))
                 .name((String) context.get("name"))
-                .profilePic("/images/"+  imageName)
+                .profilePic("https://i9d104.p.ssafy.io/images/"+  imageName)
                 .phoneNo(normalUserSignUpDto.getPhoneNo()) // 필요한 정보인지 고민 좀
                 .nickname(normalUserSignUpDto.getNickname())
                 .build();

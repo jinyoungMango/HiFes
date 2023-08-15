@@ -1,18 +1,23 @@
 package hiFes.hiFes.dto.festival;
 
 
+import hiFes.hiFes.domain.Post;
 import hiFes.hiFes.domain.festival.OrganizedFestival;
+import hiFes.hiFes.domain.group.Group;
+import hiFes.hiFes.domain.user.HostUser;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
 
 public class SearchOrganizedFestivalResponse{
+    private final Long festivalId;
     private final String searchType;
     private final String fesTitle;
     private final String fesOutline;
@@ -22,9 +27,12 @@ public class SearchOrganizedFestivalResponse{
     private final LocalDate fesEndDate;
     private final BigDecimal fesLatitude;
     private final BigDecimal fesLongitude;
-    private final Long festivalId;
+    private final Float avgRating;
+    private final Integer countGroups;
+    private final String hostName;
+    private final String hostPhoneNo;
 
-    public SearchOrganizedFestivalResponse(OrganizedFestival organizedFestival, String searchType){
+    public SearchOrganizedFestivalResponse(OrganizedFestival organizedFestival, String searchType, Float avgRating, Integer countGroups){
         this.festivalId = organizedFestival.getFestivalId();
         this.fesTitle = organizedFestival.getFesTitle();
         this.fesAddress = organizedFestival.getFesAddress();
@@ -35,6 +43,13 @@ public class SearchOrganizedFestivalResponse{
         this.fesPosterPath = organizedFestival.getFesPosterPath();
         this.fesStartDate = organizedFestival.getFesStartDate();
         this.searchType = searchType;
+        this.avgRating = avgRating;
+        this.countGroups = countGroups;
+
+        HostUser hostUser = organizedFestival.getHostUser();
+        this.hostName = hostUser.getName();
+        this.hostPhoneNo = hostUser.getPhoneNo();
+
     }
 
 

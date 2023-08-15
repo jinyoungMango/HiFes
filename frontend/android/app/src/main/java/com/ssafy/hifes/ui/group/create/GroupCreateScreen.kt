@@ -1,7 +1,6 @@
 package com.ssafy.hifes.ui.group.create
 
 import android.net.Uri
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -61,7 +60,7 @@ fun GroupCreateScreen(
 
     errMsg.value?.getContentIfNotHandled()?.let {
         Toast.makeText(context, it, Toast.LENGTH_LONG).show()
-        if(groupCreateState.value == GroupCreateStateType.SUCCESS){
+        if (groupCreateState.value == GroupCreateStateType.SUCCESS) {
             navController.popBackStack()
         }
     }
