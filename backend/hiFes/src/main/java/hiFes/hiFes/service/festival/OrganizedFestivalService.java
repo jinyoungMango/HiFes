@@ -7,6 +7,7 @@ import hiFes.hiFes.domain.festival.*;
 import hiFes.hiFes.domain.user.HostUser;
 import hiFes.hiFes.dto.festival.*;
 import hiFes.hiFes.repository.festival.*;
+import hiFes.hiFes.repository.group.GroupRepository;
 import hiFes.hiFes.repository.user.HostUserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.OptimisticLockingFailureException;
@@ -32,6 +33,7 @@ public class OrganizedFestivalService {
     private final MarkerRepository markerRepository;
     private final StampMissionRepository stampMissionRepository;
     private final HostUserRepository hostUserRepository;
+    private final GroupRepository groupRepository;
 
 
 
@@ -40,18 +42,22 @@ public class OrganizedFestivalService {
                                     FestivalTableRepository festivalTableRepository,
                                     MarkerRepository markerRepository,
                                     StampMissionRepository stampMissionRepository,
-    HostUserRepository hostUserRepository){
+                                    HostUserRepository hostUserRepository,
+                                    GroupRepository groupRepository
+                                    ){
         this.arItemRepository =arItemRepository;
         this.markerRepository = markerRepository;
         this.stampMissionRepository = stampMissionRepository;
         this.festivalTableRepository = festivalTableRepository;
         this.organizedFestivalRepository =organizedFestivalRepository;
         this.hostUserRepository = hostUserRepository;
+        this.groupRepository =groupRepository;
     }
 
 
     @org.springframework.transaction.annotation.Transactional
     public OrganizedFestival save(AddOrganizedFestivalRequest request, MultipartFile file, MultipartFile image, Long HostUserId) throws Exception {
+
         System.out.println("파일저장!!!!!!!!!!"+file);
         System.out.println("이미지저장!!!!!!"+image);
         String[] LatLong =  getLatLonFromGoogleApi(request.getFesAddress());
@@ -138,7 +144,9 @@ public class OrganizedFestivalService {
         if(avgRating == null){
             avgRating = 0f;
         }
-        return new OrganizedFestivalDetailResponse(organizedFestival,avgRating);
+        Integer countGroups = groupRepository.findByFestivalId(id).size();
+
+        return new OrganizedFestivalDetailResponse(organizedFestival,avgRating, countGroups);
     }
 
     public List<ARItem> findARItemByFestivalId(long festivalId){
