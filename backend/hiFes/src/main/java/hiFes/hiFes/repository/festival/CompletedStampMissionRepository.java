@@ -19,4 +19,5 @@ public interface CompletedStampMissionRepository extends JpaRepository<Completed
             "WHERE csm.stampMission = sm AND csm.normalUser.id = :userId AND sm.organizedFestival.id = :festivalId")
     Long countCompletedStampMissionByNormalUser_idAndOrganizedFestival_FestivalId(@Param("userId") Long userId, @Param("festivalId") Long festivalId);
 
+    boolean existsByNormalUser_IdAndStampMission_MissionId(Long id, Long missionId);
 }

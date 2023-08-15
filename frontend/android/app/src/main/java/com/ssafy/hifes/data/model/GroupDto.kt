@@ -18,7 +18,7 @@ data class Group(
     val id: Int = -1,
     val groupName: String,
     val groupPic: String?,
-    val createdAt: CreatedAtDto?,
+    val createdAt: DateTime?,
     val maxPop: Int,
     val content: String,
     val hashtags: List<String>?,

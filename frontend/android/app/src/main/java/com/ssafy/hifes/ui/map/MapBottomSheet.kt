@@ -11,12 +11,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import kotlinx.coroutines.launch
 
-@Preview(showBackground = true, backgroundColor = 0xFFFFFFFF)
-@Composable
-fun MapBottomPrev() {
-    MapBottomSheet()
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MapBottomSheet() {

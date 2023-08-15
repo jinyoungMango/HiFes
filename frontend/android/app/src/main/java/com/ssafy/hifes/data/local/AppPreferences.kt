@@ -14,6 +14,7 @@ object AppPreferences {
     private const val ACCESS_TOKEN = "access_token"
     private const val REFRESH_TOKEN = "refresh_token"
     private const val USER_ID = "user_id"
+    private const val USER_NICKNAME = "user_nickname"
 
 
     fun openSharedPreferences(context: Context) {
@@ -23,7 +24,8 @@ object AppPreferences {
     fun initLoginInfo(loginResponse: LoginResponse) {
         preferences.edit().putString(ACCESS_TOKEN, loginResponse.accessToken)
             .putString(REFRESH_TOKEN, loginResponse.refreshToken)
-            .putString(USER_ID, loginResponse.id.toString())
+            .putString(USER_ID, loginResponse.id)
+            .putString(USER_NICKNAME, loginResponse.nickname)
             .commit()
     }
 
@@ -38,6 +40,10 @@ object AppPreferences {
 
     fun getUserId(): String? {
         return preferences.getString(USER_ID, "")
+    }
+
+    fun getUserNickname(): String? {
+        return preferences.getString(USER_NICKNAME, "")
     }
 
 }

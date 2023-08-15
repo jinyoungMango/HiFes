@@ -3,7 +3,9 @@ package com.ssafy.hifes.ui.detail
 import NavigationItem
 import android.content.ActivityNotFoundException
 import android.content.Context
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -82,7 +84,7 @@ import com.ssafy.hifes.util.CommonUtils
 
 private const val TAG = "FestivalDetail_하이페스"
 
-@OptIn(ExperimentalNaverMapApi::class)
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun FestivalDetail(
     navController: NavHostController,
@@ -90,6 +92,7 @@ fun FestivalDetail(
     detailViewModel: DetailViewModel
 ) {
     val festivalInfo = viewModel.festivalInfo.observeAsState()
+    val festivalTimeTable = detailViewModel.timeTableList.observeAsState()
     val context = LocalContext.current
     if (festivalInfo.value != null) {
         val festivalData = festivalInfo.value
@@ -98,6 +101,7 @@ fun FestivalDetail(
                 .verticalScroll(rememberScrollState())
         ) {
             if (festivalData != null) {
+                detailViewModel.getTimeTableList(festivalData.festivalId)
                 Box {
                     AsyncImage(
                         model = festivalData.fesPosterPath,
@@ -154,14 +158,14 @@ fun FestivalDetail(
                                     .padding(top = 4.dp, end = 8.dp, bottom = 6.dp)
                             ) {
                                 navigateToMeetingScreen(
-                                    "12개",
+                                    "${festivalData.countGroups}개",
                                     navController,
                                     viewModel
                                 ) // 추후 서버에서 가져옴
                             }
                             DetailTitle(festivalData.fesTitle)
 
-                            StarScore(score = 4.0)
+                            StarScore(score = festivalData.avgRating)
 
 
                             Spacer(modifier = Modifier.size(12.dp))
@@ -179,6 +183,8 @@ fun FestivalDetail(
                             content2 = CommonUtils.formatFestivalDateToString(festivalData.fesEndDate)
                         )
                         Spacer(modifier = Modifier.size(12.dp))
+                        festivalTimeTable.value?.let { ScheduleDisplay(it) }
+                        Spacer(modifier = Modifier.size(12.dp))
                         DetailCommonContent(title = "장소", address = "주소")
                         Spacer(modifier = Modifier.size(12.dp))
                         FestivalLocation(
@@ -190,8 +196,8 @@ fun FestivalDetail(
                         // 추후 서버에서 가져온 데이터로 변경
                         DetailCommonContent(
                             title = "주최",
-                            content1 = "대구광역시",
-                            content2 = "053 - 248 - 9998"
+                            content1 = festivalData.hostName,
+                            content2 = CommonUtils.formatPhoneNumber(festivalData.hostPhoneNo)
                         )
                         Spacer(modifier = Modifier.size(24.dp))
                     }
