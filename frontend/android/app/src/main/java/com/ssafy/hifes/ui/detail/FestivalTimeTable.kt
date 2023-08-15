@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ssafy.hifes.data.model.TimeTable
@@ -43,6 +44,7 @@ fun ScheduleDisplay(festivalTimeTable: List<TimeTable>) {
         ) {
             Text(
                 text = "Time",
+                textAlign = TextAlign.Center,
                 modifier = Modifier
                     .padding(8.dp)
                     .width(64.dp),
@@ -51,6 +53,7 @@ fun ScheduleDisplay(festivalTimeTable: List<TimeTable>) {
             dates.forEach { date ->
                 Text(
                     text = date.toString(),
+                    textAlign = TextAlign.Center,
                     modifier = Modifier
                         .padding(8.dp)
                         .weight(1f),
@@ -60,12 +63,10 @@ fun ScheduleDisplay(festivalTimeTable: List<TimeTable>) {
         }
 
         for (hour in startTime.hour..endTime.hour) {
-            Row (
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ){
+            Row {
                 Text(
                     text = "$hour:00",
+                    textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
                         .padding(8.dp)
@@ -86,11 +87,11 @@ fun ScheduleDisplay(festivalTimeTable: List<TimeTable>) {
                     if (currentProgram != null) {
                         Text(
                             text = currentProgram.programTitle,
+                            textAlign = TextAlign.Center,
                             modifier = Modifier
                                 .background(Color.Gray.copy(alpha = 0.2f))
                                 .padding(4.dp)
                                 .weight(1f)
-                                .align(Alignment.CenterVertically)
                                 .clickable {
                                     title = currentProgram.programTitle
                                     time =
