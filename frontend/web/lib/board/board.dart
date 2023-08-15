@@ -608,3 +608,73 @@ AlertDialog CommentDialog(BuildContext context) {
     ),
   );
 }
+
+// post의 id값으로 게시글을 삭제하는 함수
+AlertDialog RemoveDialog(BuildContext context, PostWithCommentDto post) {
+  return AlertDialog(
+    title: Text('정말 삭제하시겠습니까?'),
+    content: Column(
+      mainAxisSize: MainAxisSize.min, // 다이얼로그의 높이를 내용에 맞게 조절
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor:
+                  MaterialStateProperty.all<Color>(AppColor.PrimaryPink),
+                  minimumSize: MaterialStateProperty.all<Size>(Size(200, 48)),
+                ),
+                onPressed: () async {
+                  var url =
+                      dotenv.env['YOUR_SERVER_URL']! + 'api/post/delete/${post.id}';
+
+                  var response = await Dio().delete(url);
+
+                  if (response.statusCode == 200) {
+                    // 마이페이지로 이동
+                    Get.rootDelegate.toNamed(Routes.BOARD);
+                  } else {
+                    // 요청 실패 처리
+                    print(
+                        'Request failed with status: ${response.statusCode}');
+                    print('Error message: ${response.data}');
+                  }
+                  Navigator.of(context).pop();
+                },
+                child: Text(
+                  "삭제하기",
+                  style: TextStyle(color: Colors.white),
+                )),
+            SizedBox(
+              width: 20,
+            ),
+            ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor:
+                MaterialStateProperty.all<Color>(Colors.white),
+                minimumSize: MaterialStateProperty.all<Size>(Size(200, 48)),
+                foregroundColor:
+                MaterialStateProperty.all<Color>(Colors.black), // 텍스트 색상
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                    // 버튼의 모서리를 둥글게 설정
+                    side: BorderSide(color: AppColor.PrimaryPink), // 테두리 색상
+                  ),
+                ),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text(
+                "취소",
+                style: TextStyle(color: Colors.black), // 텍스트 색상
+              ),
+            )
+          ],
+        )
+      ],
+    ),
+  );
+}

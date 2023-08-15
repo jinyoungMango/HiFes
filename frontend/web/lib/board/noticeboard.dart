@@ -30,7 +30,7 @@ class _NoticePageState extends State<NoticePage> {
       var url = dotenv.env['YOUR_SERVER_URL']! +
           'api/post/get/${_mainController.pid.value}';
 
-      // 축제 정보 받아오기
+      // 공지 정보 받아오기
       var response = await Dio().get(url);
 
       if (response.statusCode == 200) {
@@ -119,7 +119,26 @@ Column NoticeItem(BuildContext context, PostWithCommentDto notice) {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text("${notice.createdAt.date} "),
-                        Container(child: Text("${notice.createdAt.time}"))
+                        Container(child: Text("${notice.createdAt.time}")),
+                        SizedBox(height: 20,),
+                        ElevatedButton(
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  AppColor.PrimaryPink),
+                              minimumSize:
+                              MaterialStateProperty.all<Size>(Size(200, 48)),
+                            ),
+                            onPressed: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return RemoveDialog(context, notice);
+                                  });
+                            },
+                            child: Text(
+                              "삭제하기",
+                              style: TextStyle(color: Colors.white, fontSize: 16),
+                            )),
                       ],
                     ),
                   ],
