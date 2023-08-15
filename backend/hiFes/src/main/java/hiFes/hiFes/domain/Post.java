@@ -1,13 +1,10 @@
 package hiFes.hiFes.domain;
 
 import hiFes.hiFes.domain.festival.OrganizedFestival;
-import hiFes.hiFes.dto.festival.OrganizedFestivalResponse;
 import hiFes.hiFes.dto.postDto.PostCreateDto;
 import lombok.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -53,6 +50,8 @@ public class Post extends BaseEntity {
     private Float rating;
 
     private String imagePath;
+//    private String originalName;
+//    private String uuid;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.MERGE, orphanRemoval = true)
     private List<Comment> comments;
@@ -73,6 +72,8 @@ public class Post extends BaseEntity {
                 .isHidden(postCreateDto.getIsHidden())
                 .rating(postCreateDto.getRating())
                 .imagePath(postCreateDto.getImagePath())
+//                .originalName(postCreateDto.getOriginalName())
+//                .uuid(postCreateDto.getUuid())
                 .organizedFestival(organizedFestival)
                 .build();
     }
@@ -89,11 +90,5 @@ public class Post extends BaseEntity {
     public void increaseView() {
         this.views += 1;
     }
-
-    public void getUserId() {
-
-    }
-
-
 
 }

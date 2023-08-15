@@ -1,13 +1,7 @@
 package hiFes.hiFes.controller;
 
-
-import hiFes.hiFes.domain.Post;
-import hiFes.hiFes.dto.commentDto.CommentUpdateDto;
 import hiFes.hiFes.dto.postDto.*;
-import hiFes.hiFes.repository.user.NormalUserRepository;
 import hiFes.hiFes.service.PostService;
-import hiFes.hiFes.service.user.HostUserService;
-import hiFes.hiFes.service.user.NormalUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -21,6 +15,7 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,7 +28,8 @@ public class PostController {
 
     @PostMapping("/post/create")
     @Operation(summary = "게시글 생성, 필요 값 createdBy(Long), title(String), content(String), postType(String), " +
-            "isHidden(Boolean), rating(Float), festivalId(Long), 전부 JSON 형식으로 주시면 됩니다.")
+            "isHidden(Boolean), rating(Float), festivalId(Long), 이미지 파일,이미지 파일은 MultipartFile, 나머지는 JSON" +
+            " 형식으로 주시면 됩니다.")
     @CrossOrigin("*")
     public ResponseEntity<?> create(@RequestPart(value = "data") PostCreateDto createDto,
                                     @RequestPart(value = "image", required = false) MultipartFile image) throws IOException {

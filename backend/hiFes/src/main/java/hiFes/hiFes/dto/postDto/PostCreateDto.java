@@ -1,7 +1,6 @@
 package hiFes.hiFes.dto.postDto;
 
 
-
 import lombok.*;
 
 @Getter @Setter
@@ -14,10 +13,15 @@ public class PostCreateDto {
     private String postType;
     private String title;
     private String content;
-    private Long createdBy;
-    private String imagePath;
-    private Boolean isHidden;
-    private Long festivalId;
     private Float rating;
+
+    private String imagePath;
+    private String originalName;
+    private String uuid;
+
+    private Long createdBy;
+    private Boolean isHidden;
+
+    private Long festivalId;
 
 }
