@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -38,8 +39,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.ssafy.hifes.R
-import com.ssafy.hifes.data.model.CreatedAtDto
+import com.ssafy.hifes.data.local.AppPreferences
 import com.ssafy.hifes.data.model.DateDto
+import com.ssafy.hifes.data.model.DateTime
 import com.ssafy.hifes.data.model.ParticipatedFestDto
 import com.ssafy.hifes.data.model.StampListDto
 import com.ssafy.hifes.data.model.TimeDto
@@ -55,6 +57,7 @@ fun ParticipatedFestScreen(
     navController: NavController,
     viewModel: MyPageViewModel
 ) {
+    val userId = AppPreferences.getUserId()
     var context = LocalContext.current
     var participatedFest = viewModel.participatedFestival.observeAsState()
     var participatedStamp = viewModel.participatedStamps.observeAsState()
@@ -75,13 +78,13 @@ fun ParticipatedFestScreen(
                 false,
                 "",
                 0,
-                CreatedAtDto(DateDto(0, 0, 0), TimeDto(0, 0, 0, 0))
+                DateTime(DateDto(0, 0, 0), TimeDto(0, 0, 0, 0))
             )
         )
     }
 
     LaunchedEffect(Unit) {
-        viewModel.getParticipatedFestival()
+        viewModel.getParticipatedFestival(userId)
     }
 
     errMsgParticipatedFestList.value?.getContentIfNotHandled()?.let {
@@ -92,60 +95,83 @@ fun ParticipatedFestScreen(
     }
 
     if (participatedFest.value != null) {
-        ModalBottomSheetLayout(
-            sheetState = state,
-            sheetContent = {
-                if (participatedStamp.value != null) {
-                    BottomSheetScreenElement(
-                        selectedParticipatedFestival.countMission,
-                        participatedStamp.value!!
-                    )
-                }
-            },
-            sheetShape = RoundedCornerShape(10.dp, 10.dp, 0.dp, 0.dp),
-            sheetGesturesEnabled = false
-        ) {
+        if (participatedFest.value!!.size == 0) {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight(),
-                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 TopWithBack(
                     navController,
                     title = stringResource(R.string.participated_fest_appbar_title)
                 )
-                Spacer(modifier = Modifier.size(20.dp))
-                LazyColumn {
-                    items(participatedFest.value!!.size) { index ->
-                        Ticket(
-                            title = participatedFest.value!!.get(index).fesTitle,
-                            date = CommonUtils.formatFestivalDateToString(
-                                participatedFest.value!!.get(index).participateTime.date
-                            ),
-                            onClick = {
-                                scope.launch {
-                                    Log.d(
-                                        "TAG",
-                                        "ParticipatedFestScreen: ?? ${
-                                            participatedFest.value!!.get(index)
-                                        }"
-                                    )
-                                    selectedParticipatedFestival =
-                                        participatedFest.value!!.get(index)
-                                    viewModel.getParticipatedStamp(
-                                        participatedFest.value!!.get(
-                                            index
-                                        ).festivalId
-                                    )
-                                    state.show()
-                                }
-                            }
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(text = "참여 인증된 행사가 없습니다.")
+                    Text(text = "큐알을 촬영하여 티켓을 모아보세요!")
+                }
+
+            }
+        } else {
+            ModalBottomSheetLayout(
+                sheetState = state,
+                sheetContent = {
+                    if (participatedStamp.value != null) {
+                        BottomSheetScreenElement(
+                            selectedParticipatedFestival.countMission,
+                            participatedStamp.value!!
                         )
+                    }
+                },
+                sheetShape = RoundedCornerShape(10.dp, 10.dp, 0.dp, 0.dp),
+                sheetGesturesEnabled = false
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    TopWithBack(
+                        navController,
+                        title = stringResource(R.string.participated_fest_appbar_title)
+                    )
+                    Spacer(modifier = Modifier.size(20.dp))
+                    LazyColumn {
+                        items(participatedFest.value!!.size) { index ->
+                            Ticket(
+                                title = participatedFest.value!!.get(index).fesTitle,
+                                date = CommonUtils.formatFestivalDateToString(
+                                    participatedFest.value!!.get(index).participateTime.date
+                                ),
+                                onClick = {
+                                    scope.launch {
+                                        Log.d(
+                                            "TAG",
+                                            "ParticipatedFestScreen: ?? ${
+                                                participatedFest.value!!.get(index)
+                                            }"
+                                        )
+                                        selectedParticipatedFestival =
+                                            participatedFest.value!!.get(index)
+                                        viewModel.getParticipatedStamp(
+                                            participatedFest.value!!.get(
+                                                index
+                                            ).festivalId,
+                                            userId
+                                        )
+                                        state.show()
+                                    }
+                                }
+                            )
+                        }
                     }
                 }
             }
         }
+
     }
 
 }

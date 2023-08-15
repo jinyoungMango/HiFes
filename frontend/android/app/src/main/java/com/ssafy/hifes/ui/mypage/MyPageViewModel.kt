@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ssafy.hifes.data.local.AppPreferences
 import com.ssafy.hifes.data.model.Event
 import com.ssafy.hifes.data.model.ParticipatedFestDto
 import com.ssafy.hifes.data.model.StampListDto
@@ -13,6 +12,8 @@ import com.ssafy.hifes.util.network.NetworkResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+private const val TAG = "MyPageViewModel"
 
 @HiltViewModel
 class MyPageViewModel @Inject constructor(
@@ -23,7 +24,6 @@ class MyPageViewModel @Inject constructor(
     private val _errMsgParticipatedStamp = MutableLiveData<Event<String>>()
     val errMsgParticipatedStamp: LiveData<Event<String>> = _errMsgParticipatedStamp
 
-    private val userId = AppPreferences.getUserId()
     private val _participatedFestivalList: MutableLiveData<List<ParticipatedFestDto>> =
         MutableLiveData()
     val participatedFestival: LiveData<List<ParticipatedFestDto>> = _participatedFestivalList
@@ -31,7 +31,7 @@ class MyPageViewModel @Inject constructor(
     private val _participatedStamps: MutableLiveData<StampListDto> = MutableLiveData()
     val participatedStamps: LiveData<StampListDto> = _participatedStamps
 
-    fun getParticipatedFestival() {
+    fun getParticipatedFestival(userId: String?) {
         viewModelScope.launch {
             val type = "티켓 정보 조회에"
             if (userId != null) {
@@ -53,12 +53,15 @@ class MyPageViewModel @Inject constructor(
                         postValueEvent(2, type, _errMsgParticipatedFestList)
                     }
                 }
+            } else {
+                postValueEvent(2, type, _errMsgParticipatedFestList)
             }
+
 
         }
     }
 
-    fun getParticipatedStamp(festivalId: Int) {
+    fun getParticipatedStamp(festivalId: Int, userId: String?) {
         viewModelScope.launch {
             val type = "스탬프 정보 조회에"
             if (userId != null) {
@@ -80,8 +83,10 @@ class MyPageViewModel @Inject constructor(
                         postValueEvent(2, type, _errMsgParticipatedStamp)
                     }
                 }
-            }
+            } else {
+                postValueEvent(2, type, _errMsgParticipatedStamp)
 
+            }
         }
     }
 

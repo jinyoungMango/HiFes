@@ -5,16 +5,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ssafy.hifes.data.local.AppPreferences
-import com.ssafy.hifes.data.model.ErrorResponse
 import com.ssafy.hifes.data.model.ProofResponseType
 import com.ssafy.hifes.data.repository.proof.ProofRepository
 import com.ssafy.hifes.util.network.NetworkResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import java.util.Timer
 import javax.inject.Inject
-import kotlin.concurrent.schedule
 
 private const val TAG = "ProofViewModel"
 
@@ -22,23 +18,29 @@ private const val TAG = "ProofViewModel"
 class ProofViewModel @Inject constructor(
     private val repository: ProofRepository
 ) : ViewModel() {
-    val userId = AppPreferences.getUserId()
 
-    private var _stampProofResponse: MutableLiveData<ProofResponseType> = MutableLiveData()
-    val stampProofResponse: LiveData<ProofResponseType> = _stampProofResponse
+    private var _stampProofResponse: MutableLiveData<Pair<ProofResponseType, Boolean>> =
+        MutableLiveData()
+    val stampProofResponse: LiveData<Pair<ProofResponseType, Boolean>> = _stampProofResponse
 
-    private var _festivalProofResponse: MutableLiveData<Pair<ProofResponseType, Boolean>> = MutableLiveData()
+    private var _festivalProofResponse: MutableLiveData<Pair<ProofResponseType, Boolean>> =
+        MutableLiveData()
     val festivalProofResponse: LiveData<Pair<ProofResponseType, Boolean>> = _festivalProofResponse
 
-    fun requestFestivalProof(id: Int) {
+    fun requestFestivalProof(festivalId: Int, userId: String?) {
 
         viewModelScope.launch {
             if (userId != null) {
-                val response = repository.participateFestival(userId, id)
-                _festivalProofResponse
+                val response = repository.participateFestival(userId, festivalId)
+
                 when (response) {
                     is NetworkResponse.Success -> {
-                        _festivalProofResponse.postValue(Pair(ProofResponseType.SUCESS, response.body))
+                        _festivalProofResponse.postValue(
+                            Pair(
+                                ProofResponseType.SUCESS,
+                                response.body
+                            )
+                        )
                     }
 
                     is NetworkResponse.ApiError -> {
@@ -63,10 +65,35 @@ class ProofViewModel @Inject constructor(
         }
     }
 
-    fun requestStampProof(id: Int) {
-        Log.d(TAG, "requestStampProof: ${id}로 전송")
-        Timer().schedule(3000) {
-            _stampProofResponse.postValue(ProofResponseType.SUCESS)
+    fun requestStampProof(stampId: Int, userId: String?) {
+        viewModelScope.launch {
+            if (userId != null) {
+                val response = repository.completeMission(userId, stampId)
+
+                when (response) {
+                    is NetworkResponse.Success -> {
+                        _stampProofResponse.postValue(Pair(ProofResponseType.SUCESS, response.body))
+                    }
+
+                    is NetworkResponse.ApiError -> {
+                        Log.d(TAG, "requestFestivalProof: api errror")
+                        _stampProofResponse.postValue(Pair(ProofResponseType.FAIL, false))
+                    }
+
+                    is NetworkResponse.NetworkError -> {
+                        Log.d(TAG, "requestFestivalProof: network err")
+                        _stampProofResponse.postValue(Pair(ProofResponseType.FAIL, false))
+                    }
+
+                    is NetworkResponse.UnknownError -> {
+                        Log.d(TAG, "requestFestivalProof: unknown err")
+                        _stampProofResponse.postValue(Pair(ProofResponseType.FAIL, false))
+                    }
+                }
+            } else {
+                _stampProofResponse.postValue(Pair(ProofResponseType.FAIL, false))
+            }
+
         }
     }
 
