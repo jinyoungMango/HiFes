@@ -7,12 +7,14 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ssafy.hifes.data.model.TimeTable
+import com.ssafy.hifes.ui.detail.map.MarkerDetailDialog
 import java.time.LocalDate
 import java.time.LocalTime
 
@@ -24,8 +26,17 @@ fun ScheduleDisplay(festivalTimeTable: List<TimeTable>) {
 
     val (startTime, endTime) = getStartAndEndTime(festivalTimeTable)
 
+    var showDialog by remember { mutableStateOf(false) }
+    var title by remember { mutableStateOf("") }
+    var time by remember { mutableStateOf("") }
+    var content by remember { mutableStateOf("") }
+
+    if (showDialog) {
+        MarkerDetailDialog(title, content, time, onDismissRequest = { showDialog = false })
+    }
+
     Column(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
     ) {
         Row(
             modifier = Modifier.background(Color.Gray.copy(alpha = 0.2f))
@@ -48,8 +59,11 @@ fun ScheduleDisplay(festivalTimeTable: List<TimeTable>) {
             }
         }
 
-        for (hour in startTime.hour .. endTime.hour) {
-            Row {
+        for (hour in startTime.hour..endTime.hour) {
+            Row (
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ){
                 Text(
                     text = "$hour:00",
                     fontWeight = FontWeight.Bold,
@@ -76,8 +90,13 @@ fun ScheduleDisplay(festivalTimeTable: List<TimeTable>) {
                                 .background(Color.Gray.copy(alpha = 0.2f))
                                 .padding(4.dp)
                                 .weight(1f)
+                                .align(Alignment.CenterVertically)
                                 .clickable {
-
+                                    title = currentProgram.programTitle
+                                    time =
+                                        "${currentProgram.startTime.time.hour} : 00 - ${currentProgram.endTime.time.hour} : 00"
+                                    content = currentProgram.programOutline
+                                    showDialog = true
                                 }
                         )
                     } else {
