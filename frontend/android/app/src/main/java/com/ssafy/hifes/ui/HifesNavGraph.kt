@@ -22,6 +22,7 @@ import com.ssafy.hifes.ui.group.info.GroupInfoScreen
 import com.ssafy.hifes.ui.group.info.chat.ChatViewModel
 import com.ssafy.hifes.ui.group.main.GroupMainScreen
 import com.ssafy.hifes.ui.home.HomeScreen
+import com.ssafy.hifes.ui.home.search.HomeFestivalSearchScreen
 import com.ssafy.hifes.ui.login.LoginDetailScreen
 import com.ssafy.hifes.ui.login.LoginScreen
 import com.ssafy.hifes.ui.login.LoginViewModel
@@ -118,6 +119,11 @@ fun HifesNavGraph(
             route = HifesDestinations.GROUP_DETAIL
         ) {
             GroupInfoScreen(navController = navController, groupViewModel = groupViewModel, chatViewModel = chatViewModel)
+        }
+        composable(
+            route = HifesDestinations.HOME_SEARCH
+        ) {
+            HomeFestivalSearchScreen(navController = navController)
         }
     }
 }

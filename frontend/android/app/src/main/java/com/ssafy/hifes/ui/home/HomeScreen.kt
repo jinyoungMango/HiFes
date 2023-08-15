@@ -99,7 +99,10 @@ fun HomeScreen(navController: NavController, viewModel: MainViewModel) {
     }
 
     Scaffold(topBar = {
-        HomeAppBar(navController)
+        HomeAppBar(navController) { keyword ->
+            viewModel.searchFestivalList(keyword)
+            navController.navigate(HifesDestinations.HOME_SEARCH)
+        }
     }
     ) {
         Column(

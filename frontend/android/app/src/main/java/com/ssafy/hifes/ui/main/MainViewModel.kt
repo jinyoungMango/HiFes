@@ -50,6 +50,10 @@ class MainViewModel @Inject constructor(
     private var _groupScreenType: MutableLiveData<GroupScreenType> = MutableLiveData()
     val groupScreenType: LiveData<GroupScreenType> = _groupScreenType
 
+    private var _searchFestivalList: MutableLiveData<List<OrganizedFestivalDto>> =
+        MutableLiveData()
+    val searchFestivalList: LiveData<List<OrganizedFestivalDto>> = _searchFestivalList
+
     var selectedFestival: Int = -1
 
 
@@ -130,6 +134,31 @@ class MainViewModel @Inject constructor(
                     Log.d(TAG, "getNearFestivalList: $response")
                     _festivalInfo.postValue(response.body)
                     selectedFestival = response.body.festivalId
+                }
+
+                is NetworkResponse.ApiError -> {
+                    postValueEvent(0, type)
+                }
+
+                is NetworkResponse.NetworkError -> {
+                    postValueEvent(1, type)
+                }
+
+                is NetworkResponse.UnknownError -> {
+                    postValueEvent(2, type)
+                }
+            }
+        }
+    }
+
+    fun searchFestivalList(keyword: String) {
+        viewModelScope.launch {
+            val response = repository.searchFestivalList(keyword)
+            val type = "token 정보 조회에"
+            when (response) {
+                is NetworkResponse.Success -> {
+                    Log.d(TAG, "searchFestivalList: $response")
+                    _searchFestivalList.postValue(response.body)
                 }
 
                 is NetworkResponse.ApiError -> {

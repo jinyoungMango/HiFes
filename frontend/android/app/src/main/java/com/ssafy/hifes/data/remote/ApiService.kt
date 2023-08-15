@@ -66,4 +66,7 @@ interface ApiService {
 
     @GET("festival/{festivalId}/festivalTables")
     suspend fun getFestivalTimeTable(@Path("festivalId") festivalId: Int): NetworkResponse<List<TimeTable>, ErrorResponse>
+
+    @GET("search-festival/")
+    suspend fun searchFestivalList(@Query("keyword") keyword: String): NetworkResponse<List<OrganizedFestivalDto>, ErrorResponse>
 }
