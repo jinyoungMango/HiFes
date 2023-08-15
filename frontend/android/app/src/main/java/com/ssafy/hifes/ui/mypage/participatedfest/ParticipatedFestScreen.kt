@@ -1,5 +1,6 @@
 package com.ssafy.hifes.ui.mypage.participatedfest
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -37,7 +38,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.ssafy.hifes.R
-import com.ssafy.hifes.data.model.StampMissionDto
+import com.ssafy.hifes.data.model.CreatedAtDto
+import com.ssafy.hifes.data.model.DateDto
+import com.ssafy.hifes.data.model.ParticipatedFestDto
+import com.ssafy.hifes.data.model.StampListDto
+import com.ssafy.hifes.data.model.TimeDto
 import com.ssafy.hifes.ui.common.top.TopWithBack
 import com.ssafy.hifes.ui.mypage.MyPageViewModel
 import com.ssafy.hifes.ui.theme.LightGrey
@@ -52,7 +57,9 @@ fun ParticipatedFestScreen(
 ) {
     var context = LocalContext.current
     var participatedFest = viewModel.participatedFestival.observeAsState()
+    var participatedStamp = viewModel.participatedStamps.observeAsState()
     var errMsgParticipatedFestList = viewModel.errMsgParticipatedFestList.observeAsState()
+    var errMsgParticipatedStampList = viewModel.errMsgParticipatedStamp.observeAsState()
 
     var skipHalfExpanded by remember { mutableStateOf(false) }
     val state = rememberModalBottomSheetState(
@@ -60,12 +67,27 @@ fun ParticipatedFestScreen(
         skipHalfExpanded = skipHalfExpanded
     )
     val scope = rememberCoroutineScope()
+    var selectedParticipatedFestival by remember {
+        mutableStateOf(
+            ParticipatedFestDto(
+                0,
+                0,
+                false,
+                "",
+                0,
+                CreatedAtDto(DateDto(0, 0, 0), TimeDto(0, 0, 0, 0))
+            )
+        )
+    }
 
-    LaunchedEffect(Unit){
+    LaunchedEffect(Unit) {
         viewModel.getParticipatedFestival()
     }
 
     errMsgParticipatedFestList.value?.getContentIfNotHandled()?.let {
+        Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+    }
+    errMsgParticipatedStampList.value?.getContentIfNotHandled()?.let {
         Toast.makeText(context, it, Toast.LENGTH_LONG).show()
     }
 
@@ -73,7 +95,12 @@ fun ParticipatedFestScreen(
         ModalBottomSheetLayout(
             sheetState = state,
             sheetContent = {
-                BottomSheetScreenElement()
+                if (participatedStamp.value != null) {
+                    BottomSheetScreenElement(
+                        selectedParticipatedFestival.countMission,
+                        participatedStamp.value!!
+                    )
+                }
             },
             sheetShape = RoundedCornerShape(10.dp, 10.dp, 0.dp, 0.dp),
             sheetGesturesEnabled = false
@@ -96,7 +123,24 @@ fun ParticipatedFestScreen(
                             date = CommonUtils.formatFestivalDateToString(
                                 participatedFest.value!!.get(index).participateTime.date
                             ),
-                            onClick = { scope.launch { state.show() } }
+                            onClick = {
+                                scope.launch {
+                                    Log.d(
+                                        "TAG",
+                                        "ParticipatedFestScreen: ?? ${
+                                            participatedFest.value!!.get(index)
+                                        }"
+                                    )
+                                    selectedParticipatedFestival =
+                                        participatedFest.value!!.get(index)
+                                    viewModel.getParticipatedStamp(
+                                        participatedFest.value!!.get(
+                                            index
+                                        ).festivalId
+                                    )
+                                    state.show()
+                                }
+                            }
                         )
                     }
                 }
@@ -108,60 +152,77 @@ fun ParticipatedFestScreen(
 
 
 @Composable
-fun BottomSheetScreenElement() {
-    val stampList = mutableListOf<StampMissionDto>()
-    stampList.apply {
-        add(StampMissionDto(1, 1, 1, "미션 타이틀", "미션 아웃라인", 1.0, 1.0))
-        add(StampMissionDto(1, 1, 1, "미션 타이틀", "미션 아웃라인", 1.0, 1.0))
-        add(StampMissionDto(1, 1, 1, "미션 타이틀", "미션 아웃라인", 1.0, 1.0))
-        add(StampMissionDto(1, 1, 1, "미션 타이틀", "미션 아웃라인", 1.0, 1.0))
-    }
-    val stampCount = 10//한 행사에서 받을 수 있는 스탬프의 총 량, 나중에 서버에서 받아올것
+fun BottomSheetScreenElement(
+    stampCount: Int,
+    stampList: StampListDto
+) {
     val stampStateList: MutableList<Boolean> = mutableListOf()
-
-    //총 10개 중 4개 스탬프를 받은 상황을 가정함
+    Log.d("TAG", "BottomSheetScreenElement: ${stampCount}")
     for (stamp: Int in 0 until stampCount) {
-        if (stamp < stampList.size) {
+        if (stamp < stampList.missionId.size) {
             stampStateList.add(true)
         } else {
             stampStateList.add(false)
         }
     }
 
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Spacer(modifier = Modifier.size(20.dp))
-        Text(
-            text = stringResource(id = R.string.participated_fest_stamp_list_title),
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Normal
-        )
-        Spacer(modifier = Modifier.size(20.dp))
-        Divider(color = LightGrey, thickness = 2.dp)
-        Spacer(modifier = Modifier.size(10.dp))
-        Card(
-            elevation = 4.dp,
-            modifier = Modifier.padding(10.dp)
+    if (stampCount == 0) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
+            Spacer(modifier = Modifier.size(20.dp))
+            Text(
+                text = stringResource(id = R.string.participated_fest_stamp_list_title),
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Normal
+            )
+            Spacer(modifier = Modifier.size(20.dp))
+            Divider(color = LightGrey, thickness = 2.dp)
+            Spacer(modifier = Modifier.size(10.dp))
+            Text(
+                text = stringResource(id = R.string.participated_fest_stamp_list_none),
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Light
+            )
+            Spacer(modifier = Modifier.size(20.dp))
+        }
+    } else {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Spacer(modifier = Modifier.size(20.dp))
+            Text(
+                text = stringResource(id = R.string.participated_fest_stamp_list_title),
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Normal
+            )
+            Spacer(modifier = Modifier.size(20.dp))
+            Divider(color = LightGrey, thickness = 2.dp)
+            Spacer(modifier = Modifier.size(10.dp))
+            Card(
+                elevation = 4.dp,
+                modifier = Modifier.padding(10.dp)
             ) {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(5),
-                    modifier = Modifier.padding(10.dp),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    items(stampStateList.size) { index ->
-                        Stamp(state = stampStateList[index])
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(5),
+                        modifier = Modifier.padding(10.dp),
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        items(stampStateList.size) { index ->
+                            Stamp(state = stampStateList[index])
+                        }
                     }
                 }
-            }
 
+            }
+            Spacer(modifier = Modifier.size(20.dp))
         }
-        Spacer(modifier = Modifier.size(20.dp))
     }
+
 
 }
 
@@ -169,5 +230,5 @@ fun BottomSheetScreenElement() {
 @Composable
 @Preview
 fun PreviewParticipatedFestScreen() {
-   // ParticipatedFestScreen(navController = rememberNavController())
+    // ParticipatedFestScreen(navController = rememberNavController())
 }
