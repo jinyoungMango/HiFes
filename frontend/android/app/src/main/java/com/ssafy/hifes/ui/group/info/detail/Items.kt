@@ -8,13 +8,17 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,6 +33,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.ssafy.hifes.data.model.Member
 import com.ssafy.hifes.data.model.SharedPicDto
+import com.ssafy.hifes.ui.group.GroupViewModel
 import com.ssafy.hifes.ui.iconpack.MyIconPack
 import com.ssafy.hifes.ui.iconpack.myiconpack.Imagenotfound
 import com.ssafy.hifes.ui.iconpack.myiconpack.Imagenotfoundmedium
@@ -118,11 +123,15 @@ fun GroupPictureRow(img: List<SharedPicDto>) {
 }
 
 @Composable
-fun GroupPictureGrid(img: List<Img>) {
-    LazyVerticalGrid(columns = GridCells.Fixed(3), modifier = Modifier.padding(8.dp)) {
-        items(img) { item ->
+fun GroupPictureGrid(groupViewModel: GroupViewModel) {
+    var groupImages = groupViewModel.groupImages.observeAsState()
+    val lazyGridScope = rememberLazyGridState()
+    LazyVerticalGrid(columns = GridCells.Fixed(3), modifier = Modifier.padding(8.dp),
+    state = lazyGridScope
+    ) {
+        items(groupImages.value!!) { item ->
             AsyncImage(
-                model = item.url,
+                model = item.sharedPic,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 placeholder = ColorPainter(Color.Green),

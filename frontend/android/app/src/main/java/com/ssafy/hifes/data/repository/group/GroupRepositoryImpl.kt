@@ -45,4 +45,11 @@ class GroupRepositoryImpl @Inject constructor(
         return apiService.signOutGroup(groupId)
     }
 
+    override suspend fun uploadPicture(
+        image: MultipartBody.Part,
+        groupId: Int
+    ): NetworkResponse<String, ErrorResponse> {
+        return apiService.uploadPicture(image, groupId)
+    }
+
 }

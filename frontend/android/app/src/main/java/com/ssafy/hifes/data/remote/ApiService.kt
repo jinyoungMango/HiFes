@@ -79,6 +79,13 @@ interface ApiService {
     @DELETE("group/sign-out/{groupId}")
     suspend fun signOutGroup(@Path("groupId") groupId: Int): NetworkResponse<String, ErrorResponse>
 
+    @Multipart
+    @POST("group/picture/upload")
+    suspend fun uploadPicture(
+        @Part image: MultipartBody.Part,
+        @Query("groupId") groupId: Int
+    ): NetworkResponse<String, ErrorResponse>
+
     // Proof
     @POST("{normalUserId}/participate-festival/{festivalId}") //티켓 발급(행사 참여 인증)
     suspend fun participateFestival(

@@ -1,6 +1,10 @@
 package com.ssafy.hifes.ui.group.info
 
+import android.net.Uri
+import android.util.Log
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -28,8 +32,10 @@ import com.ssafy.hifes.ui.group.GroupViewModel
 import com.ssafy.hifes.ui.group.info.chat.ChatViewModel
 import com.ssafy.hifes.ui.group.info.chat.GroupChatScreen
 import com.ssafy.hifes.ui.group.info.detail.GroupDetailScreen
-import com.ssafy.hifes.ui.group.info.picture.GroupPictureScreen
+import com.ssafy.hifes.ui.group.info.detail.GroupPictureGrid
 import com.ssafy.hifes.ui.theme.PrimaryPink
+
+private const val TAG = "GroupInfoScreen_하이페스"
 
 @Composable
 fun GroupInfoScreen(
@@ -42,6 +48,7 @@ fun GroupInfoScreen(
     var groupDetailInfo = groupViewModel.groupDetailInfo.observeAsState()
     val imageErrMsg = groupViewModel.errorMsgGroupImages.observeAsState()
     val detailErrMsg = groupViewModel.errorMsgGroupDetail.observeAsState()
+    val groupImages = groupViewModel.groupImages.observeAsState()
 
     imageErrMsg.value?.getContentIfNotHandled()?.let {
         Toast.makeText(context, it, Toast.LENGTH_LONG).show()
@@ -55,10 +62,26 @@ fun GroupInfoScreen(
     else stringResource(id = R.string.group_top_chat)
     var floatingButton: @Composable (() -> Unit)? = null
 
+    val getContent =
+        rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            if (uri != null) {
+                Log.d(TAG, "GroupInfoScreen: $uri")
+                groupViewModel.selectedGroup.value?.let { groupId ->
+                    groupViewModel.uploadPicture(
+                        context, uri,
+                        groupId
+                    )
+                    groupViewModel.getGroupImages(groupId)
+                    Toast.makeText(context, "이미지가 업로드되었습니다.", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+        }
+
     if (selectedTab == 1) {
         floatingButton = {
             FloatingActionButton(
-                onClick = { /* Handle FAB click */ },
+                onClick = { getContent.launch("image/*") },
                 containerColor = PrimaryPink,
                 contentColor = Color.White
             ) {
@@ -86,7 +109,9 @@ fun GroupInfoScreen(
             if (selectedTab == 0) {
                 GroupDetailScreen(navController, groupViewModel)
             } else if (selectedTab == 1) {
-                GroupPictureScreen()
+                if (!groupImages.value.isNullOrEmpty()) {
+                    GroupPictureGrid(groupViewModel)
+                }
             } else if (selectedTab == 2) {
                 GroupChatScreen(chatViewModel, groupViewModel)
             }
