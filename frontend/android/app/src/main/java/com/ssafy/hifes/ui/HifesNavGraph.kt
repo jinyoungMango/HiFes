@@ -111,7 +111,7 @@ fun HifesNavGraph(
             route = HifesDestinations.BOARD_ROUTE
         )
         {
-            BoardScreen(navController = navController, viewModel = boardViewModel)
+            BoardScreen(navController = navController, viewModel = boardViewModel, mainViewModel = mainViewModel)
         }
         composable(
             route = HifesDestinations.BOARD_DETAIL_ROUTE
