@@ -92,7 +92,7 @@ Column NoticeItem(BuildContext context, PostWithCommentDto notice) {
                       notice.title,
                       style: TextStyle(fontSize: 20),
                     ),
-                    Text('조회수 ${notice.views}')
+                    Text('조회수  ${notice.views}')
                   ],
                 ),
                 SizedBox(
@@ -107,7 +107,7 @@ Column NoticeItem(BuildContext context, PostWithCommentDto notice) {
                 ),
                 Align(
                   alignment: Alignment.topLeft,
-                  child: Text('${notice.content}'),
+                  child: Text('${notice.content}', style: TextStyle(fontSize: 16),),
                 ),
                 SizedBox(
                   height: 40,
@@ -116,10 +116,12 @@ Column NoticeItem(BuildContext context, PostWithCommentDto notice) {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("${notice.createdAt.date} "),
-                        Container(child: Text("${notice.createdAt.time}")),
+                        Text("${notice.createdAt.date}", style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w300)),
+                        SizedBox(height: 4,),
+                        Container(child: Text("${notice.createdAt.time}", style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w300))),
                         SizedBox(height: 20,),
                         ElevatedButton(
                             style: ButtonStyle(
@@ -127,6 +129,11 @@ Column NoticeItem(BuildContext context, PostWithCommentDto notice) {
                                   AppColor.PrimaryPink),
                               minimumSize:
                               MaterialStateProperty.all<Size>(Size(200, 48)),
+                              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                              ),
                             ),
                             onPressed: () {
                               showDialog(
@@ -145,13 +152,6 @@ Column NoticeItem(BuildContext context, PostWithCommentDto notice) {
                       ],
                     ),
                   ],
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Divider(
-                  color: Colors.grey, // 수평선 색상 설정
-                  thickness: 20, // 수평선 두께 설정
                 ),
                 SizedBox(
                   height: 20,

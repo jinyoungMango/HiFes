@@ -15,7 +15,7 @@ AppBar TopBar() {
       'HIFES',
       style: TextStyle(
           color: AppColor.PrimaryPink,
-          fontWeight: FontWeight.bold,
+          fontWeight: FontWeight.w900,
           fontSize: 40),
     ), // 회사명 텍스트를 넣어주면 됩니다.
     actions: [

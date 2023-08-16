@@ -116,13 +116,13 @@ class _MyPageState extends State<MyPage> with SingleTickerProviderStateMixin {
                   Text(
                     "내 정보",
                     style: TextStyle(
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w600,
                         color: Colors.black,
                         fontSize: 24),
                   ),
                   Text("축제 정보",
                       style: TextStyle(
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w600,
                           color: Colors.black,
                           fontSize: 24)),
                 ],
@@ -145,8 +145,7 @@ class _MyPageState extends State<MyPage> with SingleTickerProviderStateMixin {
                               "Account",
                               style: TextStyle(
                                   color: Colors.black,
-                                  fontSize: 40,
-                                  fontWeight: FontWeight.bold),
+                                  fontSize: 40, fontWeight: FontWeight.w600),
                             ),
                           ),
                           SizedBox(
@@ -158,7 +157,7 @@ class _MyPageState extends State<MyPage> with SingleTickerProviderStateMixin {
                               elevation: 4,
                               borderRadius: BorderRadius.circular(8),
                               child: Padding(
-                                padding: const EdgeInsets.all(20.0),
+                                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 40),
                                 child: Container(
                                   child: Column(
                                     children: [
@@ -196,7 +195,7 @@ class _MyPageState extends State<MyPage> with SingleTickerProviderStateMixin {
                                     style: TextStyle(
                                         color: Colors.black,
                                         fontSize: 40,
-                                        fontWeight: FontWeight.bold),
+                                        fontWeight: FontWeight.w600),
                                   )),
                               ElevatedButton(
                                   style: ButtonStyle(
@@ -206,6 +205,11 @@ class _MyPageState extends State<MyPage> with SingleTickerProviderStateMixin {
                                     minimumSize:
                                         MaterialStateProperty.all<Size>(
                                             Size(200, 48)),
+                                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8.0),
+                                      ),
+                                    ),
                                   ),
                                   onPressed: () {
                                     Get.rootDelegate.toNamed(Routes.REGISTER);
@@ -278,7 +282,7 @@ class _MyPageState extends State<MyPage> with SingleTickerProviderStateMixin {
                         child: ClipRRect(
                             borderRadius: BorderRadius.circular(20),
                             child: Image.network(
-                              "https://i.imgur.com/JOKsNeT.jpeg",
+                              "${fesItem.fesPosterPath}",
                               fit: BoxFit.cover,
                             ))),
                     SizedBox(
@@ -288,9 +292,13 @@ class _MyPageState extends State<MyPage> with SingleTickerProviderStateMixin {
                         color: AppColor.PrimaryPink,
                       ),
                     ),
-                    Text(
-                      fesItem.fesTitle,
-                      style: TextStyle(fontSize: 20),
+                    Container(
+                      width: 250,
+                      child: Center(
+                        child: Text(
+                          fesItem.fesTitle,
+                        ),
+                      ),
                     ),
                     SizedBox(
                       height: 30,
@@ -299,7 +307,9 @@ class _MyPageState extends State<MyPage> with SingleTickerProviderStateMixin {
                         color: AppColor.PrimaryPink,
                       ),
                     ),
-                    Text(fesItem.fesAddress),
+                    Container(
+                        width: 250,
+                        child: Center(child: Text(fesItem.fesAddress))),
                     SizedBox(
                       height: 30,
                       width: 2,
@@ -307,11 +317,16 @@ class _MyPageState extends State<MyPage> with SingleTickerProviderStateMixin {
                         color: AppColor.PrimaryPink,
                       ),
                     ),
-                    Column(
-                      children: [
-                        Text(
-                            "${fesItem.fesStartDate.toString()}      ~      ${fesItem.fesEndDate.toString()}"),
-                      ],
+                    Container(
+                      width: 250,
+                      child: Center(
+                        child: Column(
+                          children: [
+                            Text(
+                                "${fesItem.fesStartDate.toString()}      ~      ${fesItem.fesEndDate.toString()}"),
+                          ],
+                        ),
+                      ),
                     ),
                     ElevatedButton(
                         style: ButtonStyle(
@@ -319,6 +334,11 @@ class _MyPageState extends State<MyPage> with SingleTickerProviderStateMixin {
                               AppColor.PrimaryPink),
                           minimumSize:
                               MaterialStateProperty.all<Size>(Size(100, 48)),
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                          ),
                         ),
                         onPressed: () {
                           _mainController.fid.value = fesItem.festivalId as int;
@@ -348,11 +368,12 @@ class _MyPageState extends State<MyPage> with SingleTickerProviderStateMixin {
           children: [
             Text(
               title,
-              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),
+              style: TextStyle(fontWeight: FontWeight.w600, color: Colors.grey),
             ),
+            SizedBox(height: 10,),
             Text(name,
                 style: TextStyle(
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w600,
                     color: Colors.black,
                     fontSize: 20))
           ],
