@@ -9,7 +9,7 @@ data class PostDto(
     var organizedFestivalId: Int,
     var views: Int,
     var createdAt: DateTime,
-    var content: String="",
+    var content: String = "",
     var isHidden: Boolean?,
     var hideReason: String?,
     var imagePath: String?,
@@ -32,3 +32,14 @@ data class PostDetailDto(
     var createdAt: DateTime,
     var topLevelComments: List<CommentDto>
 )
+
+data class PostWriteDto(
+    var postType: String,
+    var title: String,
+    var content: String,
+    var createdBy: Int,
+    var isHidden: Boolean?,
+    var festivalId: Int,
+    var rating: Float?
+)
+
