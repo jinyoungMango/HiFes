@@ -113,4 +113,7 @@ interface ApiService {
     suspend fun getPostDetail(
         @Path("id") id: Int
     ): NetworkResponse<PostDetailDto, ErrorResponse>
+
+    @GET("search-festival/")
+    suspend fun searchFestivalList(@Query("keyword") keyword: String): NetworkResponse<List<OrganizedFestivalDto>, ErrorResponse>
 }

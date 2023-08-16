@@ -5,6 +5,7 @@ import com.ssafy.hifes.data.model.MarkerDto
 import com.ssafy.hifes.data.model.OrganizedFestivalDto
 import com.ssafy.hifes.util.network.NetworkResponse
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface MainRepository {
 
@@ -16,5 +17,7 @@ interface MainRepository {
     ): NetworkResponse<List<OrganizedFestivalDto>, ErrorResponse>
 
     suspend fun getFestivalInfo(@Path("festivalId") festivalId: Int): NetworkResponse<OrganizedFestivalDto, ErrorResponse>
+
+    suspend fun searchFestivalList(@Query("keyword") keyword: String): NetworkResponse<List<OrganizedFestivalDto>, ErrorResponse>
 
 }
