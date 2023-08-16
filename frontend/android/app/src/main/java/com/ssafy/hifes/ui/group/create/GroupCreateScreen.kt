@@ -68,6 +68,7 @@ fun GroupCreateScreen(
     LaunchedEffect(groupCreateState.value) {
         if (groupCreateState.value == GroupCreateStateType.SUCCESS) {
             viewModel.initCreateState()
+            Toast.makeText(context, "그룹이 생성되었습니다", Toast.LENGTH_LONG).show()
             navController.popBackStack()
         }
     }
