@@ -75,4 +75,11 @@ object AppPreferences {
         return Pair(festivalId, latLngList)
     }
 
+    fun removeCallLocation(){
+        preferences.edit().putString(CALL_LATITUDE, "")
+            .putString(CALL_LONGITUDE, "")
+            .putString(CALL_FESTIVALID, "")
+            .commit()
+    }
+
 }
