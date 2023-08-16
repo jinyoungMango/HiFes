@@ -8,6 +8,7 @@ import com.ssafy.hifes.data.model.LoginResponse
 import com.ssafy.hifes.data.model.MarkerDto
 import com.ssafy.hifes.data.model.OrganizedFestivalDto
 import com.ssafy.hifes.data.model.ParticipatedFestDto
+import com.ssafy.hifes.data.model.PostDto
 import com.ssafy.hifes.data.model.SharedPicDto
 import com.ssafy.hifes.data.model.StampListDto
 import com.ssafy.hifes.data.model.TimeTable
@@ -99,4 +100,11 @@ interface ApiService {
     // Festival
     @GET("festival/{festivalId}/festivalTables")
     suspend fun getFestivalTimeTable(@Path("festivalId") festivalId: Int): NetworkResponse<List<TimeTable>, ErrorResponse>
+
+    // Board
+    @GET("post/{festivalId}/{postType}")
+    suspend fun getPostList(
+        @Path("festivalId") festivalId: Int,
+        @Path("postType") postType: String
+    ): NetworkResponse<List<PostDto>, ErrorResponse>
 }
