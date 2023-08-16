@@ -1,15 +1,13 @@
 package com.ssafy.hifes.ui.board.boarddetail.comment
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.material.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -23,20 +21,21 @@ import com.ssafy.hifes.ui.board.BoardViewModel
 import com.ssafy.hifes.ui.common.CustomMenuItem
 import com.ssafy.hifes.ui.iconpack.MyIconPack
 import com.ssafy.hifes.ui.iconpack.myiconpack.Childarrow
-import com.ssafy.hifes.ui.theme.LightGrey
-import myiconpack.User
-import java.text.SimpleDateFormat
 
 @Composable
-fun ReComment(commentData: CommentDto, viewModel: BoardViewModel, isFirstReComment: Boolean) {
+fun LazyItemScope.ReComment(
+    commentData: CommentDto,
+    viewModel: BoardViewModel,
+    isFirstReComment: Boolean
+) {
     var userId = AppPreferences.getUserId()
-    val menuItemList : MutableList<CustomMenuItem> = mutableListOf()
+    val menuItemList: MutableList<CustomMenuItem> = mutableListOf()
     menuItemList.apply {
-        add(CustomMenuItem("수정"){})
-        add(CustomMenuItem("삭제"){})
+        add(CustomMenuItem("수정") {})
+        add(CustomMenuItem("삭제") {})
     }
 
-    Column (){
+    Column() {
         Row(modifier = Modifier.fillMaxWidth()) {
             Column(modifier = Modifier.width(30.dp)) {
                 if (isFirstReComment) {
@@ -55,7 +54,7 @@ fun ReComment(commentData: CommentDto, viewModel: BoardViewModel, isFirstReComme
                 verticalAlignment = Alignment.Top,
                 horizontalArrangement = Arrangement.End
             ) {
-                if (userId == commentData.normalUserId.toString()) {
+                if (userId == commentData.createdBy.toString()) {
                     CommentMenuButton(menuItemList = menuItemList)
                 }
                 Spacer(modifier = Modifier.size(10.dp))

@@ -10,7 +10,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.ssafy.hifes.R
 import com.ssafy.hifes.data.local.AppPreferences
-import com.ssafy.hifes.data.model.PostDto
+import com.ssafy.hifes.data.model.PostDetailDto
 import com.ssafy.hifes.ui.board.BoardViewModel
 import com.ssafy.hifes.ui.board.boardcommon.PostType
 import com.ssafy.hifes.ui.common.CustomMenuItem
@@ -18,7 +18,11 @@ import com.ssafy.hifes.ui.common.top.TopWithBack
 import com.ssafy.hifes.ui.theme.LightGrey
 
 @Composable
-fun BoardDetailTopAppBar(navController: NavController, postData: PostDto, viewModel: BoardViewModel) {
+fun BoardDetailTopAppBar(
+    navController: NavController,
+    postData: PostDetailDto,
+    viewModel: BoardViewModel
+) {
     var userId = AppPreferences.getUserId()
     var appBarTitle = getBoardDetailAppBarTitle(postData.postType, LocalContext.current)
     var menuList: MutableList<CustomMenuItem> = mutableListOf()

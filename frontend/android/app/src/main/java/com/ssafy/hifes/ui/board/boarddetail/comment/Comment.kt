@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -14,36 +15,48 @@ import com.ssafy.hifes.data.local.AppPreferences
 import com.ssafy.hifes.data.model.CommentDto
 import com.ssafy.hifes.ui.board.BoardViewModel
 import com.ssafy.hifes.ui.common.CustomMenuItem
-import java.text.SimpleDateFormat
 
-@Composable
-fun Comment(commentData: CommentDto, viewModel: BoardViewModel) {
+fun LazyListScope.Comment(commentData: CommentDto, viewModel: BoardViewModel) {
     var userId = AppPreferences.getUserId()
-    val menuItemList : MutableList<CustomMenuItem> = mutableListOf()
+    val menuItemList: MutableList<CustomMenuItem> = mutableListOf()
     menuItemList.apply {
-        add(CustomMenuItem("수정"){})
-        add(CustomMenuItem("삭제"){})
+        add(CustomMenuItem("수정") {})
+        add(CustomMenuItem("삭제") {})
     }
-    if(userId != null){
-        Column {
-            Row {
-                Spacer(modifier = Modifier.size(10.dp))
-                CommentContent(comment = commentData)
-                Row(
-                    modifier = Modifier.weight(1f),
-                    verticalAlignment = Alignment.Top,
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    if (userId != commentData.normalUserId.toString()) {
-                        ReCommentButton ({})
-                    } else {
-                        CommentMenuButton(menuItemList = menuItemList)
-                    }
+    if (userId != null) {
+        item {
+            Column {
+                Row {
+                    Spacer(modifier = Modifier.size(10.dp))
+                    CommentContent(comment = commentData)
+                    Row(
+                        modifier = Modifier.weight(1f),
+                        verticalAlignment = Alignment.Top,
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        if (userId != commentData.createdBy.toString()) {
+                            ReCommentButton({})
+                        } else {
+                            CommentMenuButton(menuItemList = menuItemList)
+                        }
 
+                    }
+                    Spacer(modifier = Modifier.size(10.dp))
                 }
-                Spacer(modifier = Modifier.size(10.dp))
+                Spacer(modifier = Modifier.size(14.dp))
             }
-            Spacer(modifier = Modifier.size(14.dp))
+
+        }
+        if (commentData.childComments != null) {
+            commentData.childComments!!.forEachIndexed { index, commentDto ->
+                item {
+                    ReComment(
+                        commentData = commentDto,
+                        viewModel = viewModel,
+                        isFirstReComment = index == 0
+                    )
+                }
+            }
         }
     }
 

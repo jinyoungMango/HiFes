@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ssafy.hifes.data.model.Event
+import com.ssafy.hifes.data.model.PostDetailDto
 import com.ssafy.hifes.data.model.PostDto
 import com.ssafy.hifes.data.repository.board.BoardRepository
 import com.ssafy.hifes.ui.board.boardcommon.PostType
@@ -26,18 +27,21 @@ class BoardViewModel @Inject constructor(
     private val _msgPostList = MutableLiveData<Event<String>>()
     val errorMsgPostList: LiveData<Event<String>> = _msgPostList
 
-    private var _postList : MutableLiveData<List<PostDto>> = MutableLiveData()
-    val postList : LiveData<List<PostDto>> = _postList
+    private val _msgPostDetail = MutableLiveData<Event<String>>()
+    val msgPostDetail: LiveData<Event<String>> = _msgPostDetail
 
-    private var _selectedPost : MutableLiveData<PostDto> = MutableLiveData()
-    val selectedPost : LiveData<PostDto> = _selectedPost
+    private var _postList: MutableLiveData<List<PostDto>> = MutableLiveData()
+    val postList: LiveData<List<PostDto>> = _postList
+
+    private var _selectedPost: MutableLiveData<PostDetailDto> = MutableLiveData()
+    val selectedPost: LiveData<PostDetailDto> = _selectedPost
 
     var selectedPostType = "notice"
 
-    private var _boardType : MutableLiveData<PostType> = MutableLiveData()
-    val boardType : LiveData<PostType> = _boardType
+    private var _boardType: MutableLiveData<PostType> = MutableLiveData()
+    val boardType: LiveData<PostType> = _boardType
 
-    fun getNotificationPostList(selectedFestivalId: Int){
+    fun getNotificationPostList(selectedFestivalId: Int) {
 
         viewModelScope.launch {
             val response = repository.getPostList(selectedFestivalId, PostType.NOTIFICATION.label)
@@ -45,7 +49,6 @@ class BoardViewModel @Inject constructor(
             when (response) {
                 is NetworkResponse.Success -> {
                     _postList.postValue(response.body)
-                //    _boardType.postValue(PostType.NOTIFICATION)
                 }
 
                 is NetworkResponse.ApiError -> {
@@ -64,14 +67,13 @@ class BoardViewModel @Inject constructor(
 
     }
 
-    fun getAskPostList(selectedFestivalId: Int){
+    fun getAskPostList(selectedFestivalId: Int) {
         viewModelScope.launch {
             val response = repository.getPostList(selectedFestivalId, PostType.ASK.label)
             val type = "게시글 조회에"
             when (response) {
                 is NetworkResponse.Success -> {
                     _postList.postValue(response.body)
-                //    _boardType.postValue(PostType.ASK)
                 }
 
                 is NetworkResponse.ApiError -> {
@@ -89,14 +91,13 @@ class BoardViewModel @Inject constructor(
         }
     }
 
-    fun getFreePostList(selectedFestivalId: Int){
+    fun getFreePostList(selectedFestivalId: Int) {
         viewModelScope.launch {
             val response = repository.getPostList(selectedFestivalId, PostType.FREE.label)
             val type = "게시글 조회에"
             when (response) {
                 is NetworkResponse.Success -> {
                     _postList.postValue(response.body)
-                 //   _boardType.postValue(PostType.FREE)
                 }
 
                 is NetworkResponse.ApiError -> {
@@ -114,14 +115,13 @@ class BoardViewModel @Inject constructor(
         }
     }
 
-    fun getReviewPostList(selectedFestivalId: Int){
+    fun getReviewPostList(selectedFestivalId: Int) {
         viewModelScope.launch {
             val response = repository.getPostList(selectedFestivalId, PostType.REVIEW.label)
             val type = "게시글 조회에"
             when (response) {
                 is NetworkResponse.Success -> {
                     _postList.postValue(response.body)
-                   // _boardType.postValue(PostType.REVIEW)
                 }
 
                 is NetworkResponse.ApiError -> {
@@ -139,36 +139,56 @@ class BoardViewModel @Inject constructor(
         }
     }
 
-    fun initBoardType(postType: PostType){
+    fun initBoardType(postType: PostType) {
         _boardType.postValue(postType)
     }
 
-    fun getPostDetail(postData : PostDto){//추후 서버 통신 코드가 생기면 이 부분을 서버에게서 게시글 상세를 받아오는 부분으로 변경한다
-        selectedPostType = postData.postType
-        _selectedPost.postValue(postData)
+    fun getPostDetail(postData: PostDto) {
+        viewModelScope.launch {
+            val response = repository.getPostDetail(postData.id)
+            val type = "게시글 조회에"
+            when (response) {
+                is NetworkResponse.Success -> {
+                    _selectedPost.postValue(response.body)
+                    selectedPostType = postData.postType
+                }
+
+                is NetworkResponse.ApiError -> {
+                    postValueEvent(0, type, _msgPostDetail)
+                }
+
+                is NetworkResponse.NetworkError -> {
+                    postValueEvent(1, type, _msgPostDetail)
+                }
+
+                is NetworkResponse.UnknownError -> {
+                    postValueEvent(2, type, _msgPostDetail)
+                }
+            }
+        }
     }
 
-    fun postWrite(postData: PostDto, imageFile : File?){
+    fun postWrite(postData: PostDto, imageFile: File?) {
         Log.d(TAG, "postWrite: 타입 ${boardType}")
         Log.d(TAG, "postWrite: 작성할 데이터 ${postData}")
-        if(imageFile != null){
+        if (imageFile != null) {
             //보낼 이미지 있는 경우의 통신
             val files: MutableList<MultipartBody.Part> = mutableListOf()
             files.add(MultipartUtil.getImageBody(imageFile))
-        }else{
+        } else {
             //없는 경우의 통신
         }
     }
 
-    fun postDelete(){
+    fun postDelete() {
         Log.d(TAG, "postDelete: 삭제 ${selectedPost.value}")
     }
 
-    fun postModify(){
+    fun postModify() {
         Log.d(TAG, "postModify: 수정 ${selectedPost.value}")
     }
 
-    fun writeReComment(){
+    fun writeReComment() {
 
     }
 

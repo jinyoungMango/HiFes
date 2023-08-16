@@ -23,15 +23,10 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.ssafy.hifes.data.local.AppPreferences
-import com.ssafy.hifes.data.model.CommentDto
-import com.ssafy.hifes.data.model.FestivalTableDto
-import com.ssafy.hifes.data.model.PostDto
 import com.ssafy.hifes.ui.board.BoardViewModel
 import com.ssafy.hifes.ui.board.boardcommon.PostType
 import com.ssafy.hifes.ui.board.boarddetail.comment.CommentWriteComponent
-import java.text.SimpleDateFormat
 
 @Composable
 fun BoardDetailScreen(navController: NavController, viewModel: BoardViewModel) {
@@ -40,72 +35,6 @@ fun BoardDetailScreen(navController: NavController, viewModel: BoardViewModel) {
     val localDensity = LocalDensity.current
     val scrollState = rememberScrollState()
     var height by remember { mutableStateOf(0.dp) }
-
-    val formatter = SimpleDateFormat("yyyy.MM.dd HH:mm")
-    val testDate = java.sql.Date(formatter.parse("2023.04.25 12:03").time)
-
-    val commentList: MutableList<CommentDto> = mutableListOf()
-    commentList.apply {
-        add(
-            CommentDto(
-                commentId = 1,
-                normalUserId = 1,
-                postId = 1,
-                festivalId = 1,
-                hostId = 1,
-                comment = "댓글내용",
-                createdAt = testDate,
-                createdBy = "사용자 닉네임",
-                updatedAt = testDate,
-                depth = false
-            )
-        )
-        add(
-            CommentDto(
-                commentId = 1,
-                normalUserId = 2,
-                postId = 1,
-                festivalId = 1,
-                hostId = 1,
-                comment = "댓글내용",
-                createdAt = testDate,
-                createdBy = "사용자 닉네임",
-                updatedAt = testDate,
-                depth = false
-            )
-        )
-    }
-    val reCommentList: MutableList<CommentDto> = mutableListOf()
-    reCommentList.apply {
-        add(
-            CommentDto(
-                commentId = 1,
-                normalUserId = 1,
-                postId = 1,
-                festivalId = 1,
-                hostId = 1,
-                comment = "댓글내용",
-                createdAt = testDate,
-                createdBy = "사용자 닉네임",
-                updatedAt = testDate,
-                depth = true
-            )
-        )
-        add(
-            CommentDto(
-                commentId = 1,
-                normalUserId = 1,
-                postId = 1,
-                festivalId = 1,
-                hostId = 1,
-                comment = "댓글내용",
-                createdAt = testDate,
-                createdBy = "사용자 닉네임",
-                updatedAt = testDate,
-                depth = true
-            )
-        )
-    }
 
     if (selectedPost.value != null && userId != null) {
         Scaffold(
@@ -130,15 +59,14 @@ fun BoardDetailScreen(navController: NavController, viewModel: BoardViewModel) {
                                 Spacer(modifier = Modifier.size(20.dp))
                             }
                         }
-                        items(commentList.size) { index ->
-                            BoardDetailComments(
-                                viewModel = viewModel,
-                                commentList = commentList,
-                                reCommentList = reCommentList
-                            )
-                        }
+
+                        BoardDetailComments(
+                            viewModel = viewModel,
+                            commentList = selectedPost.value!!.topLevelComments
+                        )
+
                         item {
-                            Spacer(modifier = Modifier.size(height))
+                            Spacer(modifier = Modifier.size(50.dp))
                         }
 
                     }

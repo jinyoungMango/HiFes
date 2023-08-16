@@ -16,7 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ssafy.hifes.R
-import com.ssafy.hifes.data.model.PostDto
+import com.ssafy.hifes.data.model.PostDetailDto
 import com.ssafy.hifes.ui.board.boardcommon.PostType
 import com.ssafy.hifes.ui.theme.Grey
 import com.ssafy.hifes.ui.theme.LightGrey
@@ -24,7 +24,7 @@ import com.ssafy.hifes.ui.theme.pretendardFamily
 import com.ssafy.hifes.util.CommonUtils
 
 @Composable
-fun BoardDetailHead(postData: PostDto, userDataId: String) {
+fun BoardDetailHead(postData: PostDetailDto, userDataId: String) {
     Column {
         Spacer(modifier = Modifier.size(10.dp))
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -72,7 +72,7 @@ fun BoardDetailHead(postData: PostDto, userDataId: String) {
     }
 }
 
-fun getBoardDetailHeaderDateSeenTimeString(postData: PostDto, context: Context): String {
+fun getBoardDetailHeaderDateSeenTimeString(postData: PostDetailDto, context: Context): String {
     return "${context.getString(R.string.board_detail_regist)}: ${
         CommonUtils.formatFestivalDateToString(
             postData.createdAt.date

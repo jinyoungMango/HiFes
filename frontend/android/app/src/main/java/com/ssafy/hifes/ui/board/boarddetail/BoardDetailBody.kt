@@ -17,7 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.ssafy.hifes.data.model.PostDto
+import com.ssafy.hifes.data.model.PostDetailDto
 import com.ssafy.hifes.ui.board.boardcommon.CustomRatingBar
 import com.ssafy.hifes.ui.board.boardcommon.PostType
 import com.ssafy.hifes.ui.iconpack.MyIconPack
@@ -27,7 +27,7 @@ import com.ssafy.hifes.ui.theme.PrimaryPink
 import com.ssafy.hifes.ui.theme.pretendardFamily
 
 @Composable
-fun BoardDetailBody(postData: PostDto) {
+fun BoardDetailBody(postData: PostDetailDto) {
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
