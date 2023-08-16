@@ -11,7 +11,6 @@ import java.math.BigDecimal;
 @Getter
 public class FCMForGroupDto {
     private Long groupId;
-    private String location;
     private String description;
     private BigDecimal latitude;
     private BigDecimal longitude;
