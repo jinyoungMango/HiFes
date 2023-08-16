@@ -51,9 +51,6 @@ public class NormalUserController {
 
 
 
-
-
-
     @CrossOrigin(origins = "*")
     @PostMapping("normal/login")
     @ResponseBody
@@ -77,6 +74,7 @@ public class NormalUserController {
         return loginFail;
 
     }
+
 
     @CrossOrigin(origins = "*")
     @PostMapping("normal/fcmSave")

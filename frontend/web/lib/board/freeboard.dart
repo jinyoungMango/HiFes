@@ -93,7 +93,7 @@ Column FreeItem(BuildContext context, PostWithCommentDto free) {
 
                 Align(
                   alignment: Alignment.topLeft,
-                  child: Text("${free.content}"),
+                  child: Text("${free.content}", style: TextStyle(fontSize: 16)),
                 ),
                 SizedBox(
                   height: 40,
@@ -102,9 +102,13 @@ Column FreeItem(BuildContext context, PostWithCommentDto free) {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [Text("${free.createdAt.date}"),
-                        Container(child: Text("${free.createdAt.time}"))],
+                      children: [Text("${free.createdAt.date}", style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w300),),
+                        SizedBox(height: 4,),
+                        Container(child: Text("${free.createdAt.time}", style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w300),)),
+                      SizedBox(height: 20,)],
+
                     ),
                   ],
                 ),
@@ -117,6 +121,11 @@ Column FreeItem(BuildContext context, PostWithCommentDto free) {
                               AppColor.PrimaryPink),
                           minimumSize:
                           MaterialStateProperty.all<Size>(Size(200, 48)),
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                          ),
                         ),
                         onPressed: () {
                           showDialog(
@@ -162,23 +171,24 @@ Column FreeItem(BuildContext context, PostWithCommentDto free) {
   );
 }
 
-Expanded FreeBoardList(BuildContext context, List<PostDto> free, MainController _mainController) {
-  return Expanded(
-    child: Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Row(children: [
-            Text('자유게시판',
-                style: TextStyle(
-                    fontWeight: FontWeight.bold, fontSize: 40)),
-          ]),
-        ),
-        Column(
+Column FreeBoardList(BuildContext context, List<PostDto> free, MainController _mainController) {
+  return Column(
+    children: [
+      Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Row(children: [
+          Text('자유게시판',
+              style: TextStyle(
+                  fontWeight: FontWeight.bold, fontSize: 40)),
+        ]),
+      ),
+      Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
             children : free.map((post) => FreePostItem(post, _mainController)).toList()
-        )
-      ],
-    ),
+        ),
+      )
+    ],
   );
 }
 
@@ -206,20 +216,20 @@ InkWell FreePostItem(PostDto free, MainController _mainController) {
               Container(
                 child: Row(
                   children: [
-                    Text('사용자'),
+                    Text('${free.writer}'),
                     SizedBox(
                       width: 10,
                     ),
-                    Text('일시')
+                    Text('${free.createdAt.date}      ${free.createdAt.time}', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w300),)
                   ],
                 ),
               ),
               Container(
                 child: Row(
                   children: [
-                    Text('조회수 ${free.views}'),
+                    Text('조회수  ${free.views}'),
                     SizedBox(width: 10,),
-                    Text('댓글수 ${free.commentsCount}')
+                    Text('댓글수  ${free.commentsCount}')
                   ],
                 ),
               )

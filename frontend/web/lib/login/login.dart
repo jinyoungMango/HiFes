@@ -143,7 +143,7 @@ class LoginPage extends StatelessWidget {
             Text(
               "Login",
               textAlign: TextAlign.start,
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 40),
+              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 40),
             ),
             SizedBox(
               height: 8,
@@ -202,6 +202,11 @@ class LoginInfo extends StatelessWidget {
                                 AppColor.PrimaryPink),
                             minimumSize:
                                 MaterialStateProperty.all<Size>(Size(400, 48)),
+                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                            ),
                           ),
                           onPressed: () async {
                             SignUpRequestDto signUpRequestDto =
@@ -350,13 +355,13 @@ Row LoginTitle() {
           Text(
             "축제를 즐겨요",
             style: TextStyle(
-                color: Colors.grey, fontSize: 20, fontWeight: FontWeight.bold),
+                color: Colors.grey, fontSize: 20, fontWeight: FontWeight.w600),
           ),
           Text(
             "HIFES",
             style: TextStyle(
                 fontSize: 80,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w900,
                 color: AppColor.PrimaryPink),
           )
         ],
