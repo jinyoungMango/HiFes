@@ -71,6 +71,7 @@ fun HomeScreen(navController: NavController, viewModel: MainViewModel) {
 
             viewModel.getNearFestivalList(curLat, curLon)
             viewModel.getRandomFestivalList()
+            viewModel.initSearchKeyword()
         }
     }
 
@@ -82,6 +83,7 @@ fun HomeScreen(navController: NavController, viewModel: MainViewModel) {
     } else {
         nearestFestival = OrganizedFestivalDto(
             0,
+            "",
             "",
             "",
             "",
@@ -99,7 +101,10 @@ fun HomeScreen(navController: NavController, viewModel: MainViewModel) {
     }
 
     Scaffold(topBar = {
-        HomeAppBar(navController)
+        HomeAppBar(navController, viewModel) { keyword ->
+            viewModel.searchFestivalList(keyword)
+            navController.navigate(HifesDestinations.HOME_SEARCH)
+        }
     }
     ) {
         Column(
@@ -284,7 +289,7 @@ fun HomeCard(nearestFestival: OrganizedFestivalDto) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .height(220.dp)
+            .height(250.dp)
             .padding(8.dp),
         color = Color.White,
         shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp),

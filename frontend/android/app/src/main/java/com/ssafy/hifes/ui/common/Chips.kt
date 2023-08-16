@@ -43,7 +43,7 @@ import com.ssafy.hifes.ui.theme.pretendardFamily
 fun ChipsSelectable(
     chips: List<String>,
     initStartPosition: Int = 0,
-    onChipClick: (index: Int) -> Any
+    onChipClick: (index: Int) -> Unit
 ) {
     var selected by rememberSaveable { mutableStateOf(initStartPosition) }
 
