@@ -92,10 +92,28 @@ fun MapScreen(
     BackHandler(sheetState.isVisible) {
         coroutineScope.launch { sheetState.hide() }
     }
-    var location = viewModel.location.value
+    var location = viewModel.location.observeAsState()
     var showWavesAnimation by remember { mutableStateOf(false) }
     var fabVisible by remember { mutableStateOf(true) }
     var fabClicked by remember { mutableStateOf(false) }
+
+    var groupCallLat = remember { mutableStateOf(0.0) }
+    var groupCallLng = remember { mutableStateOf(0.0) }
+    var showDialog by remember { mutableStateOf(false) }
+    if (showDialog) {
+        MapGroupCallDialog(detailViewModel, groupCallLat.value, groupCallLng.value) { isConfirm ->
+            if (isConfirm) { // 모임콜 확인 버튼 눌렀을 경우
+                showWavesAnimation = true
+                fabVisible = false  // FAB를 숨깁니다.
+                coroutineScope.launch {
+                    delay(2100L)
+                    fabVisible = true  // FAB를 다시 보이게 합니다.
+                }
+            }
+            showDialog = false
+
+        }
+    }
 
     Scaffold(
         content = {
@@ -139,9 +157,13 @@ fun MapScreen(
                                 BoothMap(
                                     booth,
                                     selectedBoothChip.value ?: 0,
-                                    location,
+                                    location.value,
                                     fabClicked
-                                )
+                                ) { lat, lng ->
+                                    groupCallLat.value = lat
+                                    groupCallLng.value = lng
+
+                                }
                             }
                             ChipsSelectable(
                                 listOf(
@@ -175,12 +197,8 @@ fun MapScreen(
 
                             } else {
                                 // api
-                                showWavesAnimation = true
-                                fabVisible = false  // FAB를 숨깁니다.
-                                coroutineScope.launch {
-                                    delay(2100L)
-                                    fabVisible = true  // FAB를 다시 보이게 합니다.
-                                }
+                                showDialog = true
+
                             }
                             fabClicked = !fabClicked
                         },
@@ -285,6 +303,7 @@ fun BoothMap(
     selectedBoothChip: Int,
     location: Location?,
     fabClicked: Boolean,
+    callLatLng: (lat: Double, lng: Double) -> Unit
 ) {
     var markers by remember {
         mutableStateOf<List<CustomMarker>>(emptyList())
@@ -356,6 +375,10 @@ fun BoothMap(
 
                 naverMap.addOnCameraIdleListener {
                     val callLatLng = LatLng(
+                        naverMap.cameraPosition.target.latitude,
+                        naverMap.cameraPosition.target.longitude
+                    )
+                    callLatLng(
                         naverMap.cameraPosition.target.latitude,
                         naverMap.cameraPosition.target.longitude
                     )
