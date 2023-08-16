@@ -114,6 +114,13 @@ interface ApiService {
         @Path("id") id: Int
     ): NetworkResponse<PostDetailDto, ErrorResponse>
 
+    @Multipart
+    @POST("post/create")
+    suspend fun writePost(
+        @Part("data") data: RequestBody,
+        @Part image: MultipartBody.Part?
+    ): NetworkResponse<String, ErrorResponse>
+
     @GET("search-festival/")
     suspend fun searchFestivalList(@Query("keyword") keyword: String): NetworkResponse<List<OrganizedFestivalDto>, ErrorResponse>
 }

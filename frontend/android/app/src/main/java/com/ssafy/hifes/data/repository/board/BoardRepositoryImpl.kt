@@ -5,6 +5,8 @@ import com.ssafy.hifes.data.model.PostDetailDto
 import com.ssafy.hifes.data.model.PostDto
 import com.ssafy.hifes.data.remote.ApiService
 import com.ssafy.hifes.util.network.NetworkResponse
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import javax.inject.Inject
 
 class BoardRepositoryImpl @Inject constructor(
@@ -20,6 +22,13 @@ class BoardRepositoryImpl @Inject constructor(
 
     override suspend fun getPostDetail(id: Int): NetworkResponse<PostDetailDto, ErrorResponse> {
         return apiService.getPostDetail(id)
+    }
+
+    override suspend fun writePost(
+        data: RequestBody,
+        image: MultipartBody.Part?
+    ): NetworkResponse<String, ErrorResponse> {
+        return apiService.writePost(data, image)
     }
 
 }
