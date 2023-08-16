@@ -41,7 +41,10 @@ import androidx.navigation.compose.rememberNavController
 import com.gowtham.ratingbar.RatingBar
 import com.gowtham.ratingbar.StepSize
 import com.ssafy.hifes.R
+import com.ssafy.hifes.data.model.DateDto
+import com.ssafy.hifes.data.model.DateTime
 import com.ssafy.hifes.data.model.PostDto
+import com.ssafy.hifes.data.model.TimeDto
 import com.ssafy.hifes.ui.board.BoardViewModel
 import com.ssafy.hifes.ui.board.boardcommon.PostType
 import com.ssafy.hifes.ui.common.top.TopWithBack
@@ -90,21 +93,19 @@ fun PostWriteScreen(
                     }
                     viewModel.postWrite(
                         PostDto(
-                            0,
-                            0,
-                            0,
                             1,
-                            titleText,
-                            contentText,
-                            boardType.value!!.label,
-                            isHidden,
+                            1,
+                            "글쓴이",
+                            "제목",
+                            "notice",
+                            1,
+                            1,
+                            DateTime(DateDto(2022,4,25), TimeDto(0,0,0, 0)),
+                            "내용",
+                            false,
                             null,
-                            "",
-                            postTestDate,
-                            postTestDate,
-                            0,
-                            imageUri.toString(),
-                            rating
+                            null,
+                            5f
                         ),
                         imageFile
                     )
@@ -251,16 +252,5 @@ fun TextFieldPostContent(contentText: String, onValueChange: (String) -> Unit) {
             unfocusedIndicatorColor = Color.Transparent,
             disabledIndicatorColor = Color.Transparent,
         )
-    )
-}
-
-@Composable
-@Preview
-fun PreviewPostWriteScreen() {
-    val viewModel = BoardViewModel()
-    viewModel.getReviewPostList()
-    PostWriteScreen(
-        navController = rememberNavController(),
-        viewModel = viewModel
     )
 }
