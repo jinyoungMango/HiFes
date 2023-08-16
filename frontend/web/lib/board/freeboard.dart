@@ -104,9 +104,9 @@ Column FreeItem(BuildContext context, PostWithCommentDto free) {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [Text("${free.createdAt.date}", style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w300),),
+                      children: [Text("${free.createdAt.date}", style: TextStyle(color: Colors.black, fontWeight: FontWeight.w300),),
                         SizedBox(height: 4,),
-                        Container(child: Text("${free.createdAt.time}", style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w300),)),
+                        Container(child: Text("${free.createdAt.time}", style: TextStyle(color: Colors.black, fontWeight: FontWeight.w300),)),
                       SizedBox(height: 20,)],
 
                     ),
@@ -220,7 +220,7 @@ InkWell FreePostItem(PostDto free, MainController _mainController) {
                     SizedBox(
                       width: 10,
                     ),
-                    Text('${free.createdAt.date}      ${free.createdAt.time}', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w300),)
+                    Text('${free.createdAt.date}      ${free.createdAt.time}', style: TextStyle(color: Colors.black, fontWeight: FontWeight.w300),)
                   ],
                 ),
               ),

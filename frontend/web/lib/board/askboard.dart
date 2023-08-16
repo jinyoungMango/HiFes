@@ -121,9 +121,9 @@ Column AskItem(BuildContext context, PostWithCommentDto ask,
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Text("${ask.createdAt.date}", style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w300),),
+                        Text("${ask.createdAt.date}", style: TextStyle(color: Colors.black, fontWeight: FontWeight.w300),),
                         SizedBox(height: 4,),
-                        Container(child: Text("${ask.createdAt.time}", style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w300),)),
+                        Container(child: Text("${ask.createdAt.time}", style: TextStyle(color: Colors.black, fontWeight: FontWeight.w300),)),
                         SizedBox(height: 20,)
                       ],
                     ),
@@ -260,7 +260,7 @@ InkWell AskPostItem(PostDto ask, MainController _mainController) {
                     SizedBox(
                       width: 10,
                     ),
-                    Text('${ask.createdAt.date}      ${ask.createdAt.time}', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w300),)
+                    Text('${ask.createdAt.date}      ${ask.createdAt.time}', style: TextStyle(color: Colors.black, fontWeight: FontWeight.w300),)
                   ],
                 ),
               ),

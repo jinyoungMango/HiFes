@@ -105,9 +105,9 @@ Column ReviewItem(BuildContext context, PostWithCommentDto review) {
                     Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [Text("${review.createdAt.date}", style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w300),),
+                      children: [Text("${review.createdAt.date}", style: TextStyle(color: Colors.black, fontWeight: FontWeight.w300),),
                         SizedBox(height: 4,),
-                        Container(child: Text("${review.createdAt.time}", style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w300),)),
+                        Container(child: Text("${review.createdAt.time}", style: TextStyle(color: Colors.black, fontWeight: FontWeight.w300),)),
                       SizedBox(height: 20,)],
                     ),
                   ],
@@ -219,7 +219,7 @@ InkWell ReviewPostItem(PostDto review, MainController _mainController) {
                     SizedBox(
                       width: 10,
                     ),
-                    Text('${review.createdAt.date}      ${review.createdAt.time}', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w300),)
+                    Text('${review.createdAt.date}      ${review.createdAt.time}', style: TextStyle(color: Colors.black, fontWeight: FontWeight.w300),)
                   ],
                 ),
               ),
