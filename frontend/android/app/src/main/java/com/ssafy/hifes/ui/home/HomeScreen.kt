@@ -65,6 +65,9 @@ fun HomeScreen(navController: NavController, viewModel: MainViewModel) {
     val context = LocalContext.current
     LaunchedEffect(Unit) {
         viewModel.fetchCurrentLocation(context)
+    }
+
+    LaunchedEffect(location.value) {
         location.value.let { latlng ->
             Log.d(TAG, "HomeScreen: $latlng")
             if (latlng != null) {
