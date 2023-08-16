@@ -12,6 +12,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Arrays;
 
 @Service
@@ -37,16 +38,21 @@ public class FCMService {
         return googleCredentials.getAccessToken().getTokenValue();
     }
 
-    public String makeMessage(String targetToken, String title, String body) throws JsonProcessingException {
+    public String makeMessage(String targetToken, String title, String body, String longitude, String latitude, String festivalId) throws JsonProcessingException {
 
         FCMMessageDto fcmMessage = FCMMessageDto.builder()
                 .message(
                         FCMMessageDto.Message.builder()
                                 .token(targetToken)
-                                .notification(FCMMessageDto.Notification.builder()
-                                                .title(title)
-                                                .body(body)
-                                                .build()).build()
+                                .data(FCMMessageDto.Data.builder()
+                                        .title(title)
+                                        .body(body)
+                                        .longitude(longitude)
+                                        .latitude(latitude)
+                                        .festivalId(festivalId)
+                                        .build())
+                                .build()
+
                 )
                 .validateOnly(false)
                 .build();
@@ -55,8 +61,8 @@ public class FCMService {
 
     }
 
-    public void sendMessageTo(String targetToken, String title, String body) throws IOException {
-        String message = makeMessage(targetToken, title, body);
+    public void sendMessageTo(String targetToken, String title, String body, String longitude, String latitude ,String festivalId) throws IOException {
+        String message = makeMessage(targetToken, title, body, longitude, latitude, festivalId);
         OkHttpClient client = new OkHttpClient();
 
         RequestBody requestBody = RequestBody.create(message, MediaType.get("application/json; charset=utf-8"));

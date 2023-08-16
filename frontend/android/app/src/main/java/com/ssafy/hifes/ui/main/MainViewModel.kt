@@ -53,7 +53,15 @@ class MainViewModel @Inject constructor(
     private var _location: MutableLiveData<Location> = MutableLiveData()
     val location: LiveData<Location> = _location
 
+    private var _searchFestivalList: MutableLiveData<List<OrganizedFestivalDto>> =
+        MutableLiveData()
+    val searchFestivalList: LiveData<List<OrganizedFestivalDto>> = _searchFestivalList
+
     var selectedFestival: Int = -1
+
+    private var _searchKeyword: MutableLiveData<String> = MutableLiveData()
+    val searchKeyword : LiveData<String> = _searchKeyword
+
 
 
 
@@ -64,7 +72,6 @@ class MainViewModel @Inject constructor(
             val type = "token 정보 조회에"
             when (response) {
                 is NetworkResponse.Success -> {
-                    Log.d(TAG, "getNearFestivalList: $response")
                     _festivalList.postValue(response.body)
                 }
 
@@ -107,7 +114,6 @@ class MainViewModel @Inject constructor(
             val type = "token 정보 조회에"
             when (response) {
                 is NetworkResponse.Success -> {
-                    Log.d(TAG, "getRandomFestivalList: $response")
                     _randomFestivalList.postValue(response.body)
                 }
 
@@ -132,9 +138,34 @@ class MainViewModel @Inject constructor(
             val type = "token 정보 조회에"
             when (response) {
                 is NetworkResponse.Success -> {
-                    Log.d(TAG, "getNearFestivalList: $response")
                     _festivalInfo.postValue(response.body)
                     selectedFestival = response.body.festivalId
+                }
+
+                is NetworkResponse.ApiError -> {
+                    postValueEvent(0, type)
+                }
+
+                is NetworkResponse.NetworkError -> {
+                    postValueEvent(1, type)
+                }
+
+                is NetworkResponse.UnknownError -> {
+                    postValueEvent(2, type)
+                }
+            }
+        }
+    }
+
+    fun searchFestivalList(keyword: String) {
+        _searchKeyword.postValue(keyword)
+        viewModelScope.launch {
+            val response = repository.searchFestivalList(keyword)
+            val type = "token 정보 조회에"
+            when (response) {
+                is NetworkResponse.Success -> {
+                    Log.d(TAG, "searchFestivalList: $response")
+                    _searchFestivalList.postValue(response.body)
                 }
 
                 is NetworkResponse.ApiError -> {
@@ -158,7 +189,6 @@ class MainViewModel @Inject constructor(
 
     fun updateMapTypeGeneral() {
         _mapType.postValue(MapType.GENERAL)
-        Log.d(TAG, "updateMapTypeGeneral: ")
     }
 
     fun updateGroupScreenTypeFestival() {
@@ -167,6 +197,10 @@ class MainViewModel @Inject constructor(
 
     fun updateGroupScreenTypeAll() {
         _groupScreenType.postValue(GroupScreenType.All)
+    }
+
+    fun initSearchKeyword() {
+        _searchKeyword.postValue("")
     }
 
     private fun postValueEvent(value: Int, type: String) {

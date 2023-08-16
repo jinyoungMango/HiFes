@@ -36,7 +36,7 @@ fun ViewPager(
         verticalArrangement = Arrangement.Center
     ) {
         val pagerState = rememberPagerState(pageCount = {
-            festivalList!!.size
+            festivalList.size
         })
         HorizontalPager(
             state = pagerState,

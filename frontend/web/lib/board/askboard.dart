@@ -110,7 +110,7 @@ Column AskItem(BuildContext context, PostWithCommentDto ask,
 
                 Align(
                   alignment: Alignment.topLeft,
-                  child: Text("${ask.content}"),
+                  child: Text("${ask.content}", style: TextStyle(fontSize: 16),),
                 ),
                 SizedBox(
                   height: 40,
@@ -119,9 +119,12 @@ Column AskItem(BuildContext context, PostWithCommentDto ask,
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Text("${ask.createdAt.date}"),
-                        Container(child: Text("${ask.createdAt.time}"))
+                        Text("${ask.createdAt.date}", style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w300),),
+                        SizedBox(height: 4,),
+                        Container(child: Text("${ask.createdAt.time}", style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w300),)),
+                        SizedBox(height: 20,)
                       ],
                     ),
                   ],
@@ -135,6 +138,11 @@ Column AskItem(BuildContext context, PostWithCommentDto ask,
                               AppColor.PrimaryPink),
                           minimumSize:
                               MaterialStateProperty.all<Size>(Size(200, 48)),
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                          ),
                         ),
                         onPressed: () {
                           showDialog(
@@ -153,6 +161,11 @@ Column AskItem(BuildContext context, PostWithCommentDto ask,
                               AppColor.PrimaryPink),
                           minimumSize:
                               MaterialStateProperty.all<Size>(Size(200, 48)),
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                          ),
                         ),
                         onPressed: () {
                           showDialog(
@@ -198,23 +211,24 @@ Column AskItem(BuildContext context, PostWithCommentDto ask,
   );
 }
 
-Expanded AskBoardList(
+Column AskBoardList(
     BuildContext context, List<PostDto> ask, MainController _mainController) {
-  return Expanded(
-    child: Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Row(children: [
-            Text('질문게시판',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 40)),
-          ]),
-        ),
-        Column(
+  return Column(
+    children: [
+      Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Row(children: [
+          Text('질문게시판',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 40)),
+        ]),
+      ),
+      Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
             children:
                 ask.map((post) => AskPostItem(post, _mainController)).toList()),
-      ],
-    ),
+      ),
+    ],
   );
 }
 
@@ -242,22 +256,22 @@ InkWell AskPostItem(PostDto ask, MainController _mainController) {
               Container(
                 child: Row(
                   children: [
-                    Text('사용자'),
+                    Text('${ask.writer}'),
                     SizedBox(
                       width: 10,
                     ),
-                    Text('일시')
+                    Text('${ask.createdAt.date}      ${ask.createdAt.time}', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w300),)
                   ],
                 ),
               ),
               Container(
                 child: Row(
                   children: [
-                    Text('조회수 ${ask.views}'),
+                    Text('조회수  ${ask.views}'),
                     SizedBox(
                       width: 10,
                     ),
-                    Text('댓글수 ${ask.commentsCount}')
+                    Text('댓글수  ${ask.commentsCount}')
                   ],
                 ),
               )

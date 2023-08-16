@@ -110,4 +110,8 @@ interface ApiService {
 
     @POST("fcm/for_group")
     suspend fun callGroupNotification(@Body fcmForGroupDto: FCMForGroupDto): NetworkResponse<String, ErrorResponse>
+
+    @GET("search-festival/")
+    suspend fun searchFestivalList(@Query("keyword") keyword: String): NetworkResponse<List<OrganizedFestivalDto>, ErrorResponse>
+
 }
