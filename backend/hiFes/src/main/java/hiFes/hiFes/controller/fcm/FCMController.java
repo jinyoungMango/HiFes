@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,7 +52,7 @@ public class FCMController {
             if (normalUser != null) {
                 fcmTokens.add(normalUser.getFirebaseToken());
 
-                fcmService.sendMessageTo(normalUser.getFirebaseToken(), fcmForUserDto.getTitle(), fcmForUserDto.getDetail());
+                fcmService.sendMessageTo(normalUser.getFirebaseToken(), fcmForUserDto.getTitle(), fcmForUserDto.getDetail(), "", "", "");
             }
         }
 
@@ -92,7 +93,7 @@ public class FCMController {
 
             if (normalUser != null) {
                 fcmTokens.add(normalUser.getFirebaseToken());
-                fcmService.sendMessageTo(normalUser.getFirebaseToken(), "모임 집합 콜 : "+ fcmForGroupDto.getLocation() + "에 모여주세요.", fcmForGroupDto.getDescription());
+                fcmService.sendMessageTo(normalUser.getFirebaseToken(), "모임 집합 콜 : "+ fcmForGroupDto.getLocation() + "에 모여주세요.", fcmForGroupDto.getDescription(), fcmForGroupDto.getLongitude().toString(), fcmForGroupDto.getLatitude().toString(), group.getFestivalId().toString());
             }
         }
 
