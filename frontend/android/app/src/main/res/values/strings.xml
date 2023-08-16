@@ -83,6 +83,8 @@
     <string name="group_top_chat">모임 채팅</string>
 
     <!-- Group Dialog -->
+    <string name="group_dialog_join">모임에 가입하시겠습니까?</string>
+    <string name="group_dialog_sign_out">모임을 탈퇴하시겠습니까?</string>
     <string name="group_dialog_cancel">취소</string>
     <string name="group_dialog_confirm">확인</string>
 

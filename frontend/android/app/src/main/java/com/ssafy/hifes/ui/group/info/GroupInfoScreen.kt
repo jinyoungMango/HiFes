@@ -32,9 +32,14 @@ import com.ssafy.hifes.ui.group.info.picture.GroupPictureScreen
 import com.ssafy.hifes.ui.theme.PrimaryPink
 
 @Composable
-fun GroupInfoScreen(navController: NavController, groupViewModel: GroupViewModel, chatViewModel: ChatViewModel) {
+fun GroupInfoScreen(
+    navController: NavController,
+    groupViewModel: GroupViewModel,
+    chatViewModel: ChatViewModel
+) {
     var context = LocalContext.current
     var selectedTab by remember { mutableStateOf(0) }
+    var groupDetailInfo = groupViewModel.groupDetailInfo.observeAsState()
     val imageErrMsg = groupViewModel.errorMsgGroupImages.observeAsState()
     val detailErrMsg = groupViewModel.errorMsgGroupDetail.observeAsState()
 
@@ -62,15 +67,21 @@ fun GroupInfoScreen(navController: NavController, groupViewModel: GroupViewModel
         }
     }
 
-    Scaffold(topBar = { TopWithBack(navController, title = title) }, floatingActionButton = {
+    Scaffold(topBar = {
+        TopWithBack(navController, title = title)
+    }, floatingActionButton = {
         floatingButton?.invoke()
     }) { it ->
         Column(modifier = Modifier.padding(it)) {
-            GroupTab(
-                modifier = Modifier.padding(it),
-                selected = selectedTab,
-                setSelected = { selectedTab = it },
-            )
+            // 가입 여부에 따라 보여주기
+            if (groupDetailInfo.value?.isJoinedGroup == true) {
+                GroupTab(
+                    modifier = Modifier.padding(it),
+                    selected = selectedTab,
+                    setSelected = { selectedTab = it },
+                )
+            }
+
             Spacer(modifier = Modifier.height(12.dp))
             if (selectedTab == 0) {
                 GroupDetailScreen(navController, groupViewModel)

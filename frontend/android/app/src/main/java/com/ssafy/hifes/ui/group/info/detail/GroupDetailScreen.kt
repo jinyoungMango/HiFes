@@ -42,6 +42,7 @@ fun GroupDetailScreen(
     if (showDialog) {
         if (selectedGroupId.value != null && groupDetailInfo.value != null) {
             GroupDialog(
+                navController,
                 groupViewModel = viewModel,
                 groupId = selectedGroupId.value!!,
                 groupDetailInfo.value!!.isJoinedGroup

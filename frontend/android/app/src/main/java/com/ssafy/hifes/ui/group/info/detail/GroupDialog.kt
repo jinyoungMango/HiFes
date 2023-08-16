@@ -18,11 +18,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.navigation.NavController
 import com.ssafy.hifes.R
+import com.ssafy.hifes.ui.HifesDestinations
 import com.ssafy.hifes.ui.group.GroupViewModel
 
 @Composable
-fun GroupDialog(groupViewModel: GroupViewModel, groupId: Int, isJoin: Boolean , onDismiss:() -> Unit) {
+fun GroupDialog(
+    navController: NavController,
+    groupViewModel: GroupViewModel,
+    groupId: Int,
+    isJoin: Boolean,
+    onDismiss: () -> Unit
+) {
     Dialog(onDismissRequest = { onDismiss() }) {
         Card(
             //shape = MaterialTheme.shapes.medium,
@@ -36,15 +44,13 @@ fun GroupDialog(groupViewModel: GroupViewModel, groupId: Int, isJoin: Boolean , 
                     .background(Color.White)
                     .padding(28.dp)
             ) {
-//                val dialogText = stringResource(id = R.string)
-//                if (!isJoin) {
-//                    groupViewModel.joinGroup(groupId)
-//                } else {
-//                    groupViewModel.signOutGroup(groupId)
-//                }
+                var dialogText = stringResource(id = R.string.group_dialog_join)
+                if (isJoin) {
+                    dialogText = stringResource(id = R.string.group_dialog_sign_out)
+                }
 
                 Text(
-                    text = "모임에 가입하시겠습니까?",
+                    text = dialogText,
                     modifier = Modifier.padding(8.dp),
                     fontSize = 20.sp
                 )
@@ -60,7 +66,6 @@ fun GroupDialog(groupViewModel: GroupViewModel, groupId: Int, isJoin: Boolean , 
                         Text(text = stringResource(id = R.string.group_dialog_cancel))
                     }
 
-
                     Button(
                         onClick = {
                             if (!isJoin) {
@@ -68,8 +73,14 @@ fun GroupDialog(groupViewModel: GroupViewModel, groupId: Int, isJoin: Boolean , 
                             } else {
                                 groupViewModel.signOutGroup(groupId)
                             }
-
-                            onDismiss() },
+                            navController.navigate(HifesDestinations.GROUP_DETAIL) {
+                                popUpTo(HifesDestinations.GROUP_DETAIL) {
+                                    inclusive = true
+                                }
+                                launchSingleTop = true
+                            }
+                            onDismiss()
+                        },
                         Modifier
                             .fillMaxWidth()
                             .padding(8.dp)
