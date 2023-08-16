@@ -1,92 +1,146 @@
 package com.ssafy.hifes.ui.board
 
-import android.net.Uri
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.ssafy.hifes.data.model.Event
 import com.ssafy.hifes.data.model.PostDto
+import com.ssafy.hifes.data.repository.board.BoardRepository
 import com.ssafy.hifes.ui.board.boardcommon.PostType
 import com.ssafy.hifes.util.MultipartUtil
+import com.ssafy.hifes.util.network.NetworkResponse
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import okhttp3.MultipartBody
 import java.io.File
-import java.text.SimpleDateFormat
-import kotlin.math.log
+import javax.inject.Inject
 
 private const val TAG = "BoardViewModel"
-class BoardViewModel : ViewModel() {
-    val userDataId : Int = 1
-    private var _postList : MutableLiveData<MutableList<PostDto>> = MutableLiveData()
-    val postList : LiveData<MutableList<PostDto>> = _postList
+
+@HiltViewModel
+class BoardViewModel @Inject constructor(
+    private val repository: BoardRepository
+) : ViewModel() {
+    private val _msgPostList = MutableLiveData<Event<String>>()
+    val errorMsgPostList: LiveData<Event<String>> = _msgPostList
+
+    private var _postList : MutableLiveData<List<PostDto>> = MutableLiveData()
+    val postList : LiveData<List<PostDto>> = _postList
 
     private var _selectedPost : MutableLiveData<PostDto> = MutableLiveData()
     val selectedPost : LiveData<PostDto> = _selectedPost
 
-    var selectedPostType = "notification"
+    var selectedPostType = "notice"
 
     private var _boardType : MutableLiveData<PostType> = MutableLiveData()
     val boardType : LiveData<PostType> = _boardType
 
-    private var postImageFile : File? = null
+    fun getNotificationPostList(selectedFestivalId: Int){
 
-    lateinit var postTestDate : java.sql.Date
+        viewModelScope.launch {
+            val response = repository.getPostList(selectedFestivalId, PostType.NOTIFICATION.label)
+            val type = "게시글 조회에"
+            when (response) {
+                is NetworkResponse.Success -> {
+                    _postList.postValue(response.body)
+                //    _boardType.postValue(PostType.NOTIFICATION)
+                }
 
-    init {
-        val formatter = SimpleDateFormat("yyyy.MM.dd")
-        postTestDate = java.sql.Date(formatter.parse("2023.04.25").time)
-        getNotificationPostList()
+                is NetworkResponse.ApiError -> {
+                    postValueEvent(0, type, _msgPostList)
+                }
+
+                is NetworkResponse.NetworkError -> {
+                    postValueEvent(1, type, _msgPostList)
+                }
+
+                is NetworkResponse.UnknownError -> {
+                    postValueEvent(2, type, _msgPostList)
+                }
+            }
+        }
+
     }
 
-    fun getNotificationPostList(){//추후 서버 통신 코드가 생기면 이 부분을 서버에게서 공지 게시글 리스트를 받아오는것으로 변경한다
-        var postListDummyData = mutableListOf<PostDto>()
-        postListDummyData.apply {
-            add(PostDto(1, 1, 1, 1, "공지1", "내용", "notification", null, null, "글쓴이", postTestDate, postTestDate, 1, null, null))
-            add(PostDto(1, 1, 1, 1, "공지2", "내용", "notification", null, null, "글쓴이", postTestDate, postTestDate, 1, null, null))
-            add(PostDto(1, 1, 1, 1, "공지3", "내용", "notification", null, null, "글쓴이", postTestDate, postTestDate, 1, null, null))
-            add(PostDto(1, 1, 1, 2, "공지4", "내용", "notification", null, null, "글쓴이", postTestDate, postTestDate, 1, "https://picsum.photos/600", null))
-            add(PostDto(1, 1, 1, 2, "공지5", "내용", "notification", null, null, "글쓴이", postTestDate, postTestDate, 1, null, null))
+    fun getAskPostList(selectedFestivalId: Int){
+        viewModelScope.launch {
+            val response = repository.getPostList(selectedFestivalId, PostType.ASK.label)
+            val type = "게시글 조회에"
+            when (response) {
+                is NetworkResponse.Success -> {
+                    _postList.postValue(response.body)
+                //    _boardType.postValue(PostType.ASK)
+                }
+
+                is NetworkResponse.ApiError -> {
+                    postValueEvent(0, type, _msgPostList)
+                }
+
+                is NetworkResponse.NetworkError -> {
+                    postValueEvent(1, type, _msgPostList)
+                }
+
+                is NetworkResponse.UnknownError -> {
+                    postValueEvent(2, type, _msgPostList)
+                }
+            }
         }
-        _postList.postValue(postListDummyData)
-        _boardType.postValue(PostType.NOTIFICATION)
     }
 
-    fun getAskPostList(){
-        var postListDummyData = mutableListOf<PostDto>()
-        postListDummyData.apply {
-            add(PostDto(1, 1, 1, 1, "내문의1 비밀글내문의1 비밀글내문의1 비밀글내문의1 비밀글내문의1 비밀글내문의1 비밀글내문의1 비밀글내문의1 비밀글내문의1 비밀글내문의1 비밀글내문의1 비밀글내문의1 비밀글내문의1 비밀글내문의1 비밀글내문의1 비밀글내문의1 비밀글내문의1 비밀글", "내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1", "ask", true, null, "글쓴이", postTestDate, postTestDate, 1, "https://fastly.picsum.photos/id/296/200/200.jpg?hmac=y-H33xJ0Tpm9muoZO3ZMb5kXpNPG1mptQ9HBmpjCc8A", null))
-            add(PostDto(1, 1, 1, 1, "내문의2 공개글", "내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2", "ask", false, null, "글쓴이", postTestDate, postTestDate, 1, "https://picsum.photos/1000", null))
-            add(PostDto(1, 1, 1, 2, "남의 문의1 비밀글", "내용3", "ask", true, null, "글쓴이", postTestDate, postTestDate, 1, "https://picsum.photos/600", null))
-            add(PostDto(1, 1, 1, 2, "남의 문의2 공개글", "내용4", "ask", false, null, "글쓴이", postTestDate, postTestDate, 1, "https://picsum.photos/1000", null))
+    fun getFreePostList(selectedFestivalId: Int){
+        viewModelScope.launch {
+            val response = repository.getPostList(selectedFestivalId, PostType.FREE.label)
+            val type = "게시글 조회에"
+            when (response) {
+                is NetworkResponse.Success -> {
+                    _postList.postValue(response.body)
+                 //   _boardType.postValue(PostType.FREE)
+                }
+
+                is NetworkResponse.ApiError -> {
+                    postValueEvent(0, type, _msgPostList)
+                }
+
+                is NetworkResponse.NetworkError -> {
+                    postValueEvent(1, type, _msgPostList)
+                }
+
+                is NetworkResponse.UnknownError -> {
+                    postValueEvent(2, type, _msgPostList)
+                }
+            }
         }
-        _postList.postValue(postListDummyData)
-        _boardType.postValue(PostType.ASK)
     }
 
-    fun getFreePostList(){
-        var postListDummyData = mutableListOf<PostDto>()
-        postListDummyData.apply {
-            add(PostDto(1, 1, 1, 1, "자유글1", "내용1", "free", null, null, "글쓴이", postTestDate, postTestDate, 1, null, null))
-            add(PostDto(1, 1, 1, 1, "자유글2", "내용2", "free", null, null, "글쓴이", postTestDate, postTestDate, 1, "https://picsum.photos/1600", null))
-            add(PostDto(1, 1, 1, 1, "자유글3", "내용3", "free", null, null, "글쓴이", postTestDate, postTestDate, 1, null, null))
-            add(PostDto(1, 1, 1, 2, "자유글4", "내용4", "free", null, null, "글쓴이", postTestDate, postTestDate, 1, "https://picsum.photos/2000", null))
-            add(PostDto(1, 1, 1, 2, "자유글5", "내용5", "free", null, null, "글쓴이", postTestDate, postTestDate, 1, null, null))
+    fun getReviewPostList(selectedFestivalId: Int){
+        viewModelScope.launch {
+            val response = repository.getPostList(selectedFestivalId, PostType.REVIEW.label)
+            val type = "게시글 조회에"
+            when (response) {
+                is NetworkResponse.Success -> {
+                    _postList.postValue(response.body)
+                   // _boardType.postValue(PostType.REVIEW)
+                }
+
+                is NetworkResponse.ApiError -> {
+                    postValueEvent(0, type, _msgPostList)
+                }
+
+                is NetworkResponse.NetworkError -> {
+                    postValueEvent(1, type, _msgPostList)
+                }
+
+                is NetworkResponse.UnknownError -> {
+                    postValueEvent(2, type, _msgPostList)
+                }
+            }
         }
-        _postList.postValue(postListDummyData)
-        _boardType.postValue(PostType.FREE)
     }
 
-    fun getReviewPostList(){
-        var postListDummyData = mutableListOf<PostDto>()
-        postListDummyData.apply {
-            add(PostDto(1, 1, 1, 1, "리뷰1리뷰1리뷰1리뷰1리뷰1리뷰1리뷰1리뷰1리뷰1리뷰1리뷰1리뷰1리뷰1리뷰1리뷰1리뷰1리뷰1리뷰1리뷰1리뷰1리뷰1리뷰1리뷰1리뷰1리뷰1리뷰1", "내용내용내용내용내용내용내용내용내용내용내용", "review", null, null, "글쓴이", postTestDate, postTestDate, 1, null, 0f))
-            add(PostDto(1, 1, 1, 1, "리뷰2", "내용", "review", null, null, "글쓴이", postTestDate, postTestDate, 1, "https://picsum.photos/1000", 3f))
-            add(PostDto(1, 1, 1, 1, "리뷰3", "내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용", "review", null, null, "글쓴이", postTestDate, postTestDate, 1, "https://fastly.picsum.photos/id/296/200/200.jpg?hmac=y-H33xJ0Tpm9muoZO3ZMb5kXpNPG1mptQ9HBmpjCc8A", 5f))
-            add(PostDto(1, 1, 1, 2, "리뷰4", "내용", "review", null, null, "글쓴이", postTestDate, postTestDate, 1, null, 3.5f))
-            add(PostDto(1, 1, 1, 2, "리뷰5", "내용", "review", null, null, "글쓴이", postTestDate, postTestDate, 1, null, 2.5f))
-        }
-        _postList.postValue(postListDummyData)
-        _boardType.postValue(PostType.REVIEW)
+    fun initBoardType(postType: PostType){
+        _boardType.postValue(postType)
     }
 
     fun getPostDetail(postData : PostDto){//추후 서버 통신 코드가 생기면 이 부분을 서버에게서 게시글 상세를 받아오는 부분으로 변경한다
@@ -105,11 +159,11 @@ class BoardViewModel : ViewModel() {
             //없는 경우의 통신
         }
     }
-    
+
     fun postDelete(){
         Log.d(TAG, "postDelete: 삭제 ${selectedPost.value}")
     }
-    
+
     fun postModify(){
         Log.d(TAG, "postModify: 수정 ${selectedPost.value}")
     }
@@ -118,5 +172,22 @@ class BoardViewModel : ViewModel() {
 
     }
 
+    private fun postValueEvent(
+        value: Int,
+        type: String,
+        mutableLiveData: MutableLiveData<Event<String>>
+    ) {
+        val msgArrayList = arrayOf(
+            "Api 오류 : $type 실패했습니다.",
+            "서버 오류 : $type 실패했습니다.",
+            "알 수 없는 오류 : $type 실패했습니다."
+        )
+
+        when (value) {
+            0 -> mutableLiveData.postValue(Event(msgArrayList[0]))
+            1 -> mutableLiveData.postValue(Event(msgArrayList[1]))
+            2 -> mutableLiveData.postValue(Event(msgArrayList[2]))
+        }
+    }
 
 }
