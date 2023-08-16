@@ -23,7 +23,7 @@ class Board extends StatefulWidget {
 }
 
 class _BoardState extends State<Board> {
-  String selectedValue = '자유';
+  String selectedValue = '공지';
   final MainController _mainController =
       Get.find<MainController>(tag: 'MainController');
 
@@ -50,17 +50,19 @@ class _BoardState extends State<Board> {
         print('Request succeeded: ${response.data}');
         // 사용자 정보 json을 파싱해서 토큰 저장
 
-        for (var data in response.data) {
-          if (data['postType'] == "notice") {
-            notice.add(PostDto.fromJson(data));
-          } else if (data['postType'] == "ask") {
-            ask.add(PostDto.fromJson(data));
-          } else if (data['postType'] == "free") {
-            free.add(PostDto.fromJson(data));
-          } else if (data['postType'] == "review") {
-            review.add(PostDto.fromJson(data));
+        setState(() {
+          for (var data in response.data) {
+            if (data['postType'] == "notice") {
+              notice.add(PostDto.fromJson(data));
+            } else if (data['postType'] == "ask") {
+              ask.add(PostDto.fromJson(data));
+            } else if (data['postType'] == "free") {
+              free.add(PostDto.fromJson(data));
+            } else if (data['postType'] == "review") {
+              review.add(PostDto.fromJson(data));
+            }
           }
-        }
+        });
       } else {
         // 요청 실패 처리
         print('Request failed with status: ${response.statusCode}');
@@ -77,44 +79,47 @@ class _BoardState extends State<Board> {
       appBar: TopBar(),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 80),
-        child: Center(
+        child: SingleChildScrollView(
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Row(
-                children: [
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: DropdownButton<String>(
-                      value: selectedValue,
-                      items: [
-                        DropdownMenuItem<String>(
-                          value: '공지',
-                          child: Text('공지'),
-                        ),
-                        DropdownMenuItem<String>(
-                          value: '질문',
-                          child: Text('질문'),
-                        ),
-                        DropdownMenuItem<String>(
-                          value: '자유',
-                          child: Text('자유'),
-                        ),
-                        DropdownMenuItem<String>(
-                          value: '후기',
-                          child: Text('후기'),
-                        ),
-                      ],
-                      onChanged: (newValue) {
-                        setState(() {
-                          selectedValue = newValue!;
-                        });
-                      },
+              Center(
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: 20,
                     ),
-                  ),
-                ],
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: DropdownButton<String>(
+                        value: selectedValue,
+                        items: [
+                          DropdownMenuItem<String>(
+                            value: '공지',
+                            child: Text('공지'),
+                          ),
+                          DropdownMenuItem<String>(
+                            value: '질문',
+                            child: Text('질문'),
+                          ),
+                          DropdownMenuItem<String>(
+                            value: '자유',
+                            child: Text('자유'),
+                          ),
+                          DropdownMenuItem<String>(
+                            value: '후기',
+                            child: Text('후기'),
+                          ),
+                        ],
+                        onChanged: (newValue) {
+                          setState(() {
+                            selectedValue = newValue!;
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ),
               SizedBox(height: 20),
               if (selectedValue == '공지')
@@ -124,56 +129,61 @@ class _BoardState extends State<Board> {
               else if (selectedValue == '자유')
                 FreeBoardList(context, free, _mainController)
               else if (selectedValue == '후기')
-                ReviewBoardList(review)
+                ReviewBoardList(context, review, _mainController)
             ],
           ),
         ),
       ),
-      bottomNavigationBar: BottomBar(),
     );
   }
 }
 
-Expanded NoticeBoardList(BuildContext context, List<PostDto> notice,
+Column NoticeBoardList(BuildContext context, List<PostDto> notice,
     MainController _mainController) {
-  return Expanded(
-    child: Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                '공지게시판',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 40),
-              ),
-              ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(AppColor.PrimaryPink),
-                    minimumSize: MaterialStateProperty.all<Size>(Size(200, 48)),
+  return Column(
+    children: [
+      Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              '공지게시판',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 40),
+            ),
+            ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(AppColor.PrimaryPink),
+                  minimumSize: MaterialStateProperty.all<Size>(Size(200, 48)),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
                   ),
-                  onPressed: () {
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return NoticeDialog(context, _mainController);
-                        });
-                  },
-                  child: Text(
-                    "등록하기",
-                    style: TextStyle(color: Colors.white, fontSize: 16),
-                  )),
-            ],
-          ),
+                ),
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return NoticeDialog(context, _mainController);
+                      });
+                },
+                child: Text(
+                  "등록하기",
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                )),
+          ],
         ),
-        Column(
+      ),
+      Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
             children: notice
                 .map((post) => NoticePostItem(post, _mainController))
                 .toList()),
-      ],
-    ),
+      ),
+    ],
   );
 }
 
@@ -188,16 +198,14 @@ AlertDialog NoticeDialog(BuildContext context, MainController _mainController) {
       children: [
         Container(
           width: 400, // 원하는 width 값으로 설정
-          child: Expanded(
-            child: TextField(
-              onChanged: (value) {
-                title = value; // 제목 값 업데이트
-              },
-              maxLines: null, // maxLines를 null로 설정하여 height를 가변적으로 만듦
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: '제목',
-              ),
+          child: TextField(
+            onChanged: (value) {
+              title = value; // 제목 값 업데이트
+            },
+            maxLines: 1, // maxLines를 null로 설정하여 height를 가변적으로 만듦
+            decoration: InputDecoration(
+              border: OutlineInputBorder(),
+              labelText: '제목',
             ),
           ),
         ),
@@ -214,8 +222,7 @@ AlertDialog NoticeDialog(BuildContext context, MainController _mainController) {
                   onChanged: (value) {
                     content = value; // 내용 값 업데이트
                   },
-                  maxLines: null,
-                  expands: true,
+                  maxLines: 1000,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: '내용',
@@ -236,6 +243,11 @@ AlertDialog NoticeDialog(BuildContext context, MainController _mainController) {
                   backgroundColor:
                       MaterialStateProperty.all<Color>(AppColor.PrimaryPink),
                   minimumSize: MaterialStateProperty.all<Size>(Size(200, 48)),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
                 ),
                 onPressed: () async {
                   // 등록하고 pop
@@ -268,9 +280,21 @@ AlertDialog NoticeDialog(BuildContext context, MainController _mainController) {
                   var response = await request.send();
 
                   if (response.statusCode == 201) {
-                    // 요청 성공 처리
-                    Navigator.pop(context, true);
-                    Get.rootDelegate.offNamed(Routes.BOARD);
+                    // 푸시 알람 보내기
+                    var url2 = dotenv.env['YOUR_SERVER_URL']! + 'api/fcm/for_all';
+
+                    var request = await Dio().post(url2, data: {
+                      'festivalId': _mainController.fid.value,
+                      'title': title,
+                      'detail': content,
+                    });
+
+                    if (request.statusCode == 200) {
+                      // 요청 성공 처리
+                      Navigator.pop(context, true);
+                      Get.rootDelegate.offNamed(Routes.BOARD);
+                    }
+
                   } else {
                     // 요청 실패 처리
                     print('Request failed with status: ${response.statusCode}');
@@ -338,11 +362,11 @@ InkWell NoticePostItem(PostDto post, MainController _mainController) {
               Container(
                 child: Row(
                   children: [
-                    Text('사용자'),
+                    Text('${post.writer}'),
                     SizedBox(
                       width: 10,
                     ),
-                    Text('2023-08-08      23:50')
+                    Text('${post.createdAt.date}      ${post.createdAt.time}', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w300),)
                   ],
                 ),
               ),
@@ -380,10 +404,10 @@ Container Comment(BuildContext context, CommentDto comment, String type) {
                 children: [
                   Row(
                     children: [
-                      Text('작성자'),
+                      Text('${comment.writer}'),
                       SizedBox(width: 10),
                       Text(
-                          '${comment.createdAt.date.toString()}   ${comment.createdAt.time.toString()}'),
+                          '${comment.createdAt.date.toString()}   ${comment.createdAt.time.toString()}', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w300),),
                     ],
                   ),
                   SizedBox(height: 20),
@@ -482,12 +506,12 @@ Container Reply(BuildContext context, CommentDto reply, String type) {
                 children: [
                   Row(
                     children: [
-                      Text('작성자'),
+                      Text('${reply.writer}'),
                       SizedBox(width: 10),
                       Align(
                         alignment: Alignment.centerRight,
                         child: Text(
-                            '${reply.createdAt.date.toString()}   ${reply.createdAt.time.toString()}'),
+                            '${reply.createdAt.date.toString()}   ${reply.createdAt.time.toString()}', style: TextStyle(color: Colors.grey)),
                       )
                     ],
                   ),
@@ -585,8 +609,7 @@ AlertDialog CommentDialog(
                   onChanged: (value) {
                     content = value;
                   },
-                  maxLines: null,
-                  expands: true,
+                  maxLines: 500,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: '내용',
@@ -607,6 +630,11 @@ AlertDialog CommentDialog(
                   backgroundColor:
                       MaterialStateProperty.all<Color>(AppColor.PrimaryPink),
                   minimumSize: MaterialStateProperty.all<Size>(Size(200, 48)),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
                 ),
                 onPressed: () async {
                   // 댓글 작성하기
@@ -681,6 +709,11 @@ AlertDialog RemovePostDialog(BuildContext context, PostWithCommentDto post) {
                   backgroundColor:
                       MaterialStateProperty.all<Color>(AppColor.PrimaryPink),
                   minimumSize: MaterialStateProperty.all<Size>(Size(200, 48)),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
                 ),
                 onPressed: () async {
                   var url = dotenv.env['YOUR_SERVER_URL']! +
@@ -697,7 +730,7 @@ AlertDialog RemovePostDialog(BuildContext context, PostWithCommentDto post) {
                     print('Request failed with status: ${response.statusCode}');
                     print('Error message: ${response.data}');
                   }
-                  // Navigator.of(context).pop();
+                  Navigator.of(context).pop();
                 },
                 child: Text(
                   "삭제하기",
@@ -750,6 +783,11 @@ AlertDialog RemoveCommentDialog(BuildContext context, CommentDto comment, String
                   backgroundColor:
                       MaterialStateProperty.all<Color>(AppColor.PrimaryPink),
                   minimumSize: MaterialStateProperty.all<Size>(Size(200, 48)),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
                 ),
                 onPressed: () async {
                   var url = dotenv.env['YOUR_SERVER_URL']! +

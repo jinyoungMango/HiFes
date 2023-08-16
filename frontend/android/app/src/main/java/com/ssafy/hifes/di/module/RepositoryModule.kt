@@ -1,11 +1,17 @@
 package com.ssafy.hifes.di.module
 
+import com.ssafy.hifes.data.repository.board.BoardRepository
+import com.ssafy.hifes.data.repository.board.BoardRepositoryImpl
 import com.ssafy.hifes.data.repository.festival.FestivalRepository
 import com.ssafy.hifes.data.repository.festival.FestivalRepositoryImpl
 import com.ssafy.hifes.data.repository.group.GroupRepository
 import com.ssafy.hifes.data.repository.group.GroupRepositoryImpl
 import com.ssafy.hifes.data.repository.main.MainRepository
 import com.ssafy.hifes.data.repository.main.MainRepositoryImpl
+import com.ssafy.hifes.data.repository.mypage.MyPageRepository
+import com.ssafy.hifes.data.repository.mypage.MyPageRepositoryImpl
+import com.ssafy.hifes.data.repository.proof.ProofRepository
+import com.ssafy.hifes.data.repository.proof.ProofRepositoryImpl
 import com.ssafy.hifes.data.repository.user.UserRepository
 import com.ssafy.hifes.data.repository.user.UserRepositoryImpl
 import dagger.Binds
@@ -35,4 +41,19 @@ abstract class RepositoryModule {
     abstract fun bindsGroupRepository(
         repositoryImpl: GroupRepositoryImpl
     ): GroupRepository
+
+    @Binds
+    abstract fun bindsProofRepository(
+        repositoryImpl: ProofRepositoryImpl
+    ): ProofRepository
+
+    @Binds
+    abstract fun bindsMyPageRepository(
+        repositoryImpl: MyPageRepositoryImpl
+    ): MyPageRepository
+
+    @Binds
+    abstract fun bindsBoardRepository(
+        repositoryImpl: BoardRepositoryImpl
+    ): BoardRepository
 }

@@ -26,14 +26,6 @@ import com.ssafy.hifes.ui.main.MainViewModel
 import com.ssafy.hifes.ui.theme.PrimaryPink
 import com.ssafy.hifes.ui.theme.pretendardFamily
 
-
-@Preview
-@Composable
-fun HomePrev() {
-    val navController = rememberNavController()
-//    BottomNavigation(navController = navController, MainViewModel())
-}
-
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun BottomNavigation(navController: NavHostController, viewModel: MainViewModel) {

@@ -12,6 +12,7 @@ import hiFes.hiFes.repository.festival.*;
 import hiFes.hiFes.repository.group.GroupRepository;
 import hiFes.hiFes.repository.group.JoinedGroupRepository;
 import hiFes.hiFes.repository.user.HostUserRepository;
+import hiFes.hiFes.repository.user.UserJoinFesRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,7 @@ public class OrganizedFestivalService {
     private final HostUserRepository hostUserRepository;
     private final GroupRepository groupRepository;
     private final JoinedGroupRepository joinedGroupRepository;
+    private final UserJoinFesRepository userJoinFesRepository;
 
 
 
@@ -48,7 +50,8 @@ public class OrganizedFestivalService {
                                     StampMissionRepository stampMissionRepository,
                                     HostUserRepository hostUserRepository,
                                     GroupRepository groupRepository,
-                                    JoinedGroupRepository joinedGroupRepository
+                                    JoinedGroupRepository joinedGroupRepository,
+                                    UserJoinFesRepository userJoinFesRepository
                                     ){
         this.arItemRepository =arItemRepository;
         this.markerRepository = markerRepository;
@@ -58,6 +61,7 @@ public class OrganizedFestivalService {
         this.hostUserRepository = hostUserRepository;
         this.groupRepository =groupRepository;
         this.joinedGroupRepository = joinedGroupRepository;
+        this.userJoinFesRepository = userJoinFesRepository;
     }
 
 
@@ -157,12 +161,14 @@ public class OrganizedFestivalService {
     }
 
     // 행사 상세 조회
-    public OrganizedFestivalDetailResponse findById(long id, NormalUser normalUser){
+    public OrganizedFestivalResponse findById(long id, NormalUser normalUser){
         OrganizedFestival organizedFestival = organizedFestivalRepository.findById(id)
                 .orElseThrow(()->new IllegalArgumentException("not found festival: "+ id));
-
-        //가입 했다면 무슨 모임인가?
-        boolean isUserJoined = checkUserJoinedFestival(id, normalUser);
+        //가입 했는지 여부
+        Long joinedGroupId = getJoinedGroupId(id, normalUser);
+        boolean isUserJoined = joinedGroupId != null;
+        //행사 공지 알람 받는지 여부
+        boolean isFollow =  userJoinFesRepository.existsByNormalUserAndOrganizedFestival(normalUser, organizedFestivalRepository.getById(id));
 
         Float avgRating = organizedFestivalRepository.getAverageRatingByOrganizedFestival(id);
         if(avgRating == null){
@@ -170,7 +176,7 @@ public class OrganizedFestivalService {
         }
         Integer countGroups = groupRepository.findByFestivalId(id).size();
 
-        return new OrganizedFestivalDetailResponse(organizedFestival,avgRating, countGroups);
+        return new OrganizedFestivalResponse(organizedFestival,avgRating, countGroups,isFollow, isUserJoined, joinedGroupId);
     }
     //랜덤
     public List<OrganizedFestivalDetailResponse> findRandomOrganizedFestival(){
@@ -395,19 +401,19 @@ public class OrganizedFestivalService {
 
 
 
-    // 행사 관련 모임에 가입했는가?
-    public boolean checkUserJoinedFestival(long id, NormalUser normalUser){
-        if(normalUser == null){
-            return false;
+    // 행사 관련 모임에 가입했는지 여부와 그 id
+    public Long getJoinedGroupId(long id, NormalUser normalUser) {
+        if (normalUser == null) {
+            return null;
         }
         List<Group> relatedGroups = groupRepository.findByFestivalId(id);
 
-        for(Group group:relatedGroups){
+        for (Group group : relatedGroups) {
             if (joinedGroupRepository.existsByNormalUserAndGroup(normalUser, group)) {
-                return true;
+                return group.getId();
             }
         }
-        return false;
+        return null;
     }
 
 

@@ -95,10 +95,10 @@ class _FestivalState extends State<Festival> {
                         child: ClipRRect(
                             borderRadius: BorderRadius.circular(100),
                             child: Image.network(
-                              "http://i9d104.p.ssafy.io/images/DogPoster.jpg",
+                              "${festival.fesPosterPath}",
                               width: 800,
-                              height: 400,
-                              fit: BoxFit.cover,
+                              height: 800,
+                              fit: BoxFit.fill,
                             ))),
                     SizedBox(
                       height: 40,
@@ -118,6 +118,11 @@ class _FestivalState extends State<Festival> {
                                         AppColor.PrimaryPink),
                                 minimumSize: MaterialStateProperty.all<Size>(
                                     Size(200, 48)),
+                                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
+                                ),
                               ),
                               onPressed: () {
                                 Get.rootDelegate.toNamed(Routes.BOARD);
@@ -145,6 +150,7 @@ class _FestivalState extends State<Festival> {
                       height: 10,
                     ),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
                           padding:
@@ -158,18 +164,10 @@ class _FestivalState extends State<Festival> {
                           ),
                           child: Text('평점 ${festival.avgRating}'),
                         ),
-                        SizedBox(
-                          width: 10,
-                        ),
+                        Text(
+                            '${festival.fesStartDate.toString()}      ~      ${festival.fesEndDate.toString()}'),
                       ],
                     ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Align(
-                        alignment: Alignment.centerRight,
-                        child: Text(
-                            '${festival.fesStartDate.toString()}      ~      ${festival.fesEndDate.toString()}')),
                     SizedBox(
                       height: 10,
                     ),
@@ -197,34 +195,37 @@ class _FestivalState extends State<Festival> {
                     Divider(
                       height: 10,
                     ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          "일정",
-                          style: TextStyle(fontSize: 20),
-                        )),
-                    FutureBuilder<List<ScheduleDto>>(
-                        future: fetchSchedules(),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return CircularProgressIndicator(); // 로딩 중인 경우 로딩 인디케이터 표시
-                          } else if (snapshot.hasError) {
-                            return Text('Error: ${snapshot.error}');
-                          } else if (!snapshot.hasData ||
-                              snapshot.data!.isEmpty) {
-                            return Text('No festivals data available.');
-                          } else {
-                            myschedules = snapshot!.data!;
-                            print(myschedules.runtimeType);
-                            return Column(
-                              children: myschedules.map((schedule) => ScheduleItem(schedule)).toList(),
-                            );
-                          }
-                        })
+                    // SizedBox(
+                    //   height: 10,
+                    // ),
+                    // Align(
+                    //     alignment: Alignment.centerLeft,
+                    //     child: Text(
+                    //       "일정",
+                    //       style: TextStyle(fontSize: 20),
+                    //     )),
+                    // SizedBox(
+                    //   height: 10,
+                    // ),
+                    // FutureBuilder<List<ScheduleDto>>(
+                    //     future: fetchSchedules(),
+                    //     builder: (context, snapshot) {
+                    //       if (snapshot.connectionState ==
+                    //           ConnectionState.waiting) {
+                    //         return CircularProgressIndicator(); // 로딩 중인 경우 로딩 인디케이터 표시
+                    //       } else if (snapshot.hasError) {
+                    //         return Text('Error: ${snapshot.error}');
+                    //       } else if (!snapshot.hasData ||
+                    //           snapshot.data!.isEmpty) {
+                    //         return Text('No festivals data available.');
+                    //       } else {
+                    //         myschedules = snapshot!.data!;
+                    //         print(myschedules.runtimeType);
+                    //         return Column(
+                    //           children: myschedules.map((schedule) => ScheduleItem(schedule)).toList(),
+                    //         );
+                    //       }
+                    //     })
                   ],
                 ),
               ),
@@ -236,52 +237,52 @@ class _FestivalState extends State<Festival> {
   }
 }
 
-Padding ScheduleItem(ScheduleDto scheduleItem) {
-  return Padding(
-    padding: const EdgeInsets.all(8.0),
-    child: Material(
-      elevation: 4,
-      borderRadius: BorderRadius.circular(8),
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Container(
-          child: Row(
-            children: [
-              Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        scheduleItem.ProgramTitle,
-                        style: TextStyle(fontSize: 20),
-                      ),
-                      SizedBox(
-                        height: 30,
-                        width: 2,
-                        child: Container(
-                          color: AppColor.PrimaryPink,
-                        ),
-                      ),
-                      Text(scheduleItem.programOutline),
-                      SizedBox(
-                        height: 30,
-                        width: 2,
-                        child: Container(
-                          color: AppColor.PrimaryPink,
-                        ),
-                      ),
-                      Column(
-                        children: [
-                          Text(
-                              "${scheduleItem.startTime.toString()}      ~      ${scheduleItem.endTime.toString()}"),
-                        ],
-                      ),
-                    ],
-                  )),
-            ],
-          ),
-        ),
-      ),
-    ),
-  );
-}
+// Padding ScheduleItem(ScheduleDto scheduleItem) {
+//   return Padding(
+//     padding: const EdgeInsets.symmetric(horizontal: 8),
+//     child: Material(
+//       elevation: 4,
+//       borderRadius: BorderRadius.circular(8),
+//       child: Padding(
+//         padding: const EdgeInsets.all(20.0),
+//         child: Container(
+//           child: Row(
+//             children: [
+//               Expanded(
+//                   child: Row(
+//                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                     children: [
+//                       Text(
+//                         scheduleItem.ProgramTitle,
+//                         style: TextStyle(fontSize: 20),
+//                       ),
+//                       SizedBox(
+//                         height: 30,
+//                         width: 2,
+//                         child: Container(
+//                           color: AppColor.PrimaryPink,
+//                         ),
+//                       ),
+//                       Text(scheduleItem.programOutline),
+//                       SizedBox(
+//                         height: 30,
+//                         width: 2,
+//                         child: Container(
+//                           color: AppColor.PrimaryPink,
+//                         ),
+//                       ),
+//                       Column(
+//                         children: [
+//                           Text(
+//                               "${scheduleItem.startTime.toString()}      ~      ${scheduleItem.endTime.toString()}"),
+//                         ],
+//                       ),
+//                     ],
+//                   )),
+//             ],
+//           ),
+//         ),
+//       ),
+//     ),
+//   );
+// }

@@ -1,16 +1,22 @@
 package com.ssafy.hifes.data.remote
 
 import com.ssafy.hifes.data.model.ErrorResponse
+import com.ssafy.hifes.data.model.FcmTokenDto
 import com.ssafy.hifes.data.model.Group
 import com.ssafy.hifes.data.model.GroupDetailDto
 import com.ssafy.hifes.data.model.LoginResponse
 import com.ssafy.hifes.data.model.MarkerDto
 import com.ssafy.hifes.data.model.OrganizedFestivalDto
+import com.ssafy.hifes.data.model.ParticipatedFestDto
+import com.ssafy.hifes.data.model.PostDetailDto
+import com.ssafy.hifes.data.model.PostDto
 import com.ssafy.hifes.data.model.SharedPicDto
+import com.ssafy.hifes.data.model.StampListDto
 import com.ssafy.hifes.data.model.TimeTable
 import com.ssafy.hifes.util.network.NetworkResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
@@ -29,6 +35,9 @@ interface ApiService {
         @Part image: MultipartBody.Part
     ): NetworkResponse<LoginResponse, ErrorResponse>
 
+    @POST("normal/fcmSave")
+    suspend fun saveFcmToken(@Body fcmToken: FcmTokenDto): NetworkResponse<Boolean, ErrorResponse>
+
     @GET("/api/randomFestivals")
     suspend fun randomFestivals(): NetworkResponse<List<OrganizedFestivalDto>, ErrorResponse>
 
@@ -44,7 +53,7 @@ interface ApiService {
     @GET("/api/festival/{festivalId}/markers")
     suspend fun getMarkerList(@Path("festivalId") festivalId: Int): NetworkResponse<List<MarkerDto>, ErrorResponse>
 
-    //Group
+    // Group
     @GET("group/list")
     suspend fun getAllGroupList(): NetworkResponse<List<Group>, ErrorResponse>
 
@@ -64,6 +73,47 @@ interface ApiService {
         @Part image: MultipartBody.Part
     ): NetworkResponse<String, ErrorResponse>
 
+    // Proof
+    @POST("{normalUserId}/participate-festival/{festivalId}") //티켓 발급(행사 참여 인증)
+    suspend fun participateFestival(
+        @Path("normalUserId") normalUserId: String,
+        @Path("festivalId") festivalId: Int
+    ): NetworkResponse<Boolean, ErrorResponse>
+
+    @POST("{normalUserId}/complete-mission/{missionId}")
+    suspend fun completeMission(
+        @Path("normalUserId") normalUserId: String,
+        @Path("missionId") missionId: Int
+    ): NetworkResponse<Boolean, ErrorResponse>
+
+    // MyPage
+    @GET("{normalUserId}/participate-festivals")//티켓 조회
+    suspend fun getParticipateFestival(
+        @Path("normalUserId") normalUserId: String
+    ): NetworkResponse<List<ParticipatedFestDto>, ErrorResponse>
+
+    @GET("{normalUserId}/{festivalId}/complete-missions")
+    suspend fun getParticipatedStampList(
+        @Path("normalUserId") normalUserId: String,
+        @Path("festivalId") festivalId: Int
+    ): NetworkResponse<StampListDto, ErrorResponse>
+
+    // Festival
     @GET("festival/{festivalId}/festivalTables")
     suspend fun getFestivalTimeTable(@Path("festivalId") festivalId: Int): NetworkResponse<List<TimeTable>, ErrorResponse>
+
+    // Board
+    @GET("post/{festivalId}/{postType}")
+    suspend fun getPostList(
+        @Path("festivalId") festivalId: Int,
+        @Path("postType") postType: String
+    ): NetworkResponse<List<PostDto>, ErrorResponse>
+
+    @GET("post/get/{id}")
+    suspend fun getPostDetail(
+        @Path("id") id: Int
+    ): NetworkResponse<PostDetailDto, ErrorResponse>
+
+    @GET("search-festival/")
+    suspend fun searchFestivalList(@Query("keyword") keyword: String): NetworkResponse<List<OrganizedFestivalDto>, ErrorResponse>
 }

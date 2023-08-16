@@ -68,6 +68,7 @@ import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.naver.maps.map.compose.Marker
 import com.naver.maps.map.compose.MarkerState
 import com.naver.maps.map.compose.NaverMap
+import com.naver.maps.map.compose.currentCameraPositionState
 import com.naver.maps.map.compose.rememberCameraPositionState
 import com.naver.maps.map.overlay.OverlayImage
 import com.ssafy.hifes.BuildConfig
@@ -94,6 +95,8 @@ fun FestivalDetail(
     val festivalInfo = viewModel.festivalInfo.observeAsState()
     val festivalTimeTable = detailViewModel.timeTableList.observeAsState()
     val context = LocalContext.current
+    val cameraPositionState: CameraPositionState = rememberCameraPositionState{}
+
     if (festivalInfo.value != null) {
         val festivalData = festivalInfo.value
         Column(
@@ -108,7 +111,7 @@ fun FestivalDetail(
                         contentDescription = "Poster Image",
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(288.dp),
+                            .height(300.dp),
                         contentScale = ContentScale.Crop,
                         placeholder = rememberVectorPainter(image = MyIconPack.Imagenotfound)
                     )
@@ -161,7 +164,7 @@ fun FestivalDetail(
                                     "${festivalData.countGroups}개",
                                     navController,
                                     viewModel
-                                ) // 추후 서버에서 가져옴
+                                )
                             }
                             DetailTitle(festivalData.fesTitle)
 
@@ -190,7 +193,8 @@ fun FestivalDetail(
                         FestivalLocation(
                             festivalData.fesLatitude,
                             festivalData.fesLongitude,
-                            festivalData.fesTitle
+                            festivalData.fesTitle,
+                            cameraPositionState
                         )
                         Spacer(modifier = Modifier.size(12.dp))
                         // 추후 서버에서 가져온 데이터로 변경
@@ -290,11 +294,10 @@ fun kakaoShare(festival: OrganizedFestivalDto, context: Context) {
 
 @OptIn(ExperimentalNaverMapApi::class)
 @Composable
-fun FestivalLocation(lat: Double, lng: Double, title: String) {
+fun FestivalLocation(lat: Double, lng: Double, title: String, cameraPositionState: CameraPositionState) {
     val festivalLatLng = LatLng(lat, lng)
-    val cameraPositionState: CameraPositionState = rememberCameraPositionState {
-        position = CameraPosition(festivalLatLng, 13.0)
-    }
+    cameraPositionState.position = CameraPosition(festivalLatLng, 13.0)
+    Log.d(TAG, "FestivalLocation: festival $festivalLatLng, camera ${cameraPositionState.position}")
     NaverMap(
         modifier = Modifier
             .fillMaxWidth()
