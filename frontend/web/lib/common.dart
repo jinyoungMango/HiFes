@@ -6,10 +6,13 @@ import 'constants.dart';
 AppBar TopBar() {
   return AppBar(
     backgroundColor: Colors.white,
-    leading: SvgPicture.asset(
-      '/logo.svg',
-      width: 200,
-      height: 160,
+    leading: Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: SvgPicture.asset(
+        '/logo.svg',
+        width: 200,
+        height: 160,
+      ),
     ), // 로고 아이콘 또는 이미지를 넣어주면 됩니다.
     title: Text(
       'HIFES',
