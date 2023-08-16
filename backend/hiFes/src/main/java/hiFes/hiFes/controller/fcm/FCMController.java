@@ -71,10 +71,6 @@ public class FCMController {
         Group group = groupRepository.getById(fcmForGroupDto.getGroupId());
 
 
-        if (!(joinedGroupRepository.findByNormalUserAndGroup(user, group).getIsLeader())){
-            return ResponseEntity.ok("모임장이 아닙니다.");
-        }
-
 
         List<String> fcmTokens = new ArrayList<>();
         List<JoinedGroup> joinedGroupList = joinedGroupRepository.findByGroupId(fcmForGroupDto.getGroupId());
