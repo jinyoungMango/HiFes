@@ -54,7 +54,7 @@ class FirebaseMessageService : FirebaseMessagingService() {
             festivalId = remoteMessage.data.get("festivalId").toString()
             Log.d(TAG, "onMessageReceived: ${lat} ${lng} ${festivalId}")
             if(festivalId != "" && lat != "" && lng != ""){
-                AppPreferences.saveCallLocation(festivalId, lat, lng)
+                AppPreferences.saveCallLocation(lat, lng, festivalId)
             }
 
         } else {  // background 에 있을경우 혹은 foreground에 있을경우 두 경우 모두
@@ -71,7 +71,7 @@ class FirebaseMessageService : FirebaseMessagingService() {
 
             Log.d(TAG, "onMessageReceived: ${lat} ${lng} ${festivalId}")
             if(festivalId != "" && lat != "" && lng != ""){
-                AppPreferences.saveCallLocation(festivalId, lat, lng)
+                AppPreferences.saveCallLocation(lat, lng, festivalId)
             }
         }
 
