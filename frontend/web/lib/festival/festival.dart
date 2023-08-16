@@ -95,7 +95,7 @@ class _FestivalState extends State<Festival> {
                         child: ClipRRect(
                             borderRadius: BorderRadius.circular(100),
                             child: Image.network(
-                              "http://i9d104.p.ssafy.io/images/DogPoster.jpg",
+                              "${festival.fesPosterPath}",
                               width: 800,
                               height: 400,
                               fit: BoxFit.cover,
@@ -118,6 +118,11 @@ class _FestivalState extends State<Festival> {
                                         AppColor.PrimaryPink),
                                 minimumSize: MaterialStateProperty.all<Size>(
                                     Size(200, 48)),
+                                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                  ),
+                                ),
                               ),
                               onPressed: () {
                                 Get.rootDelegate.toNamed(Routes.BOARD);

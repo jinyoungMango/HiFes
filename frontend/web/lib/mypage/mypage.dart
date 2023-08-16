@@ -206,6 +206,11 @@ class _MyPageState extends State<MyPage> with SingleTickerProviderStateMixin {
                                     minimumSize:
                                         MaterialStateProperty.all<Size>(
                                             Size(200, 48)),
+                                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8.0),
+                                      ),
+                                    ),
                                   ),
                                   onPressed: () {
                                     Get.rootDelegate.toNamed(Routes.REGISTER);
@@ -278,7 +283,7 @@ class _MyPageState extends State<MyPage> with SingleTickerProviderStateMixin {
                         child: ClipRRect(
                             borderRadius: BorderRadius.circular(20),
                             child: Image.network(
-                              "https://i.imgur.com/JOKsNeT.jpeg",
+                              "${fesItem.fesPosterPath}",
                               fit: BoxFit.cover,
                             ))),
                     SizedBox(
@@ -319,6 +324,11 @@ class _MyPageState extends State<MyPage> with SingleTickerProviderStateMixin {
                               AppColor.PrimaryPink),
                           minimumSize:
                               MaterialStateProperty.all<Size>(Size(100, 48)),
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                          ),
                         ),
                         onPressed: () {
                           _mainController.fid.value = fesItem.festivalId as int;
