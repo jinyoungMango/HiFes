@@ -86,6 +86,7 @@ fun HomeScreen(navController: NavController, viewModel: MainViewModel) {
             "",
             "",
             "",
+            "",
             DateDto(0, 0, 0),
             DateDto(0, 0, 0),
             0.0,

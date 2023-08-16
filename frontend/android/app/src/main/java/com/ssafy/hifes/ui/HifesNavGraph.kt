@@ -144,7 +144,7 @@ fun HifesNavGraph(
         composable(
             route = HifesDestinations.HOME_SEARCH
         ) {
-            HomeFestivalSearchScreen(navController = navController)
+            HomeFestivalSearchScreen(navController = navController, mainViewModel)
         }
         composable(
             route = HifesDestinations.STAMP_PROOF,
