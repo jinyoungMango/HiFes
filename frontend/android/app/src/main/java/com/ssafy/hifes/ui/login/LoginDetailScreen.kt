@@ -65,6 +65,7 @@ fun LoginDetailScreen(
 
     LaunchedEffect(loginResponse?.result) {
         if (loginResponse?.result == true) {
+            viewModel.saveFcmToken()
             navController.navigate(NavigationItem.Home.screenRoute) {
                 popUpTo(navController.graph.findStartDestination().id) {
                     inclusive = true

@@ -12,11 +12,12 @@ import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.ssafy.hifes.R
+import com.ssafy.hifes.data.local.AppPreferences
 import com.ssafy.hifes.ui.main.MainActivity
-import java.util.UUID
 
 
 private const val TAG = "FirebaseMessageService_싸피"
@@ -26,19 +27,35 @@ class FirebaseMessageService : FirebaseMessagingService() {
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-        Log.d(TAG, "onNewToken: $token")
-        //새 토큰 서버로 전송
+        AppPreferences.initFcmToken(token)
+    }
+
+    fun getFirebaseToken() {
+        FirebaseMessaging.getInstance().token.addOnSuccessListener {
+            AppPreferences.initFcmToken(it)
+            Log.d(TAG, "getFirebaseToken: ${it}")
+        }
     }
 
     // Foreground, Background 모두 처리하기 위해서는 data에 값을 담아서 넘긴다.
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         var messageTitle = ""
         var messageContent = ""
+        var lat = ""
+        var lng = ""
+        var festivalId = ""
 
         if (remoteMessage.notification != null) { // notification이 있는 경우 foreground처리
             //foreground
             messageTitle = remoteMessage.notification!!.title.toString()
             messageContent = remoteMessage.notification!!.body.toString()
+            lat = remoteMessage.data.get("latitude").toString()
+            lng = remoteMessage.data.get("longitude").toString()
+            festivalId = remoteMessage.data.get("festivalId").toString()
+            Log.d(TAG, "onMessageReceived: ${lat} ${lng} ${festivalId}")
+            if(festivalId != "" && lat != "" && lng != ""){
+                AppPreferences.saveCallLocation(lat, lng, festivalId)
+            }
 
         } else {  // background 에 있을경우 혹은 foreground에 있을경우 두 경우 모두
             var data = remoteMessage.data
@@ -48,6 +65,14 @@ class FirebaseMessageService : FirebaseMessagingService() {
 
             messageTitle = data.get("title").toString()
             messageContent = data.get("body").toString()
+            lat = data.get("latitude").toString()
+            lng = data.get("longitude").toString()
+            festivalId = data.get("festivalId").toString()
+
+            Log.d(TAG, "onMessageReceived: ${lat} ${lng} ${festivalId}")
+            if(festivalId != "" && lat != "" && lng != ""){
+                AppPreferences.saveCallLocation(lat, lng, festivalId)
+            }
         }
 
         val mainIntent = Intent(this, MainActivity::class.java).apply {
@@ -89,6 +114,7 @@ class FirebaseMessageService : FirebaseMessagingService() {
             }
             notify(101, builder.build())
         }
+
     }
 
 }

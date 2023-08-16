@@ -3,6 +3,7 @@ import 'package:web/festival/ScheduleDto.dart';
 class PostWithCommentDto {
   final int id;
   final int createdBy;
+  final String writer;
   final String title;
   final String content;
   final String postType;
@@ -17,6 +18,7 @@ class PostWithCommentDto {
   PostWithCommentDto({
     required this.id,
     required this.createdBy,
+    required this.writer,
     required this.title,
     required this.content,
     required this.postType,
@@ -33,6 +35,7 @@ class PostWithCommentDto {
   PostWithCommentDto.empty()
       : id = 0,
         createdBy = 0,
+        writer = "",
         title = "",
         content = "",
         postType = "",
@@ -48,6 +51,7 @@ class PostWithCommentDto {
     return PostWithCommentDto(
       id: json['id'],
       createdBy: json['createdBy'],
+      writer: json['writer'],
       title: json['title'],
       content: json['content'],
       postType: json['postType'],
@@ -70,6 +74,7 @@ class CommentDto {
   final String content;
   final DateModel createdAt;
   final List<CommentDto> childComments;
+  final String writer;
 
   CommentDto({
     required this.id,
@@ -77,6 +82,7 @@ class CommentDto {
     required this.content,
     required this.createdAt,
     required this.childComments,
+    required this.writer
   });
 
   // 기본 생성자 (매개변수 없는 생성자)
@@ -85,7 +91,8 @@ class CommentDto {
         parentId = 0,
         content = "",
         createdAt = DateModel.empty(),
-        childComments = [];
+        childComments = [],
+        writer = "";
 
   factory CommentDto.fromJson(Map<String, dynamic> json) {
     return CommentDto(
@@ -95,6 +102,7 @@ class CommentDto {
       createdAt: DateModel.fromJson(json['createdAt']),
       childComments: List<CommentDto>.from(json['childComments']
           .map((commentJson) => CommentDto.fromJson(commentJson))),
+      writer: json['writer']
     );
   }
 

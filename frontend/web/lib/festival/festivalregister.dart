@@ -48,7 +48,6 @@ class _FestivalRegisterState extends State<FestivalRegister> {
   var fesOutline;
   var fesAddress;
 
-
   // 마커 리스트
   List<MarkerDto>? markers;
   List<StampDto>? stampMarkers;
@@ -172,7 +171,7 @@ class _FestivalRegisterState extends State<FestivalRegister> {
 
                 Text(
                   "축제 정보 입력",
-                  style: TextStyle(fontSize: 40),
+                  style: TextStyle(fontSize: 40, fontWeight: FontWeight.w600),
                 ),
                 SizedBox(
                   height: 40,
@@ -234,13 +233,12 @@ class _FestivalRegisterState extends State<FestivalRegister> {
                 ),
                 Container(
                   width: 800,
-                  height: 200, // 기본 height 값을 200으로 설정
+                  height: 400, // 기본 height 값을 200으로 설정
                   child: Column(
                     children: [
                       Expanded(
                         child: TextField(
-                          maxLines: null,
-                          expands: true,
+                          maxLines: 1000,
                           decoration: InputDecoration(
                             border: OutlineInputBorder(),
                             labelText: '개요',
@@ -460,14 +458,38 @@ class _FestivalRegisterState extends State<FestivalRegister> {
                     onPressed: () async {
                       _iFrameElement.contentWindow?.postMessage(
                           "getMarkerData", "${dotenv.env['YOUR_SERVER_URL']!}");
+
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('저장 완료'),
+                            content: Text('마커 정보가 저장되었습니다.'),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop(); // 다이얼로그 닫기
+                                },
+                                child: Text('확인'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
                     },
-                    child: Text("getData")),
+                    child: Text("마커 정보 저장하기", style: TextStyle(fontSize: 16),)),
+                SizedBox(height: 10,),
                 ElevatedButton(
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all<Color>(
                           AppColor.PrimaryPink),
                       minimumSize:
                       MaterialStateProperty.all<Size>(Size(800, 48)),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                      ),
                     ),
                     onPressed: () async {
                       // Get.rootDelegate.toNamed(Routes.BOARD);
@@ -535,24 +557,9 @@ class _FestivalRegisterState extends State<FestivalRegister> {
 
                       if (response.statusCode == 201) {
                         print('Festival data sent successfully');
-                        // 성공 다이얼로그 표시
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: Text("Success"),
-                              content: Text("Festival data sent successfully."),
-                              actions: <Widget>[
-                                TextButton(
-                                  child: Text("OK"),
-                                  onPressed: () {
-                                    Navigator.of(context).pop(); // 다이얼로그 닫기
-                                  },
-                                ),
-                              ],
-                            );
-                          },
-                        );
+                        // 성공 축제 화면으로 이동
+                        Navigator.pop(context, true);
+                        Get.rootDelegate.offNamed(Routes.MYPAGE);
                       } else {
                         print('Failed to send festival data. Status code: ${response.statusCode}');
                         // 실패 다이얼로그 표시
