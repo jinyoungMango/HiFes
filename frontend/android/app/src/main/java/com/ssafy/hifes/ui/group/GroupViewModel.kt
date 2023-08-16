@@ -256,6 +256,10 @@ class GroupViewModel @Inject constructor(
         }
     }
 
+    fun initCreateState() {
+        _createStateType.postValue(GroupCreateStateType.LOADING)
+    }
+
     private fun postValueEvent(
         value: Int,
         type: String,
