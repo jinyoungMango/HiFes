@@ -27,7 +27,7 @@ import com.ssafy.hifes.ui.group.GroupViewModel
 import com.ssafy.hifes.ui.main.MainViewModel
 import com.ssafy.hifes.ui.theme.PrimaryPink
 
-private const val TAG = "GroupMainScreen"
+private const val TAG = "GroupMainScreen_하이페스"
 
 @Composable
 fun GroupMainScreen(

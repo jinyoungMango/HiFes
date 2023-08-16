@@ -73,5 +73,12 @@
     <!-- Group -->
     <string name="group_app_bar">제목 · 해시태그로 검색</string>
     <string name="group_chat">메세지를 작성해주세요</string>
+    <string name="group_top_detail">모임 상세</string>
+    <string name="group_top_photo">모임 사진</string>
+    <string name="group_top_chat">모임 채팅</string>
+
+    <!-- Group Dialog -->
+    <string name="group_dialog_cancel">취소</string>
+    <string name="group_dialog_confirm">확인</string>
 
 </resources>

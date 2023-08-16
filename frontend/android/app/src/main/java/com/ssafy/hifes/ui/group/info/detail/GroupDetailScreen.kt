@@ -9,14 +9,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
@@ -35,86 +38,93 @@ fun GroupDetailScreen(
     var groupDetailInfo = viewModel.groupDetailInfo.observeAsState()
     var groupImages = viewModel.groupImages.observeAsState()
 
-    LaunchedEffect(selectedGroupId) {
-        if (selectedGroupId.value != null) {
-            viewModel.getGroupDetail(selectedGroupId.value!!)
-            viewModel.getGroupImages(selectedGroupId.value!!)
+    var showDialog by remember { mutableStateOf(false) }
+    if (showDialog) {
+        if (selectedGroupId.value != null && groupDetailInfo.value != null) {
+            GroupDialog(
+                groupViewModel = viewModel,
+                groupId = selectedGroupId.value!!,
+                groupDetailInfo.value!!.isJoinedGroup
+            ) {
+                showDialog = false
+            }
         }
     }
 
-    if (groupDetailInfo.value != null) {
-        LazyColumn {
-            item {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(320.dp)
-                ) {
-                    AsyncImage(
-                        model = groupDetailInfo.value!!.groupPic,
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        placeholder = ColorPainter(Color.Green),
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        error = rememberVectorPainter(MyIconPack.Imagenotfoundsmall)
-                    )
-                }
-                Spacer(modifier = Modifier.height(24.dp))
+        LaunchedEffect(selectedGroupId) {
+            if (selectedGroupId.value != null) {
+                viewModel.getGroupDetail(selectedGroupId.value!!)
+                viewModel.getGroupImages(selectedGroupId.value!!)
             }
+        }
 
-            item {
-                Box() {
-                    Column(modifier = Modifier.padding(12.dp)) {
-                        GroupTitle(
-                            title = groupDetailInfo.value!!.groupName,
-                            num = groupDetailInfo.value!!.numOfJoinedPeople
+        if (groupDetailInfo.value != null) {
+            LazyColumn {
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(320.dp)
+                    ) {
+                        AsyncImage(
+                            model = groupDetailInfo.value!!.groupPic,
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            placeholder = ColorPainter(Color.Green),
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            error = rememberVectorPainter(MyIconPack.Imagenotfoundsmall)
                         )
-                        Spacer(modifier = Modifier.height(24.dp))
-                        if (groupDetailInfo.value!!.hashtags != null) {
-                            HashtagChips(
-                                chips = groupDetailInfo.value!!.hashtags!!,
-                                isDeleteable = false,
-                                onDeleteButtonClicked = {}
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(24.dp))
-                        if (groupImages.value != null && groupImages.value!!.size > 0) {
-                            GroupPictureRow(groupImages.value!!)
-                        }
-                        Spacer(modifier = Modifier.height(24.dp))
+                    }
+                    Spacer(modifier = Modifier.height(24.dp))
+                }
 
-                        if (groupDetailInfo.value!!.joinedPeople.size > 0) {
-                            GroupMemberRow(groupMember = groupDetailInfo.value!!.joinedPeople)
+                item {
+                    Box() {
+                        Column(modifier = Modifier.padding(12.dp)) {
+                            GroupTitle(
+                                title = groupDetailInfo.value!!.groupName,
+                                num = groupDetailInfo.value!!.numOfJoinedPeople
+                            )
+                            Spacer(modifier = Modifier.height(24.dp))
+                            if (groupDetailInfo.value!!.hashtags != null) {
+                                HashtagChips(
+                                    chips = groupDetailInfo.value!!.hashtags!!,
+                                    isDeleteable = false,
+                                    onDeleteButtonClicked = {}
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(24.dp))
+                            if (groupImages.value != null && groupImages.value!!.size > 0) {
+                                GroupPictureRow(groupImages.value!!)
+                            }
+                            Spacer(modifier = Modifier.height(24.dp))
+
+                            if (groupDetailInfo.value!!.joinedPeople.size > 0) {
+                                GroupMemberRow(groupMember = groupDetailInfo.value!!.joinedPeople)
+                            }
+                            Spacer(modifier = Modifier.height(80.dp))
                         }
-                        Spacer(modifier = Modifier.height(80.dp))
+                    }
+                }
+
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(12.dp),
+                        contentAlignment = Alignment.BottomEnd
+                    ) {
+                        Leave(
+                            groupDetailInfo.value!!.isJoinedGroup
+                        ) {
+                            showDialog = true
+                        }
                     }
                 }
             }
-
-            item {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(12.dp),
-                    contentAlignment = Alignment.BottomEnd
-                ) {
-                    Leave(
-                        groupDetailInfo.value!!.isJoinedGroup,
-                        { it ->
-
-                        }
-                    )
-                }
-            }
         }
-    }
 
 
-}
 
-@Preview
-@Composable
-fun GroupDetailScreenPrev() {
-    //GroupDetailScreen(rememberNavController(), GroupViewModel())
 }

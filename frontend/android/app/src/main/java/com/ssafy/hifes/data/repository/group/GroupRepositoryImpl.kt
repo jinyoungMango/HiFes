@@ -37,4 +37,12 @@ class GroupRepositoryImpl @Inject constructor(
         return apiService.createGroup(groupCreateDto, image)
     }
 
+    override suspend fun joinGroup(groupId: Int): NetworkResponse<Boolean, ErrorResponse> {
+        return apiService.joinGroup(groupId)
+    }
+
+    override suspend fun signOutGroup(groupId: Int): NetworkResponse<String, ErrorResponse> {
+        return apiService.signOutGroup(groupId)
+    }
+
 }

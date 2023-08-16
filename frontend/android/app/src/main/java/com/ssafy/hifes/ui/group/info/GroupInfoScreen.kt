@@ -19,8 +19,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.ssafy.hifes.R
 import com.ssafy.hifes.ui.common.top.TopWithBack
 import com.ssafy.hifes.ui.group.GroupViewModel
 import com.ssafy.hifes.ui.group.info.chat.ChatViewModel
@@ -43,9 +45,9 @@ fun GroupInfoScreen(navController: NavController, groupViewModel: GroupViewModel
         Toast.makeText(context, it, Toast.LENGTH_LONG).show()
     }
 
-    var title = if (selectedTab == 0) "모임 상세"
-    else if (selectedTab == 1) "모임 사진"
-    else "모임 채팅"
+    var title = if (selectedTab == 0) stringResource(id = R.string.group_top_detail)
+    else if (selectedTab == 1) stringResource(id = R.string.group_top_photo)
+    else stringResource(id = R.string.group_top_chat)
     var floatingButton: @Composable (() -> Unit)? = null
 
     if (selectedTab == 1) {

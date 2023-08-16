@@ -16,6 +16,7 @@ import com.ssafy.hifes.util.network.NetworkResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
@@ -71,6 +72,12 @@ interface ApiService {
         @Part("groupCreateDto") groupCreateDto: RequestBody,
         @Part image: MultipartBody.Part
     ): NetworkResponse<String, ErrorResponse>
+
+    @GET("group/join/{groupId}")
+    suspend fun joinGroup(@Path("groupId") groupId: Int): NetworkResponse<Boolean, ErrorResponse>
+
+    @DELETE("group/sign-out/{groupId}")
+    suspend fun signOutGroup(@Path("groupId") groupId: Int): NetworkResponse<String, ErrorResponse>
 
     // Proof
     @POST("{normalUserId}/participate-festival/{festivalId}") //티켓 발급(행사 참여 인증)

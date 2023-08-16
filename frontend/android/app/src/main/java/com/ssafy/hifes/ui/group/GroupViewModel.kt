@@ -43,6 +43,12 @@ class GroupViewModel @Inject constructor(
     private val _msgGroupCreate = MutableLiveData<Event<String>>()
     val errorMsgGroupCreate: LiveData<Event<String>> = _msgGroupCreate
 
+    private val _msgGroupJoin = MutableLiveData<Event<String>>()
+    val errorMsgGroupJoin: LiveData<Event<String>> = _msgGroupJoin
+
+    private val _msgGroupSignOut = MutableLiveData<Event<String>>()
+    val errorMsgGroupSignOut: LiveData<Event<String>> = _msgGroupSignOut
+
     private var _groupList: MutableLiveData<List<Group>> = MutableLiveData()
     val groupList: LiveData<List<Group>> = _groupList
 
@@ -57,6 +63,12 @@ class GroupViewModel @Inject constructor(
 
     private var _createStateType: MutableLiveData<GroupCreateStateType> = MutableLiveData()
     val createStateType: LiveData<GroupCreateStateType> = _createStateType
+
+    private var _joinGroupResponse: MutableLiveData<Boolean> = MutableLiveData()
+    val joinGroupResponse: LiveData<Boolean> = _joinGroupResponse
+
+    private var _signOutGroupResponse: MutableLiveData<String> = MutableLiveData()
+    val signOutGroupResponse: LiveData<String> = _signOutGroupResponse
 
     fun getAllGroupList() {
         viewModelScope.launch {
@@ -190,6 +202,55 @@ class GroupViewModel @Inject constructor(
                     Log.d(TAG, "createGroup: fail3")
                     postValueEvent(2, type, _msgGroupCreate)
                     _createStateType.postValue(GroupCreateStateType.FAIL)
+                }
+            }
+        }
+    }
+
+    fun joinGroup(groupId: Int) {
+        viewModelScope.launch {
+            val response = repository.joinGroup(groupId)
+            val type = "그룹 가입에"
+            when (response) {
+                is NetworkResponse.Success -> {
+                    Log.d(TAG, "joinGroup: ${response.body}")
+                    _joinGroupResponse.postValue(response.body)
+                }
+
+                is NetworkResponse.ApiError -> {
+                    postValueEvent(0, type, _msgGroupJoin)
+                }
+
+                is NetworkResponse.NetworkError -> {
+                    postValueEvent(1, type, _msgGroupJoin)
+                }
+
+                is NetworkResponse.UnknownError -> {
+                    postValueEvent(2, type, _msgGroupJoin)
+                }
+            }
+        }
+    }
+
+    fun signOutGroup(groupId: Int) {
+        viewModelScope.launch {
+            val response = repository.signOutGroup(groupId)
+            val type = "그룹 탈퇴에"
+            when (response) {
+                is NetworkResponse.Success -> {
+                    _signOutGroupResponse.postValue(response.body)
+                }
+
+                is NetworkResponse.ApiError -> {
+                    postValueEvent(0, type, _msgGroupSignOut)
+                }
+
+                is NetworkResponse.NetworkError -> {
+                    postValueEvent(1, type, _msgGroupSignOut)
+                }
+
+                is NetworkResponse.UnknownError -> {
+                    postValueEvent(2, type, _msgGroupSignOut)
                 }
             }
         }
