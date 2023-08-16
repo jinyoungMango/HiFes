@@ -78,11 +78,7 @@ fun HomeAppBar(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
-                var text by remember { mutableStateOf("") }
-                if (!keyword.value.isNullOrEmpty()) {
-                    Log.d(TAG, "HomeAppBar: $keyword")
-                    text = keyword.value!!
-                }
+                var text by remember { mutableStateOf(keyword.value ?: "") }
                 Spacer(modifier = Modifier.size(18.dp))
                 TextField(
                     value = text,
@@ -96,10 +92,9 @@ fun HomeAppBar(
                     keyboardActions = KeyboardActions(onSearch = {
                         submit(text)
                         keyboardController?.hide()
-                        Log.d(TAG, "HomeAppBar: hide")
                     }),
                     leadingIcon = {
-                        IconButton(onClick = { /* do something on click */ }) {
+                        IconButton(onClick = { submit(text) }) {
                             Icon(
                                 painter = image,
                                 contentDescription = "Trailing icon",
