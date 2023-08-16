@@ -17,6 +17,10 @@ object AppPreferences {
     private const val USER_NICKNAME = "user_nickname"
     private const val FCM_TOKEN = "fcm_token"
 
+    private const val CALL_LATITUDE = "call_latitude"
+    private const val CALL_LONGITUDE = "call_longitude"
+    private const val CALL_FESTIVALID = "call_festival_id"
+
 
     fun openSharedPreferences(context: Context) {
         preferences = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE)
@@ -53,6 +57,29 @@ object AppPreferences {
 
     fun getFcmToken(): String {
         return preferences.getString(FCM_TOKEN, "") ?: ""
+    }
+
+    fun saveCallLocation(lat: String, lng: String, festivalId: String) {
+        preferences.edit().putString(CALL_LATITUDE, lat)
+            .putString(CALL_LONGITUDE, lng)
+            .putString(CALL_FESTIVALID, festivalId)
+            .commit()
+    }
+
+    fun getCallLocation(): Pair<String, List<String>> {
+        val lat = preferences.getString(CALL_LATITUDE, "") ?: ""
+        val lng = preferences.getString(CALL_LONGITUDE, "") ?: ""
+        val festivalId = preferences.getString(CALL_FESTIVALID, "") ?: ""
+        var latLngList = listOf<String>(lat, lng)
+
+        return Pair(festivalId, latLngList)
+    }
+
+    fun removeCallLocation(){
+        preferences.edit().putString(CALL_LATITUDE, "")
+            .putString(CALL_LONGITUDE, "")
+            .putString(CALL_FESTIVALID, "")
+            .commit()
     }
 
 }
