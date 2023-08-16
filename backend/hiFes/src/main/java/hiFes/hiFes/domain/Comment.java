@@ -28,7 +28,7 @@ public class Comment extends BaseEntity {
     @JoinColumn(name = "postId")
     private Post post;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "createdBy")
     private Long createdBy;
 
 
