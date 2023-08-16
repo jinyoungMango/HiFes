@@ -26,4 +26,8 @@ class MainRepositoryImpl @Inject constructor(
         return apiService.getFestivalInfo(festivalId)
     }
 
+    override suspend fun searchFestivalList(keyword: String): NetworkResponse<List<OrganizedFestivalDto>, ErrorResponse> {
+        return apiService.searchFestivalList(keyword)
+    }
+
 }

@@ -36,6 +36,8 @@ import com.ssafy.hifes.ui.iconpack.myiconpack.Imagenotfound
 import com.ssafy.hifes.ui.theme.LightGrey
 import com.ssafy.hifes.ui.theme.pretendardFamily
 import com.ssafy.hifes.util.CommonUtils
+import java.lang.Math.round
+import kotlin.math.roundToInt
 
 private const val TAG = "CommonContent_하이페스"
 @Preview(showBackground = true, backgroundColor = 0xFFFFFF)
@@ -143,20 +145,23 @@ fun MapCommonContent(festival: OrganizedFestivalDto, isViewPager: Boolean = true
 
 
 @Composable
-fun StarScore(score: Double) {
-    Row {
+fun StarScore(score: Double, modifier: Modifier = Modifier) {
+    val roundedScore = ((score * 10).roundToInt() / 10.0)
+    Row(
+        modifier = modifier
+    ) {
         Image(
             painter = painterResource(id = R.drawable.icon_star),
             contentDescription = "star",
-            modifier = Modifier.size(20.dp)
+            modifier = Modifier.size(18.dp)
         )
         Spacer(modifier = Modifier.size(4.dp))
         Text(
-            text = score.toString(),
+            text = String.format("%.1f", roundedScore),
             color = Color.Black,
             fontFamily = pretendardFamily,
-            fontWeight = FontWeight.SemiBold,
-            fontSize = 14.sp
+            fontWeight = FontWeight.Normal,
+            fontSize = 12.sp
         )
     }
 }
