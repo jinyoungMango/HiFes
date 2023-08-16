@@ -4,10 +4,13 @@ package hiFes.hiFes.service.festival;
 
 import hiFes.hiFes.ExcelUtils;
 import hiFes.hiFes.domain.festival.*;
+import hiFes.hiFes.domain.group.Group;
 import hiFes.hiFes.domain.user.HostUser;
+import hiFes.hiFes.domain.user.NormalUser;
 import hiFes.hiFes.dto.festival.*;
 import hiFes.hiFes.repository.festival.*;
 import hiFes.hiFes.repository.group.GroupRepository;
+import hiFes.hiFes.repository.group.JoinedGroupRepository;
 import hiFes.hiFes.repository.user.HostUserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.OptimisticLockingFailureException;
@@ -34,6 +37,7 @@ public class OrganizedFestivalService {
     private final StampMissionRepository stampMissionRepository;
     private final HostUserRepository hostUserRepository;
     private final GroupRepository groupRepository;
+    private final JoinedGroupRepository joinedGroupRepository;
 
 
 
@@ -43,7 +47,8 @@ public class OrganizedFestivalService {
                                     MarkerRepository markerRepository,
                                     StampMissionRepository stampMissionRepository,
                                     HostUserRepository hostUserRepository,
-                                    GroupRepository groupRepository
+                                    GroupRepository groupRepository,
+                                    JoinedGroupRepository joinedGroupRepository
                                     ){
         this.arItemRepository =arItemRepository;
         this.markerRepository = markerRepository;
@@ -52,6 +57,7 @@ public class OrganizedFestivalService {
         this.organizedFestivalRepository =organizedFestivalRepository;
         this.hostUserRepository = hostUserRepository;
         this.groupRepository =groupRepository;
+        this.joinedGroupRepository = joinedGroupRepository;
     }
 
 
@@ -151,9 +157,13 @@ public class OrganizedFestivalService {
     }
 
     // 행사 상세 조회
-    public OrganizedFestivalDetailResponse findById(long id){
+    public OrganizedFestivalDetailResponse findById(long id, NormalUser normalUser){
         OrganizedFestival organizedFestival = organizedFestivalRepository.findById(id)
                 .orElseThrow(()->new IllegalArgumentException("not found festival: "+ id));
+
+        //가입 했다면 무슨 모임인가?
+        boolean isUserJoined = checkUserJoinedFestival(id, normalUser);
+
         Float avgRating = organizedFestivalRepository.getAverageRatingByOrganizedFestival(id);
         if(avgRating == null){
             avgRating = 0f;
@@ -381,6 +391,23 @@ public class OrganizedFestivalService {
 
     public void deleteStampMission(long id){
         stampMissionRepository.deleteById(id);
+    }
+
+
+
+    // 행사 관련 모임에 가입했는가?
+    public boolean checkUserJoinedFestival(long id, NormalUser normalUser){
+        if(normalUser == null){
+            return false;
+        }
+        List<Group> relatedGroups = groupRepository.findByFestivalId(id);
+
+        for(Group group:relatedGroups){
+            if (joinedGroupRepository.existsByNormalUserAndGroup(normalUser, group)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 

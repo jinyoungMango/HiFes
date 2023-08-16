@@ -5,8 +5,12 @@ import hiFes.hiFes.domain.festival.ARItem;
 import hiFes.hiFes.domain.festival.FestivalTable;
 import hiFes.hiFes.domain.festival.OrganizedFestival;
 import hiFes.hiFes.domain.festival.StampMission;
+import hiFes.hiFes.domain.user.NormalUser;
 import hiFes.hiFes.dto.festival.*;
+import hiFes.hiFes.repository.festival.OrganizedFestivalRepository;
 import hiFes.hiFes.service.festival.OrganizedFestivalService;
+import hiFes.hiFes.service.user.JwtService;
+import hiFes.hiFes.service.user.NormalUserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +24,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,6 +35,10 @@ import java.util.stream.Collectors;
 @Tag(name="행사 관련 컨트롤러", description = "행사, aritem, 행사일정, 스탬프 미션 관련 CRUD")
 public class OrganizedFestivalApiController {
     private final OrganizedFestivalService organizedFestivalService;
+    private final NormalUserService normalUserService;
+    private final JwtService jwtService;
+    private final UserJoinFesRepository userJoinFesRepository;
+    private final OrganizedFestivalRepository organizedFestivalRepository;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Operation(summary = "행사 등록", description = "행사, aritem, stampMission, 행사일정(엑셀), 부스 마커를 한번에 등록." +
@@ -154,8 +163,13 @@ public class OrganizedFestivalApiController {
     @GetMapping("/festival/{festivalId}")
     @CrossOrigin("*")
 
-    public ResponseEntity<OrganizedFestivalDetailResponse> findOrganizedFestival(@PathVariable long festivalId){
+    public ResponseEntity<OrganizedFestivalDetailResponse> findOrganizedFestival(HttpServletRequest request, @PathVariable long festivalId){
         OrganizedFestivalDetailResponse organizedFestival = organizedFestivalService.findById(festivalId);
+        String accessToken = request.getHeader("accessToken");
+        String email = jwtService.extractEmail(accessToken).orElse("");
+        NormalUser user = normalUserService.getByEmail(email);
+
+
         return ResponseEntity.ok()
                 .body(organizedFestival);
     }
