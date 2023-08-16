@@ -559,7 +559,7 @@ class _FestivalRegisterState extends State<FestivalRegister> {
                         print('Festival data sent successfully');
                         // 성공 축제 화면으로 이동
                         Navigator.pop(context, true);
-                        Get.rootDelegate.offNamed(Routes.BOARD);
+                        Get.rootDelegate.offNamed(Routes.MYPAGE);
                       } else {
                         print('Failed to send festival data. Status code: ${response.statusCode}');
                         // 실패 다이얼로그 표시
