@@ -1,6 +1,7 @@
 package com.ssafy.hifes.ui.map
 
 import android.annotation.SuppressLint
+import android.location.Location
 import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
@@ -15,6 +16,7 @@ import androidx.compose.material.ModalBottomSheetState
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material3.FloatingActionButton
@@ -38,6 +40,7 @@ import com.naver.maps.geometry.LatLng
 import com.naver.maps.map.CameraPosition
 import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.naver.maps.map.compose.LocationTrackingMode
+import com.naver.maps.map.compose.MapEffect
 import com.naver.maps.map.compose.MapProperties
 import com.naver.maps.map.compose.MapUiSettings
 import com.naver.maps.map.compose.Marker
@@ -89,9 +92,10 @@ fun MapScreen(
     BackHandler(sheetState.isVisible) {
         coroutineScope.launch { sheetState.hide() }
     }
-
+    var location = viewModel.location.value
     var showWavesAnimation by remember { mutableStateOf(false) }
     var fabVisible by remember { mutableStateOf(true) }
+    var fabClicked by remember { mutableStateOf(false) }
 
     Scaffold(
         content = {
@@ -134,7 +138,9 @@ fun MapScreen(
                             boothList.value?.let { booth ->
                                 BoothMap(
                                     booth,
-                                    selectedBoothChip.value ?: 0
+                                    selectedBoothChip.value ?: 0,
+                                    location,
+                                    fabClicked
                                 )
                             }
                             ChipsSelectable(
@@ -165,27 +171,40 @@ fun MapScreen(
                 if (fabVisible) {
                     FloatingActionButton(
                         onClick = { /* 모임콜 기능 */
-                            showWavesAnimation = true
-                            fabVisible = false  // FAB를 숨깁니다.
-                            coroutineScope.launch {
-                                delay(2100L)
-                                fabVisible = true  // FAB를 다시 보이게 합니다.
+                            if (!fabClicked) {
+
+                            } else {
+                                // api
+                                showWavesAnimation = true
+                                fabVisible = false  // FAB를 숨깁니다.
+                                coroutineScope.launch {
+                                    delay(2100L)
+                                    fabVisible = true  // FAB를 다시 보이게 합니다.
+                                }
                             }
+                            fabClicked = !fabClicked
                         },
                         containerColor = PrimaryPink,
                         contentColor = Color.White,
                         shape = MaterialTheme.shapes.small.copy(CornerSize(percent = 50))
                     ) {
-                        Icon(
-                            Icons.Filled.Notifications,
-                            contentDescription = "Group Call",
-                            modifier = Modifier.size(28.dp)
-                        )
+                        if (!fabClicked) {
+                            Icon(
+                                Icons.Filled.Notifications,
+                                contentDescription = "Group Call",
+                                modifier = Modifier.size(28.dp)
+                            )
+                        } else { // 모임콜 버튼 눌린 상태일 때
+                            Icon(
+                                Icons.Filled.Check,
+                                contentDescription = "Group Call",
+                                modifier = Modifier.size(28.dp)
+                            )
+                        }
+
                     }
                 }
 
-
-                //
                 if (showWavesAnimation) {
                     WavesAnimationCentered { showWavesAnimation = false }
                 }
@@ -197,9 +216,7 @@ fun MapScreen(
 
 @Composable
 fun WavesAnimationCentered(onAnimationEnd: () -> Unit) {
-
     WavesAnimation()
-
     LaunchedEffect(key1 = true) {
         delay(2000L) // 2 seconds
         onAnimationEnd()
@@ -266,22 +283,25 @@ fun AroundMyLocationFestivalMap(
 fun BoothMap(
     boothList: List<MarkerDto>,
     selectedBoothChip: Int,
+    location: Location?,
+    fabClicked: Boolean,
 ) {
     var markers by remember {
         mutableStateOf<List<CustomMarker>>(emptyList())
     }
-
-    var latAvg = 0.0
-    var lngAvg = 0.0
-    var boothAvgLatLng by remember { mutableStateOf(LatLng(0.0, 0.0)) }
+    var currLatLng by remember {
+        mutableStateOf(location?.let {
+            LatLng(
+                it.latitude,
+                it.longitude
+            )
+        })
+    }
     val cameraPositionState = rememberCameraPositionState()
 
     LaunchedEffect(boothList) {
         markers.forEach { it.marker.map = null }
         markers = boothList.map {
-            latAvg += it.boothLatitude
-            lngAvg += it.boothLongitude
-
             CustomMarker(
                 marker = Marker().apply {
                     position = LatLng(it.boothLatitude, it.boothLongitude)
@@ -292,13 +312,7 @@ fun BoothMap(
                 description = it.description
             )
         }
-
-        latAvg /= boothList.size
-        lngAvg /= boothList.size
-        Log.d(TAG, "BoothMap: $latAvg, $lngAvg")
-
-        boothAvgLatLng = LatLng(latAvg, lngAvg)
-        cameraPositionState.position = CameraPosition(boothAvgLatLng, 14.0)
+        cameraPositionState.position = currLatLng?.let { CameraPosition(it, 14.0) }!!
     }
 
     var showDialog by remember { mutableStateOf(false) }
@@ -309,6 +323,8 @@ fun BoothMap(
         MarkerDetailDialog(title, content, onDismissRequest = { showDialog = false })
     }
 
+    var groupCallLatLng = rememberCameraPositionState()
+
     NaverMap(
         locationSource = rememberFusedLocationSource(),
         properties = MapProperties(
@@ -317,8 +333,36 @@ fun BoothMap(
         uiSettings = MapUiSettings(
             isLocationButtonEnabled = true,
         ),
-        cameraPositionState = cameraPositionState
+        cameraPositionState = cameraPositionState,
     ) {
+        // 현재 위치를 가져와야 함
+        groupCallLatLng.position = cameraPositionState.position
+        if (fabClicked) {
+            Marker(
+                state = MarkerState(position = groupCallLatLng.position.target),
+                icon = OverlayImage.fromResource(R.drawable.icon_group_call),
+            ) {
+                false
+            }
+            MapEffect(cameraPositionState) { naverMap ->
+                naverMap.addOnCameraChangeListener { i, b ->
+                    // 현재 보이는 네이버맵의 정중앙 가운데로 마커 이동
+                    val callLatLng = LatLng(
+                        naverMap.cameraPosition.target.latitude,
+                        naverMap.cameraPosition.target.longitude
+                    )
+                    groupCallLatLng.position = CameraPosition(callLatLng, 13.0)
+                }
+
+                naverMap.addOnCameraIdleListener {
+                    val callLatLng = LatLng(
+                        naverMap.cameraPosition.target.latitude,
+                        naverMap.cameraPosition.target.longitude
+                    )
+                }
+
+            }
+        }
         markers.forEach { customMarker ->
             val marker = customMarker.marker
             if (selectedBoothChip == 0) {

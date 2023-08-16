@@ -1,6 +1,7 @@
 package com.ssafy.hifes.data.remote
 
 import com.ssafy.hifes.data.model.ErrorResponse
+import com.ssafy.hifes.data.model.FCMForGroupDto
 import com.ssafy.hifes.data.model.FcmTokenDto
 import com.ssafy.hifes.data.model.Group
 import com.ssafy.hifes.data.model.GroupDetailDto
@@ -99,4 +100,7 @@ interface ApiService {
     // Festival
     @GET("festival/{festivalId}/festivalTables")
     suspend fun getFestivalTimeTable(@Path("festivalId") festivalId: Int): NetworkResponse<List<TimeTable>, ErrorResponse>
+
+    @POST("fcm/for_group")
+    suspend fun callGroupNotification(@Body fcmForGroupDto: FCMForGroupDto): NetworkResponse<String, ErrorResponse>
 }

@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ssafy.hifes.data.model.Event
+import com.ssafy.hifes.data.model.FCMForGroupDto
 import com.ssafy.hifes.data.model.MarkerDto
 import com.ssafy.hifes.data.model.TimeTable
 import com.ssafy.hifes.data.repository.festival.FestivalRepository
@@ -33,6 +34,9 @@ class DetailViewModel @Inject constructor(
 
     private var _selectedBoothChip: MutableLiveData<Int> = MutableLiveData()
     val selectedBoothChip: LiveData<Int> = _selectedBoothChip
+
+    private var _callGroupResponse: MutableLiveData<String> = MutableLiveData()
+    val callGroupResponse: LiveData<String> = _callGroupResponse
 
     fun getMarkerList(festivalId: Int) {
         viewModelScope.launch {
@@ -67,6 +71,31 @@ class DetailViewModel @Inject constructor(
                 is NetworkResponse.Success -> {
                     Log.d(TAG, "getTimeTableList: $response")
                     _timeTableList.postValue(response.body)
+                }
+
+                is NetworkResponse.ApiError -> {
+                    postValueEvent(0, type)
+                }
+
+                is NetworkResponse.NetworkError -> {
+                    postValueEvent(1, type)
+                }
+
+                is NetworkResponse.UnknownError -> {
+                    postValueEvent(2, type)
+                }
+            }
+        }
+    }
+
+    fun callGroupNotification(fcmForGroupDto: FCMForGroupDto) {
+        viewModelScope.launch {
+            val response = repository.callGroupNotification(fcmForGroupDto)
+            val type = "token 정보 조회에"
+            when (response) {
+                is NetworkResponse.Success -> {
+                    Log.d(TAG, "getTimeTableList: $response")
+                    _callGroupResponse.postValue(response.body)
                 }
 
                 is NetworkResponse.ApiError -> {

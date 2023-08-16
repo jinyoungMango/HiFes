@@ -50,7 +50,11 @@ class MainViewModel @Inject constructor(
     private var _groupScreenType: MutableLiveData<GroupScreenType> = MutableLiveData()
     val groupScreenType: LiveData<GroupScreenType> = _groupScreenType
 
+    private var _location: MutableLiveData<Location> = MutableLiveData()
+    val location: LiveData<Location> = _location
+
     var selectedFestival: Int = -1
+
 
 
     // 홈 화면, 일반 맵 화면에서 사용하는 축제 리스트
@@ -79,8 +83,8 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    suspend fun fetchCurrentLocation(context: Context): Location? {
-        return withContext(Dispatchers.IO) {
+    suspend fun fetchCurrentLocation(context: Context) {
+        withContext(Dispatchers.IO) {
             val locationManager =
                 context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
             if (ActivityCompat.checkSelfPermission(
@@ -92,7 +96,8 @@ class MainViewModel @Inject constructor(
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
             }
-            locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+            _location.postValue(locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER))
+//            locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
         }
     }
 
