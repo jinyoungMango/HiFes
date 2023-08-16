@@ -59,13 +59,18 @@ public class GroupController extends BaseTimeEntity {
     }
 
 
-    @Operation(summary = "그룹 가입", description = "이미 가입된 유저면 false, 가입에 성공하면 true 를 리턴합니다.")
+    @Operation(summary = "그룹 가입", description = "이미 그룹에 가입된 유저거나 한 행사에 두 모임을 가입하려하는 경우 false, 가입에 성공하면 true 를 리턴합니다.")
     @GetMapping("group/join/{groupId}")
     public Boolean groupJoin(HttpServletRequest request, @PathVariable Long groupId){
         String accessToken = request.getHeader("accessToken");
         String email = jwtService.extractEmail(accessToken).orElse("");
         NormalUser user = normalUserService.getByEmail(email);
         Group group = groupService.getById(groupId);
+
+        if (groupService.isJoinedFesGroup(user.getId(), group.getFestivalId())){
+            return false;
+        }
+
 
         if (joinedGroupRepository.existsByNormalUserAndGroup(user, group)){
             return false;
