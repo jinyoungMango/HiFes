@@ -112,7 +112,7 @@ public class PostService {
                     .content(post.getContent())
                     .isHidden(post.getIsHidden())
                     .rating(post.getRating() != null ? post.getRating() : null)
-                    .imagePath(post.getImagePath() != null ? "https://id109.p.ssafy.io" + post.getImagePath() : null)
+                    .imagePath(post.getImagePath() != null ? "https://id104.p.ssafy.io" + post.getImagePath() : null)
                     .writer(userRecognizer)
                     .commentsCount(post.getComments().size())
                     .views(post.getViews())
@@ -131,8 +131,8 @@ public class PostService {
     public ResponseEntity<?> create(PostCreateDto createDto, MultipartFile image) throws IOException {
         PostDto postDto = null;
         if (image != null) {
-//            String projectPath = "/home/ubuntu/images";
-            String projectPath = System.getProperty("user.dir") +"\\hifes\\src\\main\\resources\\static\\images";
+            String projectPath = "/home/ubuntu/images";
+//            String projectPath = System.getProperty("user.dir") +"\\hifes\\src\\main\\resources\\static\\images";
             UUID uuid = UUID.randomUUID();
             String imageName = uuid + "_" + image.getOriginalFilename();
 
@@ -268,7 +268,7 @@ public class PostService {
                 .createdBy(post.getCreatedBy())
                 .views(post.getViews())
                 .rating(post.getRating() != null ? post.getRating() : null)
-                .imagePath(post.getImagePath() != null ? "https://id109.p.ssafy.io" + post.getImagePath() : null)
+                .imagePath(post.getImagePath() != null ? "https://id104.p.ssafy.io" + post.getImagePath() : null)
                 .topLevelComments(topLevelCommentListDto)
                 .commentsCount(post.getComments().size())
                 .createdAt(post.getCreatedAt())
