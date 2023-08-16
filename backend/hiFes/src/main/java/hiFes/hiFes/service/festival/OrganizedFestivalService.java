@@ -7,6 +7,7 @@ import hiFes.hiFes.domain.festival.*;
 import hiFes.hiFes.domain.user.HostUser;
 import hiFes.hiFes.dto.festival.*;
 import hiFes.hiFes.repository.festival.*;
+import hiFes.hiFes.repository.group.GroupRepository;
 import hiFes.hiFes.repository.user.HostUserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.OptimisticLockingFailureException;
@@ -32,6 +33,7 @@ public class OrganizedFestivalService {
     private final MarkerRepository markerRepository;
     private final StampMissionRepository stampMissionRepository;
     private final HostUserRepository hostUserRepository;
+    private final GroupRepository groupRepository;
 
 
 
@@ -40,18 +42,22 @@ public class OrganizedFestivalService {
                                     FestivalTableRepository festivalTableRepository,
                                     MarkerRepository markerRepository,
                                     StampMissionRepository stampMissionRepository,
-    HostUserRepository hostUserRepository){
+                                    HostUserRepository hostUserRepository,
+                                    GroupRepository groupRepository
+                                    ){
         this.arItemRepository =arItemRepository;
         this.markerRepository = markerRepository;
         this.stampMissionRepository = stampMissionRepository;
         this.festivalTableRepository = festivalTableRepository;
         this.organizedFestivalRepository =organizedFestivalRepository;
         this.hostUserRepository = hostUserRepository;
+        this.groupRepository =groupRepository;
     }
 
 
     @org.springframework.transaction.annotation.Transactional
     public OrganizedFestival save(AddOrganizedFestivalRequest request, MultipartFile file, MultipartFile image, Long HostUserId) throws Exception {
+
         System.out.println("파일저장!!!!!!!!!!"+file);
         System.out.println("이미지저장!!!!!!"+image);
         String[] LatLong =  getLatLonFromGoogleApi(request.getFesAddress());
@@ -64,13 +70,12 @@ public class OrganizedFestivalService {
         //이미지 처리
         String projectPath = "/home/ubuntu/images";
 //        String projectPath = System.getProperty("user.dir") +"\\hifes\\src\\main\\resources\\static\\images";
-//        UUID uuid = UUID.randomUUID();
-//        String imageName = uuid + "_" + image.getOriginalFilename();
-        String imageName = image.getOriginalFilename();
+        UUID uuid = UUID.randomUUID();
+        String imageName = uuid + "_" + image.getOriginalFilename();
         File saveImage = new File(projectPath, imageName);
         image.transferTo(saveImage);
 
-        request.setFesPosterPath("/images/"+  imageName);
+        request.setFesPosterPath("https://i9d104.p.ssafy.io/images/"+  imageName);
 
         HostUser hostUser = hostUserRepository.findById(HostUserId).orElseThrow(null);
         request.setHostUser(hostUser);
@@ -127,16 +132,103 @@ public class OrganizedFestivalService {
 
 
     //조회
-    public List<OrganizedFestival> findByHost_hostId(long hostId){
-        return organizedFestivalRepository.findByHostUser_Id(hostId);
+    // 주최자의 모든 행사 리스트 조회
+    public List<OrganizedFestivalDetailResponse> findByHost_hostId(long hostId){
+        List<OrganizedFestival> organizedFestivals = organizedFestivalRepository.findByHostUser_Id(hostId);
+        List<OrganizedFestivalDetailResponse> organizedFestivalDetailResponses = new ArrayList<>();
+        for (OrganizedFestival organizedFestival : organizedFestivals) {
+            Long festivalId = organizedFestival.getFestivalId();
+            Float avgRating = organizedFestivalRepository.getAverageRatingByOrganizedFestival(festivalId);
+            if(avgRating==null){
+                avgRating = 0f;
+            }
+            Integer countGroups = groupRepository.findByFestivalId(festivalId).size();
+            OrganizedFestivalDetailResponse detailResponse = new OrganizedFestivalDetailResponse(organizedFestival, avgRating, countGroups);
+            organizedFestivalDetailResponses.add(detailResponse);
+        }
+
+        return organizedFestivalDetailResponses;
     }
 
+    // 행사 상세 조회
     public OrganizedFestivalDetailResponse findById(long id){
         OrganizedFestival organizedFestival = organizedFestivalRepository.findById(id)
                 .orElseThrow(()->new IllegalArgumentException("not found festival: "+ id));
-        float avgRating = organizedFestivalRepository.getAverageRatingByOrganizedFestival(id);
+        Float avgRating = organizedFestivalRepository.getAverageRatingByOrganizedFestival(id);
+        if(avgRating == null){
+            avgRating = 0f;
+        }
+        Integer countGroups = groupRepository.findByFestivalId(id).size();
 
-        return new OrganizedFestivalDetailResponse(organizedFestival,avgRating);
+        return new OrganizedFestivalDetailResponse(organizedFestival,avgRating, countGroups);
+    }
+    //랜덤
+    public List<OrganizedFestivalDetailResponse> findRandomOrganizedFestival(){
+        List<OrganizedFestival> organizedFestivals = organizedFestivalRepository.findAll();
+        List<OrganizedFestivalDetailResponse> organizedFestivalDetailResponses = new ArrayList<>();
+        for (OrganizedFestival organizedFestival : organizedFestivals) {
+            Long festivalId = organizedFestival.getFestivalId();
+            Float avgRating = organizedFestivalRepository.getAverageRatingByOrganizedFestival(festivalId);
+            if(avgRating==null){
+                avgRating = 0f;
+            }
+            Integer countGroups = groupRepository.findByFestivalId(festivalId).size();
+            OrganizedFestivalDetailResponse detailResponse = new OrganizedFestivalDetailResponse(organizedFestival, avgRating, countGroups);
+            organizedFestivalDetailResponses.add(detailResponse);
+        }
+        return organizedFestivalDetailResponses;
+    }
+
+    //반경 10km내 조회
+    public List<OrganizedFestivalDetailResponse> getFestivalsByLocationWithin10Km(BigDecimal latitude, BigDecimal longitude) {
+        List<OrganizedFestival> organizedFestivals = organizedFestivalRepository.findOrganizedFestivalsByLocationWithin10Km(latitude.doubleValue(), longitude.doubleValue());
+        List<OrganizedFestivalDetailResponse> organizedFestivalDetailResponses = new ArrayList<>();
+        for (OrganizedFestival organizedFestival : organizedFestivals) {
+            Long festivalId = organizedFestival.getFestivalId();
+            Float avgRating = organizedFestivalRepository.getAverageRatingByOrganizedFestival(festivalId);
+            if(avgRating==null){
+                avgRating = 0f;
+            }
+            Integer countGroups = groupRepository.findByFestivalId(festivalId).size();
+            OrganizedFestivalDetailResponse detailResponse = new OrganizedFestivalDetailResponse(organizedFestival, avgRating, countGroups);
+            organizedFestivalDetailResponses.add(detailResponse);
+        }
+        return organizedFestivalDetailResponses;
+    }
+
+    // 검색 결과
+    public List<SearchOrganizedFestivalResponse> searchResultFestival(String word){
+        List<OrganizedFestival> titleResults = organizedFestivalRepository.findByFesTitleContaining(word);
+        List<OrganizedFestival> addressResults = organizedFestivalRepository.findByFesAddressContaining(word);
+
+
+
+        Stream<SearchOrganizedFestivalResponse> titleStream = titleResults.stream()
+                .map(organizedFestival -> {
+                    Long festivalId = organizedFestival.getFestivalId();
+                    Float avgRating = organizedFestivalRepository.getAverageRatingByOrganizedFestival(festivalId);
+                    if(avgRating==null){
+                        avgRating = 0f;
+                    }
+                    Integer countGroups = groupRepository.findByFestivalId(festivalId).size();
+                    return new SearchOrganizedFestivalResponse(organizedFestival, "title", avgRating, countGroups);
+                });
+
+        Stream<SearchOrganizedFestivalResponse> addressStream = addressResults.stream()
+                .map(organizedFestival -> {
+                    Long festivalId = organizedFestival.getFestivalId();
+                    Float avgRating = organizedFestivalRepository.getAverageRatingByOrganizedFestival(festivalId);
+                    if(avgRating==null){
+                        avgRating = 0f;
+                    }
+                    Integer countGroups = groupRepository.findByFestivalId(festivalId).size();
+                    return new SearchOrganizedFestivalResponse(organizedFestival, "address", avgRating, countGroups);
+                });
+
+        List<SearchOrganizedFestivalResponse> results = Stream.concat(titleStream, addressStream)
+                .collect(Collectors.toList());
+
+        return results;
     }
 
     public List<ARItem> findARItemByFestivalId(long festivalId){
@@ -151,32 +243,7 @@ public class OrganizedFestivalService {
         return festivalTableRepository.findByOrganizedFestival_festivalId(festivalId);
     }
 
-    public List<OrganizedFestival> findRandomOrganizedFestival(){
-        return organizedFestivalRepository.findAll();
-    }
 
-    //반경 10km내 조회
-    public List<OrganizedFestival> getFestivalsByLocationWithin10Km(BigDecimal latitude, BigDecimal longitude) {
-        return organizedFestivalRepository.findOrganizedFestivalsByLocationWithin10Km(latitude.doubleValue(), longitude.doubleValue());
-    }
-
-    // 검색 결과
-    public List<SearchOrganizedFestivalResponse> searchResultFestival(String word){
-        List<OrganizedFestival> titleResults = organizedFestivalRepository.findByFesTitleContaining(word);
-        List<OrganizedFestival> addressResults = organizedFestivalRepository.findByFesAddressContaining(word);
-
-        Stream<SearchOrganizedFestivalResponse> titleStream = titleResults.stream()
-                .map(organizedFestival -> new SearchOrganizedFestivalResponse(organizedFestival, "title"));
-
-        Stream<SearchOrganizedFestivalResponse> addressStream = addressResults.stream()
-                .map(organizedFestival -> new SearchOrganizedFestivalResponse(organizedFestival, "address"));
-
-        List<SearchOrganizedFestivalResponse> results = Stream.concat(titleStream,addressStream)
-                .collect(Collectors.toList());
-
-        return results;
-
-    }
 ////////////////업데이트
     @org.springframework.transaction.annotation.Transactional
     public Boolean update(long id, UpdateOrganizedFestivalRequest request, MultipartFile file, MultipartFile image)throws Exception {
@@ -193,17 +260,16 @@ public class OrganizedFestivalService {
         //update하기 전에 사진 다 삭제하고 다시 넣기
         String projectPath = "/home/ubuntu/images";
 //        String projectPath = System.getProperty("user.dir") +"\\hifes\\src\\main\\resources\\static\\images";
-        // 이 행사의 포스터 주소 삭제
-        // Db에 저장된 포스터 삭제
         if(!image.isEmpty()){
             String imagePath = projectPath + organizedFestival.getFesPosterPath();
-            String imageName = image.getOriginalFilename();
+            UUID uuid = UUID.randomUUID();
+            String imageName = uuid + "_" + image.getOriginalFilename();
             File saveImage = new File(projectPath, imageName);
-            if(saveImage.exists()){
-                saveImage.delete();
-            }
+            //기존 파일 삭제
+            String originImg = organizedFestival.getFesPosterPath();
+            new File("/home/ubuntu" + originImg).delete();
             image.transferTo(saveImage);
-            request.setFesPosterPath("/images/"+  imageName);
+            request.setFesPosterPath("https://i9d104.p.ssafy.io/images/"+  imageName);
         }
 
         // Update 주최 행사
@@ -213,23 +279,26 @@ public class OrganizedFestivalService {
 
 
         // Update 스탬프 미션
-        for (UpdateStampMissionRequest stampMissionReq : request.getStampMissions()) {
+        if (request.getStampMissions() != null){
+            for (UpdateStampMissionRequest stampMissionReq : request.getStampMissions()) {
 
-            if (stampMissionReq.getMissionId() == null || stampMissionReq.getMissionId() == 0) {
-                // 새로운 미션 추가
-                StampMission newStampMission = new StampMission();
-                // 사용자가 입력한 데이터로 새 미션 생성
-                newStampMission.update(stampMissionReq);
-                newStampMission.setOrganizedFestival(organizedFestival);
-                // 새 미션 저장
-                stampMissionRepository.save(newStampMission);
-            } else {
-                // 기존 스탬프 미션 업데이트
-                StampMission stampMission = stampMissionRepository.findById(stampMissionReq.getMissionId())
-                        .orElseThrow(() -> new IllegalArgumentException("Stamp mission not found: " + stampMissionReq.getMissionId()));
-                stampMission.update(stampMissionReq);
+                if (stampMissionReq.getMissionId() == null || stampMissionReq.getMissionId() == 0) {
+                    // 새로운 미션 추가
+                    StampMission newStampMission = new StampMission();
+                    // 사용자가 입력한 데이터로 새 미션 생성
+                    newStampMission.update(stampMissionReq);
+                    newStampMission.setOrganizedFestival(organizedFestival);
+                    // 새 미션 저장
+                    stampMissionRepository.save(newStampMission);
+                } else {
+                    // 기존 스탬프 미션 업데이트
+                    StampMission stampMission = stampMissionRepository.findById(stampMissionReq.getMissionId())
+                            .orElseThrow(() -> new IllegalArgumentException("Stamp mission not found: " + stampMissionReq.getMissionId()));
+                    stampMission.update(stampMissionReq);
+                }
             }
         }
+
 
 //        System.out.println("ar 저장 전 아이디 = " + request.getItems());
 //        // Update AR 아이템
@@ -249,31 +318,35 @@ public class OrganizedFestivalService {
 //        }
 
         //업데이트 일정
-
-        try {
-            List<FestivalTable> newFestivalTableData = ExcelUtils.readFestivalTable(file.getInputStream());
-            festivalTableRepository.deleteByOrganizedFestival_festivalId(id);
-            for (FestivalTable ft : newFestivalTableData) {
-                ft.setOrganizedFestival(organizedFestival);
+        if (request.getFestivalTables() != null){
+            try {
+                List<FestivalTable> newFestivalTableData = ExcelUtils.readFestivalTable(file.getInputStream());
+                festivalTableRepository.deleteByOrganizedFestival_festivalId(id);
+                for (FestivalTable ft : newFestivalTableData) {
+                    ft.setOrganizedFestival(organizedFestival);
+                }
+                festivalTableRepository.saveAll(newFestivalTableData);
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to read festival table Excel file.", e);
             }
-            festivalTableRepository.saveAll(newFestivalTableData);
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to read festival table Excel file.", e);
+
         }
 
+        if (request.getMarkers() != null){
+            for (UpdateMarkerRequest markerReq : request.getMarkers()) {
 
-        for (UpdateMarkerRequest markerReq : request.getMarkers()) {
-
-            if (markerReq.getMarkerId() == null || markerReq.getMarkerId() == 0) {
-                Marker newMarker = new Marker();
-                newMarker.update(markerReq);
-                newMarker.setOrganizedFestival(organizedFestival);
-                markerRepository.save(newMarker);
-            } else {
-                Marker marker = markerRepository.findById(markerReq.getMarkerId())
-                        .orElseThrow(() -> new IllegalArgumentException("Marker not found" + markerReq.getMarkerId()));
-                marker.update(markerReq);
+                if (markerReq.getMarkerId() == null || markerReq.getMarkerId() == 0) {
+                    Marker newMarker = new Marker();
+                    newMarker.update(markerReq);
+                    newMarker.setOrganizedFestival(organizedFestival);
+                    markerRepository.save(newMarker);
+                } else {
+                    Marker marker = markerRepository.findById(markerReq.getMarkerId())
+                            .orElseThrow(() -> new IllegalArgumentException("Marker not found" + markerReq.getMarkerId()));
+                    marker.update(markerReq);
+                }
             }
+
         }
 
         boolean flag = true;

@@ -44,7 +44,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.ssafy.hifes.R
 import com.ssafy.hifes.data.model.DateDto
@@ -72,6 +71,7 @@ fun HomeScreen(navController: NavController, viewModel: MainViewModel) {
 
             viewModel.getNearFestivalList(curLat, curLon)
             viewModel.getRandomFestivalList()
+            viewModel.initSearchKeyword()
         }
     }
 
@@ -82,6 +82,8 @@ fun HomeScreen(navController: NavController, viewModel: MainViewModel) {
         nearFestivalList = festivalList.value!!.drop(1)
     } else {
         nearestFestival = OrganizedFestivalDto(
+            0,
+            "",
             "",
             "",
             "",
@@ -90,13 +92,19 @@ fun HomeScreen(navController: NavController, viewModel: MainViewModel) {
             DateDto(0, 0, 0),
             0.0,
             0.0,
-            0
+            0.0,
+            0,
+            "",
+            ""
         )
         nearFestivalList = emptyList()
     }
 
     Scaffold(topBar = {
-        HomeAppBar(navController)
+        HomeAppBar(navController, viewModel) { keyword ->
+            viewModel.searchFestivalList(keyword)
+            navController.navigate(HifesDestinations.HOME_SEARCH)
+        }
     }
     ) {
         Column(
@@ -141,7 +149,7 @@ fun HomeScreen(navController: NavController, viewModel: MainViewModel) {
             Spacer(modifier = Modifier.size(24.dp))
             HomeMiddleText(stringResource(id = R.string.home_bottom_ment))
             Spacer(modifier = Modifier.size(8.dp))
-            // 추후에 서버를 연결 후 전체 FestivalList를 전달한다.
+
             randomFestivalList.value?.let { festival ->
                 RandomFestivalsRow(festival) { fesData ->
                     viewModel.getFestivalInfo(fesData.festivalId)
@@ -281,7 +289,7 @@ fun HomeCard(nearestFestival: OrganizedFestivalDto) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .height(220.dp)
+            .height(250.dp)
             .padding(8.dp),
         color = Color.White,
         shape = RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp),

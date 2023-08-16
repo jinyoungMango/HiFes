@@ -114,6 +114,7 @@ dependencies {
     // Hilt
     implementation "com.google.dagger:hilt-android:2.43.2"
     kapt "com.google.dagger:hilt-android-compiler:2.43.2"
+    implementation "androidx.hilt:hilt-navigation-compose:1.0.0-alpha03"
 
     //coroutines
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2"
@@ -155,11 +156,14 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging-ktx'
     implementation("com.google.firebase:firebase-firestore-ktx")
 
+    // firebase realtime database
+    implementation 'com.google.firebase:firebase-database-ktx'
+
     // lottie
     implementation "com.airbnb.android:lottie-compose:6.1.0"
 
     //permission for compose
-    implementation "com.google.accompanist:accompanist-permissions:<version>"
+    implementation "com.google.accompanist:accompanist-permissions:0.30"
 
     // kakao login
     implementation "com.kakao.sdk:v2-user:2.15.0"

@@ -12,13 +12,14 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Arrays;
 
 @Service
 @Slf4j
 public class FCMService {
     private final ObjectMapper objectMapper;
-    private static final String FIREBASE_CONFIG_PATH = "hifes-83f33-firebase-adminsdk-fvbk6-1d84770099.json";
+    private static final String FIREBASE_PATH = "hifes-83f33-firebase-adminsdk-fvbk6-1d84770099.json";
 
     @Autowired
     public FCMService(ObjectMapper objectMapper){
@@ -26,25 +27,32 @@ public class FCMService {
     }
 
     private String getAccessToken() throws IOException{
+
         GoogleCredentials googleCredentials = GoogleCredentials
-                .fromStream(new ClassPathResource(FIREBASE_CONFIG_PATH).getInputStream())
+                .fromStream(new ClassPathResource(FIREBASE_PATH).getInputStream())
                 .createScoped(Arrays.asList("https://www.googleapis.com/auth/cloud-platform"));
 
         googleCredentials.refreshIfExpired();
 
+
         return googleCredentials.getAccessToken().getTokenValue();
     }
 
-    public String makeMessage(String targetToken, String title, String body) throws JsonProcessingException {
+    public String makeMessage(String targetToken, String title, String body, String longitude, String latitude, String festivalId) throws JsonProcessingException {
 
         FCMMessageDto fcmMessage = FCMMessageDto.builder()
                 .message(
                         FCMMessageDto.Message.builder()
                                 .token(targetToken)
-                                .notification(FCMMessageDto.Notification.builder()
-                                                .title(title)
-                                                .body(body)
-                                                .build()).build()
+                                .data(FCMMessageDto.Data.builder()
+                                        .title(title)
+                                        .body(body)
+                                        .longitude(longitude)
+                                        .latitude(latitude)
+                                        .festivalId(festivalId)
+                                        .build())
+                                .build()
+
                 )
                 .validateOnly(false)
                 .build();
@@ -53,8 +61,8 @@ public class FCMService {
 
     }
 
-    public void sendMessageTo(String targetToken, String title, String body) throws IOException {
-        String message = makeMessage(targetToken, title, body);
+    public void sendMessageTo(String targetToken, String title, String body, String longitude, String latitude ,String festivalId) throws IOException {
+        String message = makeMessage(targetToken, title, body, longitude, latitude, festivalId);
         OkHttpClient client = new OkHttpClient();
 
         RequestBody requestBody = RequestBody.create(message, MediaType.get("application/json; charset=utf-8"));

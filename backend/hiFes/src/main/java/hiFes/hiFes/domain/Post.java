@@ -1,12 +1,10 @@
 package hiFes.hiFes.domain;
 
 import hiFes.hiFes.domain.festival.OrganizedFestival;
-import hiFes.hiFes.dto.festival.OrganizedFestivalResponse;
 import hiFes.hiFes.dto.postDto.PostCreateDto;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,30 +42,16 @@ public class Post extends BaseEntity {
     @JoinColumn(name = "festivalId")
     private OrganizedFestival organizedFestival;
 
-    @Column(columnDefinition = "TEXT", name = "createdBy")
+    @Column(name = "createdBy")
     private Long createdBy;
 
     private int views;
 
-//    @OneToMany(
-//            mappedBy = "post",
-//            cascade = {CascadeType.PERSIST,CascadeType.REMOVE},
-//            orphanRemoval = true
-//    )
-//    private List<Picture> picture = new ArrayList<>();
     private Float rating;
 
-
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "host_user_id")
-//    @OnDelete(action = OnDeleteAction.CASCADE)
-//    private HostUser hostUser;
-//
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "normal_user_id")
-//    @OnDelete(action = OnDeleteAction.CASCADE)
-//    private NormalUser normalUser;
-
+    private String imagePath;
+//    private String originalName;
+//    private String uuid;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.MERGE, orphanRemoval = true)
     private List<Comment> comments;
@@ -86,8 +70,11 @@ public class Post extends BaseEntity {
                 .content(postCreateDto.getContent())
                 .postType(postCreateDto.getPostType())
                 .isHidden(postCreateDto.getIsHidden())
-                .organizedFestival(organizedFestival)
                 .rating(postCreateDto.getRating())
+                .imagePath(postCreateDto.getImagePath())
+//                .originalName(postCreateDto.getOriginalName())
+//                .uuid(postCreateDto.getUuid())
+                .organizedFestival(organizedFestival)
                 .build();
     }
 
@@ -103,11 +90,5 @@ public class Post extends BaseEntity {
     public void increaseView() {
         this.views += 1;
     }
-
-    public void getUserId() {
-
-    }
-
-
 
 }

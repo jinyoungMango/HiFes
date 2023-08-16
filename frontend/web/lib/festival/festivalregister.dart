@@ -1,18 +1,21 @@
+import 'dart:convert';
+import 'dart:io';
 import 'dart:typed_data';
-
+import 'package:dio/dio.dart' as dio;
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:web/common.dart';
+import 'package:web/festival/StampDto.dart';
 import 'dart:html' as html;
 import 'dart:ui' as ui;
-
-
-import 'package:web/festival/RegisterController.dart';
-
+import '../MainController.dart';
+import '../constants.dart';
 import 'MarkerDto.dart';
+import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart'; // MediaType import 추가
 
 class FileData {
   String fileName;
@@ -29,6 +32,9 @@ class FestivalRegister extends StatefulWidget {
 class _FestivalRegisterState extends State<FestivalRegister> {
   final html.IFrameElement _iFrameElement = html.IFrameElement();
 
+  final MainController _mainController =
+  Get.find<MainController>(tag: 'MainController');
+
   // 다운로드 버튼을 누를 때 호출되는 함수
   void downloadFile(FileData fileData) {
     html.AnchorElement anchorElement =
@@ -38,14 +44,16 @@ class _FestivalRegisterState extends State<FestivalRegister> {
     anchorElement.click();
   }
 
+  var fesTitle;
+  var fesOutline;
+  var fesAddress;
 
   // 마커 리스트
   List<MarkerDto>? markers;
-  List<MarkerDto>? stampMarkers;
+  List<StampDto>? stampMarkers;
 
   // 포스터 이미지
   FilePickerResult? poster;
-
   // timeTable
   FilePickerResult? timetable;
 
@@ -62,7 +70,6 @@ class _FestivalRegisterState extends State<FestivalRegister> {
       lastDate: DateTime(2100), // 선택 가능한 가장 늦은 날짜
     );
     if (picked != null && picked != startDate) {
-
       setState(() {
         startDate = picked;
 
@@ -94,8 +101,10 @@ class _FestivalRegisterState extends State<FestivalRegister> {
   @override
   void initState() {
     super.initState();
+    fesTitle = "";
+    fesOutline = "";
+    fesAddress = "";
     timetable = null;
-    poster = null;
     markers = [];
     stampMarkers = [];
     _iFrameElement.src = dotenv.env['YOUR_NAVER_MAP_URL'];
@@ -117,24 +126,21 @@ class _FestivalRegisterState extends State<FestivalRegister> {
       List<dynamic> data = (event as html.MessageEvent).data ?? '-';
       for (var item in data) {
         if(item['markerType']=="stamp"){
-          stampMarkers?.add(MarkerDto(
-              boothLatitude: item['boothLatitude'],
-              boothLongitude: item['boothLongitude'],
-              markerType: item['markerType'],
-              markerId: item['markerId'],
-              markerTitle: item['markerTitle'],
-              markerDescription: item['markerDescription']));
+          stampMarkers?.add(StampDto(
+              missionTitle: item['markerTitle'],
+              missionOutline: item['markerDescription'],
+              missionLatitude: item['boothLatitude'],
+              missionLongitude: item['boothLongitude'],
+              ));
         }else{
           markers?.add(MarkerDto(
+              boothName: item['markerTitle'],
+              description: item['markerDescription'],
               boothLatitude: item['boothLatitude'],
               boothLongitude: item['boothLongitude'],
-              markerType: item['markerType'],
-              markerId: item['markerId'],
-              markerTitle: item['markerTitle'],
-              markerDescription: item['markerDescription']));
+              boothNo: item['markerId']));
         }
       }
-
       // 마커아이템 확인
       for (var item in markers!) {
         print(item);
@@ -163,10 +169,9 @@ class _FestivalRegisterState extends State<FestivalRegister> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
 
-
                 Text(
                   "축제 정보 입력",
-                  style: TextStyle(fontSize: 40),
+                  style: TextStyle(fontSize: 40, fontWeight: FontWeight.w600),
                 ),
                 SizedBox(
                   height: 40,
@@ -177,6 +182,7 @@ class _FestivalRegisterState extends State<FestivalRegister> {
                       var picked = await FilePicker.platform.pickFiles();
 
                       if (picked != null) {
+
                         setState(() {
                           poster = picked;
                         });
@@ -214,6 +220,9 @@ class _FestivalRegisterState extends State<FestivalRegister> {
                             border: OutlineInputBorder(),
                             labelText: '행사명',
                           ),
+                          onChanged: (value) {
+                            fesTitle = value;
+                          },
                         ),
                       ),
                     ],
@@ -224,17 +233,19 @@ class _FestivalRegisterState extends State<FestivalRegister> {
                 ),
                 Container(
                   width: 800,
-                  height: 200, // 기본 height 값을 200으로 설정
+                  height: 400, // 기본 height 값을 200으로 설정
                   child: Column(
                     children: [
                       Expanded(
                         child: TextField(
-                          maxLines: null,
-                          expands: true,
+                          maxLines: 1000,
                           decoration: InputDecoration(
                             border: OutlineInputBorder(),
                             labelText: '개요',
                           ),
+                          onChanged: (value) {
+                            fesOutline = value;
+                          },
                         ),
                       ),
                     ],
@@ -256,6 +267,9 @@ class _FestivalRegisterState extends State<FestivalRegister> {
                             border: OutlineInputBorder(),
                             labelText: '주소',
                           ),
+                          onChanged: (value) {
+                            fesAddress = value;
+                          },
                         ),
                       ),
                     ],
@@ -387,7 +401,6 @@ class _FestivalRegisterState extends State<FestivalRegister> {
 
                               setState(() {
                                 if (picked != null) {
-                                  print(picked.files.first.name);
                                   timetable = picked;
                                 }
                               });
@@ -444,9 +457,135 @@ class _FestivalRegisterState extends State<FestivalRegister> {
                 TextButton(
                     onPressed: () async {
                       _iFrameElement.contentWindow?.postMessage(
-                          "getMarkerData", "http://i9d104.p.ssafy.io:8081");
-                      },
-                    child: Text("getData"))
+                          "getMarkerData", "${dotenv.env['YOUR_SERVER_URL']!}");
+
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('저장 완료'),
+                            content: Text('마커 정보가 저장되었습니다.'),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop(); // 다이얼로그 닫기
+                                },
+                                child: Text('확인'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                    child: Text("마커 정보 저장하기", style: TextStyle(fontSize: 16),)),
+                SizedBox(height: 10,),
+                ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                          AppColor.PrimaryPink),
+                      minimumSize:
+                      MaterialStateProperty.all<Size>(Size(800, 48)),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                      ),
+                    ),
+                    onPressed: () async {
+                      // Get.rootDelegate.toNamed(Routes.BOARD);
+                      // 행사 등록
+
+                      var url = Uri.parse('${dotenv.env['YOUR_SERVER_URL']!}api/${_mainController.id.value}/create-festival');
+
+                      var request = http.MultipartRequest('POST', url);
+
+                      // JSON 데이터를 http.MultipartFile 형태로 생성하여 추가
+                      var jsonBody = {
+                        "fesTitle": fesTitle,
+                        "fesOutline": fesOutline,
+                        "fesAddress": fesAddress,
+                        "fesStartDate": { "year" : "${startDate.year}",
+                          "month":"${startDate.month}",
+                          "day":"${startDate.day}"},
+                        "fesEndDate": { "year" : "${endDate.year}",
+                          "month":"${endDate.month}",
+                          "day":"${endDate.day}"},
+                        "markers": markers?.map((marker) => marker.toJson()).toList(),
+                        "stampMissions": stampMarkers?.map((marker) => marker.toJson()).toList(),
+                      };
+
+                      var jsonPart = http.MultipartFile.fromString(
+                        'data',
+                        jsonEncode(jsonBody),
+                        filename: 'data',
+                        contentType:  MediaType('application', 'json'),
+                      );
+
+                      request.files.add(jsonPart);
+
+                      // 파일 선택
+                      var file = timetable?.files.first;
+                      if (file != null) {
+                        var fileBytes = file.bytes;
+                        if (fileBytes != null) {
+                          request.files.add(http.MultipartFile(
+                            'file',
+                            http.ByteStream.fromBytes(fileBytes),
+                            fileBytes.length,
+                            filename: file.name,
+                          ));
+                        }
+                      }
+
+                      // 이미지 선택
+                      var image = poster?.files.first;
+                      if (image != null) {
+                        var imageBytes = image.bytes;
+                        if (imageBytes != null) {
+                          request.files.add(http.MultipartFile(
+                            'image',
+                            http.ByteStream.fromBytes(imageBytes),
+                            imageBytes.length,
+                            filename: image.name,
+                          ));
+                        }
+                      }
+
+                      print(request.files);
+
+                      var response = await request.send();
+
+                      if (response.statusCode == 201) {
+                        print('Festival data sent successfully');
+                        // 성공 축제 화면으로 이동
+                        Navigator.pop(context, true);
+                        Get.rootDelegate.offNamed(Routes.MYPAGE);
+                      } else {
+                        print('Failed to send festival data. Status code: ${response.statusCode}');
+                        // 실패 다이얼로그 표시
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text("Failed"),
+                              content: Text("Failed to send festival data. Status code: ${response.statusCode}"),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: Text("OK"),
+                                  onPressed: () {
+                                    Navigator.of(context).pop(); // 다이얼로그 닫기
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      }
+                    },
+                    child: Text(
+                      "등록하기",
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ))
 
               ],
             ),

@@ -52,32 +52,43 @@ public class ParticipatedFesService {
     public boolean saveParticipatedFes(Long normalUserId, Long festivalId){
         NormalUser normalUser = normalUserRepository.findById(normalUserId).orElseThrow(NoSuchElementException::new);
         OrganizedFestival organizedFestival = organizedFestivalRepository.findById(festivalId).orElseThrow(NoSuchElementException::new);
-
-        Long countMission = completedStampMissionRepository.countCompletedStampMissionByNormalUser_idAndOrganizedFestival_FestivalId(normalUserId, festivalId);
-        //완료 여부: 행사의 미션 개수 == 이 유저가 달성한 이 행사의 미션 개수.
-        Long festivalMission = stampMissionRepository.countStampMissionsByFestivalId(festivalId);
-        Boolean isCompleted = Objects.equals(countMission, festivalMission);
-        System.out.println("완료?" + isCompleted);
-        ParticipatedFes participatedFes = ParticipatedFes.builder()
-                .participateTime((LocalDateTime.now()))
-                .isCompleted(isCompleted)
-                .countMission(countMission)
-                .build();
-
-        participatedFes.setNormalUser(normalUser);
-        participatedFes.setOrganizedFestival(organizedFestival);
-
         boolean flag = true;
 
-        try {
-            participatedFesRepository.save(participatedFes);
-        } catch (IllegalArgumentException | OptimisticLockingFailureException e) {
-            log.error("ParticipatedFes 저장 실패");
-            e.printStackTrace();
+        if(participatedFesRepository.existsByNormalUser_IdAndOrganizedFestival_FestivalId(normalUserId,festivalId)){
+            log.error("이미 이 행사에 참여하였습니다.");
             flag = false;
+            return flag;
+
+        }else{
+            Long countMission = completedStampMissionRepository.countCompletedStampMissionByNormalUser_idAndOrganizedFestival_FestivalId(normalUserId, festivalId);
+            //완료 여부: 행사의 미션 개수 == 이 유저가 달성한 이 행사의 미션 개수.
+            Long festivalMission = stampMissionRepository.countStampMissionsByFestivalId(festivalId);
+            Boolean isCompleted = Objects.equals(countMission, festivalMission);
+            System.out.println("완료?" + isCompleted);
+            System.out.println("행사 미션 개수"+festivalMission);
+            System.out.println("완료 미션 개수"+countMission);
+            ParticipatedFes participatedFes = ParticipatedFes.builder()
+                    .participateTime((LocalDateTime.now()))
+                    .isCompleted(isCompleted)
+                    .countMission(festivalMission)
+                    .build();
+
+            participatedFes.setNormalUser(normalUser);
+            participatedFes.setOrganizedFestival(organizedFestival);
+
+            try {
+                participatedFesRepository.save(participatedFes);
+            } catch (IllegalArgumentException | OptimisticLockingFailureException e) {
+                log.error("ParticipatedFes 저장 실패");
+                e.printStackTrace();
+                flag = false;
+            }
+
+            return flag;
+
+
         }
 
-        return flag;
     }
     // 조회
 

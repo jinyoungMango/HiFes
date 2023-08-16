@@ -10,6 +10,7 @@ import hiFes.hiFes.domain.group.Hashtag;
 import hiFes.hiFes.domain.user.NormalUser;
 import hiFes.hiFes.dto.group.GroupCreateDto;
 import hiFes.hiFes.dto.group.GroupListDto;
+import hiFes.hiFes.repository.group.JoinedGroupRepository;
 import hiFes.hiFes.repository.user.NormalUserRepository;
 import hiFes.hiFes.service.group.GroupService;
 import hiFes.hiFes.service.user.JwtService;
@@ -34,6 +35,7 @@ public class GroupController extends BaseTimeEntity {
     private final NormalUserService normalUserService;
     private final GroupService groupService;
     private final NormalUserRepository normalUserRepository;
+    private final JoinedGroupRepository joinedGroupRepository;
     private final JwtService jwtService;
 
     // 주석한 부분은 유저 관련 기능이다.
@@ -57,14 +59,38 @@ public class GroupController extends BaseTimeEntity {
     }
 
 
+    @Operation(summary = "그룹 가입", description = "이미 그룹에 가입된 유저거나 한 행사에 두 모임을 가입하려하는 경우 false, 가입에 성공하면 true 를 리턴합니다.")
     @GetMapping("group/join/{groupId}")
-    public String groupJoin(HttpServletRequest request, @PathVariable Long groupId){
+    public Boolean groupJoin(HttpServletRequest request, @PathVariable Long groupId){
         String accessToken = request.getHeader("accessToken");
         String email = jwtService.extractEmail(accessToken).orElse("");
         NormalUser user = normalUserService.getByEmail(email);
         Group group = groupService.getById(groupId);
+
+        if (groupService.isJoinedFesGroup(user.getId(), group.getFestivalId())){
+            return false;
+        }
+
+
+        if (joinedGroupRepository.existsByNormalUserAndGroup(user, group)){
+            return false;
+        }
+
         groupService.groupJoin(user, group);
-        return "join success";
+        return true;
+    }
+
+    @Operation(summary = "그룹 탈퇴")
+    @DeleteMapping("group/sign-out/{groupId}")
+    public String groupSignOut(HttpServletRequest request, @PathVariable Long groupId){
+        String accessToken = request.getHeader("accessToken");
+        String email = jwtService.extractEmail(accessToken).orElse("");
+        NormalUser user = normalUserService.getByEmail(email);
+        Group group = groupService.getById(groupId);
+
+        groupService.groupSignOut(user, group);
+
+        return "group sign out success";
     }
 
     @Operation(summary = "그룹 디테일", description = "id에는 그룹 id를 넣어주시면 됩니다. 해당 모임이 참여중인 행사에, 유저가 참여중인 모임이 있는지, 그룹의 리더인지, 참여중인 그룹인지도 함께 반환됩니다.")

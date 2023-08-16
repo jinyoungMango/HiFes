@@ -3,7 +3,9 @@ package com.ssafy.hifes.ui.detail
 import NavigationItem
 import android.content.ActivityNotFoundException
 import android.content.Context
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -66,6 +68,7 @@ import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.naver.maps.map.compose.Marker
 import com.naver.maps.map.compose.MarkerState
 import com.naver.maps.map.compose.NaverMap
+import com.naver.maps.map.compose.currentCameraPositionState
 import com.naver.maps.map.compose.rememberCameraPositionState
 import com.naver.maps.map.overlay.OverlayImage
 import com.ssafy.hifes.BuildConfig
@@ -82,7 +85,7 @@ import com.ssafy.hifes.util.CommonUtils
 
 private const val TAG = "FestivalDetail_하이페스"
 
-@OptIn(ExperimentalNaverMapApi::class)
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun FestivalDetail(
     navController: NavHostController,
@@ -90,7 +93,10 @@ fun FestivalDetail(
     detailViewModel: DetailViewModel
 ) {
     val festivalInfo = viewModel.festivalInfo.observeAsState()
+    val festivalTimeTable = detailViewModel.timeTableList.observeAsState()
     val context = LocalContext.current
+    val cameraPositionState: CameraPositionState = rememberCameraPositionState{}
+
     if (festivalInfo.value != null) {
         val festivalData = festivalInfo.value
         Column(
@@ -98,13 +104,14 @@ fun FestivalDetail(
                 .verticalScroll(rememberScrollState())
         ) {
             if (festivalData != null) {
+                detailViewModel.getTimeTableList(festivalData.festivalId)
                 Box {
                     AsyncImage(
                         model = festivalData.fesPosterPath,
                         contentDescription = "Poster Image",
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(288.dp),
+                            .height(300.dp),
                         contentScale = ContentScale.Crop,
                         placeholder = rememberVectorPainter(image = MyIconPack.Imagenotfound)
                     )
@@ -154,14 +161,14 @@ fun FestivalDetail(
                                     .padding(top = 4.dp, end = 8.dp, bottom = 6.dp)
                             ) {
                                 navigateToMeetingScreen(
-                                    "12개",
+                                    "${festivalData.countGroups}개",
                                     navController,
                                     viewModel
-                                ) // 추후 서버에서 가져옴
+                                )
                             }
                             DetailTitle(festivalData.fesTitle)
 
-                            StarScore(score = 4.0)
+                            StarScore(score = festivalData.avgRating)
 
 
                             Spacer(modifier = Modifier.size(12.dp))
@@ -179,19 +186,22 @@ fun FestivalDetail(
                             content2 = CommonUtils.formatFestivalDateToString(festivalData.fesEndDate)
                         )
                         Spacer(modifier = Modifier.size(12.dp))
+                        festivalTimeTable.value?.let { ScheduleDisplay(it) }
+                        Spacer(modifier = Modifier.size(12.dp))
                         DetailCommonContent(title = "장소", address = "주소")
                         Spacer(modifier = Modifier.size(12.dp))
                         FestivalLocation(
                             festivalData.fesLatitude,
                             festivalData.fesLongitude,
-                            festivalData.fesTitle
+                            festivalData.fesTitle,
+                            cameraPositionState
                         )
                         Spacer(modifier = Modifier.size(12.dp))
                         // 추후 서버에서 가져온 데이터로 변경
                         DetailCommonContent(
                             title = "주최",
-                            content1 = "대구광역시",
-                            content2 = "053 - 248 - 9998"
+                            content1 = festivalData.hostName,
+                            content2 = CommonUtils.formatPhoneNumber(festivalData.hostPhoneNo)
                         )
                         Spacer(modifier = Modifier.size(24.dp))
                     }
@@ -284,11 +294,10 @@ fun kakaoShare(festival: OrganizedFestivalDto, context: Context) {
 
 @OptIn(ExperimentalNaverMapApi::class)
 @Composable
-fun FestivalLocation(lat: Double, lng: Double, title: String) {
+fun FestivalLocation(lat: Double, lng: Double, title: String, cameraPositionState: CameraPositionState) {
     val festivalLatLng = LatLng(lat, lng)
-    val cameraPositionState: CameraPositionState = rememberCameraPositionState {
-        position = CameraPosition(festivalLatLng, 13.0)
-    }
+    cameraPositionState.position = CameraPosition(festivalLatLng, 13.0)
+    Log.d(TAG, "FestivalLocation: festival $festivalLatLng, camera ${cameraPositionState.position}")
     NaverMap(
         modifier = Modifier
             .fillMaxWidth()

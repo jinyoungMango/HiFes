@@ -3,13 +3,16 @@ package hiFes.hiFes.dto.commentDto;
 import hiFes.hiFes.domain.Comment;
 import hiFes.hiFes.domain.Post;
 import hiFes.hiFes.exception.NotSamePostException;
-import lombok.Getter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class CommentDto {
     private Long id;
     private String content;
@@ -17,6 +20,8 @@ public class CommentDto {
     private Long createdBy;
     private LocalDateTime createdAt;
     private List<CommentDto> childComments;
+
+    private String writer;
 
     public CommentDto(Comment comment) {
         this.id = comment.getId();

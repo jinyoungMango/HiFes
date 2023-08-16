@@ -64,6 +64,7 @@ fun GroupCreateScreen(
     errMsg.value?.getContentIfNotHandled()?.let {
         Toast.makeText(context, it, Toast.LENGTH_LONG).show()
     }
+
     LaunchedEffect(groupCreateState.value) {
         if (groupCreateState.value == GroupCreateStateType.SUCCESS) {
             viewModel.initCreateState()

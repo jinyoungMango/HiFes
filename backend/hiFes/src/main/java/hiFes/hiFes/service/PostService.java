@@ -6,7 +6,6 @@ import hiFes.hiFes.domain.festival.OrganizedFestival;
 import hiFes.hiFes.domain.user.HostUser;
 import hiFes.hiFes.domain.user.NormalUser;
 import hiFes.hiFes.dto.commentDto.CommentDto;
-import hiFes.hiFes.dto.commentDto.CommentListDto;
 import hiFes.hiFes.dto.postDto.*;
 import hiFes.hiFes.repository.CommentRepository;
 import hiFes.hiFes.repository.PostRepository;
@@ -14,16 +13,22 @@ import hiFes.hiFes.repository.festival.OrganizedFestivalRepository;
 import hiFes.hiFes.repository.user.HostUserRepository;
 import hiFes.hiFes.repository.user.NormalUserRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.fileupload.disk.DiskFileItem;
+import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,11 +36,12 @@ import java.util.stream.Collectors;
 public class PostService {
 
     private final PostRepository postRepository;
-    private final HostUserRepository hostUserRepository;
-    private final NormalUserRepository normalUserRepository;
     private final CommentRepository commentRepository;
     private final OrganizedFestivalRepository organizedFestivalRepository;
+    private final HostUserRepository hostUserRepository;
+    private final NormalUserRepository normalUserRepository;
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Transactional
     public List<PostDto> allPostsByFestival(Long festivalId) {
@@ -43,13 +49,31 @@ public class PostService {
         ArrayList<PostDto> postDtoArrayList = new ArrayList<>();
 
         for (Post post : allPostsInFestival) {
+
+            String userRecognizer = "";  // 주최 행사 이름이 될 수도 있고 별명이 될 수도 있으니 recognizer 하나를 만든다
+            Long userId = post.getCreatedBy();
+            if (userId >= 1 && userId <= 300) {  // 1 ~ 300 이면 hostUser 니까 주최 행사 명을 설정한다
+                HostUser hostUser = hostUserRepository.findById(userId)
+                        .orElseThrow(() -> new IllegalArgumentException("!!!No Host User Found!!!"));
+                userRecognizer = hostUser.getOrganization();
+
+            } else if (userId > 300) {  // 300 보다 크다면 normalUser 니까 별명을 저장한다
+                NormalUser normalUser = normalUserRepository.findById(userId)
+                        .orElseThrow(() -> new IllegalArgumentException("!!!No Normal User Found!!!"));
+                userRecognizer = normalUser.getNickname();
+            } else {  // 그 외의 경우는 유저가 없는 걸로 판단 에러 발생
+                ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong userId");
+            }
+
             PostDto postDto = PostDto.builder()
+                    .id(post.getId())
                     .postType(post.getPostType())
                     .title(post.getTitle())
                     .commentsCount(post.getComments().size())
                     .views(post.getViews())
                     .createdBy(post.getCreatedBy())
                     .createdAt(post.getCreatedAt())
+                    .writer(userRecognizer)
                     .organizedFestivalId(post.getOrganizedFestival().getFestivalId())
                     .build();
             postDtoArrayList.add(postDto);
@@ -65,9 +89,31 @@ public class PostService {
         ArrayList<PostDto> postDtoArrayList = new ArrayList<>();
 
         for (Post post : postList) {
+
+            String userRecognizer = "";  // 주최 행사 이름이 될 수도 있고 별명이 될 수도 있으니 recognizer 하나를 만든다
+            Long userId = post.getCreatedBy();
+            if (userId >= 1 && userId <= 300) {  // 1 ~ 300 이면 hostUser 니까 주최 행사 명을 설정한다
+                HostUser hostUser = hostUserRepository.findById(userId)
+                        .orElseThrow(() -> new IllegalArgumentException("!!!No Host User Found!!!"));
+                userRecognizer = hostUser.getOrganization();
+
+            } else if (userId > 300) {  // 300 보다 크다면 normalUser 니까 별명을 저장한다
+                NormalUser normalUser = normalUserRepository.findById(userId)
+                        .orElseThrow(() -> new IllegalArgumentException("!!!No Normal User Found!!!"));
+                userRecognizer = normalUser.getNickname();
+            } else {  // 그 외의 경우는 유저가 없는 걸로 판단 에러 발생
+                ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong userId");
+            }
+
             PostDto postDto = PostDto.builder()
+                    .id(post.getId())
                     .postType(post.getPostType())
                     .title(post.getTitle())
+                    .content(post.getContent())
+                    .isHidden(post.getIsHidden())
+                    .rating(post.getRating() != null ? post.getRating() : null)
+                    .imagePath(post.getImagePath() != null ? "https://i9d104.p.ssafy.io" + post.getImagePath() : null)
+                    .writer(userRecognizer)
                     .commentsCount(post.getComments().size())
                     .views(post.getViews())
                     .createdBy(post.getCreatedBy())
@@ -82,14 +128,20 @@ public class PostService {
 
 
     @Transactional
-    public ResponseEntity<?> create(PostCreateDto createDto) {
-        // 이미지 처리 로직 , MultipartFile image) throws IOException {
-//        String projectPath = "/home/ubuntu/images";
+    public ResponseEntity<?> create(PostCreateDto createDto, MultipartFile image) throws IOException {
+        PostDto postDto = null;
+        if (image != null) {
+            String projectPath = "/home/ubuntu/images";
+//            String projectPath = System.getProperty("user.dir") +"\\hifes\\src\\main\\resources\\static\\images";
+            UUID uuid = UUID.randomUUID();
+            String imageName = uuid + "_" + image.getOriginalFilename();
+
 //        String imageName = image.getOriginalFilename();
-//        File saveImage = new File(projectPath, imageName);
-//        image.transferTo(saveImage);
-//
-//        createDto.setPicture("/images/"+  imageName);
+            File saveImage = new File(projectPath, imageName);
+            image.transferTo(saveImage);
+
+            createDto.setImagePath("/images/"+  imageName);
+        }
 
         // 글 종류에 따라 로직이 조금씩 바뀐다
         String postTypeInput = createDto.getPostType(); // 글 종류
@@ -120,12 +172,6 @@ public class PostService {
         }
     }
 
-//        if (postRepository.existsById(savedPost.getId())) {  // 만약 저장 했는데 저장한 게시글이 DB에 있으면
-//            ResponseEntity.status(HttpStatus.CREATED).body("CREATED");  // 생성 됐다는 메시지
-//        } else {
-//            ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Fail To Create");  // 아니면 실패
-//            return null;
-//        }
 
 //    @Transactional
 //    public Long update(Long id, PostUpdateDto requestDto) {
@@ -149,28 +195,31 @@ public class PostService {
 
     @Transactional
     public PostDto findById(Long postId) {
+
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다."));
 
-        post.increaseView();
-        postRepository.save(post);
-        // 유저 id 로 작성자 정보 저장 로직
-//        Long userId = post.getCreatedBy();
 
-//        String userRecognizer;  // 주최 행사 이름이 될 수도 있고 별명이 될 수도 있으니 recognizer 하나를 만든다
-//
-//        if (userId >= 1 && userId <= 300) {  // 1 ~ 300 이면 hostUser 니까 주최 행사 명을 설정한다
-//            HostUser hostUser = hostUserRepository.findById(userId)
-//                    .orElseThrow(() -> new IllegalArgumentException("!!!No Host User Found!!!"));
-//            userRecognizer = hostUser.getOrganization();
-//
-//        } else if (userId > 300) {  // 300 보다 크다면 normalUser 니까 별명을 저장한다
-//            NormalUser normalUser = normalUserRepository.findById(userId)
-//                    .orElseThrow(() -> new IllegalArgumentException("!!!No Normal User Found!!!"));
-//            userRecognizer = normalUser.getNickname();
-//        } else {  // 그 외의 경우는 유저가 없는 걸로 판단 에러 발생
-//            ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong userId");
-//        }
+        post.increaseView();  // 조회수 +1
+        postRepository.save(post);
+
+        // 유저 id 로 작성자 정보 가져오는 로직
+        Long userId = post.getCreatedBy();
+
+        String userRecognizer = "";  // 주최 행사 이름이 될 수도 있고 별명이 될 수도 있으니 recognizer 하나를 만든다
+
+        if (userId >= 1 && userId <= 300) {  // 1 ~ 300 이면 hostUser 니까 주최 행사 명을 설정한다
+            HostUser hostUser = hostUserRepository.findById(userId)
+                    .orElseThrow(() -> new IllegalArgumentException("!!!No Host User Found!!!"));
+            userRecognizer = hostUser.getOrganization();
+
+        } else if (userId > 300) {  // 300 보다 크다면 normalUser 니까 별명을 저장한다
+            NormalUser normalUser = normalUserRepository.findById(userId)
+                    .orElseThrow(() -> new IllegalArgumentException("!!!No Normal User Found!!!"));
+            userRecognizer = normalUser.getNickname();
+        } else {  // 그 외의 경우는 유저가 없는 걸로 판단 에러 발생
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Wrong userId");
+        }
 
         // 댓글 목록 불러오기
         List<Comment> topLevelComments = commentRepository.findAllByPostIdAndParentIsNull(postId);
@@ -178,10 +227,39 @@ public class PostService {
                 .map(CommentDto::new)
                 .collect(Collectors.toList());
 
-
+        String writer = "";
+        for (CommentDto commentDto : topLevelCommentListDto) {
+            Long topWriterId = commentDto.getCreatedBy();
+            if (topWriterId > 300) {
+                NormalUser normalUser = normalUserRepository.findById(topWriterId)
+                        .orElseThrow(() -> new IllegalArgumentException("!!!No Normal User Found!!!"));
+                writer = normalUser.getNickname();
+            } else if (1 <= topWriterId && topWriterId <= 300) {
+                HostUser hostUser = hostUserRepository.findById(topWriterId)
+                        .orElseThrow(() -> new IllegalArgumentException("!!!No Host User Found!!!"));
+                writer = hostUser.getOrganization();
+            }
+            commentDto.setWriter(writer);
+            writer = null;
+            for (CommentDto childDto : commentDto.getChildComments()) {
+                Long childWriterId = childDto.getCreatedBy();
+                if (childWriterId > 300) {
+                    NormalUser normalUser = normalUserRepository.findById(childWriterId)
+                            .orElseThrow(() -> new IllegalArgumentException("!!!No Normal User Found!!!"));
+                    writer = normalUser.getNickname();
+                } else if (1 <= childWriterId && childWriterId <= 300) {
+                    HostUser hostUser = hostUserRepository.findById(childWriterId)
+                            .orElseThrow(() -> new IllegalArgumentException("!!!No Host User Found!!!"));
+                    writer = hostUser.getOrganization();
+                }
+                childDto.setWriter(writer);
+            }
+        }
+        
         PostDto postDto = PostDto.builder()
                 .id(post.getId())
                 .title(post.getTitle())
+                .writer(userRecognizer)
                 .content(post.getContent())
                 .postType(post.getPostType())
                 .isHidden(post.getIsHidden())
@@ -189,15 +267,37 @@ public class PostService {
                 .organizedFestivalId(post.getOrganizedFestival().getFestivalId())
                 .createdBy(post.getCreatedBy())
                 .views(post.getViews())
-                .rating(post.getRating())
+                .rating(post.getRating() != null ? post.getRating() : null)
+                .imagePath(post.getImagePath() != null ? "https://i9d104.p.ssafy.io" + post.getImagePath() : null)
                 .topLevelComments(topLevelCommentListDto)
                 .commentsCount(post.getComments().size())
                 .createdAt(post.getCreatedAt())
                 .build();
 
         return postDto;
-
     }
+
+//    @Transactional
+//    public Optional<MultipartFile> getImage(Long postId) throws IOException {
+//        Post post = postRepository.findById(postId)
+//            .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다."));
+//
+//        if (post.getImagePath() != null) {
+//            File file = new File(post.getImagePath());
+//            DiskFileItem fileItem = new DiskFileItem("file", Files.probeContentType(file.toPath()),
+//                    false, file.getName(), (int)file.length(), file.getParentFile());
+//
+//            InputStream inputStream = new FileInputStream(file);
+//            OutputStream outputStream = fileItem.getOutputStream();
+//            IOUtils.copy(inputStream, outputStream);
+//
+//            MultipartFile multipartFile = new CommonsMultipartFile(fileItem);
+//            return Optional.of(multipartFile);
+//        } else {
+//            return null;
+//        }
+//    }
+
 
 
     @Transactional(readOnly = true)

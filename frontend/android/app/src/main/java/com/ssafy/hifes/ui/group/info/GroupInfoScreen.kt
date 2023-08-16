@@ -19,25 +19,22 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.ssafy.hifes.ui.common.top.TopWithBack
 import com.ssafy.hifes.ui.group.GroupViewModel
+import com.ssafy.hifes.ui.group.info.chat.ChatViewModel
 import com.ssafy.hifes.ui.group.info.chat.GroupChatScreen
 import com.ssafy.hifes.ui.group.info.detail.GroupDetailScreen
 import com.ssafy.hifes.ui.group.info.picture.GroupPictureScreen
 import com.ssafy.hifes.ui.theme.PrimaryPink
 
 @Composable
-fun GroupInfoScreen(
-    navController: NavController,
-    viewModel: GroupViewModel
-) {
+fun GroupInfoScreen(navController: NavController, groupViewModel: GroupViewModel, chatViewModel: ChatViewModel) {
     var context = LocalContext.current
     var selectedTab by remember { mutableStateOf(0) }
-    val imageErrMsg = viewModel.errorMsgGroupImages.observeAsState()
-    val detailErrMsg = viewModel.errorMsgGroupDetail.observeAsState()
+    val imageErrMsg = groupViewModel.errorMsgGroupImages.observeAsState()
+    val detailErrMsg = groupViewModel.errorMsgGroupDetail.observeAsState()
 
     imageErrMsg.value?.getContentIfNotHandled()?.let {
         Toast.makeText(context, it, Toast.LENGTH_LONG).show()
@@ -74,18 +71,12 @@ fun GroupInfoScreen(
             )
             Spacer(modifier = Modifier.height(12.dp))
             if (selectedTab == 0) {
-                GroupDetailScreen(navController, viewModel)
+                GroupDetailScreen(navController, groupViewModel)
             } else if (selectedTab == 1) {
                 GroupPictureScreen()
             } else if (selectedTab == 2) {
-                GroupChatScreen()
+                GroupChatScreen(chatViewModel, groupViewModel)
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun GroupInfoScreenPrev() {
-    // GroupInfoScreen(rememberNavController(), GroupViewModel())
 }

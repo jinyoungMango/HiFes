@@ -42,7 +42,7 @@ public class GroupService {
 //        LocalDateTime now = LocalDateTime.of(2020,9,16,0,0,0);
         Group group = Group.builder()
                 .groupName(groupCreateDto.getGroupName())
-                .groupPic("/images/"+ imageName)
+                .groupPic("https://i9d104.p.ssafy.io/images/"+ imageName)
                 .maxPop(groupCreateDto.getMaxPop())
                 .content(groupCreateDto.getContent())
                 .festivalId(groupCreateDto.getFestivalId())
@@ -96,6 +96,11 @@ public class GroupService {
         joinedGroup.setIsLeader(false);
         joinedGroupRepository.save(joinedGroup);
 
+    }
+
+    public void groupSignOut(NormalUser normalUser, Group group){
+        JoinedGroup joinedGroup = joinedGroupRepository.findByNormalUserAndGroup(normalUser, group);
+        joinedGroupRepository.delete(joinedGroup);
     }
 
     public void groupDelete(Long id){

@@ -14,7 +14,7 @@ import static javax.persistence.FetchType.LAZY;
 @Entity
 @Getter
 @NoArgsConstructor
-@Table(name = "comment")
+@Table(name = "Comment")
 public class Comment extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +28,7 @@ public class Comment extends BaseEntity {
     @JoinColumn(name = "postId")
     private Post post;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "createdBy")
     private Long createdBy;
 
 

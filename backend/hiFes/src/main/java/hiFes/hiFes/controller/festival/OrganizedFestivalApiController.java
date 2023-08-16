@@ -101,13 +101,9 @@ public class OrganizedFestivalApiController {
     @Operation(summary ="특정 주최자가 등록한 모든 행사 목록 조회" )
     @GetMapping("/{hostUserId}/festivals")
     @CrossOrigin("*")
-    public ResponseEntity<List<OrganizedFestivalResponse>> findFestivalByHost(@PathVariable long hostUserId){
-        List<OrganizedFestival> organizedFestivals = organizedFestivalService.findByHost_hostId(hostUserId);
-        List<OrganizedFestivalResponse> organizedFestivalResponses = organizedFestivals.stream()
-                .map(OrganizedFestivalResponse::new)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok()
-                .body(organizedFestivalResponses);
+    public ResponseEntity<List<OrganizedFestivalDetailResponse>> findFestivalByHost(@PathVariable long hostUserId){
+        List<OrganizedFestivalDetailResponse> organizedFestivalDetailResponses = organizedFestivalService.findByHost_hostId(hostUserId);
+        return ResponseEntity.ok().body(organizedFestivalDetailResponses);
     }
 
     @Operation(summary ="특정 행사의 모든 aritem 조회" )
@@ -149,14 +145,9 @@ public class OrganizedFestivalApiController {
     @Operation(summary = "주변 10km내에 있는 행사 목록 조회")
     @GetMapping("/nearby-festivals/{userLatitude}/{userLongitude}")
     @CrossOrigin("*")
-    public ResponseEntity<List<OrganizedFestivalResponse>> findNearByFestival(@PathVariable BigDecimal userLatitude, @PathVariable BigDecimal userLongitude){
-        List<OrganizedFestival> organizedFestivals = organizedFestivalService.getFestivalsByLocationWithin10Km(userLatitude,userLongitude);
-        List<OrganizedFestivalResponse> organizedFestivalResponses = organizedFestivals.stream()
-                .map(OrganizedFestivalResponse::new)
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok()
-                .body(organizedFestivalResponses);
+    public ResponseEntity<List<OrganizedFestivalDetailResponse>> findNearByFestival(@PathVariable BigDecimal userLatitude, @PathVariable BigDecimal userLongitude){
+        List<OrganizedFestivalDetailResponse> organizedFestivals = organizedFestivalService.getFestivalsByLocationWithin10Km(userLatitude,userLongitude);
+        return ResponseEntity.ok().body(organizedFestivals);
     }
 
     @Operation(summary = "특정 행사 조회", description = "특정 행사의 id를 통해 상세 정보 조회")
@@ -174,13 +165,9 @@ public class OrganizedFestivalApiController {
     @Operation(summary = "랜덤 행사 목록")
     @GetMapping("/randomFestivals")
     @CrossOrigin("*")
-    public ResponseEntity<List<OrganizedFestivalResponse>> findRandomFestivals(){
-        List<OrganizedFestival> organizedFestivals =organizedFestivalService.findRandomOrganizedFestival();
-        List<OrganizedFestivalResponse> organizedFestivalResponses = organizedFestivals.stream()
-                .map(OrganizedFestivalResponse::new)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok()
-                .body(organizedFestivalResponses);
+    public ResponseEntity<List<OrganizedFestivalDetailResponse>> findRandomFestivals(){
+        List<OrganizedFestivalDetailResponse> organizedFestivals =organizedFestivalService.findRandomOrganizedFestival();
+        return ResponseEntity.ok().body(organizedFestivals);
     }
 
     @Operation(summary = "행사 검색 결과", description = "param으로 key값이 keyword인 검색어를 넣어줘야 합니다.")

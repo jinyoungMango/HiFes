@@ -16,10 +16,7 @@ import 'package:web/dto/SignUpRequestDto.dart';
 import 'package:web/login/LoginController.dart';
 
 class LoginPage extends StatelessWidget {
-  final MainController _mainController = Get.put<MainController>(
-      MainController(),
-      permanent: true,
-      tag: 'MainController');
+  final MainController _mainController = Get.put<MainController>(MainController(), permanent: true, tag: 'MainController');
 
   Dio dio = Dio();
 
@@ -107,7 +104,7 @@ class LoginPage extends StatelessWidget {
       _mainController.kRefreshToken.value = token.refreshToken!;
 
       // 여기서 토큰을 서버에 넘긴다
-      var url = dotenv.env['YOUR_SERVER_URL']! + 'host/login';
+      var url = dotenv.env['YOUR_SERVER_URL']! + 'api/host/login';
 
       var response = await dio.post(
         url,
@@ -146,7 +143,7 @@ class LoginPage extends StatelessWidget {
             Text(
               "Login",
               textAlign: TextAlign.start,
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 40),
+              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 40),
             ),
             SizedBox(
               height: 8,
@@ -205,6 +202,11 @@ class LoginInfo extends StatelessWidget {
                                 AppColor.PrimaryPink),
                             minimumSize:
                                 MaterialStateProperty.all<Size>(Size(400, 48)),
+                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                            ),
                           ),
                           onPressed: () async {
                             SignUpRequestDto signUpRequestDto =
@@ -221,7 +223,7 @@ class LoginInfo extends StatelessWidget {
                             print(signUpRequestDto.toJson());
 
                             var url =
-                                dotenv.env['YOUR_SERVER_URL']! + 'host/sign-up';
+                                dotenv.env['YOUR_SERVER_URL']! + 'api/host/sign-up';
 
                             var response = await dio.post(url,
                                 data: signUpRequestDto.toJson());
@@ -353,13 +355,13 @@ Row LoginTitle() {
           Text(
             "축제를 즐겨요",
             style: TextStyle(
-                color: Colors.grey, fontSize: 20, fontWeight: FontWeight.bold),
+                color: Colors.grey, fontSize: 20, fontWeight: FontWeight.w600),
           ),
           Text(
             "HIFES",
             style: TextStyle(
                 fontSize: 80,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w900,
                 color: AppColor.PrimaryPink),
           )
         ],
