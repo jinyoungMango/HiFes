@@ -8,6 +8,7 @@ import com.ssafy.hifes.data.model.LoginResponse
 import com.ssafy.hifes.data.model.MarkerDto
 import com.ssafy.hifes.data.model.OrganizedFestivalDto
 import com.ssafy.hifes.data.model.ParticipatedFestDto
+import com.ssafy.hifes.data.model.PostDetailDto
 import com.ssafy.hifes.data.model.PostDto
 import com.ssafy.hifes.data.model.SharedPicDto
 import com.ssafy.hifes.data.model.StampListDto
@@ -107,4 +108,9 @@ interface ApiService {
         @Path("festivalId") festivalId: Int,
         @Path("postType") postType: String
     ): NetworkResponse<List<PostDto>, ErrorResponse>
+
+    @GET("post/get/{id}")
+    suspend fun getPostDetail(
+        @Path("id") id: Int
+    ): NetworkResponse<PostDetailDto, ErrorResponse>
 }

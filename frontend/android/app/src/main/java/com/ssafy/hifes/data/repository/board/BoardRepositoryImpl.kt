@@ -1,6 +1,7 @@
 package com.ssafy.hifes.data.repository.board
 
 import com.ssafy.hifes.data.model.ErrorResponse
+import com.ssafy.hifes.data.model.PostDetailDto
 import com.ssafy.hifes.data.model.PostDto
 import com.ssafy.hifes.data.remote.ApiService
 import com.ssafy.hifes.util.network.NetworkResponse
@@ -15,6 +16,10 @@ class BoardRepositoryImpl @Inject constructor(
         postType: String
     ): NetworkResponse<List<PostDto>, ErrorResponse> {
         return apiService.getPostList(festivalId, postType)
+    }
+
+    override suspend fun getPostDetail(id: Int): NetworkResponse<PostDetailDto, ErrorResponse> {
+        return apiService.getPostDetail(id)
     }
 
 }
