@@ -35,6 +35,7 @@ public class CommentService {
                 .post(post)
                 .content(createDto.getContent())
                 .parent(parentId)
+                .createdBy(createDto.getCreatedBy())
                 .build();
 
         if (parentId != null) {
