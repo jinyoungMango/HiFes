@@ -1,4 +1,4 @@
-package com.ssafy.hifes.ui.mypage
+package com.ssafy.hifes.ui.mypage.main
 
 import android.widget.Toast
 import androidx.compose.foundation.border
@@ -14,8 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.ssafy.hifes.ui.mypage.SubTitleText
-import com.ssafy.hifes.ui.mypage.TitleText
 import com.ssafy.hifes.ui.theme.Grey
 
 @Composable

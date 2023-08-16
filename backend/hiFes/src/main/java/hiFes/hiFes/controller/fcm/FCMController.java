@@ -4,11 +4,12 @@ import hiFes.hiFes.domain.festival.ParticipatedFes;
 import hiFes.hiFes.domain.group.Group;
 import hiFes.hiFes.domain.group.JoinedGroup;
 import hiFes.hiFes.domain.user.NormalUser;
+import hiFes.hiFes.domain.user.UserJoinFes;
 import hiFes.hiFes.dto.fcmDto.FCMForGroupDto;
 import hiFes.hiFes.dto.fcmDto.FCMForUserDto;
-import hiFes.hiFes.repository.festival.ParticipatedFesRepository;
 import hiFes.hiFes.repository.group.GroupRepository;
 import hiFes.hiFes.repository.group.JoinedGroupRepository;
+import hiFes.hiFes.repository.user.UserJoinFesRepository;
 import hiFes.hiFes.service.fcm.FCMService;
 import hiFes.hiFes.service.user.JwtService;
 import hiFes.hiFes.service.user.NormalUserService;
@@ -28,7 +29,7 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 public class FCMController {
     private final FCMService fcmService;
-    private final ParticipatedFesRepository participatedFesRepository;
+    private final UserJoinFesRepository userJoinFesRepository;
     private final JoinedGroupRepository joinedGroupRepository;
     private final GroupRepository groupRepository;
     private final JwtService jwtService;
@@ -41,10 +42,11 @@ public class FCMController {
     @PostMapping("fcm/for_all")
     public ResponseEntity<String> sendAllUser(@RequestBody FCMForUserDto fcmForUserDto) throws  IOException{
         List<String> fcmTokens = new ArrayList<>();
-        List<ParticipatedFes> participatedFesList = participatedFesRepository.findByOrganizedFestivalId(fcmForUserDto.getFestivalId());
+        List<UserJoinFes> userJoinFesList = userJoinFesRepository.findByOrganizedFestivalId(fcmForUserDto.getFestivalId());
 
-        for (ParticipatedFes participatedFes : participatedFesList) {
-            NormalUser normalUser = participatedFes.getNormalUser();
+
+        for (UserJoinFes userJoinFes : userJoinFesList) {
+            NormalUser normalUser = userJoinFes.getNormalUser();
 
             if (normalUser != null) {
                 fcmTokens.add(normalUser.getFirebaseToken());

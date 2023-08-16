@@ -32,7 +32,7 @@ public class GroupPictureService {
         image.transferTo(saveImage);
 
         SharedPic sharedPic = SharedPic.builder()
-                .sharedPic("/images/"+  imageName)
+                .sharedPic("https://i9d104.p.ssafy.io/images/"+  imageName)
                 .normalUser(normalUser)
                 .group(group)
                 .build();

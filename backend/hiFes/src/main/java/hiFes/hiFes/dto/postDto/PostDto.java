@@ -33,8 +33,6 @@ public class PostDto {
     private String hideReason;
 
     private String imagePath;
-//    private UUID uuid;
-//    private String originalName;
 
     private Long organizedFestivalId;
 
