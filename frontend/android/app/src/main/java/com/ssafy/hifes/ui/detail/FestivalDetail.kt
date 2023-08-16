@@ -111,7 +111,7 @@ fun FestivalDetail(
                         contentDescription = "Poster Image",
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(288.dp),
+                            .height(300.dp),
                         contentScale = ContentScale.Crop,
                         placeholder = rememberVectorPainter(image = MyIconPack.Imagenotfound)
                     )
@@ -164,7 +164,7 @@ fun FestivalDetail(
                                     "${festivalData.countGroups}개",
                                     navController,
                                     viewModel
-                                ) // 추후 서버에서 가져옴
+                                )
                             }
                             DetailTitle(festivalData.fesTitle)
 

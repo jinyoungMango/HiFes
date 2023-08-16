@@ -19,9 +19,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -34,7 +34,6 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.SemanticsProperties.ImeAction
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -44,6 +43,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.ssafy.hifes.R
 import com.ssafy.hifes.ui.HifesDestinations
+import com.ssafy.hifes.ui.main.MainViewModel
 import com.ssafy.hifes.ui.theme.pretendardFamily
 
 
@@ -52,15 +52,20 @@ private const val TAG = "HomeAppBar_하이페스"
 @Preview
 @Composable
 fun HomePrev() {
-    HomeAppBar(rememberNavController())
+//    HomeAppBar(rememberNavController(),"")
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
 @Composable
-fun HomeAppBar(navController: NavController, submit: (keyword: String) -> Unit = {}) {
+fun HomeAppBar(
+    navController: NavController,
+    viewModel: MainViewModel,
+    submit: (keyword: String) -> Unit = {}
+) {
     val image: Painter = painterResource(id = R.drawable.icon_search)
     val otherImage: Painter = painterResource(id = R.drawable.icon_mypage)
     val keyboardController = LocalSoftwareKeyboardController.current
+    val keyword = viewModel.searchKeyword.observeAsState()
 
     CenterAlignedTopAppBar(
         title = { Text(text = "My App") },
@@ -74,6 +79,10 @@ fun HomeAppBar(navController: NavController, submit: (keyword: String) -> Unit =
                 horizontalArrangement = Arrangement.Center
             ) {
                 var text by remember { mutableStateOf("") }
+                if (!keyword.value.isNullOrEmpty()) {
+                    Log.d(TAG, "HomeAppBar: $keyword")
+                    text = keyword.value!!
+                }
                 Spacer(modifier = Modifier.size(18.dp))
                 TextField(
                     value = text,

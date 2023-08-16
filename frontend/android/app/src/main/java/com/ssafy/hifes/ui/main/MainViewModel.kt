@@ -56,6 +56,10 @@ class MainViewModel @Inject constructor(
 
     var selectedFestival: Int = -1
 
+    private var _searchKeyword: MutableLiveData<String> = MutableLiveData()
+    val searchKeyword : LiveData<String> = _searchKeyword
+
+
 
     // 홈 화면, 일반 맵 화면에서 사용하는 축제 리스트
     fun getNearFestivalList(userLatitude: Double, userLongitude: Double) {
@@ -64,7 +68,6 @@ class MainViewModel @Inject constructor(
             val type = "token 정보 조회에"
             when (response) {
                 is NetworkResponse.Success -> {
-                    Log.d(TAG, "getNearFestivalList: $response")
                     _festivalList.postValue(response.body)
                 }
 
@@ -106,7 +109,6 @@ class MainViewModel @Inject constructor(
             val type = "token 정보 조회에"
             when (response) {
                 is NetworkResponse.Success -> {
-                    Log.d(TAG, "getRandomFestivalList: $response")
                     _randomFestivalList.postValue(response.body)
                 }
 
@@ -131,7 +133,6 @@ class MainViewModel @Inject constructor(
             val type = "token 정보 조회에"
             when (response) {
                 is NetworkResponse.Success -> {
-                    Log.d(TAG, "getNearFestivalList: $response")
                     _festivalInfo.postValue(response.body)
                     selectedFestival = response.body.festivalId
                 }
@@ -152,6 +153,7 @@ class MainViewModel @Inject constructor(
     }
 
     fun searchFestivalList(keyword: String) {
+        _searchKeyword.postValue(keyword)
         viewModelScope.launch {
             val response = repository.searchFestivalList(keyword)
             val type = "token 정보 조회에"
@@ -182,7 +184,6 @@ class MainViewModel @Inject constructor(
 
     fun updateMapTypeGeneral() {
         _mapType.postValue(MapType.GENERAL)
-        Log.d(TAG, "updateMapTypeGeneral: ")
     }
 
     fun updateGroupScreenTypeFestival() {
@@ -191,6 +192,10 @@ class MainViewModel @Inject constructor(
 
     fun updateGroupScreenTypeAll() {
         _groupScreenType.postValue(GroupScreenType.All)
+    }
+
+    fun initSearchKeyword() {
+        _searchKeyword.postValue("")
     }
 
     private fun postValueEvent(value: Int, type: String) {
