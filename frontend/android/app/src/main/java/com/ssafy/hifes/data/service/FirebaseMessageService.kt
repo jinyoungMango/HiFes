@@ -33,6 +33,7 @@ class FirebaseMessageService : FirebaseMessagingService() {
     fun getFirebaseToken() {
         FirebaseMessaging.getInstance().token.addOnSuccessListener {
             AppPreferences.initFcmToken(it)
+            Log.d(TAG, "getFirebaseToken: ${it}")
         }
     }
 
@@ -40,11 +41,21 @@ class FirebaseMessageService : FirebaseMessagingService() {
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         var messageTitle = ""
         var messageContent = ""
+        var lat = ""
+        var lng = ""
+        var festivalId = ""
 
         if (remoteMessage.notification != null) { // notification이 있는 경우 foreground처리
             //foreground
             messageTitle = remoteMessage.notification!!.title.toString()
             messageContent = remoteMessage.notification!!.body.toString()
+            lat = remoteMessage.data.get("latitude").toString()
+            lng = remoteMessage.data.get("longitude").toString()
+            festivalId = remoteMessage.data.get("festivalId").toString()
+            Log.d(TAG, "onMessageReceived: ${lat} ${lng} ${festivalId}")
+            if(festivalId != "" && lat != "" && lng != ""){
+                AppPreferences.saveCallLocation(festivalId, lat, lng)
+            }
 
         } else {  // background 에 있을경우 혹은 foreground에 있을경우 두 경우 모두
             var data = remoteMessage.data
@@ -54,6 +65,14 @@ class FirebaseMessageService : FirebaseMessagingService() {
 
             messageTitle = data.get("title").toString()
             messageContent = data.get("body").toString()
+            lat = data.get("latitude").toString()
+            lng = data.get("longitude").toString()
+            festivalId = data.get("festivalId").toString()
+
+            Log.d(TAG, "onMessageReceived: ${lat} ${lng} ${festivalId}")
+            if(festivalId != "" && lat != "" && lng != ""){
+                AppPreferences.saveCallLocation(festivalId, lat, lng)
+            }
         }
 
         val mainIntent = Intent(this, MainActivity::class.java).apply {
@@ -95,6 +114,7 @@ class FirebaseMessageService : FirebaseMessagingService() {
             }
             notify(101, builder.build())
         }
+
     }
 
 }
