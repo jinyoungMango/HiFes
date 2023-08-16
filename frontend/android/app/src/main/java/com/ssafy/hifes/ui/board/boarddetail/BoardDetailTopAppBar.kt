@@ -9,6 +9,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.ssafy.hifes.R
+import com.ssafy.hifes.data.local.AppPreferences
 import com.ssafy.hifes.data.model.PostDto
 import com.ssafy.hifes.ui.board.BoardViewModel
 import com.ssafy.hifes.ui.board.boardcommon.PostType
@@ -18,10 +19,11 @@ import com.ssafy.hifes.ui.theme.LightGrey
 
 @Composable
 fun BoardDetailTopAppBar(navController: NavController, postData: PostDto, viewModel: BoardViewModel) {
+    var userId = AppPreferences.getUserId()
     var appBarTitle = getBoardDetailAppBarTitle(postData.postType, LocalContext.current)
     var menuList: MutableList<CustomMenuItem> = mutableListOf()
 
-    if (postData.normalUserId == viewModel.userDataId) {
+    if (postData.createdBy.toString() == userId) {
         menuList.apply {
             add(
                 CustomMenuItem(
@@ -37,7 +39,7 @@ fun BoardDetailTopAppBar(navController: NavController, postData: PostDto, viewMo
     }
 
     Column {
-        if (postData.postType == PostType.NOTIFICATION.label || postData.normalUserId != viewModel.userDataId) {
+        if (postData.postType == PostType.NOTIFICATION.label || postData.createdBy.toString() != userId) {
             TopWithBack(navController, title = appBarTitle)
         } else {
             TopWithBack(navController, title = appBarTitle, more = true, menuList = menuList)

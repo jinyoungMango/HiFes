@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.Text
 import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -25,19 +24,19 @@ import com.ssafy.hifes.ui.theme.pretendardFamily
 import com.ssafy.hifes.util.CommonUtils
 
 @Composable
-fun BoardDetailHead(postData: PostDto, userDataId: Int) {
+fun BoardDetailHead(postData: PostDto, userDataId: String) {
     Column {
         Spacer(modifier = Modifier.size(10.dp))
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Text(
-                text = "닉네임",//서버에서 게시글 정보 가져올때 닉네임 함께 가져오도록 해야한다
+                text = postData.writer,
                 fontFamily = pretendardFamily,
                 fontWeight = FontWeight.Bold,
                 fontSize = 14.sp
             )
-            if (postData.postType == PostType.ASK.label && userDataId == postData.normalUserId) {
+            if (postData.postType == PostType.ASK.label && userDataId == postData.createdBy.toString()) {
 
-                if (postData.hidden!!) Text(
+                if (postData.isHidden!!) Text(
                     "비공개",
                     fontFamily = pretendardFamily,
                     fontWeight = FontWeight.Bold,
@@ -75,12 +74,8 @@ fun BoardDetailHead(postData: PostDto, userDataId: Int) {
 
 fun getBoardDetailHeaderDateSeenTimeString(postData: PostDto, context: Context): String {
     return "${context.getString(R.string.board_detail_regist)}: ${
-        CommonUtils.formatSqlDateToString(
-            postData.createdAt
+        CommonUtils.formatFestivalDateToString(
+            postData.createdAt.date
         )
-    } | ${context.getString(R.string.board_detail_modify)}: ${
-        CommonUtils.formatSqlDateToString(
-            postData.updatedAt
-        )
-    } | ${context.getString(R.string.board_detail_seen_time)}: ${postData.seenTimes}"
+    } | ${context.getString(R.string.board_detail_seen_time)}: ${postData.views}"
 }
