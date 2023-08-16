@@ -1,4 +1,4 @@
-package com.ssafy.hifes.ui.mypage
+package com.ssafy.hifes.ui.mypage.main
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.ClickableText

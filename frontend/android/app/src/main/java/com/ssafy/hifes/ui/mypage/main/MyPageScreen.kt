@@ -1,4 +1,4 @@
-package com.ssafy.hifes.ui.mypage
+package com.ssafy.hifes.ui.mypage.main
 
 import android.util.Log
 import android.widget.Toast
@@ -28,7 +28,6 @@ import com.ssafy.hifes.ui.HifesDestinations
 
 import com.ssafy.hifes.ui.common.top.TopWithBack
 import com.ssafy.hifes.ui.iconpack.MyIconPack
-import com.ssafy.hifes.ui.mypage.TitleText
 import com.ssafy.hifes.ui.theme.Grey
 import myiconpack.User
 

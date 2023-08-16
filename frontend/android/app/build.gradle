@@ -163,7 +163,7 @@ dependencies {
     implementation "com.airbnb.android:lottie-compose:6.1.0"
 
     //permission for compose
-    implementation "com.google.accompanist:accompanist-permissions:<version>"
+    implementation "com.google.accompanist:accompanist-permissions:0.30"
 
     // kakao login
     implementation "com.kakao.sdk:v2-user:2.15.0"
