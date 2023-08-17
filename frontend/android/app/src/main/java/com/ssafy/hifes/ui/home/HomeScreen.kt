@@ -222,7 +222,6 @@ fun RoundedImageWithText(
         AsyncImage(
             model = festival.fesPosterPath,
             contentDescription = "Card Image",
-            placeholder = rememberVectorPainter(image = MyIconPack.Imagenotfound),
             modifier = Modifier
                 .fillMaxSize()
                 .clip(RoundedCornerShape(12.dp)),
@@ -284,7 +283,6 @@ fun HomeFestivalImage(festival: OrganizedFestivalDto) {
         model = festival.fesPosterPath,
         contentScale = ContentScale.Crop,
         contentDescription = "게시글 이미지",
-        placeholder = rememberVectorPainter(image = MyIconPack.Imagenotfound),
         modifier = Modifier
             .fillMaxWidth()
             .height(250.dp)
@@ -373,7 +371,6 @@ fun HomeCardWithImage(
             AsyncImage(
                 model = festival.fesPosterPath,
                 contentDescription = "Card Image",
-                placeholder = rememberVectorPainter(image = MyIconPack.Imagenotfound),
                 modifier = Modifier
                     .size(100.dp)
                     .clip(RoundedCornerShape(12.dp))

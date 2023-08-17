@@ -96,7 +96,9 @@ fun MyPageScreen(
             GreyBorderItem(
                 title = stringResource(id = R.string.mypage_account),
                 subTitleList = accountSubTitles,
-                onClick = {}
+                onClick = {
+                    viewModel.logout()
+                }
             )
             Spacer(modifier = Modifier.size(20.dp))
             GreyBorderItem(

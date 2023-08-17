@@ -61,7 +61,6 @@ fun BoardDetailBody(postData: PostDetailDto) {
                 AsyncImage(
                     model = postData.imagePath ?: MyIconPack.Imagenotfound,
                     contentDescription = "게시글 이미지",
-                    placeholder = rememberVectorPainter(image = MyIconPack.Imagenotfoundmedium),
                     modifier = Modifier
                         .fillMaxWidth()
                         .align(Alignment.CenterHorizontally),

@@ -54,7 +54,6 @@ fun GroupItem(
                 model = group.groupPic,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
-                placeholder = ColorPainter(Color.Green),
                 modifier = Modifier
                     .size(100.dp)
                     .clip(RoundedCornerShape(8.dp)),

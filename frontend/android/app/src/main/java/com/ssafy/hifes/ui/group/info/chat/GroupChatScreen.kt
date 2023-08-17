@@ -65,7 +65,7 @@ fun GroupChatScreen(viewModel: ChatViewModel, groupViewModel: GroupViewModel) {
         }
     }
 
-    Column {
+    Column(modifier = Modifier.background(color = Color.White)) {
         Box(
             modifier = Modifier
                 .weight(1f)

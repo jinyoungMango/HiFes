@@ -69,7 +69,7 @@ fun HomeAppBar(
 
     CenterAlignedTopAppBar(
         title = { Text(text = "My App") },
-        modifier = Modifier.height(60.dp),
+        modifier = Modifier.height(60.dp).background(color = Color.White),
         actions = {
             Row(
                 modifier = Modifier

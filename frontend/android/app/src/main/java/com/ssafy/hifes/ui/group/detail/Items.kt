@@ -38,7 +38,6 @@ fun GroupMember(user: User) {
             model = user.url,
             contentDescription = null,
             contentScale = ContentScale.Crop,
-            placeholder = ColorPainter(Color.Green),
             modifier = Modifier
                 .size(64.dp)
                 .clip(CircleShape)

@@ -3,6 +3,7 @@ package com.ssafy.hifes.ui.board.write
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -82,6 +83,7 @@ fun PostWriteScreen(
     }
 
     Scaffold(
+        modifier = Modifier.background(color = Color.White),
         topBar = {
             TopWithBack(
                 navController,
@@ -112,7 +114,7 @@ fun PostWriteScreen(
             Column(
                 modifier = Modifier
                     .padding(it)
-                    .verticalScroll(scrollState),
+                    .verticalScroll(scrollState).background(color = Color.White),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 if (boardType.value == PostType.ASK) {

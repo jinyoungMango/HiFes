@@ -3,6 +3,7 @@ package com.ssafy.hifes.ui.group.create
 import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -75,8 +76,8 @@ fun GroupCreateScreen(
 
 
     Scaffold(
-        topBar = { TopWithBack(navController, title = "모임 생성", onClick = {}) }
-
+        topBar = { TopWithBack(navController, title = "모임 생성", onClick = {}) },
+        modifier = Modifier.background(color = Color.White)
     ) {
         val scrollState = rememberScrollState()
 
@@ -84,7 +85,7 @@ fun GroupCreateScreen(
             Modifier
                 .padding(it)
                 .padding(start = 18.dp, end = 18.dp)
-                .verticalScroll(scrollState),
+                .verticalScroll(scrollState).background(color = Color.White),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             ProfileImg(
