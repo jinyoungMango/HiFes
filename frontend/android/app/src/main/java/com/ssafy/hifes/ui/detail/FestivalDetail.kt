@@ -5,6 +5,7 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.os.Build
 import android.util.Log
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -32,6 +33,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -42,6 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -69,7 +72,6 @@ import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.naver.maps.map.compose.Marker
 import com.naver.maps.map.compose.MarkerState
 import com.naver.maps.map.compose.NaverMap
-import com.naver.maps.map.compose.currentCameraPositionState
 import com.naver.maps.map.compose.rememberCameraPositionState
 import com.naver.maps.map.overlay.OverlayImage
 import com.ssafy.hifes.BuildConfig
@@ -79,6 +81,8 @@ import com.ssafy.hifes.ui.HifesDestinations
 import com.ssafy.hifes.ui.group.info.detail.ImageDialog
 import com.ssafy.hifes.ui.iconpack.MyIconPack
 import com.ssafy.hifes.ui.iconpack.myiconpack.Imagenotfound
+import com.ssafy.hifes.ui.iconpack.myiconpack.Notificationoff
+import com.ssafy.hifes.ui.iconpack.myiconpack.Notificationon
 import com.ssafy.hifes.ui.main.MainViewModel
 import com.ssafy.hifes.ui.map.StarScore
 import com.ssafy.hifes.ui.theme.pretendardFamily
@@ -97,7 +101,24 @@ fun FestivalDetail(
     val festivalInfo = viewModel.festivalInfo.observeAsState()
     val festivalTimeTable = detailViewModel.timeTableList.observeAsState()
     val context = LocalContext.current
-    val cameraPositionState: CameraPositionState = rememberCameraPositionState{}
+    val cameraPositionState: CameraPositionState = rememberCameraPositionState {}
+    val subscribeState = detailViewModel.festivalNoticeSubscribeState.observeAsState()
+    val subscribeResponseType = detailViewModel.subscribeResponseStateType.observeAsState()
+
+    LaunchedEffect(subscribeResponseType.value){
+        if(subscribeResponseType.value != null){
+            if(subscribeResponseType.value!!.first == SubscribeStateType.SUCCESS){
+                if(subscribeResponseType.value!!.second == true){
+                    Toast.makeText(context, "공지 알림이 켜졌습니다.", Toast.LENGTH_LONG).show()
+                    detailViewModel.initSubscribeResponseStateType()
+                }else if(subscribeResponseType.value!!.second == false){
+                    Toast.makeText(context, "공지 알림을 해제했습니다.", Toast.LENGTH_LONG).show()
+                    detailViewModel.initSubscribeResponseStateType()
+                }
+            }
+        }
+
+    }
 
     var showDialog by remember { mutableStateOf(false) }
     var selectedImage: String? by remember { mutableStateOf(null) }
@@ -107,6 +128,9 @@ fun FestivalDetail(
     }
 
     if (festivalInfo.value != null) {
+        LaunchedEffect(festivalInfo.value) {
+            detailViewModel.initSubscribeFestivalNoticeState(festivalInfo.value!!.isFollowed)
+        }
         val festivalData = festivalInfo.value
         Column(
             modifier = Modifier
@@ -166,12 +190,32 @@ fun FestivalDetail(
                         ) {
                             Spacer(modifier = Modifier.size(4.dp))
                             Row(
-                                verticalAlignment = Alignment.Top,
+                                verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.End,
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(top = 4.dp, end = 8.dp, bottom = 6.dp)
                             ) {
+                                if (subscribeState.value != null) {
+                                    IconButton(onClick = {
+                                        detailViewModel.subscribeFestivalNotice(
+                                            festivalData.festivalId
+                                        )
+                                    }) {
+                                        var notificationIcon: ImageVector =
+                                            MyIconPack.Notificationon
+                                        if (subscribeState.value!! == false) {
+                                            notificationIcon = MyIconPack.Notificationoff
+                                        }
+                                        
+                                        Icon(
+                                            painter = rememberVectorPainter(image = notificationIcon),
+                                            contentDescription = "행사 공지 알림 구독",
+                                            modifier = Modifier.size(28.dp)
+                                        )
+                                    }
+                                }
+
                                 navigateToMeetingScreen(
                                     "${festivalData.countGroups}개",
                                     navController,
@@ -306,7 +350,12 @@ fun kakaoShare(festival: OrganizedFestivalDto, context: Context) {
 
 @OptIn(ExperimentalNaverMapApi::class)
 @Composable
-fun FestivalLocation(lat: Double, lng: Double, title: String, cameraPositionState: CameraPositionState) {
+fun FestivalLocation(
+    lat: Double,
+    lng: Double,
+    title: String,
+    cameraPositionState: CameraPositionState
+) {
     val festivalLatLng = LatLng(lat, lng)
     cameraPositionState.position = CameraPosition(festivalLatLng, 13.0)
     Log.d(TAG, "FestivalLocation: festival $festivalLatLng, camera ${cameraPositionState.position}")

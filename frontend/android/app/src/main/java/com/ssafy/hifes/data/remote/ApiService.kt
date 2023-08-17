@@ -124,6 +124,8 @@ interface ApiService {
 
     @POST("fcm/for_group")
     suspend fun callGroupNotification(@Body fcmForGroupDto: FCMForGroupDto): NetworkResponse<String, ErrorResponse>
+    @GET("normal/followFes/{festivalId}")
+    suspend fun subscribeFestivalNotice(@Path("festivalId") festivalId: Int): NetworkResponse<Boolean, ErrorResponse>
 
     // Board
     @GET("post/{festivalId}/{postType}")
