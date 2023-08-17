@@ -1,6 +1,8 @@
 package hiFes.hiFes.controller.festival;
 
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import hiFes.hiFes.domain.festival.ARItem;
 import hiFes.hiFes.domain.festival.FestivalTable;
 import hiFes.hiFes.domain.festival.OrganizedFestival;
@@ -17,6 +19,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -164,17 +167,20 @@ public class OrganizedFestivalApiController {
     @Operation(summary = "특정 행사 조회", description = "특정 행사의 id를 통해 상세 정보 조회")
     @GetMapping("/festival/{festivalId}")
     @CrossOrigin("*")
-    public ResponseEntity<OrganizedFestivalDetailResponse> findOrganizedFestival(HttpServletRequest request, @PathVariable long festivalId){
-        OrganizedFestivalDetailResponse organizedFestival = organizedFestivalService.findById(festivalId);
+    public ResponseEntity<String> findOrganizedFestival(HttpServletRequest request, @PathVariable long festivalId) {
+
         String accessToken = request.getHeader("accessToken");
         String email = jwtService.extractEmail(accessToken).orElse("");
         NormalUser user = normalUserService.getByEmail(email);
 
-        Boolean isFollow =  userJoinFesRepository.existsByNormalUserAndOrganizedFestival(user, organizedFestivalRepository.getById(festivalId));
+        OrganizedFestivalResponse organizedFestival = organizedFestivalService.findById(festivalId, user);
 
-        return ResponseEntity.ok()
-                .body(organizedFestival);
+        Gson gson = new GsonBuilder().serializeNulls().create();
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Content-Type", "application/json");
+        return new ResponseEntity<>(gson.toJson(organizedFestival), headers, HttpStatus.OK);
     }
+
 
 
     //행사 리스트에서 랜덤으로 3개 뽑기
