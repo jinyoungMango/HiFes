@@ -74,7 +74,6 @@
     <string name="map_chip_safety_staff">안전 요원</string>
     <string name="map_chip_toilet">화장실</string>
     <string name="map_chip_enterance">출입구</string>
-    <string name="map_chip_stamp">스탬프</string>
 
     <!-- Group -->
     <string name="group_app_bar">제목 · 해시태그로 검색</string>
