@@ -14,5 +14,9 @@ data class OrganizedFestivalDto(
     var avgRating : Double,
     var countGroups : Int,
     var hostName : String,
-    var hostPhoneNo : String
+    var hostPhoneNo : String,
+    var isUserJoined: Boolean,
+    var groupId: Int,
+    var isFollowed: Boolean
 )
+

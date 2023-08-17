@@ -42,7 +42,7 @@ public class OrganizedFestivalDetailResponse {
         this.countGroups = countGroups;
 
         HostUser hostUser = organizedFestival.getHostUser();
-        this.hostName = hostUser.getName();
+        this.hostName = hostUser.getOrganization();
         this.hostPhoneNo = hostUser.getPhoneNo();
 
 

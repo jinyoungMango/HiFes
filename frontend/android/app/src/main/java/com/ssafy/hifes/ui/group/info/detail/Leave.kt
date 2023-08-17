@@ -3,12 +3,8 @@ package com.ssafy.hifes.ui.group.info.detail
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -31,16 +27,13 @@ fun Leave(
         horizontalArrangement = Arrangement.End,
         modifier = Modifier.clickable { onClick(isJoinedGroup) }
     ) {
-        IconButton(onClick = { /*TODO*/ }) {
-            Image(
-                imageVector = MyIconPack.Leave,
-                contentDescription = null,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(4.dp)
-            )
-        }
-
+        Image(
+            imageVector = MyIconPack.Leave,
+            contentDescription = null,
+            modifier = Modifier
+                .padding(4.dp)
+        )
+        
         Text(
             text = if (isJoinedGroup) "탈퇴하기" else "가입하기",
             color = Color(0xFF979797),

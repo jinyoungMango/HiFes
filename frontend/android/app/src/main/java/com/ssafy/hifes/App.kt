@@ -9,7 +9,7 @@ import com.ssafy.hifes.data.local.AppPreferences
 import com.ssafy.hifes.data.service.FirebaseMessageService
 import dagger.hilt.android.HiltAndroidApp
 
-private const val TAG = "App"
+private const val TAG = "App_하이패스앱"
 @HiltAndroidApp
 class App : Application() {
     lateinit var container: AppContainer
