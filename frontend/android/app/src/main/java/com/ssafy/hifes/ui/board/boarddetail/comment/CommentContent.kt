@@ -32,7 +32,6 @@ fun CommentContent(comment: CommentDto) {
             AsyncImage(
                 model = comment.profileImage, //사용자 이미지 url 필요
                 contentDescription = "게시글 이미지",
-                placeholder = rememberVectorPainter(image = MyIconPack.User),
                 modifier = Modifier
                     .size(30.dp)
                     .clip(RoundedCornerShape(4.dp)),

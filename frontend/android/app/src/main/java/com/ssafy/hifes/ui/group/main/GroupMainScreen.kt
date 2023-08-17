@@ -3,6 +3,7 @@ package com.ssafy.hifes.ui.group.main
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
@@ -68,7 +69,7 @@ fun GroupMainScreen(
             Column(
                 Modifier
                     .padding(it)
-                    .padding(horizontal = 16.dp)
+                    .padding(horizontal = 16.dp).background(color = Color.White)
             ) {
                 if (!groupList.value.isNullOrEmpty()) {
                     LazyColumn(Modifier.weight(1f)) {

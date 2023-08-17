@@ -1,9 +1,13 @@
 package com.ssafy.hifes.ui.mypage
 
+import android.content.ContentValues
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kakao.sdk.user.UserApiClient
+import com.ssafy.hifes.data.local.AppPreferences
 import com.ssafy.hifes.data.model.Event
 import com.ssafy.hifes.data.model.ParticipatedFestDto
 import com.ssafy.hifes.data.model.StampListDto
@@ -121,6 +125,17 @@ class MyPageViewModel @Inject constructor(
                 }
             }
 
+        }
+    }
+
+    fun logout() {
+        UserApiClient.instance.logout { error ->
+            if (error != null) {
+                Log.e(ContentValues.TAG, "로그아웃 실패. SDK에서 토큰 삭제됨", error)
+            } else {
+                Log.i(ContentValues.TAG, "로그아웃 성공. SDK에서 토큰 삭제됨")
+                AppPreferences.removeAccessToken()
+            }
         }
     }
 

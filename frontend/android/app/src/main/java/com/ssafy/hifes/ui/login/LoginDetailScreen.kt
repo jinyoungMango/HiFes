@@ -108,7 +108,6 @@ fun LoginDetailScreen(
             }
             Spacer(modifier = Modifier.weight(1f))
             FinishButton {
-                Toast.makeText(it, "test", Toast.LENGTH_LONG).show()
                 viewModel.signUp(context, imageUri, text)
             }
         }

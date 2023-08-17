@@ -2,7 +2,10 @@ package com.ssafy.hifes.ui.board
 
 import android.util.Log
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -68,6 +71,7 @@ fun BoardScreen(
     if (userId != null && boardType.value != null && postList.value != null) {
 
         Scaffold(
+            modifier = Modifier.background(color = Color.White),
             topBar = {
                 TopWithBack(
                     navController,
@@ -87,52 +91,59 @@ fun BoardScreen(
 
             }
         ) {
-            if (postList.value != null) {
-                Log.d(TAG, "BoardScreen: 길이 ${postList.value!!}")
-                Column(
-                    modifier = Modifier.padding(it),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    ChipsSelectable(
-                        listOf(
-                            stringResource(id = R.string.board_chip_notification),
-                            stringResource(id = R.string.board_chip_ask),
-                            stringResource(id = R.string.board_chip_free),
-                            stringResource(id = R.string.board_chip_review)
-                        ),
-                        when (boardType.value) {
-                            PostType.NOTIFICATION -> 0
-                            PostType.ASK -> 1
-                            PostType.FREE -> 2
-                            PostType.REVIEW -> 3
-                            else -> 0
-                        }
-                    ) { index ->
-                        when (index) {
-                            0 -> viewModel.initBoardType(PostType.NOTIFICATION)
-                            1 -> viewModel.initBoardType(PostType.ASK)
-                            2 -> viewModel.initBoardType(PostType.FREE)
-                            3 -> viewModel.initBoardType(PostType.REVIEW)
-                        }
-                    }
-                    Divider(color = LightGrey, thickness = 2.dp)
 
-                    LazyColumn(modifier = Modifier.padding(16.dp)) {
-                        items(postList.value!!.size) { index ->
-                            PostItem(
-                                postData = postList.value!![index],
-                                userId.toInt()
-                            ) { postData ->
-                                if (postData.createdBy == userId.toInt() || postData.isHidden == null || postData.isHidden == false) {
-                                    viewModel.getPostDetail(postData)
-                                    viewModel.initSelectedPost(postData)
-                                    navController.navigate(HifesDestinations.BOARD_DETAIL_ROUTE)
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White)) {
+                if (postList.value != null) {
+                    Log.d(TAG, "BoardScreen: 길이 ${postList.value!!}")
+                    Column(
+                        modifier = Modifier
+                            .background(color = Color.White)
+                            .padding(it),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        ChipsSelectable(
+                            listOf(
+                                stringResource(id = R.string.board_chip_notification),
+                                stringResource(id = R.string.board_chip_ask),
+                                stringResource(id = R.string.board_chip_free),
+                                stringResource(id = R.string.board_chip_review)
+                            ),
+                            when (boardType.value) {
+                                PostType.NOTIFICATION -> 0
+                                PostType.ASK -> 1
+                                PostType.FREE -> 2
+                                PostType.REVIEW -> 3
+                                else -> 0
+                            }
+                        ) { index ->
+                            when (index) {
+                                0 -> viewModel.initBoardType(PostType.NOTIFICATION)
+                                1 -> viewModel.initBoardType(PostType.ASK)
+                                2 -> viewModel.initBoardType(PostType.FREE)
+                                3 -> viewModel.initBoardType(PostType.REVIEW)
+                            }
+                        }
+                        Divider(color = LightGrey, thickness = 2.dp)
+
+                        LazyColumn(modifier = Modifier.padding(16.dp)) {
+                            items(postList.value!!.size) { index ->
+                                PostItem(
+                                    postData = postList.value!![index],
+                                    userId.toInt()
+                                ) { postData ->
+                                    if (postData.createdBy == userId.toInt() || postData.isHidden == null || postData.isHidden == false) {
+                                        viewModel.getPostDetail(postData)
+                                        viewModel.initSelectedPost(postData)
+                                        navController.navigate(HifesDestinations.BOARD_DETAIL_ROUTE)
+                                    }
                                 }
                             }
                         }
                     }
-                }
 
+                }
             }
         }
     }

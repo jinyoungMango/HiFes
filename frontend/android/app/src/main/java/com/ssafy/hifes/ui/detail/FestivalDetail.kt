@@ -10,6 +10,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -77,6 +78,7 @@ import com.ssafy.hifes.BuildConfig
 import com.ssafy.hifes.R
 import com.ssafy.hifes.data.model.OrganizedFestivalDto
 import com.ssafy.hifes.ui.HifesDestinations
+import com.ssafy.hifes.ui.group.info.detail.ImageDialog
 import com.ssafy.hifes.ui.iconpack.MyIconPack
 import com.ssafy.hifes.ui.iconpack.myiconpack.Imagenotfound
 import com.ssafy.hifes.ui.iconpack.myiconpack.Notificationoff
@@ -118,26 +120,36 @@ fun FestivalDetail(
 
     }
 
+    var showDialog by remember { mutableStateOf(false) }
+    var selectedImage: String? by remember { mutableStateOf(null) }
+
+    if (showDialog) {
+        ImageDialog(imageUrl = selectedImage) { showDialog = false }
+    }
+
     if (festivalInfo.value != null) {
         LaunchedEffect(festivalInfo.value) {
             detailViewModel.initSubscribeFestivalNoticeState(festivalInfo.value!!.isFollowed)
         }
         val festivalData = festivalInfo.value
         Column(
-            Modifier
-                .verticalScroll(rememberScrollState())
+            modifier = Modifier
+                .verticalScroll(rememberScrollState()).background(color = Color.White)
         ) {
             if (festivalData != null) {
                 detailViewModel.getTimeTableList(festivalData.festivalId)
-                Box {
+                Box(modifier = Modifier.background(color = Color.White)) {
                     AsyncImage(
                         model = festivalData.fesPosterPath,
                         contentDescription = "Poster Image",
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(300.dp),
-                        contentScale = ContentScale.Crop,
-                        placeholder = rememberVectorPainter(image = MyIconPack.Imagenotfound)
+                            .height(300.dp)
+                            .clickable {
+                                selectedImage = festivalData.fesPosterPath
+                                showDialog = true
+                            },
+                        contentScale = ContentScale.Crop
                     )
                     Row(
                         verticalAlignment = Alignment.Top,
@@ -168,13 +180,13 @@ fun FestivalDetail(
                     Surface(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .offset(y = (-12).dp),
+                            .offset(y = (-12).dp).background(color = Color.White),
                         shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
                         shadowElevation = 2.dp
                     ) {
                         Column(
                             modifier = Modifier
-                                .padding(start = 12.dp, end = 12.dp)
+                                .padding(start = 12.dp, end = 12.dp).background(color = Color.White)
                         ) {
                             Spacer(modifier = Modifier.size(4.dp))
                             Row(
@@ -232,7 +244,7 @@ fun FestivalDetail(
                         Spacer(modifier = Modifier.size(12.dp))
                         festivalTimeTable.value?.let { ScheduleDisplay(it) }
                         Spacer(modifier = Modifier.size(12.dp))
-                        DetailCommonContent(title = "장소", address = "주소")
+                        DetailCommonContent(title = "장소", address = festivalData.fesAddress)
                         Spacer(modifier = Modifier.size(12.dp))
                         FestivalLocation(
                             festivalData.fesLatitude,

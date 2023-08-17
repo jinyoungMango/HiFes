@@ -46,7 +46,7 @@ fun GroupDialog(
             Column(
                 Modifier
                     .background(Color.White)
-                    .padding(top = 20.dp, start = 20.dp, end = 20.dp)
+                    .padding(top = 20.dp, start = 20.dp, end = 20.dp).background(color = Color.White)
             ) {
                 var dialogText = stringResource(id = R.string.group_dialog_join)
                 if (isJoin) {

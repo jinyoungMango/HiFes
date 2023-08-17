@@ -54,7 +54,8 @@ fun SearchGroup() {
 
     val borderStroke = BorderStroke(1.dp, Color.Gray)
 
-    Row(verticalAlignment = Alignment.CenterVertically) {
+    Row(verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.background(color = Color.White)) {
 
         BasicTextField(
             value = text,
@@ -88,10 +89,10 @@ fun SearchAppBar(navController: NavController) {
 
     CenterAlignedTopAppBar(
         title = { Text(text = "My App") },
-        modifier = Modifier.height(60.dp),
+        modifier = Modifier.height(60.dp).background(color = Color.White),
         actions = {
             Row(
-                modifier = Modifier
+                modifier = Modifier.background(color = Color.White)
                     .weight(1f)
                     .size(60.dp),
                 verticalAlignment = Alignment.CenterVertically,

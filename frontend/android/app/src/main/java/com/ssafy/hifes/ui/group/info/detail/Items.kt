@@ -1,7 +1,10 @@
 package com.ssafy.hifes.ui.group.info.detail
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -20,6 +23,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,6 +37,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
 import com.ssafy.hifes.data.model.Member
 import com.ssafy.hifes.data.model.SharedPicDto
@@ -60,7 +67,6 @@ fun GroupMember(member: Member) {
             model = member.userProfilePic,
             contentDescription = null,
             contentScale = ContentScale.Crop,
-            placeholder = ColorPainter(Color.Green),
             modifier = Modifier
                 .size(68.dp)
                 .clip(CircleShape),
@@ -111,7 +117,6 @@ fun GroupPictureRow(img: List<SharedPicDto>) {
                     model = item.sharedPic,
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
-                    placeholder = ColorPainter(Color.Green),
                     modifier = Modifier
                         .size(80.dp)
                         .clip(RoundedCornerShape(16.dp)),
@@ -126,24 +131,53 @@ fun GroupPictureRow(img: List<SharedPicDto>) {
 @Composable
 fun GroupPictureGrid(groupViewModel: GroupViewModel) {
     val groupImages by groupViewModel.groupImages.observeAsState()
+    var showDialog by remember { mutableStateOf(false) }
+    var selectedImage: String? by remember { mutableStateOf(null) }
+
     LazyVerticalGrid(
         columns = GridCells.Fixed(3), modifier = Modifier.padding(8.dp),
     ) {
-        items(groupImages!!) { item ->
+        items(groupImages ?: emptyList()) { item ->
             AsyncImage(
                 model = item.sharedPic,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
-                placeholder = ColorPainter(Color.Green),
                 modifier = Modifier
                     .size(120.dp)
                     .padding(8.dp)
                     .clip(RoundedCornerShape(16.dp))
-
+                    .clickable {
+                        selectedImage = item.sharedPic
+                        showDialog = true
+                    }
             )
         }
     }
+
+    if (showDialog) {
+        ImageDialog(imageUrl = selectedImage) { showDialog = false }
+    }
 }
+
+@Composable
+fun ImageDialog(imageUrl: String?, onDismiss: () -> Unit) {
+    Dialog(onDismissRequest = onDismiss) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            if (imageUrl != null) {
+                AsyncImage(
+                    model = imageUrl,
+                    contentDescription = "Large Image",
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+        }
+    }
+}
+
 
 @Preview
 @Composable
