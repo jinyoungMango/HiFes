@@ -4,18 +4,24 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.ssafy.hifes.data.model.CommentDto
+import com.ssafy.hifes.ui.iconpack.MyIconPack
 import com.ssafy.hifes.ui.theme.Grey
 import com.ssafy.hifes.ui.theme.pretendardFamily
 import com.ssafy.hifes.util.CommonUtils
+import myiconpack.User
 
 @Composable
 fun CommentContent(comment: CommentDto) {
@@ -23,15 +29,16 @@ fun CommentContent(comment: CommentDto) {
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-//            AsyncImage(
-//                model = "https://picsum.photos/600", //사용자 이미지 url 필요
-//                contentDescription = "게시글 이미지",
-//                placeholder = rememberVectorPainter(image = MyIconPack.User),
-//                modifier = Modifier
-//                    .size(30.dp)
-//                    .clip(RoundedCornerShape(4.dp))
-//            )
-            //           Spacer(modifier = Modifier.size(10.dp))
+            AsyncImage(
+                model = comment.profileImage, //사용자 이미지 url 필요
+                contentDescription = "게시글 이미지",
+                placeholder = rememberVectorPainter(image = MyIconPack.User),
+                modifier = Modifier
+                    .size(30.dp)
+                    .clip(RoundedCornerShape(4.dp)),
+                error = rememberVectorPainter(image = MyIconPack.User)
+            )
+            Spacer(modifier = Modifier.size(10.dp))
             Text(
                 text = comment.writer,
                 fontFamily = pretendardFamily,

@@ -118,6 +118,7 @@ fun BoardScreen(
                             ) { postData ->
                                 if (postData.createdBy == userId.toInt() || postData.isHidden == null || postData.isHidden == false) {
                                     viewModel.getPostDetail(postData)
+                                    viewModel.initSelectedPost(postData)
                                     navController.navigate(HifesDestinations.BOARD_DETAIL_ROUTE)
                                 }
                             }

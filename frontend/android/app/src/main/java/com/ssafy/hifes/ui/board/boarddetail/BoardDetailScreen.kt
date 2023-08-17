@@ -1,5 +1,6 @@
 package com.ssafy.hifes.ui.board.boarddetail
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -12,29 +13,51 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.Divider
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.ssafy.hifes.data.local.AppPreferences
+import com.ssafy.hifes.data.model.CommentWriteDto
 import com.ssafy.hifes.ui.board.BoardViewModel
 import com.ssafy.hifes.ui.board.boardcommon.PostType
 import com.ssafy.hifes.ui.board.boarddetail.comment.CommentWriteComponent
+import com.ssafy.hifes.ui.board.write.PostWriteStateType
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun BoardDetailScreen(navController: NavController, viewModel: BoardViewModel) {
+    var context = LocalContext.current
     var userId = AppPreferences.getUserId()
-    val selectedPost = viewModel.selectedPost.observeAsState()
+    val selectedPost = viewModel.postDetail.observeAsState()
     val localDensity = LocalDensity.current
     val scrollState = rememberScrollState()
     var height by remember { mutableStateOf(0.dp) }
+    var comment by remember { mutableStateOf("") }
+    var commentWriteState = viewModel.commentWriteStateType.observeAsState()
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    LaunchedEffect(commentWriteState.value) {
+        if (commentWriteState.value == PostWriteStateType.SUCCESS) {
+            comment = ""
+            Toast.makeText(context, "댓글이 작성되었습니다.", Toast.LENGTH_LONG).show()
+            viewModel.initCommentWriteState()
+
+            if(viewModel.selectedPost != null)
+                viewModel.getPostDetail(viewModel.selectedPost!!)
+        }
+    }
 
     if (selectedPost.value != null && userId != null) {
         Scaffold(
@@ -66,7 +89,7 @@ fun BoardDetailScreen(navController: NavController, viewModel: BoardViewModel) {
                         )
 
                         item {
-                            Spacer(modifier = Modifier.size(50.dp))
+                            Spacer(modifier = Modifier.size(90.dp))
                         }
 
                     }
@@ -75,7 +98,28 @@ fun BoardDetailScreen(navController: NavController, viewModel: BoardViewModel) {
                             if (selectedPost.value!!.createdBy.toString() == userId) {
                                 Box(modifier = Modifier.align(Alignment.BottomCenter)) {
                                     CommentWriteComponent(
+                                        comment = comment,
                                         viewModel = viewModel,
+                                        onTextChanged = { comment = it },
+                                        onWriteButtonClicked = {
+                                            if (comment == "") {
+                                                Toast.makeText(
+                                                    context,
+                                                    "댓글 내용을 작성해 주세요!",
+                                                    Toast.LENGTH_LONG
+                                                ).show()
+                                            } else {
+                                                viewModel.writeComment(
+                                                    CommentWriteDto(
+                                                        selectedPost.value!!.id,
+                                                        comment,
+                                                        null,
+                                                        userId.toInt()
+                                                    )
+                                                )
+                                                keyboardController?.hide()
+                                            }
+                                        },
                                         onGloballyPositioned = { layoutCoordinates ->
                                             height = with(localDensity) {
                                                 layoutCoordinates.size.height.toDp()
@@ -89,7 +133,28 @@ fun BoardDetailScreen(navController: NavController, viewModel: BoardViewModel) {
                         PostType.REVIEW.label -> {
                             Box(modifier = Modifier.align(Alignment.BottomCenter)) {
                                 CommentWriteComponent(
+                                    comment = comment,
                                     viewModel = viewModel,
+                                    onTextChanged = { comment = it },
+                                    onWriteButtonClicked = {
+                                        if (comment == "") {
+                                            Toast.makeText(
+                                                context,
+                                                "댓글 내용을 작성해 주세요!",
+                                                Toast.LENGTH_LONG
+                                            ).show()
+                                        } else {
+                                            viewModel.writeComment(
+                                                CommentWriteDto(
+                                                    selectedPost.value!!.id,
+                                                    comment,
+                                                    null,
+                                                    userId.toInt()
+                                                )
+                                            )
+                                            keyboardController?.hide()
+                                        }
+                                    },
                                     onGloballyPositioned = { layoutCoordinates ->
                                         height = with(localDensity) {
                                             layoutCoordinates.size.height.toDp()
@@ -102,7 +167,28 @@ fun BoardDetailScreen(navController: NavController, viewModel: BoardViewModel) {
                         PostType.FREE.label -> {
                             Box(modifier = Modifier.align(Alignment.BottomCenter)) {
                                 CommentWriteComponent(
+                                    comment = comment,
                                     viewModel = viewModel,
+                                    onTextChanged = { comment = it },
+                                    onWriteButtonClicked = {
+                                        if (comment == "") {
+                                            Toast.makeText(
+                                                context,
+                                                "댓글 내용을 작성해 주세요!",
+                                                Toast.LENGTH_LONG
+                                            ).show()
+                                        } else {
+                                            viewModel.writeComment(
+                                                CommentWriteDto(
+                                                    selectedPost.value!!.id,
+                                                    comment,
+                                                    null,
+                                                    userId.toInt()
+                                                )
+                                            )
+                                            keyboardController?.hide()
+                                        }
+                                    },
                                     onGloballyPositioned = { layoutCoordinates ->
                                         height = with(localDensity) {
                                             layoutCoordinates.size.height.toDp()
