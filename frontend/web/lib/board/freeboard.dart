@@ -204,7 +204,7 @@ InkWell FreePostItem(PostDto free, MainController _mainController) {
           SizedBox(height: 10),
           Row(
             children: [
-              Text(free.title),
+              Text(free.title, style: TextStyle(fontSize: 20),),
             ],
           ),
           SizedBox(

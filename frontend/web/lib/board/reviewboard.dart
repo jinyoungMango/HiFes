@@ -203,7 +203,7 @@ InkWell ReviewPostItem(PostDto review, MainController _mainController) {
           SizedBox(height: 10),
           Row(
             children: [
-              Text(review.title),
+              Text(review.title, style: TextStyle(fontSize: 20),),
             ],
           ),
           SizedBox(

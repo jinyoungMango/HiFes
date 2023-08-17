@@ -244,7 +244,7 @@ InkWell AskPostItem(PostDto ask, MainController _mainController) {
           SizedBox(height: 10),
           Row(
             children: [
-              Text(ask.title),
+              Text(ask.title, style: TextStyle(fontSize: 20),),
             ],
           ),
           SizedBox(

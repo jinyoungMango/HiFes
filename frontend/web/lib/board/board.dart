@@ -350,7 +350,7 @@ InkWell NoticePostItem(PostDto post, MainController _mainController) {
           SizedBox(height: 10),
           Row(
             children: [
-              Text(post.title),
+              Text(post.title, style: TextStyle(fontSize: 20),),
             ],
           ),
           SizedBox(
