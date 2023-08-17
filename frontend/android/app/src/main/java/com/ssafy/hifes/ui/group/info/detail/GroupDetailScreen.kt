@@ -1,5 +1,6 @@
 package com.ssafy.hifes.ui.group.info.detail
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -69,7 +70,7 @@ fun GroupDetailScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(320.dp)
+                        .height(320.dp).background(color = Color.White)
                 ) {
                     AsyncImage(
                         model = groupDetailInfo.value!!.groupPic,

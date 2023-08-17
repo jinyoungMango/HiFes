@@ -138,7 +138,7 @@ fun FestivalDetail(
         ) {
             if (festivalData != null) {
                 detailViewModel.getTimeTableList(festivalData.festivalId)
-                Box {
+                Box(modifier = Modifier.background(color = Color.White)) {
                     AsyncImage(
                         model = festivalData.fesPosterPath,
                         contentDescription = "Poster Image",
@@ -180,13 +180,13 @@ fun FestivalDetail(
                     Surface(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .offset(y = (-12).dp),
+                            .offset(y = (-12).dp).background(color = Color.White),
                         shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
                         shadowElevation = 2.dp
                     ) {
                         Column(
                             modifier = Modifier
-                                .padding(start = 12.dp, end = 12.dp)
+                                .padding(start = 12.dp, end = 12.dp).background(color = Color.White)
                         ) {
                             Spacer(modifier = Modifier.size(4.dp))
                             Row(

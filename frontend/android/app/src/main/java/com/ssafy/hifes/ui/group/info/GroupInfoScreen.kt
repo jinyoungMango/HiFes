@@ -5,6 +5,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -102,7 +103,7 @@ fun GroupInfoScreen(
     }, floatingActionButton = {
         floatingButton?.invoke()
     }) { it ->
-        Column(modifier = Modifier.padding(it)) {
+        Column(modifier = Modifier.padding(it).background(color = Color.White)) {
             // 가입 여부에 따라 보여주기
             if (groupDetailInfo.value?.isJoinedGroup == true) {
                 GroupTab(
