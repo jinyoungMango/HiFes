@@ -294,11 +294,11 @@ class GroupViewModel @Inject constructor(
     }
 
     fun initCreateState() {
-        _uploadPictureStateType.postValue(GroupCreateStateType.LOADING)
+        _createStateType.postValue(GroupCreateStateType.LOADING)
     }
 
     fun initUploadPictureState() {
-        _createStateType.postValue(GroupCreateStateType.LOADING)
+        _uploadPictureStateType.postValue(GroupCreateStateType.LOADING)
     }
 
 
