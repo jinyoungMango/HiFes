@@ -61,7 +61,7 @@ fun GroupInfoScreen(
     }
     LaunchedEffect(uploadState) {
         groupViewModel.selectedGroup.value?.let { groupViewModel.getGroupImages(it) }
-        groupViewModel.initCreateState()
+        groupViewModel.initUploadPictureState()
     }
 
     var title = if (selectedTab == 0) stringResource(id = R.string.group_top_detail)
