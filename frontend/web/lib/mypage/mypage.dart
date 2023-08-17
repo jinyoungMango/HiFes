@@ -296,7 +296,7 @@ class _MyPageState extends State<MyPage> with SingleTickerProviderStateMixin {
                       width: 250,
                       child: Center(
                         child: Text(
-                          fesItem.fesTitle,
+                          fesItem.fesTitle, style: TextStyle(fontSize: 16),
                         ),
                       ),
                     ),
@@ -309,7 +309,7 @@ class _MyPageState extends State<MyPage> with SingleTickerProviderStateMixin {
                     ),
                     Container(
                         width: 250,
-                        child: Center(child: Text(fesItem.fesAddress))),
+                        child: Center(child: Text(fesItem.fesAddress, style: TextStyle(fontSize: 16)))),
                     SizedBox(
                       height: 30,
                       width: 2,
@@ -323,7 +323,7 @@ class _MyPageState extends State<MyPage> with SingleTickerProviderStateMixin {
                         child: Column(
                           children: [
                             Text(
-                                "${fesItem.fesStartDate.toString()}      ~      ${fesItem.fesEndDate.toString()}"),
+                                "${fesItem.fesStartDate.toString()}      ~      ${fesItem.fesEndDate.toString()}", style: TextStyle(fontSize: 16)),
                           ],
                         ),
                       ),

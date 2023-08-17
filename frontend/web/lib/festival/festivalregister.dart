@@ -30,10 +30,11 @@ class FestivalRegister extends StatefulWidget {
 }
 
 class _FestivalRegisterState extends State<FestivalRegister> {
-  final html.IFrameElement _iFrameElement = html.IFrameElement();
-
+  late html.IFrameElement _iFrameElement;
+  late Widget _iframeWidget;
   final MainController _mainController =
   Get.find<MainController>(tag: 'MainController');
+  var cnt;
 
   // 다운로드 버튼을 누를 때 호출되는 함수
   void downloadFile(FileData fileData) {
@@ -107,12 +108,14 @@ class _FestivalRegisterState extends State<FestivalRegister> {
     timetable = null;
     markers = [];
     stampMarkers = [];
+    _iFrameElement = html.IFrameElement();
     _iFrameElement.src = dotenv.env['YOUR_NAVER_MAP_URL'];
     _iFrameElement.style.border = 'none';
+    cnt = _mainController.cnt.value++;
 
 // ignore: undefined_prefixed_name
     ui.platformViewRegistry.registerViewFactory(
-      'iframeElement',
+      'iframeElement${cnt}',
       (int viewId) => _iFrameElement,
     );
 
@@ -150,12 +153,14 @@ class _FestivalRegisterState extends State<FestivalRegister> {
         print(item);
       }
     });
+
+    _iframeWidget = HtmlElementView(
+      viewType: 'iframeElement${cnt}',
+      key: UniqueKey(),
+    );
   }
 
-  final Widget _iframeWidget = HtmlElementView(
-    viewType: 'iframeElement',
-    key: UniqueKey(),
-  );
+
 
   @override
   Widget build(BuildContext context) {
@@ -456,15 +461,19 @@ class _FestivalRegisterState extends State<FestivalRegister> {
                 ),
                 TextButton(
                     onPressed: () async {
-                      _iFrameElement.contentWindow?.postMessage(
-                          "getMarkerData", "${dotenv.env['YOUR_SERVER_URL']!}");
+
+                      print('_iFrameElement.contentWindow 는 ${_iFrameElement.contentWindow}');
+                      // _iFrameElement.onLoad.listen((event) {
+                      //   // iFrame이 로드된 후에 postMessage 호출 가능
+                        _iFrameElement.contentWindow?.postMessage("getMarkerData", "${dotenv.env['YOUR_SERVER_URL']!}");
+                      // });
 
                       showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
                             title: Text('저장 완료'),
-                            content: Text('마커 정보가 저장되었습니다.'),
+                            content: Text('마커 정보가 저장되었습니다.\n\n지도 바깥을 클릭해주세요'),
                             actions: <Widget>[
                               TextButton(
                                 onPressed: () {
@@ -568,7 +577,7 @@ class _FestivalRegisterState extends State<FestivalRegister> {
                           builder: (BuildContext context) {
                             return AlertDialog(
                               title: Text("Failed"),
-                              content: Text("Failed to send festival data. Status code: ${response.statusCode}"),
+                              content: Text("이미지, 축제 양식, 주소를 확인해주세요."),
                               actions: <Widget>[
                                 TextButton(
                                   child: Text("OK"),
