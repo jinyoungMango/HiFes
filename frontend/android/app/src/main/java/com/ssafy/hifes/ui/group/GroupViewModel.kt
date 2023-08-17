@@ -23,7 +23,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import javax.inject.Inject
 
-private const val TAG = "GroupViewModel"
+private const val TAG = "GroupViewModel_하이페스"
 
 @HiltViewModel
 class GroupViewModel @Inject constructor(
@@ -43,6 +43,12 @@ class GroupViewModel @Inject constructor(
     private val _msgGroupCreate = MutableLiveData<Event<String>>()
     val errorMsgGroupCreate: LiveData<Event<String>> = _msgGroupCreate
 
+    private val _msgGroupJoin = MutableLiveData<Event<String>>()
+    val errorMsgGroupJoin: LiveData<Event<String>> = _msgGroupJoin
+
+    private val _msgGroupSignOut = MutableLiveData<Event<String>>()
+    val errorMsgGroupSignOut: LiveData<Event<String>> = _msgGroupSignOut
+
     private var _groupList: MutableLiveData<List<Group>> = MutableLiveData()
     val groupList: LiveData<List<Group>> = _groupList
 
@@ -57,6 +63,15 @@ class GroupViewModel @Inject constructor(
 
     private var _createStateType: MutableLiveData<GroupCreateStateType> = MutableLiveData()
     val createStateType: LiveData<GroupCreateStateType> = _createStateType
+
+    private var _joinGroupResponse: MutableLiveData<Boolean> = MutableLiveData()
+    val joinGroupResponse: LiveData<Boolean> = _joinGroupResponse
+
+    private var _signOutGroupResponse: MutableLiveData<String> = MutableLiveData()
+    val signOutGroupResponse: LiveData<String> = _signOutGroupResponse
+
+    private var _uploadPictureStateType: MutableLiveData<GroupCreateStateType> = MutableLiveData()
+    val uploadPictureStateType: LiveData<GroupCreateStateType> = _uploadPictureStateType
 
     fun getAllGroupList() {
         viewModelScope.launch {
@@ -137,6 +152,7 @@ class GroupViewModel @Inject constructor(
             val type = "그룹 이미지 조회에"
             when (response) {
                 is NetworkResponse.Success -> {
+                    Log.d(TAG, "getGroupImages: $groupId")
                     _groupImages.postValue(response.body)
                 }
 
@@ -195,9 +211,96 @@ class GroupViewModel @Inject constructor(
         }
     }
 
+    fun joinGroup(groupId: Int) {
+        viewModelScope.launch {
+            val response = repository.joinGroup(groupId)
+            val type = "그룹 가입에"
+            when (response) {
+                is NetworkResponse.Success -> {
+                    Log.d(TAG, "joinGroup: ${response.body}")
+                    _joinGroupResponse.postValue(response.body)
+                }
+
+                is NetworkResponse.ApiError -> {
+                    postValueEvent(0, type, _msgGroupJoin)
+                }
+
+                is NetworkResponse.NetworkError -> {
+                    postValueEvent(1, type, _msgGroupJoin)
+                }
+
+                is NetworkResponse.UnknownError -> {
+                    postValueEvent(2, type, _msgGroupJoin)
+                }
+            }
+        }
+    }
+
+    fun signOutGroup(groupId: Int) {
+        viewModelScope.launch {
+            val response = repository.signOutGroup(groupId)
+            val type = "그룹 탈퇴에"
+            when (response) {
+                is NetworkResponse.Success -> {
+                    _signOutGroupResponse.postValue(response.body)
+                }
+
+                is NetworkResponse.ApiError -> {
+                    postValueEvent(0, type, _msgGroupSignOut)
+                }
+
+                is NetworkResponse.NetworkError -> {
+                    postValueEvent(1, type, _msgGroupSignOut)
+                }
+
+                is NetworkResponse.UnknownError -> {
+                    postValueEvent(2, type, _msgGroupSignOut)
+                }
+            }
+        }
+    }
+
+    fun uploadPicture(context: Context, uri: Uri, groupId: Int) {
+        val image = MultipartUtil.getImageBody(UriUtil.toFile(context, uri))
+
+        viewModelScope.launch {
+            val response = repository.uploadPicture(image, groupId)
+            val type = "이미지 업로드에"
+            when (response) {
+                is NetworkResponse.Success -> {
+                    Log.d(TAG, "uploadPicture: success")
+                    _uploadPictureStateType.postValue(GroupCreateStateType.SUCCESS)
+                }
+
+                is NetworkResponse.ApiError -> {
+                    Log.d(TAG, "uploadPicture: fail1")
+                    postValueEvent(0, type, _msgGroupCreate)
+                    _uploadPictureStateType.postValue(GroupCreateStateType.FAIL)
+                }
+
+                is NetworkResponse.NetworkError -> {
+                    Log.d(TAG, "uploadPicture: fail2")
+                    postValueEvent(1, type, _msgGroupCreate)
+                    _uploadPictureStateType.postValue(GroupCreateStateType.FAIL)
+                }
+
+                is NetworkResponse.UnknownError -> {
+                    Log.d(TAG, "uploadPicture: fail3")
+                    postValueEvent(2, type, _msgGroupCreate)
+                    _uploadPictureStateType.postValue(GroupCreateStateType.FAIL)
+                }
+            }
+        }
+    }
+
     fun initCreateState() {
         _createStateType.postValue(GroupCreateStateType.LOADING)
     }
+
+    fun initUploadPictureState() {
+        _uploadPictureStateType.postValue(GroupCreateStateType.LOADING)
+    }
+
 
     private fun postValueEvent(
         value: Int,
