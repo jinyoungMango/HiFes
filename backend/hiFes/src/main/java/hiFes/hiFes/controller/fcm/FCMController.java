@@ -85,6 +85,9 @@ public class FCMController {
 
         for (JoinedGroup joinedGroup : joinedGroupList) {
             NormalUser normalUser = joinedGroup.getNormalUser();
+            if (normalUser == user){
+                continue;
+            }
 
 
             if (normalUser != null) {
