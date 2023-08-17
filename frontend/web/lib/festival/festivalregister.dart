@@ -128,6 +128,8 @@ class _FestivalRegisterState extends State<FestivalRegister> {
       // 마커 배열 추가
       List<dynamic> data = (event as html.MessageEvent).data ?? '-';
       for (var item in data) {
+        print(item.toString());
+
         if(item['markerType']=="stamp"){
           stampMarkers?.add(StampDto(
               missionTitle: item['markerTitle'],
@@ -136,12 +138,21 @@ class _FestivalRegisterState extends State<FestivalRegister> {
               missionLongitude: item['boothLongitude'],
               ));
         }else{
+          int bootNo = 1;
+
+          if (item['markerType'] == "sell") bootNo = 1;
+          else if (item['markerType'] == "food") bootNo = 2;
+          else if (item['markerType'] == "restaurant") bootNo = 3;
+          else if (item['markerType'] == "staff") bootNo = 4;
+          else if (item['markerType'] == "safety_staff") bootNo = 5;
+          else if (item['markerType'] == "toilet") bootNo = 6;
+          else if (item['markerType'] == "enterance") bootNo = 7;
           markers?.add(MarkerDto(
               boothName: item['markerTitle'],
               description: item['markerDescription'],
               boothLatitude: item['boothLatitude'],
               boothLongitude: item['boothLongitude'],
-              boothNo: item['markerId']));
+              boothNo: bootNo));
         }
       }
       // 마커아이템 확인
