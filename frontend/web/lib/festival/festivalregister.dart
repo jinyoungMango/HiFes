@@ -473,7 +473,7 @@ class _FestivalRegisterState extends State<FestivalRegister> {
                         builder: (BuildContext context) {
                           return AlertDialog(
                             title: Text('저장 완료'),
-                            content: Text('마커 정보가 저장되었습니다.'),
+                            content: Text('마커 정보가 저장되었습니다.\n\n지도 바깥을 클릭해주세요'),
                             actions: <Widget>[
                               TextButton(
                                 onPressed: () {
