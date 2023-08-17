@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -124,12 +125,11 @@ fun GroupPictureRow(img: List<SharedPicDto>) {
 
 @Composable
 fun GroupPictureGrid(groupViewModel: GroupViewModel) {
-    var groupImages = groupViewModel.groupImages.observeAsState()
-    val lazyGridScope = rememberLazyGridState()
-    LazyVerticalGrid(columns = GridCells.Fixed(3), modifier = Modifier.padding(8.dp),
-    state = lazyGridScope
+    val groupImages by groupViewModel.groupImages.observeAsState()
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(3), modifier = Modifier.padding(8.dp),
     ) {
-        items(groupImages.value!!) { item ->
+        items(groupImages!!) { item ->
             AsyncImage(
                 model = item.sharedPic,
                 contentDescription = null,

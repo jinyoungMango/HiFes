@@ -15,6 +15,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -29,6 +30,7 @@ import androidx.navigation.NavController
 import com.ssafy.hifes.R
 import com.ssafy.hifes.ui.common.top.TopWithBack
 import com.ssafy.hifes.ui.group.GroupViewModel
+import com.ssafy.hifes.ui.group.create.GroupCreateStateType
 import com.ssafy.hifes.ui.group.info.chat.ChatViewModel
 import com.ssafy.hifes.ui.group.info.chat.GroupChatScreen
 import com.ssafy.hifes.ui.group.info.detail.GroupDetailScreen
@@ -49,12 +51,17 @@ fun GroupInfoScreen(
     val imageErrMsg = groupViewModel.errorMsgGroupImages.observeAsState()
     val detailErrMsg = groupViewModel.errorMsgGroupDetail.observeAsState()
     val groupImages = groupViewModel.groupImages.observeAsState()
+    val uploadState by groupViewModel.uploadPictureStateType.observeAsState()
 
     imageErrMsg.value?.getContentIfNotHandled()?.let {
         Toast.makeText(context, it, Toast.LENGTH_LONG).show()
     }
     detailErrMsg.value?.getContentIfNotHandled()?.let {
         Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+    }
+    LaunchedEffect(uploadState) {
+        groupViewModel.selectedGroup.value?.let { groupViewModel.getGroupImages(it) }
+        groupViewModel.initCreateState()
     }
 
     var title = if (selectedTab == 0) stringResource(id = R.string.group_top_detail)
@@ -65,13 +72,12 @@ fun GroupInfoScreen(
     val getContent =
         rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
             if (uri != null) {
-                Log.d(TAG, "GroupInfoScreen: $uri")
                 groupViewModel.selectedGroup.value?.let { groupId ->
                     groupViewModel.uploadPicture(
                         context, uri,
                         groupId
                     )
-                    groupViewModel.getGroupImages(groupId)
+
                     Toast.makeText(context, "이미지가 업로드되었습니다.", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -117,4 +123,5 @@ fun GroupInfoScreen(
             }
         }
     }
+
 }
