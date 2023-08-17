@@ -228,12 +228,16 @@ public class PostService {
                 .collect(Collectors.toList());
 
         String writer = "";
+        String profileImage = "";
+
         for (CommentDto commentDto : topLevelCommentListDto) {
             Long topWriterId = commentDto.getCreatedBy();
             if (topWriterId > 300) {
                 NormalUser normalUser = normalUserRepository.findById(topWriterId)
                         .orElseThrow(() -> new IllegalArgumentException("!!!No Normal User Found!!!"));
                 writer = normalUser.getNickname();
+                profileImage = normalUser.getProfilePic();
+                commentDto.setProfileImage(profileImage);
             } else if (1 <= topWriterId && topWriterId <= 300) {
                 HostUser hostUser = hostUserRepository.findById(topWriterId)
                         .orElseThrow(() -> new IllegalArgumentException("!!!No Host User Found!!!"));
@@ -247,6 +251,8 @@ public class PostService {
                     NormalUser normalUser = normalUserRepository.findById(childWriterId)
                             .orElseThrow(() -> new IllegalArgumentException("!!!No Normal User Found!!!"));
                     writer = normalUser.getNickname();
+                    profileImage = normalUser.getProfilePic();
+                    childDto.setProfileImage(profileImage);
                 } else if (1 <= childWriterId && childWriterId <= 300) {
                     HostUser hostUser = hostUserRepository.findById(childWriterId)
                             .orElseThrow(() -> new IllegalArgumentException("!!!No Host User Found!!!"));
