@@ -350,7 +350,7 @@ InkWell NoticePostItem(PostDto post, MainController _mainController) {
           SizedBox(height: 10),
           Row(
             children: [
-              Text(post.title),
+              Text(post.title, style: TextStyle(fontSize: 20),),
             ],
           ),
           SizedBox(
@@ -366,7 +366,7 @@ InkWell NoticePostItem(PostDto post, MainController _mainController) {
                     SizedBox(
                       width: 10,
                     ),
-                    Text('${post.createdAt.date}      ${post.createdAt.time}', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w300),)
+                    Text('${post.createdAt.date}      ${post.createdAt.time}', style: TextStyle(color: Colors.black, fontWeight: FontWeight.w300),)
                   ],
                 ),
               ),
@@ -407,7 +407,7 @@ Container Comment(BuildContext context, CommentDto comment, String type) {
                       Text('${comment.writer}'),
                       SizedBox(width: 10),
                       Text(
-                          '${comment.createdAt.date.toString()}   ${comment.createdAt.time.toString()}', style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w300),),
+                          '${comment.createdAt.date.toString()}   ${comment.createdAt.time.toString()}', style: TextStyle(color: Colors.black, fontWeight: FontWeight.w300),),
                     ],
                   ),
                   SizedBox(height: 20),
@@ -511,7 +511,7 @@ Container Reply(BuildContext context, CommentDto reply, String type) {
                       Align(
                         alignment: Alignment.centerRight,
                         child: Text(
-                            '${reply.createdAt.date.toString()}   ${reply.createdAt.time.toString()}', style: TextStyle(color: Colors.grey)),
+                            '${reply.createdAt.date.toString()}   ${reply.createdAt.time.toString()}', style: TextStyle(color: Colors.black)),
                       )
                     ],
                   ),
