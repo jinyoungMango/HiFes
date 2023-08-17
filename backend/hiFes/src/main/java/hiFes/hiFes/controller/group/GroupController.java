@@ -66,8 +66,16 @@ public class GroupController extends BaseTimeEntity {
         String email = jwtService.extractEmail(accessToken).orElse("");
         NormalUser user = normalUserService.getByEmail(email);
         Group group = groupService.getById(groupId);
+        List<NormalUser> joinedPeople = groupService.getJoinedPeople(groupId);
+
 
         if (groupService.isJoinedFesGroup(user.getId(), group.getFestivalId())){
+            return false;
+        }
+
+
+        // 그룹 최대 인원 이상 가입 불가
+        if (group.getMaxPop() <= joinedPeople.size() + 1){
             return false;
         }
 
@@ -114,6 +122,7 @@ public class GroupController extends BaseTimeEntity {
 
 
         JsonObject groupInfo =groupService.isJoined(id, user);
+        groupInfo.addProperty("groupId", group.getId());
         groupInfo.addProperty("groupName", group.getGroupName());
         groupInfo.addProperty("groupContent", group.getContent());
         groupInfo.addProperty("groupMaxPop", group.getMaxPop());

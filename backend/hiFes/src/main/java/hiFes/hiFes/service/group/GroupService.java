@@ -90,6 +90,7 @@ public class GroupService {
     }
 
     public void groupJoin(NormalUser normalUser, Group group){
+        System.out.println(normalUser.getNickname() + group.getId() + "-----------------------------------");
         JoinedGroup joinedGroup = new JoinedGroup();
         joinedGroup.setNormalUser(normalUser);
         joinedGroup.setGroup(group);
