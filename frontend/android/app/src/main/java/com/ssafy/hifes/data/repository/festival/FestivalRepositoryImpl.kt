@@ -1,6 +1,7 @@
 package com.ssafy.hifes.data.repository.festival
 
 import com.ssafy.hifes.data.model.ErrorResponse
+import com.ssafy.hifes.data.model.FCMForGroupDto
 import com.ssafy.hifes.data.model.MarkerDto
 import com.ssafy.hifes.data.model.TimeTable
 import com.ssafy.hifes.data.remote.ApiService
@@ -16,6 +17,10 @@ class FestivalRepositoryImpl @Inject constructor(
 
     override suspend fun getFestivalTimeTable(festivalId: Int): NetworkResponse<List<TimeTable>, ErrorResponse> {
         return apiService.getFestivalTimeTable(festivalId)
+    }
+
+    override suspend fun callGroupNotification(fcmForGroupDto: FCMForGroupDto): NetworkResponse<String, ErrorResponse> {
+        return apiService.callGroupNotification(fcmForGroupDto)
     }
 
 }

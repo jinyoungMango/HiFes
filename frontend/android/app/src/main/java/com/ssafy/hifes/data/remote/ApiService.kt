@@ -2,6 +2,7 @@ package com.ssafy.hifes.data.remote
 
 import com.ssafy.hifes.data.model.CommentWriteDto
 import com.ssafy.hifes.data.model.ErrorResponse
+import com.ssafy.hifes.data.model.FCMForGroupDto
 import com.ssafy.hifes.data.model.FcmTokenDto
 import com.ssafy.hifes.data.model.Group
 import com.ssafy.hifes.data.model.GroupDetailDto
@@ -19,6 +20,7 @@ import com.ssafy.hifes.util.network.NetworkResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.POST
@@ -75,6 +77,19 @@ interface ApiService {
         @Part image: MultipartBody.Part
     ): NetworkResponse<String, ErrorResponse>
 
+    @GET("group/join/{groupId}")
+    suspend fun joinGroup(@Path("groupId") groupId: Int): NetworkResponse<Boolean, ErrorResponse>
+
+    @DELETE("group/sign-out/{groupId}")
+    suspend fun signOutGroup(@Path("groupId") groupId: Int): NetworkResponse<String, ErrorResponse>
+
+    @Multipart
+    @POST("group/picture/upload")
+    suspend fun uploadPicture(
+        @Part image: MultipartBody.Part,
+        @Query("groupId") groupId: Int
+    ): NetworkResponse<String, ErrorResponse>
+
     // Proof
     @POST("{normalUserId}/participate-festival/{festivalId}") //티켓 발급(행사 참여 인증)
     suspend fun participateFestival(
@@ -107,6 +122,9 @@ interface ApiService {
     @GET("festival/{festivalId}/festivalTables")
     suspend fun getFestivalTimeTable(@Path("festivalId") festivalId: Int): NetworkResponse<List<TimeTable>, ErrorResponse>
 
+    @POST("fcm/for_group")
+    suspend fun callGroupNotification(@Body fcmForGroupDto: FCMForGroupDto): NetworkResponse<String, ErrorResponse>
+
     // Board
     @GET("post/{festivalId}/{postType}")
     suspend fun getPostList(
@@ -131,4 +149,5 @@ interface ApiService {
 
     @GET("search-festival/")
     suspend fun searchFestivalList(@Query("keyword") keyword: String): NetworkResponse<List<OrganizedFestivalDto>, ErrorResponse>
+
 }
