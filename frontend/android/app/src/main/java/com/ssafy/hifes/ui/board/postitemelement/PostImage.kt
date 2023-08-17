@@ -42,7 +42,6 @@ fun PostImage(
         AsyncImage(
             model = imageUrl,
             contentDescription = "게시글 이미지",
-            placeholder = rememberVectorPainter(image = MyIconPack.Imagenotfound),
             modifier = Modifier
                 .size(60.dp)
                 .clip(RoundedCornerShape(16.dp)),

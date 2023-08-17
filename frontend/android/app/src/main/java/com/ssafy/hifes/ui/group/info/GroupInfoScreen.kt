@@ -35,6 +35,7 @@ import com.ssafy.hifes.ui.group.info.chat.ChatViewModel
 import com.ssafy.hifes.ui.group.info.chat.GroupChatScreen
 import com.ssafy.hifes.ui.group.info.detail.GroupDetailScreen
 import com.ssafy.hifes.ui.group.info.detail.GroupPictureGrid
+import com.ssafy.hifes.ui.mypage.MyPageViewModel
 import com.ssafy.hifes.ui.theme.PrimaryPink
 
 private const val TAG = "GroupInfoScreen_하이페스"

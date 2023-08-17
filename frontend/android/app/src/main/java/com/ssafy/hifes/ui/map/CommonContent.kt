@@ -111,8 +111,7 @@ fun MapCommonContent(festival: OrganizedFestivalDto, isViewPager: Boolean = true
             modifier = Modifier
                 .size(110.dp)
                 .clip(RoundedCornerShape(10.dp)),
-            contentScale = ContentScale.Crop,
-            placeholder = rememberVectorPainter(image = MyIconPack.Imagenotfound)
+            contentScale = ContentScale.Crop
         )
         Spacer(modifier = Modifier.size(12.dp))
         Column {

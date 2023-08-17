@@ -60,7 +60,6 @@ fun GroupMember(member: Member) {
             model = member.userProfilePic,
             contentDescription = null,
             contentScale = ContentScale.Crop,
-            placeholder = ColorPainter(Color.Green),
             modifier = Modifier
                 .size(68.dp)
                 .clip(CircleShape),
@@ -111,7 +110,6 @@ fun GroupPictureRow(img: List<SharedPicDto>) {
                     model = item.sharedPic,
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
-                    placeholder = ColorPainter(Color.Green),
                     modifier = Modifier
                         .size(80.dp)
                         .clip(RoundedCornerShape(16.dp)),
@@ -134,7 +132,6 @@ fun GroupPictureGrid(groupViewModel: GroupViewModel) {
                 model = item.sharedPic,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
-                placeholder = ColorPainter(Color.Green),
                 modifier = Modifier
                     .size(120.dp)
                     .padding(8.dp)

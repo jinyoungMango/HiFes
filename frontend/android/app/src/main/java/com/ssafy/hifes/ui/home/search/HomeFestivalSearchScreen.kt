@@ -156,7 +156,6 @@ fun SearchCard(festival: OrganizedFestivalDto, onClick: (Int) -> Unit) {
             model = festival.fesPosterPath,
             contentDescription = "Card Image",
             error = rememberVectorPainter(image = MyIconPack.Imagenotfoundmedium),
-            placeholder = rememberVectorPainter(image = MyIconPack.Imagenotfoundmedium),
             modifier = Modifier
                 .fillMaxWidth()
                 .height(250.dp)

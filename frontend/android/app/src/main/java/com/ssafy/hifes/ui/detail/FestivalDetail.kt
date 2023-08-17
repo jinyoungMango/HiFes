@@ -112,8 +112,7 @@ fun FestivalDetail(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(300.dp),
-                        contentScale = ContentScale.Crop,
-                        placeholder = rememberVectorPainter(image = MyIconPack.Imagenotfound)
+                        contentScale = ContentScale.Crop
                     )
                     Row(
                         verticalAlignment = Alignment.Top,

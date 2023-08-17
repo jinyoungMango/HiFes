@@ -75,7 +75,6 @@ fun GroupDetailScreen(
                         model = groupDetailInfo.value!!.groupPic,
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
-                        placeholder = ColorPainter(Color.Green),
                         modifier = Modifier
                             .fillMaxWidth(),
                         error = rememberVectorPainter(MyIconPack.Imagenotfoundsmall)
