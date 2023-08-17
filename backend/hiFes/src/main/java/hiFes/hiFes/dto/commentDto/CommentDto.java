@@ -22,6 +22,7 @@ public class CommentDto {
     private List<CommentDto> childComments;
 
     private String writer;
+    private String profileImage;
 
     public CommentDto(Comment comment) {
         this.id = comment.getId();

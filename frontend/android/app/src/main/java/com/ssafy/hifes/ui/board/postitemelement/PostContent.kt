@@ -9,11 +9,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.ssafy.hifes.R
-import com.ssafy.hifes.data.model.FestivalTableDto
+import com.ssafy.hifes.data.model.DateDto
+import com.ssafy.hifes.data.model.DateTime
 import com.ssafy.hifes.data.model.PostDto
+import com.ssafy.hifes.data.model.TimeDto
 import com.ssafy.hifes.ui.board.boardcommon.PostType
 import com.ssafy.hifes.ui.theme.pretendardFamily
-import java.text.SimpleDateFormat
 
 @Composable
 fun PostContent(
@@ -34,10 +35,10 @@ fun getContent(postData: PostDto, context: Context, userDataId: Int): String {
     var resultTitle = ""
     when (postData.postType) {
         PostType.ASK.label -> {
-            if (userDataId == postData.normalUserId) {
+            if (userDataId == postData.createdBy) {
                 resultTitle = postData.content
             } else {
-                if (postData.hidden != null && postData.hidden!!) {
+                if (postData.isHidden != null && postData.isHidden!!) {
                     resultTitle = context.getString(R.string.board_hidden_post_title)
                 } else {
                     resultTitle = postData.content
@@ -55,25 +56,20 @@ fun getContent(postData: PostDto, context: Context, userDataId: Int): String {
 @Composable
 @Preview
 fun PreviewPostContent() {
-    val festivalTableList = mutableListOf<FestivalTableDto>()
-    val formatter = SimpleDateFormat("yyyy.MM.dd")
-    val testDate = java.sql.Date(formatter.parse("2023.04.25").time)
     Column() {
         PostContent(
             postData = PostDto(
                 1,
                 1,
-                1,
-                1,
-                "제목",
-                "내용",
-                "notification",
-                null,
-                null,
                 "글쓴이",
-                testDate,
-                testDate,
+                "제목",
+                "notice",
                 1,
+                1,
+                DateTime(DateDto(2022,4,25), TimeDto(0,0,0, 0)),
+                "내용",
+                true,
+                null,
                 null,
                 5f
             ),
@@ -83,17 +79,15 @@ fun PreviewPostContent() {
             postData = PostDto(
                 1,
                 1,
-                1,
-                1,
-                "내가 쓴 질문, 공개",
-                "내용",
+                "글쓴이",
+                "제목",
                 "ask",
+                1,
+                1,
+                DateTime(DateDto(2022,4,25), TimeDto(0,0,0, 0)),
+                "내용",
                 false,
                 null,
-                "글쓴이",
-                testDate,
-                testDate,
-                1,
                 null,
                 5f
             ),
@@ -103,17 +97,15 @@ fun PreviewPostContent() {
             postData = PostDto(
                 1,
                 1,
-                1,
-                1,
-                "내가 쓴 질문, 비공개",
-                "내용",
+                "글쓴이",
+                "제목",
                 "ask",
+                1,
+                1,
+                DateTime(DateDto(2022,4,25), TimeDto(0,0,0, 0)),
+                "내용",
                 true,
                 null,
-                "글쓴이",
-                testDate,
-                testDate,
-                1,
                 null,
                 5f
             ),
@@ -122,18 +114,16 @@ fun PreviewPostContent() {
         PostContent(//다른사람의 질문, 비공개
             postData = PostDto(
                 1,
-                1,
-                1,
                 2,
-                "다른사람의 질문, 비공개",
-                "내용",
+                "글쓴이",
+                "제목",
                 "ask",
+                1,
+                1,
+                DateTime(DateDto(2022,4,25), TimeDto(0,0,0, 0)),
+                "내용",
                 true,
                 null,
-                "글쓴이",
-                testDate,
-                testDate,
-                1,
                 null,
                 5f
             ),
@@ -142,18 +132,16 @@ fun PreviewPostContent() {
         PostContent(//다른사람의 질문, 공개
             postData = PostDto(
                 1,
-                1,
-                1,
                 2,
-                "다른사람의 질문, 공개",
-                "내용",
+                "글쓴이",
+                "제목",
                 "ask",
+                1,
+                1,
+                DateTime(DateDto(2022,4,25), TimeDto(0,0,0, 0)),
+                "내용",
                 false,
                 null,
-                "글쓴이",
-                testDate,
-                testDate,
-                1,
                 null,
                 5f
             ),

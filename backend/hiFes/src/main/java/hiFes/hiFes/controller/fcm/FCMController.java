@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,7 +52,7 @@ public class FCMController {
             if (normalUser != null) {
                 fcmTokens.add(normalUser.getFirebaseToken());
 
-                fcmService.sendMessageTo(normalUser.getFirebaseToken(), fcmForUserDto.getTitle(), fcmForUserDto.getDetail());
+                fcmService.sendMessageTo(normalUser.getFirebaseToken(), fcmForUserDto.getTitle(), fcmForUserDto.getDetail(), "", "", "");
             }
         }
 
@@ -60,7 +61,7 @@ public class FCMController {
         return ResponseEntity.ok("send success");
     }
 
-    @Operation(summary = "그룹 집합 알림을 보냅니다.", description = "필요값 : groupId, location, description, latitude, longitude")
+    @Operation(summary = "그룹 집합 알림을 보냅니다.", description = "필요값 : groupId, description, latitude, longitude")
     @CrossOrigin(origins = "*")
     @PostMapping("fcm/for_group")
     public ResponseEntity<String> sendGroupCall(HttpServletRequest request, @RequestBody FCMForGroupDto fcmForGroupDto) throws  IOException{
@@ -69,10 +70,6 @@ public class FCMController {
         NormalUser user = normalUserService.getByEmail(email);
         Group group = groupRepository.getById(fcmForGroupDto.getGroupId());
 
-
-        if (!(joinedGroupRepository.findByNormalUserAndGroup(user, group).getIsLeader())){
-            return ResponseEntity.ok("모임장이 아닙니다.");
-        }
 
 
         List<String> fcmTokens = new ArrayList<>();
@@ -92,7 +89,7 @@ public class FCMController {
 
             if (normalUser != null) {
                 fcmTokens.add(normalUser.getFirebaseToken());
-                fcmService.sendMessageTo(normalUser.getFirebaseToken(), "모임 집합 콜 : "+ fcmForGroupDto.getLocation() + "에 모여주세요.", fcmForGroupDto.getDescription());
+                fcmService.sendMessageTo(normalUser.getFirebaseToken(), "모임 집합 알림", fcmForGroupDto.getDescription(), fcmForGroupDto.getLongitude().toString(), fcmForGroupDto.getLatitude().toString(), group.getFestivalId().toString());
             }
         }
 

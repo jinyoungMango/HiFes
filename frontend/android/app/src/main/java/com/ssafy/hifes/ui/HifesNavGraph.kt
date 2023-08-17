@@ -2,7 +2,9 @@ package com.ssafy.hifes.ui
 
 import NavigationItem
 import android.content.Intent
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,6 +31,7 @@ import com.ssafy.hifes.ui.group.info.GroupInfoScreen
 import com.ssafy.hifes.ui.group.info.chat.ChatViewModel
 import com.ssafy.hifes.ui.group.main.GroupMainScreen
 import com.ssafy.hifes.ui.home.HomeScreen
+import com.ssafy.hifes.ui.home.search.HomeFestivalSearchScreen
 import com.ssafy.hifes.ui.login.LoginDetailScreen
 import com.ssafy.hifes.ui.login.LoginScreen
 import com.ssafy.hifes.ui.login.LoginViewModel
@@ -108,7 +111,7 @@ fun HifesNavGraph(
             route = HifesDestinations.BOARD_ROUTE
         )
         {
-            BoardScreen(navController = navController, viewModel = boardViewModel)
+            BoardScreen(navController = navController, viewModel = boardViewModel, mainViewModel = mainViewModel)
         }
         composable(
             route = HifesDestinations.BOARD_DETAIL_ROUTE
@@ -132,7 +135,16 @@ fun HifesNavGraph(
         composable(
             route = HifesDestinations.GROUP_DETAIL
         ) {
-            GroupInfoScreen(navController = navController, groupViewModel = groupViewModel, chatViewModel = chatViewModel)
+            GroupInfoScreen(
+                navController = navController,
+                groupViewModel = groupViewModel,
+                chatViewModel = chatViewModel
+            )
+        }
+        composable(
+            route = HifesDestinations.HOME_SEARCH
+        ) {
+            HomeFestivalSearchScreen(navController = navController, mainViewModel)
         }
         composable(
             route = HifesDestinations.STAMP_PROOF,
