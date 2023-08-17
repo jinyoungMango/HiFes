@@ -1,10 +1,8 @@
 package com.ssafy.hifes.ui.board.write
 
-import android.app.Activity
 import android.net.Uri
 import android.util.Log
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -21,6 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -34,27 +33,22 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.gowtham.ratingbar.RatingBar
 import com.gowtham.ratingbar.StepSize
 import com.ssafy.hifes.R
-import com.ssafy.hifes.data.model.PostDto
+import com.ssafy.hifes.data.local.AppPreferences
+import com.ssafy.hifes.data.model.PostWriteDto
 import com.ssafy.hifes.ui.board.BoardViewModel
 import com.ssafy.hifes.ui.board.boardcommon.PostType
 import com.ssafy.hifes.ui.common.top.TopWithBack
-import com.ssafy.hifes.ui.detail.Image
 import com.ssafy.hifes.ui.iconpack.MyIconPack
 import com.ssafy.hifes.ui.iconpack.myiconpack.Emptystar
 import com.ssafy.hifes.ui.iconpack.myiconpack.Filledstar
-import com.ssafy.hifes.ui.iconpack.myiconpack.Imageadd
+import com.ssafy.hifes.ui.main.MainViewModel
 import com.ssafy.hifes.ui.theme.PrimaryPink
 import com.ssafy.hifes.ui.theme.pretendardFamily
-import com.ssafy.hifes.util.UriUtil
-import java.sql.Date
-import java.text.SimpleDateFormat
 
 
 private const val TAG = "PostWriteScreen"
@@ -62,8 +56,10 @@ private const val TAG = "PostWriteScreen"
 @Composable
 fun PostWriteScreen(
     navController: NavController,
-    viewModel: BoardViewModel
+    viewModel: BoardViewModel,
+    mainViewModel: MainViewModel
 ) {
+    val userId = AppPreferences.getUserId()
     val context = LocalContext.current
     val boardType = viewModel.boardType.observeAsState()
     val scrollState = rememberScrollState()
@@ -72,9 +68,19 @@ fun PostWriteScreen(
     var isHidden by remember { mutableStateOf(false) }
     var titleText by remember { mutableStateOf("") }
     var contentText by remember { mutableStateOf("") }
+    var msgPostWrite = viewModel.msgPostWrite.observeAsState()
+    var postWriteState = viewModel.postWriteStateType.observeAsState()
+    val selectedFestival = mainViewModel.selectedFestival
 
-    val formatter = SimpleDateFormat("yyyy.MM.dd")
-    val postTestDate = java.sql.Date(formatter.parse("2023.04.25").time)
+    LaunchedEffect(postWriteState.value) {
+        Log.d(TAG, "PostWriteScreen: ${postWriteState.value?.label}")
+        if (postWriteState.value == PostWriteStateType.SUCCESS) {
+            viewModel.initWriteState()
+            Toast.makeText(context, "게시글 작성 완료", Toast.LENGTH_LONG).show()
+            navController.popBackStack()
+        }
+    }
+
     Scaffold(
         topBar = {
             TopWithBack(
@@ -83,32 +89,23 @@ fun PostWriteScreen(
                 btn = true,
                 btnText = stringResource(id = R.string.board_write_finish),
                 onClick = {
-                    var imageFile = if(imageUri==null){
-                        null
-                    }else{
-                        UriUtil.toFile(context, imageUri!!)
+                    if (titleText == "" || contentText == "") {
+                        Toast.makeText(context, "제목과 내용을 채워주세요!", Toast.LENGTH_LONG).show()
+                    } else {
+                        viewModel.postWrite(
+                            context,
+                            PostWriteDto(
+                                boardType.value!!.label,
+                                titleText,
+                                contentText,
+                                userId!!.toInt(),
+                                isHidden,
+                                selectedFestival,
+                                rating
+                            ),
+                            imageUri
+                        )
                     }
-                    viewModel.postWrite(
-                        PostDto(
-                            0,
-                            0,
-                            0,
-                            1,
-                            titleText,
-                            contentText,
-                            boardType.value!!.label,
-                            isHidden,
-                            null,
-                            "",
-                            postTestDate,
-                            postTestDate,
-                            0,
-                            imageUri.toString(),
-                            rating
-                        ),
-                        imageFile
-                    )
-
                 })
         },
         content = { it ->
@@ -251,16 +248,5 @@ fun TextFieldPostContent(contentText: String, onValueChange: (String) -> Unit) {
             unfocusedIndicatorColor = Color.Transparent,
             disabledIndicatorColor = Color.Transparent,
         )
-    )
-}
-
-@Composable
-@Preview
-fun PreviewPostWriteScreen() {
-    val viewModel = BoardViewModel()
-    viewModel.getReviewPostList()
-    PostWriteScreen(
-        navController = rememberNavController(),
-        viewModel = viewModel
     )
 }

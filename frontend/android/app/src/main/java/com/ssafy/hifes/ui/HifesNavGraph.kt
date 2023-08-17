@@ -111,7 +111,7 @@ fun HifesNavGraph(
             route = HifesDestinations.BOARD_ROUTE
         )
         {
-            BoardScreen(navController = navController, viewModel = boardViewModel)
+            BoardScreen(navController = navController, viewModel = boardViewModel, mainViewModel = mainViewModel)
         }
         composable(
             route = HifesDestinations.BOARD_DETAIL_ROUTE
@@ -130,7 +130,7 @@ fun HifesNavGraph(
         composable(
             route = HifesDestinations.POST_WRITE_ROUTE
         ) {
-            PostWriteScreen(navController = navController, viewModel = boardViewModel)
+            PostWriteScreen(navController = navController, viewModel = boardViewModel, mainViewModel = mainViewModel)
         }
         composable(
             route = HifesDestinations.GROUP_DETAIL

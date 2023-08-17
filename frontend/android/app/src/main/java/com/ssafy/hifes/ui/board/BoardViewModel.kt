@@ -1,122 +1,329 @@
 package com.ssafy.hifes.ui.board
 
+import android.content.Context
 import android.net.Uri
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.google.gson.Gson
+import com.ssafy.hifes.data.model.CommentWriteDto
+import com.ssafy.hifes.data.model.Event
+import com.ssafy.hifes.data.model.PostDetailDto
 import com.ssafy.hifes.data.model.PostDto
+import com.ssafy.hifes.data.model.PostWriteDto
+import com.ssafy.hifes.data.repository.board.BoardRepository
 import com.ssafy.hifes.ui.board.boardcommon.PostType
+import com.ssafy.hifes.ui.board.write.PostWriteStateType
 import com.ssafy.hifes.util.MultipartUtil
-import okhttp3.MultipartBody
-import java.io.File
-import java.text.SimpleDateFormat
-import kotlin.math.log
+import com.ssafy.hifes.util.UriUtil
+import com.ssafy.hifes.util.network.NetworkResponse
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
+import javax.inject.Inject
 
 private const val TAG = "BoardViewModel"
-class BoardViewModel : ViewModel() {
-    val userDataId : Int = 1
-    private var _postList : MutableLiveData<MutableList<PostDto>> = MutableLiveData()
-    val postList : LiveData<MutableList<PostDto>> = _postList
 
-    private var _selectedPost : MutableLiveData<PostDto> = MutableLiveData()
-    val selectedPost : LiveData<PostDto> = _selectedPost
+@HiltViewModel
+class BoardViewModel @Inject constructor(
+    private val repository: BoardRepository
+) : ViewModel() {
+    private val gson = Gson()
 
-    var selectedPostType = "notification"
+    private val _msgPostList = MutableLiveData<Event<String>>()
+    val errorMsgPostList: LiveData<Event<String>> = _msgPostList
 
-    private var _boardType : MutableLiveData<PostType> = MutableLiveData()
-    val boardType : LiveData<PostType> = _boardType
+    private val _msgPostDetail = MutableLiveData<Event<String>>()
+    val msgPostDetail: LiveData<Event<String>> = _msgPostDetail
 
-    private var postImageFile : File? = null
+    private val _msgPostWrite = MutableLiveData<Event<String>>()
+    val msgPostWrite: LiveData<Event<String>> = _msgPostWrite
 
-    lateinit var postTestDate : java.sql.Date
+    private var _postList: MutableLiveData<List<PostDto>> = MutableLiveData()
+    val postList: LiveData<List<PostDto>> = _postList
 
-    init {
-        val formatter = SimpleDateFormat("yyyy.MM.dd")
-        postTestDate = java.sql.Date(formatter.parse("2023.04.25").time)
-        getNotificationPostList()
-    }
+    private var _postDetail: MutableLiveData<PostDetailDto> = MutableLiveData()
+    val postDetail: LiveData<PostDetailDto> = _postDetail
 
-    fun getNotificationPostList(){//추후 서버 통신 코드가 생기면 이 부분을 서버에게서 공지 게시글 리스트를 받아오는것으로 변경한다
-        var postListDummyData = mutableListOf<PostDto>()
-        postListDummyData.apply {
-            add(PostDto(1, 1, 1, 1, "공지1", "내용", "notification", null, null, "글쓴이", postTestDate, postTestDate, 1, null, null))
-            add(PostDto(1, 1, 1, 1, "공지2", "내용", "notification", null, null, "글쓴이", postTestDate, postTestDate, 1, null, null))
-            add(PostDto(1, 1, 1, 1, "공지3", "내용", "notification", null, null, "글쓴이", postTestDate, postTestDate, 1, null, null))
-            add(PostDto(1, 1, 1, 2, "공지4", "내용", "notification", null, null, "글쓴이", postTestDate, postTestDate, 1, "https://picsum.photos/600", null))
-            add(PostDto(1, 1, 1, 2, "공지5", "내용", "notification", null, null, "글쓴이", postTestDate, postTestDate, 1, null, null))
+    var selectedPost: PostDto? = null
+
+    var selectedPostType = "notice"
+
+    private var _boardType: MutableLiveData<PostType> = MutableLiveData()
+    val boardType: LiveData<PostType> = _boardType
+
+    private var _postWriteStateType: MutableLiveData<PostWriteStateType> = MutableLiveData()
+    val postWriteStateType: LiveData<PostWriteStateType> = _postWriteStateType
+
+    private var _commentWriteStateType: MutableLiveData<PostWriteStateType> = MutableLiveData()
+    val commentWriteStateType: LiveData<PostWriteStateType> = _commentWriteStateType
+
+    fun getNotificationPostList(selectedFestivalId: Int) {
+
+        viewModelScope.launch {
+            val response = repository.getPostList(selectedFestivalId, PostType.NOTIFICATION.label)
+            val type = "게시글 조회에"
+            when (response) {
+                is NetworkResponse.Success -> {
+                    _postList.postValue(response.body)
+                }
+
+                is NetworkResponse.ApiError -> {
+                    postValueEvent(0, type, _msgPostList)
+                }
+
+                is NetworkResponse.NetworkError -> {
+                    postValueEvent(1, type, _msgPostList)
+                }
+
+                is NetworkResponse.UnknownError -> {
+                    postValueEvent(2, type, _msgPostList)
+                }
+            }
         }
-        _postList.postValue(postListDummyData)
-        _boardType.postValue(PostType.NOTIFICATION)
+
     }
 
-    fun getAskPostList(){
-        var postListDummyData = mutableListOf<PostDto>()
-        postListDummyData.apply {
-            add(PostDto(1, 1, 1, 1, "내문의1 비밀글내문의1 비밀글내문의1 비밀글내문의1 비밀글내문의1 비밀글내문의1 비밀글내문의1 비밀글내문의1 비밀글내문의1 비밀글내문의1 비밀글내문의1 비밀글내문의1 비밀글내문의1 비밀글내문의1 비밀글내문의1 비밀글내문의1 비밀글내문의1 비밀글", "내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1내용1", "ask", true, null, "글쓴이", postTestDate, postTestDate, 1, "https://fastly.picsum.photos/id/296/200/200.jpg?hmac=y-H33xJ0Tpm9muoZO3ZMb5kXpNPG1mptQ9HBmpjCc8A", null))
-            add(PostDto(1, 1, 1, 1, "내문의2 공개글", "내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2내용2", "ask", false, null, "글쓴이", postTestDate, postTestDate, 1, "https://picsum.photos/1000", null))
-            add(PostDto(1, 1, 1, 2, "남의 문의1 비밀글", "내용3", "ask", true, null, "글쓴이", postTestDate, postTestDate, 1, "https://picsum.photos/600", null))
-            add(PostDto(1, 1, 1, 2, "남의 문의2 공개글", "내용4", "ask", false, null, "글쓴이", postTestDate, postTestDate, 1, "https://picsum.photos/1000", null))
+    fun getAskPostList(selectedFestivalId: Int) {
+        viewModelScope.launch {
+            val response = repository.getPostList(selectedFestivalId, PostType.ASK.label)
+            val type = "게시글 조회에"
+            when (response) {
+                is NetworkResponse.Success -> {
+                    _postList.postValue(response.body)
+                }
+
+                is NetworkResponse.ApiError -> {
+                    postValueEvent(0, type, _msgPostList)
+                }
+
+                is NetworkResponse.NetworkError -> {
+                    postValueEvent(1, type, _msgPostList)
+                }
+
+                is NetworkResponse.UnknownError -> {
+                    postValueEvent(2, type, _msgPostList)
+                }
+            }
         }
-        _postList.postValue(postListDummyData)
-        _boardType.postValue(PostType.ASK)
     }
 
-    fun getFreePostList(){
-        var postListDummyData = mutableListOf<PostDto>()
-        postListDummyData.apply {
-            add(PostDto(1, 1, 1, 1, "자유글1", "내용1", "free", null, null, "글쓴이", postTestDate, postTestDate, 1, null, null))
-            add(PostDto(1, 1, 1, 1, "자유글2", "내용2", "free", null, null, "글쓴이", postTestDate, postTestDate, 1, "https://picsum.photos/1600", null))
-            add(PostDto(1, 1, 1, 1, "자유글3", "내용3", "free", null, null, "글쓴이", postTestDate, postTestDate, 1, null, null))
-            add(PostDto(1, 1, 1, 2, "자유글4", "내용4", "free", null, null, "글쓴이", postTestDate, postTestDate, 1, "https://picsum.photos/2000", null))
-            add(PostDto(1, 1, 1, 2, "자유글5", "내용5", "free", null, null, "글쓴이", postTestDate, postTestDate, 1, null, null))
+    fun getFreePostList(selectedFestivalId: Int) {
+        viewModelScope.launch {
+            val response = repository.getPostList(selectedFestivalId, PostType.FREE.label)
+            val type = "게시글 조회에"
+            when (response) {
+                is NetworkResponse.Success -> {
+                    _postList.postValue(response.body)
+                }
+
+                is NetworkResponse.ApiError -> {
+                    postValueEvent(0, type, _msgPostList)
+                }
+
+                is NetworkResponse.NetworkError -> {
+                    postValueEvent(1, type, _msgPostList)
+                }
+
+                is NetworkResponse.UnknownError -> {
+                    postValueEvent(2, type, _msgPostList)
+                }
+            }
         }
-        _postList.postValue(postListDummyData)
-        _boardType.postValue(PostType.FREE)
     }
 
-    fun getReviewPostList(){
-        var postListDummyData = mutableListOf<PostDto>()
-        postListDummyData.apply {
-            add(PostDto(1, 1, 1, 1, "리뷰1리뷰1리뷰1리뷰1리뷰1리뷰1리뷰1리뷰1리뷰1리뷰1리뷰1리뷰1리뷰1리뷰1리뷰1리뷰1리뷰1리뷰1리뷰1리뷰1리뷰1리뷰1리뷰1리뷰1리뷰1리뷰1", "내용내용내용내용내용내용내용내용내용내용내용", "review", null, null, "글쓴이", postTestDate, postTestDate, 1, null, 0f))
-            add(PostDto(1, 1, 1, 1, "리뷰2", "내용", "review", null, null, "글쓴이", postTestDate, postTestDate, 1, "https://picsum.photos/1000", 3f))
-            add(PostDto(1, 1, 1, 1, "리뷰3", "내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용내용", "review", null, null, "글쓴이", postTestDate, postTestDate, 1, "https://fastly.picsum.photos/id/296/200/200.jpg?hmac=y-H33xJ0Tpm9muoZO3ZMb5kXpNPG1mptQ9HBmpjCc8A", 5f))
-            add(PostDto(1, 1, 1, 2, "리뷰4", "내용", "review", null, null, "글쓴이", postTestDate, postTestDate, 1, null, 3.5f))
-            add(PostDto(1, 1, 1, 2, "리뷰5", "내용", "review", null, null, "글쓴이", postTestDate, postTestDate, 1, null, 2.5f))
+    fun getReviewPostList(selectedFestivalId: Int) {
+        viewModelScope.launch {
+            val response = repository.getPostList(selectedFestivalId, PostType.REVIEW.label)
+            val type = "게시글 조회에"
+            when (response) {
+                is NetworkResponse.Success -> {
+                    _postList.postValue(response.body)
+                }
+
+                is NetworkResponse.ApiError -> {
+                    postValueEvent(0, type, _msgPostList)
+                }
+
+                is NetworkResponse.NetworkError -> {
+                    postValueEvent(1, type, _msgPostList)
+                }
+
+                is NetworkResponse.UnknownError -> {
+                    postValueEvent(2, type, _msgPostList)
+                }
+            }
         }
-        _postList.postValue(postListDummyData)
-        _boardType.postValue(PostType.REVIEW)
     }
 
-    fun getPostDetail(postData : PostDto){//추후 서버 통신 코드가 생기면 이 부분을 서버에게서 게시글 상세를 받아오는 부분으로 변경한다
-        selectedPostType = postData.postType
-        _selectedPost.postValue(postData)
+    fun initBoardType(postType: PostType) {
+        _boardType.postValue(postType)
     }
 
-    fun postWrite(postData: PostDto, imageFile : File?){
+    fun getPostDetail(postData: PostDto) {
+        viewModelScope.launch {
+            val response = repository.getPostDetail(postData.id)
+            val type = "게시글 조회에"
+            when (response) {
+                is NetworkResponse.Success -> {
+                    _postDetail.postValue(response.body)
+                    selectedPostType = postData.postType
+                }
+
+                is NetworkResponse.ApiError -> {
+                    postValueEvent(0, type, _msgPostDetail)
+                }
+
+                is NetworkResponse.NetworkError -> {
+                    postValueEvent(1, type, _msgPostDetail)
+                }
+
+                is NetworkResponse.UnknownError -> {
+                    postValueEvent(2, type, _msgPostDetail)
+                }
+            }
+        }
+    }
+
+    fun initSelectedPost(postData: PostDto) {
+        selectedPost = postData
+    }
+
+    fun postWrite(context: Context, postData: PostWriteDto, uri: Uri?) {
         Log.d(TAG, "postWrite: 타입 ${boardType}")
         Log.d(TAG, "postWrite: 작성할 데이터 ${postData}")
-        if(imageFile != null){
+        when (postData.postType) {
+            PostType.ASK.label -> {
+                postData.rating = null
+            }
+
+            PostType.FREE.label -> {
+                postData.rating = null
+                postData.isHidden = false
+            }
+
+            PostType.REVIEW.label -> {
+                postData.isHidden = false
+            }
+        }
+        if (uri != null) {
             //보낼 이미지 있는 경우의 통신
-            val files: MutableList<MultipartBody.Part> = mutableListOf()
-            files.add(MultipartUtil.getImageBody(imageFile))
-        }else{
+            val file = UriUtil.toFile(context, uri!!)
+            val pic = MultipartUtil.getImageBody(file)
+
+            viewModelScope.launch {
+                val requestBody =
+                    gson.toJson(postData).toRequestBody("application/json".toMediaTypeOrNull())
+                val response = repository.writePost(requestBody, pic)
+                val type = "게시글 작성에"
+                when (response) {
+                    is NetworkResponse.Success -> {
+                        _postWriteStateType.postValue(PostWriteStateType.SUCCESS)
+                    }
+
+                    is NetworkResponse.ApiError -> {
+                        postValueEvent(0, type, _msgPostWrite)
+                        _postWriteStateType.postValue(PostWriteStateType.FAIL)
+                    }
+
+                    is NetworkResponse.NetworkError -> {
+                        postValueEvent(1, type, _msgPostWrite)
+                        _postWriteStateType.postValue(PostWriteStateType.FAIL)
+                    }
+
+                    is NetworkResponse.UnknownError -> {
+                        postValueEvent(2, type, _msgPostWrite)
+                        _postWriteStateType.postValue(PostWriteStateType.FAIL)
+                    }
+                }
+            }
+        } else {
             //없는 경우의 통신
+            viewModelScope.launch {
+                val requestBody =
+                    gson.toJson(postData).toRequestBody("application/json".toMediaTypeOrNull())
+                val response = repository.writePost(requestBody, null)
+                val type = "게시글 작성에"
+                when (response) {
+                    is NetworkResponse.Success -> {
+                        _postWriteStateType.postValue(PostWriteStateType.SUCCESS)
+                    }
+
+                    is NetworkResponse.ApiError -> {
+                        _postWriteStateType.postValue(PostWriteStateType.FAIL)
+                    }
+
+                    is NetworkResponse.NetworkError -> {
+                        _postWriteStateType.postValue(PostWriteStateType.FAIL)
+                    }
+
+                    is NetworkResponse.UnknownError -> {
+                        _postWriteStateType.postValue(PostWriteStateType.FAIL)
+                    }
+                }
+            }
         }
     }
-    
-    fun postDelete(){
-        Log.d(TAG, "postDelete: 삭제 ${selectedPost.value}")
-    }
-    
-    fun postModify(){
-        Log.d(TAG, "postModify: 수정 ${selectedPost.value}")
+
+    fun initWriteState() {
+        _postWriteStateType.postValue(PostWriteStateType.LOADING)
     }
 
-    fun writeReComment(){
-
+    fun initCommentWriteState() {
+        _commentWriteStateType.postValue(PostWriteStateType.LOADING)
     }
 
+    fun postDelete() {
+        Log.d(TAG, "postDelete: 삭제 ${postDetail.value}")
+    }
+
+    fun postModify() {
+        Log.d(TAG, "postModify: 수정 ${postDetail.value}")
+    }
+
+    fun writeComment(commentWriteDto: CommentWriteDto) {
+        viewModelScope.launch {
+            val response = repository.writeComment(commentWriteDto)
+            val type = "댓글 작성에"
+            when (response) {
+                is NetworkResponse.Success -> {
+                    _commentWriteStateType.postValue(PostWriteStateType.SUCCESS)
+                }
+
+                is NetworkResponse.ApiError -> {
+                    _commentWriteStateType.postValue(PostWriteStateType.FAIL)
+                }
+
+                is NetworkResponse.NetworkError -> {
+                    _commentWriteStateType.postValue(PostWriteStateType.FAIL)
+                }
+
+                is NetworkResponse.UnknownError -> {
+                    _commentWriteStateType.postValue(PostWriteStateType.FAIL)
+                }
+            }
+        }
+    }
+
+    private fun postValueEvent(
+        value: Int,
+        type: String,
+        mutableLiveData: MutableLiveData<Event<String>>
+    ) {
+        val msgArrayList = arrayOf(
+            "Api 오류 : $type 실패했습니다.",
+            "서버 오류 : $type 실패했습니다.",
+            "알 수 없는 오류 : $type 실패했습니다."
+        )
+
+        when (value) {
+            0 -> mutableLiveData.postValue(Event(msgArrayList[0]))
+            1 -> mutableLiveData.postValue(Event(msgArrayList[1]))
+            2 -> mutableLiveData.postValue(Event(msgArrayList[2]))
+        }
+    }
 
 }

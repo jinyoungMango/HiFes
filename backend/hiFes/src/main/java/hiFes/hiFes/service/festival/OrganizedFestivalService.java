@@ -4,11 +4,15 @@ package hiFes.hiFes.service.festival;
 
 import hiFes.hiFes.ExcelUtils;
 import hiFes.hiFes.domain.festival.*;
+import hiFes.hiFes.domain.group.Group;
 import hiFes.hiFes.domain.user.HostUser;
+import hiFes.hiFes.domain.user.NormalUser;
 import hiFes.hiFes.dto.festival.*;
 import hiFes.hiFes.repository.festival.*;
 import hiFes.hiFes.repository.group.GroupRepository;
+import hiFes.hiFes.repository.group.JoinedGroupRepository;
 import hiFes.hiFes.repository.user.HostUserRepository;
+import hiFes.hiFes.repository.user.UserJoinFesRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
@@ -34,6 +38,8 @@ public class OrganizedFestivalService {
     private final StampMissionRepository stampMissionRepository;
     private final HostUserRepository hostUserRepository;
     private final GroupRepository groupRepository;
+    private final JoinedGroupRepository joinedGroupRepository;
+    private final UserJoinFesRepository userJoinFesRepository;
 
 
 
@@ -43,7 +49,9 @@ public class OrganizedFestivalService {
                                     MarkerRepository markerRepository,
                                     StampMissionRepository stampMissionRepository,
                                     HostUserRepository hostUserRepository,
-                                    GroupRepository groupRepository
+                                    GroupRepository groupRepository,
+                                    JoinedGroupRepository joinedGroupRepository,
+                                    UserJoinFesRepository userJoinFesRepository
                                     ){
         this.arItemRepository =arItemRepository;
         this.markerRepository = markerRepository;
@@ -52,6 +60,8 @@ public class OrganizedFestivalService {
         this.organizedFestivalRepository =organizedFestivalRepository;
         this.hostUserRepository = hostUserRepository;
         this.groupRepository =groupRepository;
+        this.joinedGroupRepository = joinedGroupRepository;
+        this.userJoinFesRepository = userJoinFesRepository;
     }
 
 
@@ -151,16 +161,22 @@ public class OrganizedFestivalService {
     }
 
     // 행사 상세 조회
-    public OrganizedFestivalDetailResponse findById(long id){
+    public OrganizedFestivalResponse findById(long id, NormalUser normalUser){
         OrganizedFestival organizedFestival = organizedFestivalRepository.findById(id)
                 .orElseThrow(()->new IllegalArgumentException("not found festival: "+ id));
+        //가입 했는지 여부
+        Long joinedGroupId = getJoinedGroupId(id, normalUser);
+        boolean isUserJoined = joinedGroupId != null;
+        //행사 공지 알람 받는지 여부
+        boolean isFollow =  userJoinFesRepository.existsByNormalUserAndOrganizedFestival(normalUser, organizedFestivalRepository.getById(id));
+
         Float avgRating = organizedFestivalRepository.getAverageRatingByOrganizedFestival(id);
         if(avgRating == null){
             avgRating = 0f;
         }
         Integer countGroups = groupRepository.findByFestivalId(id).size();
 
-        return new OrganizedFestivalDetailResponse(organizedFestival,avgRating, countGroups);
+        return new OrganizedFestivalResponse(organizedFestival,avgRating, countGroups,isFollow, isUserJoined, joinedGroupId);
     }
     //랜덤
     public List<OrganizedFestivalDetailResponse> findRandomOrganizedFestival(){
@@ -381,6 +397,23 @@ public class OrganizedFestivalService {
 
     public void deleteStampMission(long id){
         stampMissionRepository.deleteById(id);
+    }
+
+
+
+    // 행사 관련 모임에 가입했는지 여부와 그 id
+    public Long getJoinedGroupId(long id, NormalUser normalUser) {
+        if (normalUser == null) {
+            return null;
+        }
+        List<Group> relatedGroups = groupRepository.findByFestivalId(id);
+
+        for (Group group : relatedGroups) {
+            if (joinedGroupRepository.existsByNormalUserAndGroup(normalUser, group)) {
+                return group.getId();
+            }
+        }
+        return null;
     }
 
 

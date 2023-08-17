@@ -1,5 +1,7 @@
 package com.ssafy.hifes.di.module
 
+import com.ssafy.hifes.data.repository.board.BoardRepository
+import com.ssafy.hifes.data.repository.board.BoardRepositoryImpl
 import com.ssafy.hifes.data.repository.festival.FestivalRepository
 import com.ssafy.hifes.data.repository.festival.FestivalRepositoryImpl
 import com.ssafy.hifes.data.repository.group.GroupRepository
@@ -49,4 +51,9 @@ abstract class RepositoryModule {
     abstract fun bindsMyPageRepository(
         repositoryImpl: MyPageRepositoryImpl
     ): MyPageRepository
+
+    @Binds
+    abstract fun bindsBoardRepository(
+        repositoryImpl: BoardRepositoryImpl
+    ): BoardRepository
 }

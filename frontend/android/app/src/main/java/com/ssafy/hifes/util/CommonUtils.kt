@@ -1,6 +1,9 @@
 package com.ssafy.hifes.util
 
 import com.ssafy.hifes.data.model.DateDto
+import com.ssafy.hifes.data.model.DateTime
+import com.ssafy.hifes.data.model.TimeDto
+import java.sql.Time
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -18,6 +21,14 @@ object CommonUtils {
 
     fun formatFestivalDateToString(festivalDate: DateDto): String {
         return "${festivalDate.year}. ${festivalDate.month}. ${festivalDate.day}"
+    }
+
+    fun formatTimeToString(time: TimeDto): String {
+        return "${time.hour}:${time.minute}"
+    }
+
+    fun formatDateTimeToString(dateTime: DateTime): String {
+        return "${formatFestivalDateToString(dateTime.date)}  ${formatTimeToString(dateTime.time)}"
     }
 
     fun formatLongToTime(time: Long): String {

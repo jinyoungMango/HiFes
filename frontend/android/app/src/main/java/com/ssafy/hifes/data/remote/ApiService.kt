@@ -1,5 +1,6 @@
 package com.ssafy.hifes.data.remote
 
+import com.ssafy.hifes.data.model.CommentWriteDto
 import com.ssafy.hifes.data.model.ErrorResponse
 import com.ssafy.hifes.data.model.FCMForGroupDto
 import com.ssafy.hifes.data.model.FcmTokenDto
@@ -9,6 +10,8 @@ import com.ssafy.hifes.data.model.LoginResponse
 import com.ssafy.hifes.data.model.MarkerDto
 import com.ssafy.hifes.data.model.OrganizedFestivalDto
 import com.ssafy.hifes.data.model.ParticipatedFestDto
+import com.ssafy.hifes.data.model.PostDetailDto
+import com.ssafy.hifes.data.model.PostDto
 import com.ssafy.hifes.data.model.SharedPicDto
 import com.ssafy.hifes.data.model.StampListDto
 import com.ssafy.hifes.data.model.TimeTable
@@ -117,6 +120,28 @@ interface ApiService {
 
     @POST("fcm/for_group")
     suspend fun callGroupNotification(@Body fcmForGroupDto: FCMForGroupDto): NetworkResponse<String, ErrorResponse>
+
+    // Board
+    @GET("post/{festivalId}/{postType}")
+    suspend fun getPostList(
+        @Path("festivalId") festivalId: Int,
+        @Path("postType") postType: String
+    ): NetworkResponse<List<PostDto>, ErrorResponse>
+
+    @GET("post/get/{id}")
+    suspend fun getPostDetail(
+        @Path("id") id: Int
+    ): NetworkResponse<PostDetailDto, ErrorResponse>
+
+    @Multipart
+    @POST("post/create")
+    suspend fun writePost(
+        @Part("data") data: RequestBody,
+        @Part image: MultipartBody.Part?
+    ): NetworkResponse<String, ErrorResponse>
+
+    @POST("comment/create")
+    suspend fun writeComment(@Body commentWriteDto: CommentWriteDto): NetworkResponse<CommentWriteDto, ErrorResponse>
 
     @GET("search-festival/")
     suspend fun searchFestivalList(@Query("keyword") keyword: String): NetworkResponse<List<OrganizedFestivalDto>, ErrorResponse>
