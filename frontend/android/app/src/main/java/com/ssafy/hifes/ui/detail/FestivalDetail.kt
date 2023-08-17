@@ -244,7 +244,7 @@ fun FestivalDetail(
                         Spacer(modifier = Modifier.size(12.dp))
                         festivalTimeTable.value?.let { ScheduleDisplay(it) }
                         Spacer(modifier = Modifier.size(12.dp))
-                        DetailCommonContent(title = "장소", address = "주소")
+                        DetailCommonContent(title = "장소", address = festivalData.fesAddress)
                         Spacer(modifier = Modifier.size(12.dp))
                         FestivalLocation(
                             festivalData.fesLatitude,
