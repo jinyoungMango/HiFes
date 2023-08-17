@@ -1,21 +1,28 @@
 package com.ssafy.hifes.ui.board
 
+import android.content.Context
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.gson.Gson
+import com.ssafy.hifes.data.model.CommentWriteDto
 import com.ssafy.hifes.data.model.Event
 import com.ssafy.hifes.data.model.PostDetailDto
 import com.ssafy.hifes.data.model.PostDto
+import com.ssafy.hifes.data.model.PostWriteDto
 import com.ssafy.hifes.data.repository.board.BoardRepository
 import com.ssafy.hifes.ui.board.boardcommon.PostType
+import com.ssafy.hifes.ui.board.write.PostWriteStateType
 import com.ssafy.hifes.util.MultipartUtil
+import com.ssafy.hifes.util.UriUtil
 import com.ssafy.hifes.util.network.NetworkResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import okhttp3.MultipartBody
-import java.io.File
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
 import javax.inject.Inject
 
 private const val TAG = "BoardViewModel"
@@ -24,22 +31,35 @@ private const val TAG = "BoardViewModel"
 class BoardViewModel @Inject constructor(
     private val repository: BoardRepository
 ) : ViewModel() {
+    private val gson = Gson()
+
     private val _msgPostList = MutableLiveData<Event<String>>()
     val errorMsgPostList: LiveData<Event<String>> = _msgPostList
 
     private val _msgPostDetail = MutableLiveData<Event<String>>()
     val msgPostDetail: LiveData<Event<String>> = _msgPostDetail
 
+    private val _msgPostWrite = MutableLiveData<Event<String>>()
+    val msgPostWrite: LiveData<Event<String>> = _msgPostWrite
+
     private var _postList: MutableLiveData<List<PostDto>> = MutableLiveData()
     val postList: LiveData<List<PostDto>> = _postList
 
-    private var _selectedPost: MutableLiveData<PostDetailDto> = MutableLiveData()
-    val selectedPost: LiveData<PostDetailDto> = _selectedPost
+    private var _postDetail: MutableLiveData<PostDetailDto> = MutableLiveData()
+    val postDetail: LiveData<PostDetailDto> = _postDetail
+
+    var selectedPost: PostDto? = null
 
     var selectedPostType = "notice"
 
     private var _boardType: MutableLiveData<PostType> = MutableLiveData()
     val boardType: LiveData<PostType> = _boardType
+
+    private var _postWriteStateType: MutableLiveData<PostWriteStateType> = MutableLiveData()
+    val postWriteStateType: LiveData<PostWriteStateType> = _postWriteStateType
+
+    private var _commentWriteStateType: MutableLiveData<PostWriteStateType> = MutableLiveData()
+    val commentWriteStateType: LiveData<PostWriteStateType> = _commentWriteStateType
 
     fun getNotificationPostList(selectedFestivalId: Int) {
 
@@ -149,7 +169,7 @@ class BoardViewModel @Inject constructor(
             val type = "게시글 조회에"
             when (response) {
                 is NetworkResponse.Success -> {
-                    _selectedPost.postValue(response.body)
+                    _postDetail.postValue(response.body)
                     selectedPostType = postData.postType
                 }
 
@@ -168,28 +188,124 @@ class BoardViewModel @Inject constructor(
         }
     }
 
-    fun postWrite(postData: PostDto, imageFile: File?) {
+    fun initSelectedPost(postData: PostDto) {
+        selectedPost = postData
+    }
+
+    fun postWrite(context: Context, postData: PostWriteDto, uri: Uri?) {
         Log.d(TAG, "postWrite: 타입 ${boardType}")
         Log.d(TAG, "postWrite: 작성할 데이터 ${postData}")
-        if (imageFile != null) {
+        when (postData.postType) {
+            PostType.ASK.label -> {
+                postData.rating = null
+            }
+
+            PostType.FREE.label -> {
+                postData.rating = null
+                postData.isHidden = false
+            }
+
+            PostType.REVIEW.label -> {
+                postData.isHidden = false
+            }
+        }
+        if (uri != null) {
             //보낼 이미지 있는 경우의 통신
-            val files: MutableList<MultipartBody.Part> = mutableListOf()
-            files.add(MultipartUtil.getImageBody(imageFile))
+            val file = UriUtil.toFile(context, uri!!)
+            val pic = MultipartUtil.getImageBody(file)
+
+            viewModelScope.launch {
+                val requestBody =
+                    gson.toJson(postData).toRequestBody("application/json".toMediaTypeOrNull())
+                val response = repository.writePost(requestBody, pic)
+                val type = "게시글 작성에"
+                when (response) {
+                    is NetworkResponse.Success -> {
+                        _postWriteStateType.postValue(PostWriteStateType.SUCCESS)
+                    }
+
+                    is NetworkResponse.ApiError -> {
+                        postValueEvent(0, type, _msgPostWrite)
+                        _postWriteStateType.postValue(PostWriteStateType.FAIL)
+                    }
+
+                    is NetworkResponse.NetworkError -> {
+                        postValueEvent(1, type, _msgPostWrite)
+                        _postWriteStateType.postValue(PostWriteStateType.FAIL)
+                    }
+
+                    is NetworkResponse.UnknownError -> {
+                        postValueEvent(2, type, _msgPostWrite)
+                        _postWriteStateType.postValue(PostWriteStateType.FAIL)
+                    }
+                }
+            }
         } else {
             //없는 경우의 통신
+            viewModelScope.launch {
+                val requestBody =
+                    gson.toJson(postData).toRequestBody("application/json".toMediaTypeOrNull())
+                val response = repository.writePost(requestBody, null)
+                val type = "게시글 작성에"
+                when (response) {
+                    is NetworkResponse.Success -> {
+                        _postWriteStateType.postValue(PostWriteStateType.SUCCESS)
+                    }
+
+                    is NetworkResponse.ApiError -> {
+                        _postWriteStateType.postValue(PostWriteStateType.FAIL)
+                    }
+
+                    is NetworkResponse.NetworkError -> {
+                        _postWriteStateType.postValue(PostWriteStateType.FAIL)
+                    }
+
+                    is NetworkResponse.UnknownError -> {
+                        _postWriteStateType.postValue(PostWriteStateType.FAIL)
+                    }
+                }
+            }
         }
     }
 
+    fun initWriteState() {
+        _postWriteStateType.postValue(PostWriteStateType.LOADING)
+    }
+
+    fun initCommentWriteState() {
+        _commentWriteStateType.postValue(PostWriteStateType.LOADING)
+    }
+
     fun postDelete() {
-        Log.d(TAG, "postDelete: 삭제 ${selectedPost.value}")
+        Log.d(TAG, "postDelete: 삭제 ${postDetail.value}")
     }
 
     fun postModify() {
-        Log.d(TAG, "postModify: 수정 ${selectedPost.value}")
+        Log.d(TAG, "postModify: 수정 ${postDetail.value}")
     }
 
-    fun writeReComment() {
+    fun writeComment(commentWriteDto: CommentWriteDto) {
+        viewModelScope.launch {
+            val response = repository.writeComment(commentWriteDto)
+            val type = "댓글 작성에"
+            when (response) {
+                is NetworkResponse.Success -> {
+                    _commentWriteStateType.postValue(PostWriteStateType.SUCCESS)
+                }
 
+                is NetworkResponse.ApiError -> {
+                    _commentWriteStateType.postValue(PostWriteStateType.FAIL)
+                }
+
+                is NetworkResponse.NetworkError -> {
+                    _commentWriteStateType.postValue(PostWriteStateType.FAIL)
+                }
+
+                is NetworkResponse.UnknownError -> {
+                    _commentWriteStateType.postValue(PostWriteStateType.FAIL)
+                }
+            }
+        }
     }
 
     private fun postValueEvent(

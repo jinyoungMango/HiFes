@@ -10,4 +10,12 @@ data class CommentDto(
     var postId: Int?,
     var childComments: List<CommentDto>,
     var writer: String,
+    var profileImage: String
+)
+
+data class CommentWriteDto(
+    var postId: Int,
+    var content: String,
+    var parentId: Int?,
+    var createdBy: Int
 )

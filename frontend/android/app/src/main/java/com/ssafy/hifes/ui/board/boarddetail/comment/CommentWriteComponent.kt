@@ -1,7 +1,6 @@
 package com.ssafy.hifes.ui.board.boarddetail.comment
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,17 +15,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -42,32 +35,38 @@ import com.ssafy.hifes.ui.theme.pretendardFamily
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommentWriteComponent(
+    comment: String,
     viewModel: BoardViewModel,
-    onGloballyPositioned:(LayoutCoordinates) -> Unit,
+    onTextChanged: (String) -> Unit,
+    onWriteButtonClicked: () -> Unit,
+    onGloballyPositioned: (LayoutCoordinates) -> Unit,
 ) {
-    var text by remember { mutableStateOf("") }
+
     Surface {
-        Column (
+        Column(
             modifier = Modifier
                 .background(color = Color.White)
                 .onGloballyPositioned(onGloballyPositioned)
                 .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
-        ){
+        ) {
             Spacer(modifier = Modifier.size(6.dp))
-            Row (verticalAlignment = Alignment.CenterVertically){
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Spacer(modifier = Modifier.size(18.dp))
                 OutlinedTextField(
-                    value = text,
-                    onValueChange = { text = it },
+                    value = comment,
+                    onValueChange = { onTextChanged(it) },
                     colors = TextFieldDefaults.outlinedTextFieldColors(focusedBorderColor = PrimaryPink),
                     placeholder = { Text(text = stringResource(id = R.string.board_detail_write_comment_hint)) },
                     shape = RoundedCornerShape(14.dp),
                     modifier = Modifier.weight(1f),
-                    textStyle = TextStyle(fontFamily = pretendardFamily, fontWeight = FontWeight.Normal)
+                    textStyle = TextStyle(
+                        fontFamily = pretendardFamily,
+                        fontWeight = FontWeight.Normal
+                    )
                 )
                 Spacer(modifier = Modifier.size(10.dp))
-                IconButton(onClick = {}) {
+                IconButton(onClick = { onWriteButtonClicked() }) {
                     Icon(
                         imageVector = MyIconPack.Writecomment,
                         contentDescription = "댓글 쓰기",
@@ -88,5 +87,5 @@ fun CommentWriteComponent(
 @Composable
 @Preview
 fun PreviewCommentWriteComponent() {
-  //  CommentWriteComponent(viewModel = BoardViewModel())
+    //  CommentWriteComponent(viewModel = BoardViewModel())
 }
