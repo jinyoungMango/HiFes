@@ -38,6 +38,9 @@ class DetailViewModel @Inject constructor(
     private var _callGroupResponse: MutableLiveData<String> = MutableLiveData()
     val callGroupResponse: LiveData<String> = _callGroupResponse
 
+    private var _festivalNoticeSubscribeState: MutableLiveData<Boolean> = MutableLiveData()
+    val festivalNoticeSubscribeState: LiveData<Boolean> = _festivalNoticeSubscribeState
+
     fun getMarkerList(festivalId: Int) {
         viewModelScope.launch {
             val response = repository.getMarkerList(festivalId)
@@ -116,6 +119,34 @@ class DetailViewModel @Inject constructor(
     // 축제 맵에서 사용하는 마커 리스트
     fun updateSelectedBoothChip(index: Int) {
         _selectedBoothChip.postValue(index)
+    }
+
+    fun initSubscribeFestivalNoticeState(subscribeState: Boolean){
+        _festivalNoticeSubscribeState.postValue(subscribeState)
+    }
+
+    fun subscribeFestivalNotice(festivalId: Int){
+        viewModelScope.launch {
+            val response = repository.subscribeFestivalNotice(festivalId)
+            val type = "행사 알림 구독에"
+            when (response) {
+                is NetworkResponse.Success -> {
+                    _festivalNoticeSubscribeState.postValue(response.body)
+                }
+
+                is NetworkResponse.ApiError -> {
+                    postValueEvent(0, type)
+                }
+
+                is NetworkResponse.NetworkError -> {
+                    postValueEvent(1, type)
+                }
+
+                is NetworkResponse.UnknownError -> {
+                    postValueEvent(2, type)
+                }
+            }
+        }
     }
 
     private fun postValueEvent(value: Int, type: String) {

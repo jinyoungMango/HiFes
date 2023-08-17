@@ -31,6 +31,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -41,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -76,6 +78,7 @@ import com.ssafy.hifes.data.model.OrganizedFestivalDto
 import com.ssafy.hifes.ui.HifesDestinations
 import com.ssafy.hifes.ui.iconpack.MyIconPack
 import com.ssafy.hifes.ui.iconpack.myiconpack.Imagenotfound
+import com.ssafy.hifes.ui.iconpack.myiconpack.Notificationoff
 import com.ssafy.hifes.ui.iconpack.myiconpack.Notificationon
 import com.ssafy.hifes.ui.main.MainViewModel
 import com.ssafy.hifes.ui.map.StarScore
@@ -96,8 +99,12 @@ fun FestivalDetail(
     val festivalTimeTable = detailViewModel.timeTableList.observeAsState()
     val context = LocalContext.current
     val cameraPositionState: CameraPositionState = rememberCameraPositionState {}
+    val subscribeState = detailViewModel.festivalNoticeSubscribeState.observeAsState()
 
     if (festivalInfo.value != null) {
+        LaunchedEffect(Unit) {
+            detailViewModel.initSubscribeFestivalNoticeState(festivalInfo.value!!.isFollowed)
+        }
         val festivalData = festivalInfo.value
         Column(
             Modifier
@@ -160,13 +167,26 @@ fun FestivalDetail(
                                     .fillMaxWidth()
                                     .padding(top = 4.dp, end = 8.dp, bottom = 6.dp)
                             ) {
-                                IconButton(onClick = { }) {
-                                    Icon(
-                                        painter = rememberVectorPainter(image = MyIconPack.Notificationon),
-                                        contentDescription = "행사 공지 알림 구독",
-                                        modifier = Modifier.size(30.dp)
-                                    )
+                                if (subscribeState.value != null) {
+                                    IconButton(onClick = {
+                                        detailViewModel.subscribeFestivalNotice(
+                                            festivalData.festivalId
+                                        )
+                                    }) {
+                                        var notificationIcon: ImageVector =
+                                            MyIconPack.Notificationon
+                                        if (subscribeState.value!! == false) {
+                                            notificationIcon = MyIconPack.Notificationoff
+                                        }
+                                        
+                                        Icon(
+                                            painter = rememberVectorPainter(image = notificationIcon),
+                                            contentDescription = "행사 공지 알림 구독",
+                                            modifier = Modifier.size(28.dp)
+                                        )
+                                    }
                                 }
+
                                 navigateToMeetingScreen(
                                     "${festivalData.countGroups}개",
                                     navController,
