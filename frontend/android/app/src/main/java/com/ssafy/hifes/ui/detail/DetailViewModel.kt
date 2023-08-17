@@ -41,6 +41,9 @@ class DetailViewModel @Inject constructor(
     private var _festivalNoticeSubscribeState: MutableLiveData<Boolean> = MutableLiveData()
     val festivalNoticeSubscribeState: LiveData<Boolean> = _festivalNoticeSubscribeState
 
+    private var _subscribeResponseStateType: MutableLiveData<Pair<SubscribeStateType, Boolean>> = MutableLiveData()
+    val subscribeResponseStateType: LiveData<Pair<SubscribeStateType, Boolean>> = _subscribeResponseStateType
+
     fun getMarkerList(festivalId: Int) {
         viewModelScope.launch {
             val response = repository.getMarkerList(festivalId)
@@ -125,6 +128,10 @@ class DetailViewModel @Inject constructor(
         _festivalNoticeSubscribeState.postValue(subscribeState)
     }
 
+    fun initSubscribeResponseStateType(){
+        _subscribeResponseStateType.postValue(Pair(SubscribeStateType.LOADING,false))
+    }
+
     fun subscribeFestivalNotice(festivalId: Int){
         viewModelScope.launch {
             val response = repository.subscribeFestivalNotice(festivalId)
@@ -132,6 +139,7 @@ class DetailViewModel @Inject constructor(
             when (response) {
                 is NetworkResponse.Success -> {
                     _festivalNoticeSubscribeState.postValue(response.body)
+                    _subscribeResponseStateType.postValue(Pair(SubscribeStateType.SUCCESS,response.body))
                 }
 
                 is NetworkResponse.ApiError -> {

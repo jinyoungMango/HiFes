@@ -5,6 +5,7 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.os.Build
 import android.util.Log
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -100,9 +101,25 @@ fun FestivalDetail(
     val context = LocalContext.current
     val cameraPositionState: CameraPositionState = rememberCameraPositionState {}
     val subscribeState = detailViewModel.festivalNoticeSubscribeState.observeAsState()
+    val subscribeResponseType = detailViewModel.subscribeResponseStateType.observeAsState()
+
+    LaunchedEffect(subscribeResponseType.value){
+        if(subscribeResponseType.value != null){
+            if(subscribeResponseType.value!!.first == SubscribeStateType.SUCCESS){
+                if(subscribeResponseType.value!!.second == true){
+                    Toast.makeText(context, "공지 알림이 켜졌습니다.", Toast.LENGTH_LONG).show()
+                    detailViewModel.initSubscribeResponseStateType()
+                }else if(subscribeResponseType.value!!.second == false){
+                    Toast.makeText(context, "공지 알림을 해제했습니다.", Toast.LENGTH_LONG).show()
+                    detailViewModel.initSubscribeResponseStateType()
+                }
+            }
+        }
+
+    }
 
     if (festivalInfo.value != null) {
-        LaunchedEffect(Unit) {
+        LaunchedEffect(festivalInfo.value) {
             detailViewModel.initSubscribeFestivalNoticeState(festivalInfo.value!!.isFollowed)
         }
         val festivalData = festivalInfo.value
