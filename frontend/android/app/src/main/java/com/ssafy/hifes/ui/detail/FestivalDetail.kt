@@ -9,6 +9,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -75,6 +76,7 @@ import com.ssafy.hifes.BuildConfig
 import com.ssafy.hifes.R
 import com.ssafy.hifes.data.model.OrganizedFestivalDto
 import com.ssafy.hifes.ui.HifesDestinations
+import com.ssafy.hifes.ui.group.info.detail.ImageDialog
 import com.ssafy.hifes.ui.iconpack.MyIconPack
 import com.ssafy.hifes.ui.iconpack.myiconpack.Imagenotfound
 import com.ssafy.hifes.ui.main.MainViewModel
@@ -97,6 +99,13 @@ fun FestivalDetail(
     val context = LocalContext.current
     val cameraPositionState: CameraPositionState = rememberCameraPositionState{}
 
+    var showDialog by remember { mutableStateOf(false) }
+    var selectedImage: String? by remember { mutableStateOf(null) }
+
+    if (showDialog) {
+        ImageDialog(imageUrl = selectedImage) { showDialog = false }
+    }
+
     if (festivalInfo.value != null) {
         val festivalData = festivalInfo.value
         Column(
@@ -111,7 +120,11 @@ fun FestivalDetail(
                         contentDescription = "Poster Image",
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(300.dp),
+                            .height(300.dp)
+                            .clickable {
+                                selectedImage = festivalData.fesPosterPath
+                                showDialog = true
+                            },
                         contentScale = ContentScale.Crop
                     )
                     Row(
