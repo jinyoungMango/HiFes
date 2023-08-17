@@ -93,7 +93,7 @@ fun WavesAnimation() {
                 .background(color = Color.White, shape = CircleShape)
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.icon_group_call),
+                painter = painterResource(id = R.drawable.icon_call),
                 "",
                 tint = PrimaryPink,
                 modifier = Modifier

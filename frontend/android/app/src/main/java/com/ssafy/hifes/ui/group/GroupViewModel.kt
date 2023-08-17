@@ -266,7 +266,6 @@ class GroupViewModel @Inject constructor(
         viewModelScope.launch {
             val response = repository.uploadPicture(image, groupId)
             val type = "이미지 업로드에"
-            Log.d(TAG, "uploadPicture: ${uploadPictureStateType.value}")
             when (response) {
                 is NetworkResponse.Success -> {
                     Log.d(TAG, "uploadPicture: success")

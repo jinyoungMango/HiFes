@@ -1,6 +1,8 @@
 package com.ssafy.hifes.ui.group.main
 
+import android.util.Log
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
@@ -26,6 +28,7 @@ import com.ssafy.hifes.ui.group.GroupScreenType
 import com.ssafy.hifes.ui.group.GroupViewModel
 import com.ssafy.hifes.ui.main.MainViewModel
 import com.ssafy.hifes.ui.theme.PrimaryPink
+import kotlinx.coroutines.launch
 
 private const val TAG = "GroupMainScreen_하이페스"
 
@@ -51,6 +54,11 @@ fun GroupMainScreen(
 
     errMsg.value?.getContentIfNotHandled()?.let {
         Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+    }
+
+    BackHandler(true) {
+        mainViewModel.getFestivalInfo(selectedFestival)
+        navController.popBackStack()
     }
 
 

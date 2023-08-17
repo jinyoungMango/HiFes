@@ -3,6 +3,7 @@ package com.ssafy.hifes.ui.map
 import android.annotation.SuppressLint
 import android.location.Location
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -32,6 +33,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -100,8 +102,12 @@ fun MapScreen(
     var groupCallLat = remember { mutableStateOf(0.0) }
     var groupCallLng = remember { mutableStateOf(0.0) }
     var showDialog by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    if (fabClicked) {
+        Toast.makeText(context, "지도를 움직여 위치를 설정하세요.", Toast.LENGTH_SHORT).show()
+    }
     if (showDialog) {
-        MapGroupCallDialog(detailViewModel, groupCallLat.value, groupCallLng.value) { isConfirm ->
+        MapGroupCallDialog(viewModel.festivalInfo.value!!, detailViewModel, groupCallLat.value, groupCallLng.value) { isConfirm ->
             if (isConfirm) { // 모임콜 확인 버튼 눌렀을 경우
                 showWavesAnimation = true
                 fabVisible = false  // FAB를 숨깁니다.
@@ -189,14 +195,13 @@ fun MapScreen(
         },
         floatingActionButton = {
             // 현재 사용자가 그룹이 있는지 없는지 판단하에 보여주기
-            if (mapType.value == MapType.FESTIVAL) {
+            if (mapType.value == MapType.FESTIVAL && viewModel.festivalInfo.value?.isUserJoined == true) {
                 if (fabVisible) {
                     FloatingActionButton(
                         onClick = { /* 모임콜 기능 */
                             if (!fabClicked) {
 
                             } else {
-                                // api
                                 showDialog = true
 
                             }

@@ -17,6 +17,7 @@ import androidx.compose.material.TextFieldColors
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -28,13 +29,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import com.ssafy.hifes.data.model.FCMForGroupDto
+import com.ssafy.hifes.data.model.OrganizedFestivalDto
 import com.ssafy.hifes.ui.detail.DetailViewModel
 import com.ssafy.hifes.ui.group.GroupViewModel
+import com.ssafy.hifes.ui.main.MainViewModel
 import com.ssafy.hifes.ui.theme.PrimaryPink
 import com.ssafy.hifes.ui.theme.pretendardFamily
 
 @Composable
 fun MapGroupCallDialog(
+    festivalInfo : OrganizedFestivalDto,
     viewModel: DetailViewModel,
     lat: Double,
     lng: Double,
@@ -94,8 +99,9 @@ fun MapGroupCallDialog(
 
                     Button(
                         onClick = {
-//                            viewModel.callGroupNotification()
-                            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                            val fcmForGroupDto = FCMForGroupDto(festivalInfo.groupId, message, lat, lng)
+                            viewModel.callGroupNotification(fcmForGroupDto)
+                            Toast.makeText(context, "모임원을 호출했습니다!", Toast.LENGTH_SHORT).show()
                             onDismiss(true)
                         },
                         Modifier

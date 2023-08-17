@@ -138,6 +138,7 @@ class MainViewModel @Inject constructor(
             val type = "token 정보 조회에"
             when (response) {
                 is NetworkResponse.Success -> {
+                    Log.d(TAG, "getFestivalInfo: ${response.body}")
                     _festivalInfo.postValue(response.body)
                     selectedFestival = response.body.festivalId
                 }

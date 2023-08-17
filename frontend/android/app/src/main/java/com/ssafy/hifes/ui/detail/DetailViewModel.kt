@@ -94,7 +94,7 @@ class DetailViewModel @Inject constructor(
             val type = "token 정보 조회에"
             when (response) {
                 is NetworkResponse.Success -> {
-                    Log.d(TAG, "getTimeTableList: $response")
+                    Log.d(TAG, "callGroupNotification: $response")
                     _callGroupResponse.postValue(response.body)
                 }
 
