@@ -109,8 +109,8 @@ fun FestivalDetail(
     if (festivalInfo.value != null) {
         val festivalData = festivalInfo.value
         Column(
-            Modifier
-                .verticalScroll(rememberScrollState())
+            modifier = Modifier
+                .verticalScroll(rememberScrollState()).background(color = Color.White)
         ) {
             if (festivalData != null) {
                 detailViewModel.getTimeTableList(festivalData.festivalId)
