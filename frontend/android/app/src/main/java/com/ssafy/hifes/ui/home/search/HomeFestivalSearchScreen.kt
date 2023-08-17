@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -165,10 +166,12 @@ fun SearchCard(festival: OrganizedFestivalDto, onClick: (Int) -> Unit) {
         Spacer(modifier = Modifier.size(8.dp))
         Text(
             text = festival.fesTitle,
-            modifier = Modifier.padding(start = 12.dp),
+            modifier = Modifier.padding(start = 12.dp, end = 12.dp),
             fontFamily = pretendardFamily,
             fontWeight = FontWeight.SemiBold,
-            fontSize = 14.sp
+            fontSize = 14.sp,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
         )
         Spacer(modifier = Modifier.size(8.dp))
         val date = "${
@@ -176,7 +179,7 @@ fun SearchCard(festival: OrganizedFestivalDto, onClick: (Int) -> Unit) {
         } ~ ${CommonUtils.formatFestivalDateToString(festival.fesEndDate)}"
         Text(
             text = date,
-            modifier = Modifier.padding(start = 12.dp),
+            modifier = Modifier.padding(start = 12.dp, end = 4.dp),
             fontFamily = pretendardFamily,
             fontWeight = FontWeight.Normal,
             fontSize = 12.sp
