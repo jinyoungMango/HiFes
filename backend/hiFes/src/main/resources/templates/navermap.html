@@ -247,7 +247,7 @@
 
         function receiveParentMessage(e) {
             var obj = JSON.parse(JSON.stringify(markerList)) //markerList를 json으로 파싱한다
-            window.parent.postMessage(obj, "http://i9d104.p.ssafy.io:3000") //플러터에게 이벤트를 일으키면서 동시에 파싱한 데이터를 보낸다
+            window.parent.postMessage(obj, "http://localhost:3000") //플러터에게 이벤트를 일으키면서 동시에 파싱한 데이터를 보낸다
         }	
     </script>
 </body>
