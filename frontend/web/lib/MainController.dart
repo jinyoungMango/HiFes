@@ -17,4 +17,7 @@ class MainController extends GetxController {
   // 스프링 JWT
   var jAccessToken = "".obs;
   var jRefreshToken = "".obs;
+
+  // ui Factory용 cnt
+  var cnt = 0.obs;
 }

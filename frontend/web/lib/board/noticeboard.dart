@@ -119,9 +119,9 @@ Column NoticeItem(BuildContext context, PostWithCommentDto notice) {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("${notice.createdAt.date}", style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w300)),
+                        Text("${notice.createdAt.date}", style: TextStyle(color: Colors.black, fontWeight: FontWeight.w300)),
                         SizedBox(height: 4,),
-                        Container(child: Text("${notice.createdAt.time}", style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w300))),
+                        Container(child: Text("${notice.createdAt.time}", style: TextStyle(color: Colors.black, fontWeight: FontWeight.w300))),
                         SizedBox(height: 20,),
                         ElevatedButton(
                             style: ButtonStyle(

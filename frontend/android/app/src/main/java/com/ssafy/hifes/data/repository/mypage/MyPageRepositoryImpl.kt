@@ -3,6 +3,7 @@ package com.ssafy.hifes.data.repository.mypage
 import com.ssafy.hifes.data.model.ErrorResponse
 import com.ssafy.hifes.data.model.ParticipatedFestDto
 import com.ssafy.hifes.data.model.StampListDto
+import com.ssafy.hifes.data.model.UserInfoDto
 import com.ssafy.hifes.data.remote.ApiService
 import com.ssafy.hifes.util.network.NetworkResponse
 import javax.inject.Inject
@@ -21,5 +22,9 @@ class MyPageRepositoryImpl @Inject constructor(
         festivalId: Int
     ): NetworkResponse<StampListDto, ErrorResponse> {
         return apiService.getParticipatedStampList(normalUserId, festivalId)
+    }
+
+    override suspend fun getUserInfo(): NetworkResponse<UserInfoDto, ErrorResponse> {
+        return apiService.getUserInfo()
     }
 }
