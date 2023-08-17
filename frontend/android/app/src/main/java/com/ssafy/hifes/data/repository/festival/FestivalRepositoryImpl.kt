@@ -22,5 +22,8 @@ class FestivalRepositoryImpl @Inject constructor(
     override suspend fun callGroupNotification(fcmForGroupDto: FCMForGroupDto): NetworkResponse<String, ErrorResponse> {
         return apiService.callGroupNotification(fcmForGroupDto)
     }
+    override suspend fun subscribeFestivalNotice(festivalId: Int): NetworkResponse<Boolean, ErrorResponse> {
+        return apiService.subscribeFestivalNotice(festivalId)
+    }
 
 }
