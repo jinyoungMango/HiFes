@@ -61,15 +61,19 @@ private const val TAG = "HomeScreen_하이페스"
 fun HomeScreen(navController: NavController, viewModel: MainViewModel) {
     val festivalList = viewModel.festivalList.observeAsState()
     val randomFestivalList = viewModel.randomFestivalList.observeAsState()
+    val location = viewModel.location.observeAsState()
     val context = LocalContext.current
     LaunchedEffect(Unit) {
-        val location = viewModel.fetchCurrentLocation(context)
-        location?.let {
-            val curLat = location.latitude
-            val curLon = location.longitude
-            Log.d(TAG, "HomeScreen: $curLat, $curLon")
+        viewModel.fetchCurrentLocation(context)
+    }
 
-            viewModel.getNearFestivalList(curLat, curLon)
+    LaunchedEffect(location.value) {
+        location.value.let { latlng ->
+            Log.d(TAG, "HomeScreen: $latlng")
+            if (latlng != null) {
+                viewModel.getNearFestivalList(latlng.latitude, latlng.longitude)
+            }
+
             viewModel.getRandomFestivalList()
             viewModel.initSearchKeyword()
         }
@@ -95,7 +99,10 @@ fun HomeScreen(navController: NavController, viewModel: MainViewModel) {
             0.0,
             0,
             "",
-            ""
+            "",
+            false,
+            0,
+            false
         )
         nearFestivalList = emptyList()
     }

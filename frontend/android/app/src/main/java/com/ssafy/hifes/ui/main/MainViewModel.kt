@@ -50,6 +50,9 @@ class MainViewModel @Inject constructor(
     private var _groupScreenType: MutableLiveData<GroupScreenType> = MutableLiveData()
     val groupScreenType: LiveData<GroupScreenType> = _groupScreenType
 
+    private var _location: MutableLiveData<Location> = MutableLiveData()
+    val location: LiveData<Location> = _location
+
     private var _searchFestivalList: MutableLiveData<List<OrganizedFestivalDto>> =
         MutableLiveData()
     val searchFestivalList: LiveData<List<OrganizedFestivalDto>> = _searchFestivalList
@@ -58,6 +61,7 @@ class MainViewModel @Inject constructor(
 
     private var _searchKeyword: MutableLiveData<String> = MutableLiveData()
     val searchKeyword : LiveData<String> = _searchKeyword
+
 
 
 
@@ -86,8 +90,8 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    suspend fun fetchCurrentLocation(context: Context): Location? {
-        return withContext(Dispatchers.IO) {
+    suspend fun fetchCurrentLocation(context: Context) {
+        withContext(Dispatchers.IO) {
             val locationManager =
                 context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
             if (ActivityCompat.checkSelfPermission(
@@ -99,7 +103,8 @@ class MainViewModel @Inject constructor(
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
             }
-            locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+            _location.postValue(locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER))
+//            locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER)
         }
     }
 
@@ -133,6 +138,7 @@ class MainViewModel @Inject constructor(
             val type = "token 정보 조회에"
             when (response) {
                 is NetworkResponse.Success -> {
+                    Log.d(TAG, "getFestivalInfo: ${response.body}")
                     _festivalInfo.postValue(response.body)
                     selectedFestival = response.body.festivalId
                 }

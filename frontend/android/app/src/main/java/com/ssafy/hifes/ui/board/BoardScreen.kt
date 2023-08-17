@@ -1,6 +1,7 @@
 package com.ssafy.hifes.ui.board
 
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -44,6 +45,12 @@ fun BoardScreen(
     val boardType = viewModel.boardType.observeAsState()
     val selectedFestival = mainViewModel.selectedFestival
     val userId = AppPreferences.getUserId()
+
+    BackHandler(true) {
+        Log.d(TAG, "BoardScreen: ")
+        mainViewModel.getFestivalInfo(selectedFestival)
+        navController.popBackStack()
+    }
 
     LaunchedEffect(boardType.value) {
         when (boardType.value) {
