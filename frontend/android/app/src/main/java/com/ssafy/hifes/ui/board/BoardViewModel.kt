@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
+import com.ssafy.hifes.data.model.CommentWriteDto
 import com.ssafy.hifes.data.model.Event
 import com.ssafy.hifes.data.model.PostDetailDto
 import com.ssafy.hifes.data.model.PostDto
@@ -44,8 +45,10 @@ class BoardViewModel @Inject constructor(
     private var _postList: MutableLiveData<List<PostDto>> = MutableLiveData()
     val postList: LiveData<List<PostDto>> = _postList
 
-    private var _selectedPost: MutableLiveData<PostDetailDto> = MutableLiveData()
-    val selectedPost: LiveData<PostDetailDto> = _selectedPost
+    private var _postDetail: MutableLiveData<PostDetailDto> = MutableLiveData()
+    val postDetail: LiveData<PostDetailDto> = _postDetail
+
+    var selectedPost: PostDto? = null
 
     var selectedPostType = "notice"
 
@@ -54,6 +57,9 @@ class BoardViewModel @Inject constructor(
 
     private var _postWriteStateType: MutableLiveData<PostWriteStateType> = MutableLiveData()
     val postWriteStateType: LiveData<PostWriteStateType> = _postWriteStateType
+
+    private var _commentWriteStateType: MutableLiveData<PostWriteStateType> = MutableLiveData()
+    val commentWriteStateType: LiveData<PostWriteStateType> = _commentWriteStateType
 
     fun getNotificationPostList(selectedFestivalId: Int) {
 
@@ -163,7 +169,7 @@ class BoardViewModel @Inject constructor(
             val type = "게시글 조회에"
             when (response) {
                 is NetworkResponse.Success -> {
-                    _selectedPost.postValue(response.body)
+                    _postDetail.postValue(response.body)
                     selectedPostType = postData.postType
                 }
 
@@ -180,6 +186,10 @@ class BoardViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun initSelectedPost(postData: PostDto) {
+        selectedPost = postData
     }
 
     fun postWrite(context: Context, postData: PostWriteDto, uri: Uri?) {
@@ -262,16 +272,40 @@ class BoardViewModel @Inject constructor(
         _postWriteStateType.postValue(PostWriteStateType.LOADING)
     }
 
+    fun initCommentWriteState() {
+        _commentWriteStateType.postValue(PostWriteStateType.LOADING)
+    }
+
     fun postDelete() {
-        Log.d(TAG, "postDelete: 삭제 ${selectedPost.value}")
+        Log.d(TAG, "postDelete: 삭제 ${postDetail.value}")
     }
 
     fun postModify() {
-        Log.d(TAG, "postModify: 수정 ${selectedPost.value}")
+        Log.d(TAG, "postModify: 수정 ${postDetail.value}")
     }
 
-    fun writeReComment() {
+    fun writeComment(commentWriteDto: CommentWriteDto) {
+        viewModelScope.launch {
+            val response = repository.writeComment(commentWriteDto)
+            val type = "댓글 작성에"
+            when (response) {
+                is NetworkResponse.Success -> {
+                    _commentWriteStateType.postValue(PostWriteStateType.SUCCESS)
+                }
 
+                is NetworkResponse.ApiError -> {
+                    _commentWriteStateType.postValue(PostWriteStateType.FAIL)
+                }
+
+                is NetworkResponse.NetworkError -> {
+                    _commentWriteStateType.postValue(PostWriteStateType.FAIL)
+                }
+
+                is NetworkResponse.UnknownError -> {
+                    _commentWriteStateType.postValue(PostWriteStateType.FAIL)
+                }
+            }
+        }
     }
 
     private fun postValueEvent(
