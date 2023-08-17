@@ -30,14 +30,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import com.kakao.sdk.auth.AuthApiClient
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.user.UserApiClient
 import com.ssafy.hifes.R
+import com.ssafy.hifes.data.local.AppPreferences
 import com.ssafy.hifes.ui.HifesDestinations
 import com.ssafy.hifes.ui.theme.Grey
 import com.ssafy.hifes.ui.theme.KakaoYellow
 import com.ssafy.hifes.ui.theme.PrimaryPink
 import com.ssafy.hifes.ui.theme.pretendardFamily
+import kotlinx.coroutines.delay
 
 private const val TAG = "LoginScreen_하이페스"
 
@@ -65,17 +68,34 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel) {
         }
     }
 
+    var isLogin = false
+    val jwtToken = AppPreferences.getAccessToken()
+    if (!jwtToken.isNullOrEmpty() && AuthApiClient.instance.hasToken()) {
+        isLogin = true
 
+    }
 
+    if (isLogin && isSplashFinished) {
+        LaunchedEffect(Unit) {
+            viewModel.saveFcmToken()
+            navController.navigate(NavigationItem.Home.screenRoute) {
+                popUpTo(navController.graph.findStartDestination().id) {
+                    inclusive = true
+                }
+            }
+        }
+    }
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+
         if (!isSplashFinished) {
             SplashScreen(onFinished = { isSplashFinished = true })
-        } else {
+        }
+        if (!isLogin && isSplashFinished){
             Spacer(modifier = Modifier.weight(1f))
             Column(
                 modifier = Modifier

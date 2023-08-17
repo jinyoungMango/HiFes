@@ -51,6 +51,10 @@ object AppPreferences {
         return preferences.getString(USER_NICKNAME, "")
     }
 
+    fun removeAccessToken() {
+        preferences.edit().remove(ACCESS_TOKEN).apply()
+    }
+
     fun initFcmToken(fcmToken: String) {
         preferences.edit().putString(FCM_TOKEN, fcmToken).commit()
     }
