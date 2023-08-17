@@ -2,9 +2,7 @@ package com.ssafy.hifes.ui
 
 import NavigationItem
 import android.content.Intent
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -37,9 +35,9 @@ import com.ssafy.hifes.ui.login.LoginScreen
 import com.ssafy.hifes.ui.login.LoginViewModel
 import com.ssafy.hifes.ui.main.MainViewModel
 import com.ssafy.hifes.ui.map.MapScreen
+import com.ssafy.hifes.ui.mypage.MyPageViewModel
 import com.ssafy.hifes.ui.mypage.main.MyPageScreen
 import com.ssafy.hifes.ui.mypage.participatedfest.ParticipatedFestScreen
-import com.ssafy.hifes.ui.mypage.MyPageViewModel
 import com.ssafy.hifes.ui.proof.ProofScreen
 import com.ssafy.hifes.ui.proof.ProofViewModel
 
@@ -62,7 +60,7 @@ fun HifesNavGraph(
     val proofViewModel: ProofViewModel = hiltViewModel()
     val loginViewModel: LoginViewModel = hiltViewModel()
     val chatViewModel: ChatViewModel = hiltViewModel()
-    val participatedFestViewModel: MyPageViewModel = hiltViewModel()
+    val myPageViewModel: MyPageViewModel = hiltViewModel()
 
     NavHost(
         navController = navController,
@@ -100,18 +98,22 @@ fun HifesNavGraph(
         composable(
             route = HifesDestinations.PARTICIPATED_FEST_ROUTE
         ) {
-            ParticipatedFestScreen(navController = navController, participatedFestViewModel)
+            ParticipatedFestScreen(navController = navController, myPageViewModel)
         }
         composable(
             route = HifesDestinations.MY_PAGE_ROUTE
         ) {
-            MyPageScreen(navController = navController)
+            MyPageScreen(navController = navController, viewModel = myPageViewModel)
         }
         composable(
             route = HifesDestinations.BOARD_ROUTE
         )
         {
-            BoardScreen(navController = navController, viewModel = boardViewModel, mainViewModel = mainViewModel)
+            BoardScreen(
+                navController = navController,
+                viewModel = boardViewModel,
+                mainViewModel = mainViewModel
+            )
         }
         composable(
             route = HifesDestinations.BOARD_DETAIL_ROUTE
@@ -130,7 +132,11 @@ fun HifesNavGraph(
         composable(
             route = HifesDestinations.POST_WRITE_ROUTE
         ) {
-            PostWriteScreen(navController = navController, viewModel = boardViewModel, mainViewModel = mainViewModel)
+            PostWriteScreen(
+                navController = navController,
+                viewModel = boardViewModel,
+                mainViewModel = mainViewModel
+            )
         }
         composable(
             route = HifesDestinations.GROUP_DETAIL
