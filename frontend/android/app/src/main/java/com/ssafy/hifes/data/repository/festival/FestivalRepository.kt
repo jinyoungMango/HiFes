@@ -10,9 +10,10 @@ import retrofit2.http.Path
 
 interface FestivalRepository {
 
-    suspend fun getMarkerList(@Path("festivalId") festivalId: Int) : NetworkResponse<List<MarkerDto>, ErrorResponse>
+    suspend fun getMarkerList(@Path("festivalId") festivalId: Int): NetworkResponse<List<MarkerDto>, ErrorResponse>
 
     suspend fun getFestivalTimeTable(@Path("festivalId") festivalId: Int): NetworkResponse<List<TimeTable>, ErrorResponse>
 
     suspend fun callGroupNotification(@Body fcmForGroupDto: FCMForGroupDto): NetworkResponse<String, ErrorResponse>
+    suspend fun subscribeFestivalNotice(@Path("festivalId") festivalId: Int): NetworkResponse<Boolean, ErrorResponse>
 }
