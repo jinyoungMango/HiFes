@@ -194,7 +194,8 @@ fun MapScreen(
                                     R.string.map_chip_staff,
                                     R.string.map_chip_safety_staff,
                                     R.string.map_chip_toilet,
-                                    R.string.map_chip_enterance
+                                    R.string.map_chip_enterance,
+                                    R.string.map_chip_stamp
                                 ).map { stringResource(id = it) }
                             ) { index ->
                                 detailViewModel.updateSelectedBoothChip(index)
@@ -492,58 +493,6 @@ fun BoothMap(
     }
 }
 
-@OptIn(ExperimentalNaverMapApi::class)
-@Composable
-fun BlinkingMarker(festivalId: Int) {
-//    Log.d(TAG, "BlinkingMarker: $festivalId")
-    val groupCallLocation = AppPreferences.getCallLocation()
-    val groupCallFestivalId = groupCallLocation.first
-    var callLatLng = LatLng(0.0, 0.0)
-    if (groupCallFestivalId == festivalId.toString()) {
-        Log.d(TAG, "BlinkingMarker: 아이디 확인")
-        callLatLng =
-            LatLng(groupCallLocation.second[0].toDouble(), groupCallLocation.second[1].toDouble())
-    }
-
-    val infiniteTransition = rememberInfiniteTransition()
-    val alpha by infiniteTransition.animateFloat(
-        initialValue = 1f,
-        targetValue = 0.1f,
-        animationSpec = infiniteRepeatable(
-            tween(500, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse
-        )
-    )
-
-    // 마커의 표시 여부를 제어하는 상태를 추가
-    var showMarker by remember { mutableStateOf(true) }
-    var showGroupCallDialog by remember { mutableStateOf(false) }
-    if (showGroupCallDialog) {
-        GroupCallDialog {
-            if (it) {
-                showMarker = false
-                AppPreferences.removeCallLocation()
-            }
-            showGroupCallDialog = !showGroupCallDialog
-        }
-    }
-
-    if (groupCallFestivalId == festivalId.toString() && showMarker) {
-        Log.d(TAG, "BlinkingMarker 모임콜: $festivalId")
-        // Assuming the `Marker` composable has an `alpha` parameter or similar. If not, you'll need a different approach.
-        Marker(
-            state = MarkerState(position = callLatLng),
-            icon = OverlayImage.fromResource(R.drawable.icon_group_call),
-            alpha = alpha
-        ) {
-            showGroupCallDialog = !showGroupCallDialog
-            false
-        }
-    }
-
-}
-
-
 fun setMarkerIcon(boothNo: Int): Int {
     var markerImg = 0
     when (boothNo) {
@@ -554,6 +503,7 @@ fun setMarkerIcon(boothNo: Int): Int {
         5 -> markerImg = R.drawable.marker_safety_staff
         6 -> markerImg = R.drawable.marker_toilet
         7 -> markerImg = R.drawable.marker_enterance
+        8 -> markerImg = R.drawable.marker_stamp
     }
     return markerImg
 }
