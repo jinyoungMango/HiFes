@@ -14,6 +14,7 @@ import com.ssafy.hifes.data.model.PostDto
 import com.ssafy.hifes.data.model.SharedPicDto
 import com.ssafy.hifes.data.model.StampListDto
 import com.ssafy.hifes.data.model.TimeTable
+import com.ssafy.hifes.data.model.UserInfoDto
 import com.ssafy.hifes.util.network.NetworkResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -98,6 +99,9 @@ interface ApiService {
         @Path("normalUserId") normalUserId: String,
         @Path("festivalId") festivalId: Int
     ): NetworkResponse<StampListDto, ErrorResponse>
+
+    @POST("normal/myPage")
+    suspend fun getUserInfo(): NetworkResponse<UserInfoDto, ErrorResponse>
 
     // Festival
     @GET("festival/{festivalId}/festivalTables")

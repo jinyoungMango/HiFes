@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.ssafy.hifes.data.model.Event
 import com.ssafy.hifes.data.model.ParticipatedFestDto
 import com.ssafy.hifes.data.model.StampListDto
+import com.ssafy.hifes.data.model.UserInfoDto
 import com.ssafy.hifes.data.repository.mypage.MyPageRepository
 import com.ssafy.hifes.util.network.NetworkResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,8 +22,12 @@ class MyPageViewModel @Inject constructor(
 ) : ViewModel() {
     private val _errMsgParticipatedFestList = MutableLiveData<Event<String>>()
     val errMsgParticipatedFestList: LiveData<Event<String>> = _errMsgParticipatedFestList
+
     private val _errMsgParticipatedStamp = MutableLiveData<Event<String>>()
     val errMsgParticipatedStamp: LiveData<Event<String>> = _errMsgParticipatedStamp
+
+    private val _errMsgUserInfo = MutableLiveData<Event<String>>()
+    val errMsgUserInfo: LiveData<Event<String>> = _errMsgUserInfo
 
     private val _participatedFestivalList: MutableLiveData<List<ParticipatedFestDto>> =
         MutableLiveData()
@@ -30,6 +35,9 @@ class MyPageViewModel @Inject constructor(
 
     private val _participatedStamps: MutableLiveData<StampListDto> = MutableLiveData()
     val participatedStamps: LiveData<StampListDto> = _participatedStamps
+
+    private val _userInfo: MutableLiveData<UserInfoDto> = MutableLiveData()
+    val userInfo: LiveData<UserInfoDto> = _userInfo
 
     fun getParticipatedFestival(userId: String?) {
         viewModelScope.launch {
@@ -87,6 +95,32 @@ class MyPageViewModel @Inject constructor(
                 postValueEvent(2, type, _errMsgParticipatedStamp)
 
             }
+        }
+    }
+
+    fun getUserInfo() {
+        viewModelScope.launch {
+            val type = "회원 정보 조회에"
+
+            val response = repository.getUserInfo()
+            when (response) {
+                is NetworkResponse.Success -> {
+                    _userInfo.postValue(response.body)
+                }
+
+                is NetworkResponse.ApiError -> {
+                    postValueEvent(0, type, _errMsgUserInfo)
+                }
+
+                is NetworkResponse.NetworkError -> {
+                    postValueEvent(1, type, _errMsgUserInfo)
+                }
+
+                is NetworkResponse.UnknownError -> {
+                    postValueEvent(2, type, _errMsgUserInfo)
+                }
+            }
+
         }
     }
 
