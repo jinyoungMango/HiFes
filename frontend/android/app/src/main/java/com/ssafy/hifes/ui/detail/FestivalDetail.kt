@@ -68,7 +68,6 @@ import com.naver.maps.map.compose.ExperimentalNaverMapApi
 import com.naver.maps.map.compose.Marker
 import com.naver.maps.map.compose.MarkerState
 import com.naver.maps.map.compose.NaverMap
-import com.naver.maps.map.compose.currentCameraPositionState
 import com.naver.maps.map.compose.rememberCameraPositionState
 import com.naver.maps.map.overlay.OverlayImage
 import com.ssafy.hifes.BuildConfig
@@ -77,6 +76,7 @@ import com.ssafy.hifes.data.model.OrganizedFestivalDto
 import com.ssafy.hifes.ui.HifesDestinations
 import com.ssafy.hifes.ui.iconpack.MyIconPack
 import com.ssafy.hifes.ui.iconpack.myiconpack.Imagenotfound
+import com.ssafy.hifes.ui.iconpack.myiconpack.Notificationon
 import com.ssafy.hifes.ui.main.MainViewModel
 import com.ssafy.hifes.ui.map.StarScore
 import com.ssafy.hifes.ui.theme.pretendardFamily
@@ -95,7 +95,7 @@ fun FestivalDetail(
     val festivalInfo = viewModel.festivalInfo.observeAsState()
     val festivalTimeTable = detailViewModel.timeTableList.observeAsState()
     val context = LocalContext.current
-    val cameraPositionState: CameraPositionState = rememberCameraPositionState{}
+    val cameraPositionState: CameraPositionState = rememberCameraPositionState {}
 
     if (festivalInfo.value != null) {
         val festivalData = festivalInfo.value
@@ -154,12 +154,19 @@ fun FestivalDetail(
                         ) {
                             Spacer(modifier = Modifier.size(4.dp))
                             Row(
-                                verticalAlignment = Alignment.Top,
+                                verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.End,
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(top = 4.dp, end = 8.dp, bottom = 6.dp)
                             ) {
+                                IconButton(onClick = { }) {
+                                    Icon(
+                                        painter = rememberVectorPainter(image = MyIconPack.Notificationon),
+                                        contentDescription = "행사 공지 알림 구독",
+                                        modifier = Modifier.size(30.dp)
+                                    )
+                                }
                                 navigateToMeetingScreen(
                                     "${festivalData.countGroups}개",
                                     navController,
@@ -294,7 +301,12 @@ fun kakaoShare(festival: OrganizedFestivalDto, context: Context) {
 
 @OptIn(ExperimentalNaverMapApi::class)
 @Composable
-fun FestivalLocation(lat: Double, lng: Double, title: String, cameraPositionState: CameraPositionState) {
+fun FestivalLocation(
+    lat: Double,
+    lng: Double,
+    title: String,
+    cameraPositionState: CameraPositionState
+) {
     val festivalLatLng = LatLng(lat, lng)
     cameraPositionState.position = CameraPosition(festivalLatLng, 13.0)
     Log.d(TAG, "FestivalLocation: festival $festivalLatLng, camera ${cameraPositionState.position}")
