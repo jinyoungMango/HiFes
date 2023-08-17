@@ -1,5 +1,6 @@
 package com.ssafy.hifes.data.repository.board
 
+import com.ssafy.hifes.data.model.CommentWriteDto
 import com.ssafy.hifes.data.model.ErrorResponse
 import com.ssafy.hifes.data.model.PostDetailDto
 import com.ssafy.hifes.data.model.PostDto
@@ -29,6 +30,10 @@ class BoardRepositoryImpl @Inject constructor(
         image: MultipartBody.Part?
     ): NetworkResponse<String, ErrorResponse> {
         return apiService.writePost(data, image)
+    }
+
+    override suspend fun writeComment(commentWriteDto: CommentWriteDto): NetworkResponse<CommentWriteDto, ErrorResponse> {
+        return apiService.writeComment(commentWriteDto)
     }
 
 }

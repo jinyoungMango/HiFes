@@ -1,5 +1,6 @@
 package com.ssafy.hifes.data.repository.board
 
+import com.ssafy.hifes.data.model.CommentWriteDto
 import com.ssafy.hifes.data.model.ErrorResponse
 import com.ssafy.hifes.data.model.PostDetailDto
 import com.ssafy.hifes.data.model.PostDto
@@ -23,4 +24,7 @@ interface BoardRepository {
         @Part("data") data: RequestBody,
         @Part image: MultipartBody.Part?
     ): NetworkResponse<String, ErrorResponse>
+
+    suspend fun writeComment(commentWriteDto: CommentWriteDto): NetworkResponse<CommentWriteDto, ErrorResponse>
+
 }

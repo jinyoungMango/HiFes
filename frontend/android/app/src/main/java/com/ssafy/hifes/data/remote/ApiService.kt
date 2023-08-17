@@ -1,5 +1,6 @@
 package com.ssafy.hifes.data.remote
 
+import com.ssafy.hifes.data.model.CommentWriteDto
 import com.ssafy.hifes.data.model.ErrorResponse
 import com.ssafy.hifes.data.model.FcmTokenDto
 import com.ssafy.hifes.data.model.Group
@@ -120,6 +121,9 @@ interface ApiService {
         @Part("data") data: RequestBody,
         @Part image: MultipartBody.Part?
     ): NetworkResponse<String, ErrorResponse>
+
+    @POST("comment/create")
+    suspend fun writeComment(@Body commentWriteDto: CommentWriteDto): NetworkResponse<CommentWriteDto, ErrorResponse>
 
     @GET("search-festival/")
     suspend fun searchFestivalList(@Query("keyword") keyword: String): NetworkResponse<List<OrganizedFestivalDto>, ErrorResponse>
