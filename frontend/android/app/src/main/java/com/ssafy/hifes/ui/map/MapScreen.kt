@@ -5,6 +5,12 @@ import android.location.Location
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -53,6 +59,7 @@ import com.naver.maps.map.compose.rememberFusedLocationSource
 import com.naver.maps.map.overlay.Marker
 import com.naver.maps.map.overlay.OverlayImage
 import com.ssafy.hifes.R
+import com.ssafy.hifes.data.local.AppPreferences
 import com.ssafy.hifes.data.model.CustomMarker
 import com.ssafy.hifes.data.model.MarkerDto
 import com.ssafy.hifes.data.model.OrganizedFestivalDto
@@ -82,6 +89,7 @@ fun MapScreen(
     val mapType = viewModel.mapType.observeAsState()
     val boothList = detailViewModel.markerList.observeAsState()
     val selectedBoothChip = detailViewModel.selectedBoothChip.observeAsState()
+    val festivalInfo by viewModel.festivalInfo.observeAsState()
     detailViewModel.updateSelectedBoothChip(0)
 
     val sheetState = rememberModalBottomSheetState(initialValue = ModalBottomSheetValue.Hidden,
@@ -107,7 +115,12 @@ fun MapScreen(
         Toast.makeText(context, "지도를 움직여 위치를 설정하세요.", Toast.LENGTH_SHORT).show()
     }
     if (showDialog) {
-        MapGroupCallDialog(viewModel.festivalInfo.value!!, detailViewModel, groupCallLat.value, groupCallLng.value) { isConfirm ->
+        MapGroupCallDialog(
+            viewModel.festivalInfo.value!!,
+            detailViewModel,
+            groupCallLat.value,
+            groupCallLng.value
+        ) { isConfirm ->
             if (isConfirm) { // 모임콜 확인 버튼 눌렀을 경우
                 showWavesAnimation = true
                 fabVisible = false  // FAB를 숨깁니다.
@@ -164,7 +177,8 @@ fun MapScreen(
                                     booth,
                                     selectedBoothChip.value ?: 0,
                                     location.value,
-                                    fabClicked
+                                    fabClicked,
+                                    festivalInfo!!.festivalId
                                 ) { lat, lng ->
                                     groupCallLat.value = lat
                                     groupCallLng.value = lng
@@ -308,6 +322,7 @@ fun BoothMap(
     selectedBoothChip: Int,
     location: Location?,
     fabClicked: Boolean,
+    festivalId: Int,
     callLatLng: (lat: Double, lng: Double) -> Unit
 ) {
     var markers by remember {
@@ -348,7 +363,6 @@ fun BoothMap(
     }
 
     var groupCallLatLng = rememberCameraPositionState()
-
     NaverMap(
         locationSource = rememberFusedLocationSource(),
         properties = MapProperties(
@@ -359,6 +373,62 @@ fun BoothMap(
         ),
         cameraPositionState = cameraPositionState,
     ) {
+        // sharedPreferences에 모임콜 정보가 저장된 경우
+//        BlinkingMarker(festivalId)
+
+        val groupCallLocation = AppPreferences.getCallLocation()
+        val groupCallFestivalId = groupCallLocation.first
+//        var callLatLng = remember {
+//            mutableStateOf(LatLng(0.0, 0.0))
+//        }
+        if (groupCallFestivalId == festivalId.toString()) {
+            Log.d(TAG, "BlinkingMarker: 아이디 확인")
+
+            var callLatLng =
+                LatLng(
+                    groupCallLocation.second[0].toDouble(),
+                    groupCallLocation.second[1].toDouble()
+                )
+            Log.d(TAG, "BoothMap: $callLatLng")
+
+            val infiniteTransition = rememberInfiniteTransition()
+            val alpha by infiniteTransition.animateFloat(
+                initialValue = 1f,
+                targetValue = 0.1f,
+                animationSpec = infiniteRepeatable(
+                    tween(500, easing = LinearEasing),
+                    repeatMode = RepeatMode.Reverse
+                )
+            )
+
+            // 마커의 표시 여부를 제어하는 상태를 추가
+            var showMarker by remember { mutableStateOf(true) }
+            var showGroupCallDialog by remember { mutableStateOf(false) }
+            if (showGroupCallDialog) {
+                GroupCallDialog {
+                    if (it) {
+                        showMarker = false
+                        AppPreferences.removeCallLocation()
+                    }
+                    showGroupCallDialog = !showGroupCallDialog
+                }
+            }
+
+            if (groupCallFestivalId == festivalId.toString() && showMarker) {
+                Log.d(TAG, "BlinkingMarker 모임콜: $festivalId")
+                // Assuming the `Marker` composable has an `alpha` parameter or similar. If not, you'll need a different approach.
+                Marker(
+                    state = MarkerState(position = callLatLng),
+                    icon = OverlayImage.fromResource(R.drawable.icon_group_call),
+                alpha = alpha
+                ) {
+                    showGroupCallDialog = !showGroupCallDialog
+                    false
+                }
+            }
+        }
+
+        // =====================================
         // 현재 위치를 가져와야 함
         groupCallLatLng.position = cameraPositionState.position
         if (fabClicked) {
@@ -420,6 +490,57 @@ fun BoothMap(
             }
         }
     }
+}
+
+@OptIn(ExperimentalNaverMapApi::class)
+@Composable
+fun BlinkingMarker(festivalId: Int) {
+//    Log.d(TAG, "BlinkingMarker: $festivalId")
+    val groupCallLocation = AppPreferences.getCallLocation()
+    val groupCallFestivalId = groupCallLocation.first
+    var callLatLng = LatLng(0.0, 0.0)
+    if (groupCallFestivalId == festivalId.toString()) {
+        Log.d(TAG, "BlinkingMarker: 아이디 확인")
+        callLatLng =
+            LatLng(groupCallLocation.second[0].toDouble(), groupCallLocation.second[1].toDouble())
+    }
+
+    val infiniteTransition = rememberInfiniteTransition()
+    val alpha by infiniteTransition.animateFloat(
+        initialValue = 1f,
+        targetValue = 0.1f,
+        animationSpec = infiniteRepeatable(
+            tween(500, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        )
+    )
+
+    // 마커의 표시 여부를 제어하는 상태를 추가
+    var showMarker by remember { mutableStateOf(true) }
+    var showGroupCallDialog by remember { mutableStateOf(false) }
+    if (showGroupCallDialog) {
+        GroupCallDialog {
+            if (it) {
+                showMarker = false
+                AppPreferences.removeCallLocation()
+            }
+            showGroupCallDialog = !showGroupCallDialog
+        }
+    }
+
+    if (groupCallFestivalId == festivalId.toString() && showMarker) {
+        Log.d(TAG, "BlinkingMarker 모임콜: $festivalId")
+        // Assuming the `Marker` composable has an `alpha` parameter or similar. If not, you'll need a different approach.
+        Marker(
+            state = MarkerState(position = callLatLng),
+            icon = OverlayImage.fromResource(R.drawable.icon_group_call),
+            alpha = alpha
+        ) {
+            showGroupCallDialog = !showGroupCallDialog
+            false
+        }
+    }
+
 }
 
 
